@@ -38,3 +38,19 @@ set showmode
 
 " My tired eyes need a different font.
 set gfn=Consolas\ 14
+
+" Run clang-format on every save
+function! FormatOnSave()
+  " Save current cursor and view state
+  let l:view = winsaveview()
+  
+  " Run clang-format on the whole buffer silently
+  silent! %!clang-format
+  
+  " Restore cursor and view state
+  call winrestview(l:view)
+endfunction
+
+" Trigger automatically before saving C and C++ files
+autocmd BufWritePre *.c,*.cc,*.cpp,*.h,*.hpp call FormatOnSave()
+autocmd BufRead,BufNewFile *.c,*.cc,*.cpp,*.h,*.hpp set filetype=cpp
