@@ -8,9 +8,21 @@
 ; [please]
 ; version = 17.31.2
 
+[parse]
+preloadsubincludes = ///cc//build_defs:cc
+
 [Plugin "cc"]
 Target = //plugins:cc
-CCompiler = clang
-CxxCompiler = clang++
-DefaultCxxFlags = -std=c++20 -Wall -Wextra -Wpedantic
-LdFlags = -fuse-ld=lld -lc++ -lc++abi
+CoverageTool = llvm-cov
+
+; Flags for optimized builds (e.g. plz build -c opt)
+DefaultOptCppFlags = -std=c++20
+DefaultOptCppFlags = -O3
+DefaultOptCppFlags = -DNDEBUG
+DefaultOptCppFlags = -Wall
+
+; Flags for debug builds (e.g. plz build -c dbg)
+DefaultDbgCppFlags = -std=c++20
+DefaultDbgCppFlags = -g3
+DefaultDbgCppFlags = -DDEBUG
+DefaultDbgCppFlags = -Wall
