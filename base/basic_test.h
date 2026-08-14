@@ -29,7 +29,7 @@ class BasicTest {
   bool expect_passing_ = true;
 };
 
-bool RegisterTest(std::unique_ptr<BasicTest> test);
+[[nodiscard]] bool RegisterTest(std::unique_ptr<BasicTest> test);
 [[nodiscard]] int RunAllTests();
 
 #define BASIC_TEST(name)                                 \

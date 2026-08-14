@@ -15,6 +15,8 @@ class PassingTest final : public base::testing::BasicTest {
 }  // namespace
 
 int main(int argc, char* argv[]) {
-  base::testing::RegisterTest(std::make_unique<PassingTest>());
+  // Generally prefer to use the BASIC_TEST() macro...
+  static_cast<void>(
+      base::testing::RegisterTest(std::make_unique<PassingTest>()));
   return base::testing::RunAllTests();
 }
