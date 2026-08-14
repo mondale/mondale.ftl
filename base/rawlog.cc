@@ -1,3 +1,5 @@
+#include <ostream>
+
 #include "base/rawlog.h"
 
 namespace base::rawlog {
