@@ -2,12 +2,13 @@
 cc_library(
   name = "basic_test",
   hdrs = ["basic_test.h"],
-  srcs = ["basic_test.cc"],
+  srcs = ["basic_test.cc",
+          "basic_test_main.cc"],
 )
 
 cc_test(
   name = "basic_test_test",
-  deps = [":basic_test",],
+  deps = [":basic_test"],
   srcs = ["basic_test_test.cc"],
 )
 

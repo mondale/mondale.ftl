@@ -136,7 +136,7 @@ class BasicTest {
                        const char* b_name, const char* op, T a, T b) {
     std::stringstream ss;
     ss << "\nExpected " << a_name << op << b_name << "\n";
-    ss << "         " << a << op << b << "\n";
+    ss << "        {" << a << "}" << op << "{" << b << "}\n";
     AddFailure(file, line, ss.str());
   }
 
