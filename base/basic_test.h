@@ -24,6 +24,18 @@ class BasicTest {
  protected:
   void AddFailure(const char* file, int line, std::string message);
 
+  void AssertTrue(const char* file, int line, const char* name, bool value) {
+    if (value) return;
+    FailExpectation(file, line, name, "true", " is ", value, true);
+    Assert();
+  }
+
+  void AssertFalse(const char* file, int line, const char* name, bool value) {
+    if (!value) return;
+    FailExpectation(file, line, name, "false", " is ", value, false);
+    Assert();
+  }
+
   template <typename T>
   void AssertEqHelper(const char* file, int line, const char* a_name,
                       const char* b_name, T a, T b) {
@@ -70,6 +82,16 @@ class BasicTest {
     if (a != b) return;
     FailExpectation(file, line, a_name, b_name, " != ", a, b);
     Assert();
+  }
+
+  void ExpectTrue(const char* file, int line, const char* name, bool value) {
+    if (value) return;
+    FailExpectation(file, line, name, "true", " is ", value, true);
+  }
+
+  void ExpectFalse(const char* file, int line, const char* name, bool value) {
+    if (!value) return;
+    FailExpectation(file, line, name, "false", " is ", value, false);
   }
 
   template <typename T>
@@ -160,6 +182,8 @@ class BasicTest {
 
 #define ADD_FAILURE(msg) AddFailure(__FILE__, __LINE__, msg)
 
+#define EXPECT_TRUE(a) ExpectTrue(__FILE__, __LINE__, #a, a)
+#define EXPECT_FALSE(a) ExpectFalse(__FILE__, __LINE__, #a, a)
 #define EXPECT_EQ(a, b) ExpectEqHelper(__FILE__, __LINE__, #a, #b, a, b)
 #define EXPECT_NE(a, b) ExpectNeHelper(__FILE__, __LINE__, #a, #b, a, b)
 #define EXPECT_LT(a, b) ExpectLtHelper(__FILE__, __LINE__, #a, #b, a, b)
@@ -167,6 +191,8 @@ class BasicTest {
 #define EXPECT_GT(a, b) ExpectGtHelper(__FILE__, __LINE__, #a, #b, a, b)
 #define EXPECT_GE(a, b) ExpectGeHelper(__FILE__, __LINE__, #a, #b, a, b)
 
+#define ASSERT_TRUE(a) AssertTrue(__FILE__, __LINE__, #a, a)
+#define ASSERT_FALSE(a) AssertFalse(__FILE__, __LINE__, #a, a)
 #define ASSERT_EQ(a, b) AssertEqHelper(__FILE__, __LINE__, #a, #b, a, b)
 #define ASSERT_NE(a, b) AssertNeHelper(__FILE__, __LINE__, #a, #b, a, b)
 #define ASSERT_LT(a, b) AssertLtHelper(__FILE__, __LINE__, #a, #b, a, b)

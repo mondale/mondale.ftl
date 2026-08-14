@@ -13,6 +13,26 @@ TEST(AddFailureTest) {
   ADD_FAILURE("Oh no!");
 }
 
+TEST(ExpectTruePassingTest) {
+  EXPECT_TRUE(7 == 7);
+  EXPECT_TRUE(true);
+}
+
+TEST(ExpectTrueFalingTest) {
+  ExpectFailure();
+  EXPECT_TRUE(7 == 8);
+}
+
+TEST(ExpectFalsePassingTest) {
+  EXPECT_FALSE(7 == 8);
+  EXPECT_FALSE(false);
+}
+
+TEST(ExpectFalseFailingTest) {
+  ExpectFailure();
+  EXPECT_FALSE(true);
+}
+
 TEST(ExpectEqPassingTest) {
   EXPECT_EQ(7, 7);
   EXPECT_EQ(7.7, 7.7);
@@ -73,6 +93,20 @@ TEST(ExpectGePassingTest) {
 TEST(ExpectGeFailingTest) {
   ExpectFailure();
   EXPECT_GE(6, 87);
+}
+
+TEST(AssertTruePassingTest) { ASSERT_TRUE(true); }
+
+TEST(AssertTrueFailingTest) {
+  ExpectAssert();
+  ASSERT_TRUE(false);
+}
+
+TEST(AssertFalsePassingTest) { ASSERT_FALSE(false); }
+
+TEST(AssertFalseFailingTest) {
+  ExpectAssert();
+  ASSERT_FALSE(true);
 }
 
 TEST(AssertEqPassingTest) {
