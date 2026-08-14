@@ -15,3 +15,16 @@ cc_binary(
   name = "empty_main",
   srcs = ["empty_main.cc"],
 )
+
+cc_library(
+  name = "rawlog",
+  hdrs = ["rawlog.h"],
+  srcs = ["rawlog.cc"],
+)
+
+cc_test(
+  name = "rawlog_test",
+  srcs = ["rawlog_test.cc"],
+  deps = [":rawlog",
+          ":basic_test",],
+)

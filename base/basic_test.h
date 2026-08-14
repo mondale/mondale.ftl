@@ -1,6 +1,7 @@
 #ifndef BASE_BASIC_TEST_H_
 #define BASE_BASIC_TEST_H_
 
+#include <iostream>
 #include <list>
 #include <memory>
 #include <sstream>
