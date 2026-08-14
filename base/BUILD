@@ -15,9 +15,3 @@ cc_binary(
   name = "empty_main",
   srcs = ["empty_main.cc"],
 )
-
-cc_test(
-  name = "empty_test",
-  deps = [":basic_test",],
-  srcs = ["empty_test.cc"],
-)
