@@ -6,14 +6,14 @@
 
 namespace {
 
-BASIC_TEST(PassingTest) {}
+TEST(PassingTest) {}
 
-BASIC_TEST(AddFailureTest) {
+TEST(AddFailureTest) {
   ExpectFailure();
   ADD_FAILURE("Oh no!");
 }
 
-BASIC_TEST(ExpectEqPassingTest) {
+TEST(ExpectEqPassingTest) {
   EXPECT_EQ(7, 7);
   EXPECT_EQ(7.7, 7.7);
 
@@ -22,12 +22,12 @@ BASIC_TEST(ExpectEqPassingTest) {
   EXPECT_EQ(a, b);
 }
 
-BASIC_TEST(ExpectEqFailingTest) {
+TEST(ExpectEqFailingTest) {
   ExpectFailure();
   EXPECT_EQ(7, 8);
 }
 
-BASIC_TEST(ExpectNePassingTest) {
+TEST(ExpectNePassingTest) {
   EXPECT_NE(7, 8);
   EXPECT_NE(7.7, 8.8);
 
@@ -36,16 +36,105 @@ BASIC_TEST(ExpectNePassingTest) {
   EXPECT_NE(a, b);
 }
 
-BASIC_TEST(ExpectNeFailingTest) {
+TEST(ExpectNeFailingTest) {
   ExpectFailure();
   EXPECT_NE(7, 7);
 }
 
-BASIC_TEST(ExpectLtPassingTest) { EXPECT_LT(6, 7); }
+TEST(ExpectLtPassingTest) { EXPECT_LT(6, 7); }
 
-BASIC_TEST(ExpectLtFailingTest) {
+TEST(ExpectLtFailingTest) {
   ExpectFailure();
   EXPECT_LT(6, 6);
+}
+
+TEST(ExpectLePassingTest) {
+  EXPECT_LE(6, 6);
+  EXPECT_LE(6, 7);
+}
+
+TEST(ExpectLeFailingTest) {
+  ExpectFailure();
+  EXPECT_LE(87, 7);
+}
+
+TEST(ExpectGtPassingTest) { EXPECT_GT(7, 6); }
+
+TEST(ExpectGtFailingTest) {
+  ExpectFailure();
+  EXPECT_GT(6, 6);
+}
+
+TEST(ExpectGePassingTest) {
+  EXPECT_GE(7, 6);
+  EXPECT_GE(6, 6);
+}
+
+TEST(ExpectGeFailingTest) {
+  ExpectFailure();
+  EXPECT_GE(6, 87);
+}
+
+TEST(AssertEqPassingTest) {
+  ASSERT_EQ(7, 7);
+  ASSERT_EQ(7.7, 7.7);
+
+  std::string a = "foo";
+  std::string b = "foo";
+  ASSERT_EQ(a, b);
+}
+
+TEST(AssertEqFailingTest) {
+  ExpectAssert();
+  ASSERT_EQ(7, 8);
+}
+
+TEST(AssertNePassingTest) {
+  ASSERT_NE(7, 8);
+  ASSERT_NE(7.7, 8.8);
+
+  std::string a = "foo";
+  std::string b = "bar";
+  ASSERT_NE(a, b);
+}
+
+TEST(AssertNeFailingTest) {
+  ExpectAssert();
+  ASSERT_NE(7, 7);
+}
+
+TEST(AssertLtPassingTest) { ASSERT_LT(6, 7); }
+
+TEST(AssertLtFailingTest) {
+  ExpectAssert();
+  ASSERT_LT(6, 6);
+}
+
+TEST(AssertLePassingTest) {
+  ASSERT_LE(6, 6);
+  ASSERT_LE(6, 7);
+}
+
+TEST(AssertLeFailingTest) {
+  ExpectAssert();
+  ASSERT_LE(87, 7);
+}
+
+TEST(AssertGtPassingTest) { ASSERT_GT(7, 6); }
+
+TEST(AssertGtFailingTest) {
+  ExpectAssert();
+  ASSERT_GT(6, 6);
+}
+
+TEST(AssertGePassingTest) {
+  ASSERT_GE(7, 6);
+  ASSERT_GE(6, 6);
+}
+
+TEST(AssertGeFailingTest) {
+  ExpectAssert();
+  ASSERT_GE(6, 87);
 }
 
 }  // namespace
