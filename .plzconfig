@@ -16,13 +16,13 @@ Target = //plugins:cc
 CoverageTool = llvm-cov
 
 ; Flags for optimized builds (e.g. plz build -c opt)
-DefaultOptCppFlags = -std=c++20
+DefaultOptCppFlags = -std=c++26
 DefaultOptCppFlags = -O3
 DefaultOptCppFlags = -DNDEBUG
 DefaultOptCppFlags = -Wall
 
 ; Flags for debug builds (e.g. plz build -c dbg)
-DefaultDbgCppFlags = -std=c++20
+DefaultDbgCppFlags = -std=c++26
 DefaultDbgCppFlags = -g3
 DefaultDbgCppFlags = -DDEBUG
 DefaultDbgCppFlags = -Wall
