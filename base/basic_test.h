@@ -3,6 +3,7 @@
 
 #include <list>
 #include <memory>
+#include <sstream>
 #include <string>
 
 namespace base::testing {
@@ -21,9 +22,61 @@ class BasicTest {
 
  protected:
   void AddFailure(const char* file, int line, std::string message);
+
+  template <typename T>
+  void ExpectEqHelper(const char* file, int line, const char* a_name,
+                      const char* b_name, T a, T b) {
+    if (a == b) return;
+    FailExpectation(file, line, a_name, b_name, " == ", a, b);
+  }
+
+  template <typename T>
+  void ExpectLeHelper(const char* file, int line, const char* a_name,
+                      const char* b_name, T a, T b) {
+    if (a <= b) return;
+    FailExpectation(file, line, a_name, b_name, " <= ", a, b);
+  }
+
+  template <typename T>
+  void ExpectLtHelper(const char* file, int line, const char* a_name,
+                      const char* b_name, T a, T b) {
+    if (a < b) return;
+    FailExpectation(file, line, a_name, b_name, " < ", a, b);
+  }
+
+  template <typename T>
+  void ExpectGeHelper(const char* file, int line, const char* a_name,
+                      const char* b_name, T a, T b) {
+    if (a >= b) return;
+    FailExpectation(file, line, a_name, b_name, " >= ", a, b);
+  }
+
+  template <typename T>
+  void ExpectGtHelper(const char* file, int line, const char* a_name,
+                      const char* b_name, T a, T b) {
+    if (a > b) return;
+    FailExpectation(file, line, a_name, b_name, " > ", a, b);
+  }
+
+  template <typename T>
+  void ExpectNeHelper(const char* file, int line, const char* a_name,
+                      const char* b_name, T a, T b) {
+    if (a != b) return;
+    FailExpectation(file, line, a_name, b_name, " != ", a, b);
+  }
+
   void ExpectFailure() { expect_passing_ = false; }
 
  private:
+  template <typename T>
+  void FailExpectation(const char* file, int line, const char* a_name,
+                       const char* b_name, const char* op, T a, T b) {
+    std::stringstream ss;
+    ss << "\nExpected " << a_name << op << b_name << "\n";
+    ss << "         " << a << op << b << "\n";
+    AddFailure(file, line, ss.str());
+  }
+
   std::list<std::string> outs_;
   bool passing_ = true;
   bool expect_passing_ = true;
@@ -40,6 +93,15 @@ class BasicTest {
   static bool global_##name##_registered =               \
       RegisterTest(std::make_unique<name>());            \
   void name::Run()
+
+#define ADD_FAILURE(msg) AddFailure(__FILE__, __LINE__, msg)
+
+#define EXPECT_EQ(a, b) ExpectEqHelper(__FILE__, __LINE__, #a, #b, a, b)
+#define EXPECT_NE(a, b) ExpectNeHelper(__FILE__, __LINE__, #a, #b, a, b)
+#define EXPECT_LT(a, b) ExpectLtHelper(__FILE__, __LINE__, #a, #b, a, b)
+#define EXPECT_LE(a, b) ExpectLeHelper(__FILE__, __LINE__, #a, #b, a, b)
+#define EXPECT_GT(a, b) ExpectGtHelper(__FILE__, __LINE__, #a, #b, a, b)
+#define EXPECT_GE(a, b) ExpectGeHelper(__FILE__, __LINE__, #a, #b, a, b)
 
 }  // namespace base::testing
 
