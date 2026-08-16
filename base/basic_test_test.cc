@@ -98,14 +98,14 @@ TEST(ExpectGeFailingTest) {
 TEST(AssertTruePassingTest) { ASSERT_TRUE(true); }
 
 TEST(AssertTrueFailingTest) {
-  ExpectAssert();
+  ExpectFailure();
   ASSERT_TRUE(false);
 }
 
 TEST(AssertFalsePassingTest) { ASSERT_FALSE(false); }
 
 TEST(AssertFalseFailingTest) {
-  ExpectAssert();
+  ExpectFailure();
   ASSERT_FALSE(true);
 }
 
@@ -119,7 +119,7 @@ TEST(AssertEqPassingTest) {
 }
 
 TEST(AssertEqFailingTest) {
-  ExpectAssert();
+  ExpectFailure();
   ASSERT_EQ(7, 8);
 }
 
@@ -133,14 +133,14 @@ TEST(AssertNePassingTest) {
 }
 
 TEST(AssertNeFailingTest) {
-  ExpectAssert();
+  ExpectFailure();
   ASSERT_NE(7, 7);
 }
 
 TEST(AssertLtPassingTest) { ASSERT_LT(6, 7); }
 
 TEST(AssertLtFailingTest) {
-  ExpectAssert();
+  ExpectFailure();
   ASSERT_LT(6, 6);
 }
 
@@ -150,14 +150,14 @@ TEST(AssertLePassingTest) {
 }
 
 TEST(AssertLeFailingTest) {
-  ExpectAssert();
+  ExpectFailure();
   ASSERT_LE(87, 7);
 }
 
 TEST(AssertGtPassingTest) { ASSERT_GT(7, 6); }
 
 TEST(AssertGtFailingTest) {
-  ExpectAssert();
+  ExpectFailure();
   ASSERT_GT(6, 6);
 }
 
@@ -167,7 +167,7 @@ TEST(AssertGePassingTest) {
 }
 
 TEST(AssertGeFailingTest) {
-  ExpectAssert();
+  ExpectFailure();
   ASSERT_GE(6, 87);
 }
 
