@@ -5,17 +5,18 @@ using namespace base::async_safe;
 
 namespace {
 
-TEST(StrLenEmpty) {
-  EXPECT_EQ(0u, StrLen(""));
+template <typename INT>
+size_t Size(INT x) {
+  return static_cast<size_t>(x);
 }
 
-TEST(StrLenSimple) {
-  EXPECT_EQ(5u, StrLen("hello"));
-}
+TEST(StrLenEmpty) { EXPECT_EQ(Size(0), StrLen("")); }
+
+TEST(StrLenSimple) { EXPECT_EQ(Size(5), StrLen("hello")); }
 
 TEST(StrLenEmbeddedNull) {
   char s[] = {'a', '\0', 'b', '\0'};
-  EXPECT_EQ(1u, StrLen(s));
+  EXPECT_EQ(Size(1), StrLen(s));
 }
 
 TEST(StrLenLong) {
@@ -23,7 +24,7 @@ TEST(StrLenLong) {
   char buf[1001];
   for (int i = 0; i < 1000; ++i) buf[i] = 'x';
   buf[1000] = '\0';
-  EXPECT_EQ(1000u, StrLen(buf));
+  EXPECT_EQ(Size(1000), StrLen(buf));
 }
 
 }  // namespace
