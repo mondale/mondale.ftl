@@ -2,6 +2,12 @@
 
 `mondale.ftl`
 
+## Architectural Requirements
+
+Follow any directory-specific README.md with higher precedence than this file.
+
+`//base` may not depend on any libraries outside of `//base`.
+
 ## Style Guidance
 
 The following style guidance should be used for all code. Examples are
@@ -9,7 +15,7 @@ considered to be authoritative.
 
 ### Naming.
 
-```
+```cpp
 int global_variable_is_prefixed_by_global = 0;
 
 void MethodDeclaration();
@@ -30,3 +36,47 @@ used for AI-implemented sections of the codebase. An exemption takes the form of
 
 `// Exempt from style expectations.`
 
+### Code Formatting (.clang-format)
+
+Formatting is strictly enforced across C++ source and header files using
+`clang-format`. Key formatting parameters include:
+
+* **Language Standard**: Standard C++ targeting modern specifications (`C++20` /
+                         `C++26`).
+* **Indentation & Spacing**:
+  * **Indent Width**: 2 spaces (no hard tabs).
+  * **Continuation Indent**: 4 spaces.
+  * **Line Width**: 80 characters maximum.
+* **Brace Placement**:
+  * Attach braces (`Attach`) for functions, classes, control statements, and
+    namespaces (K&R / Google style).
+* **Pointers & References**:
+  * Left-aligned pointer/reference qualifiers (e.g., `Foo* ptr`,
+    `const Bar& ref`).
+* **Namespaces**:
+  * No indentation inside `namespace` blocks.
+  * Namespace closing comments are required for clarity
+    (e.g., `} // namespace base`).
+* **Include Management**:
+  * Sorted alphabetically and grouped logically (Standard Library headers 
+    first, followed by system headers, then repository-relative headers).
+
+---
+
+### File Organization & Naming
+
+* **File Names**: Lowercase snake_case for all filenames 
+                  (e.g., `async_safe.cc`, `raw_syscalls_test.cc`).
+* **Headers**: Most `.cc` module should have a corresponding `.h` header 
+               exposing public interfaces, except for standalone binary mains
+               or test entry points.
+* **Header Guards**: Protect headers using canonical `#ifndef` / `#define` 
+                     guards using the path and filename in uppercase:
+  ```cpp
+  #ifndef BASE_ASYNC_SAFE_H_
+  #define BASE_ASYNC_SAFE_H_
+
+  // Header contents
+
+  #endif  // BASE_ASYNC_SAFE_H_
+  ```
