@@ -6,12 +6,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
+#include <sys/ucontext.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
 #include <atomic>
 #include <csignal>
-#include <iostream>
 
 #include "base/async_safe.h"
 #include "base/process.h"
@@ -46,6 +46,8 @@ const char* SigToName(int sig) {
       return "SIGSEGV";
     case SIGABRT:
       return "SIGABRT";
+    case SIGBUS:
+      return "SIGBUS";
     case SIGILL:
       return "SIGILL";
     default:
@@ -55,14 +57,12 @@ const char* SigToName(int sig) {
 
 void SignalThreads(const int* tids, int thread_count, int sig) {
   for (int i = 0; i < thread_count; ++i) {
-    std::cerr << "TID " << tids[i] << std::endl;
     SysTKill(tids[i], sig);
   }
 }
 
 int EnumerateOtherThreads(int* tids, int max_threads) {
   const int self = static_cast<int>(SysGettid());
-  std::cerr << "I am " << self << std::endl;
   const int thread_count = async_safe::EnumerateThreads(tids, 1024);
   for (int i = 0; i < thread_count; ++i) {
     if (self == tids[i]) {
@@ -83,7 +83,8 @@ int EnumerateOtherThreads(int* tids, int max_threads) {
 
 volatile int global_signal_depth = 0;
 
-[[noreturn]] void DeadlySignalHandler(int sig) {
+[[noreturn]] void DeadlySignalHandler(int sig, siginfo_t* info,
+                                      void* ucontext) {
   constexpr int kMaxThreads = 1024;
   int tids[kMaxThreads];
 
@@ -106,24 +107,25 @@ volatile int global_signal_depth = 0;
   write(STDERR_FILENO, "=== ", 4);
   write(STDERR_FILENO, name, 7);
   write(STDERR_FILENO, " ===\n", 5);
-  stacktrace::DumpAllStacksWithLineNumbers(STDERR_FILENO);
+  stacktrace::DumpAllStacksWithLineNumbers(STDERR_FILENO, ucontext);
 
   _exit(sig);
 }
 
 void SetupDeadlySignalHandler() {
-  struct sigaction s;
-  s.sa_handler = &DeadlySignalHandler;
+  struct sigaction s = {};
+  s.sa_sigaction = &DeadlySignalHandler;
   sigemptyset(&s.sa_mask);
-  s.sa_flags = 0;
+  s.sa_flags = SA_SIGINFO;
 
   sigaction(SIGSEGV, &s, nullptr);
   sigaction(SIGABRT, &s, nullptr);
   sigaction(SIGILL, &s, nullptr);
+  sigaction(SIGBUS, &s, nullptr);
 }
 
 void SetupThreadCaptureHandler() {
-  struct sigaction s;
+  struct sigaction s = {};
   s.sa_handler = &CapturedThreadHandler;
   sigemptyset(&s.sa_mask);
   s.sa_flags = 0;

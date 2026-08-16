@@ -101,7 +101,7 @@ constexpr uint64_t kMaxScanBytes = 512 * 1024;
 // and the stack that calls this method", i.e. all three -- hence 3.  If you
 // read that sentence as keeping the immediate caller (which is what most
 // backtrace APIs do), set this to 2; nothing else changes.
-constexpr int kElidedSelfFrames = 3;
+constexpr int kElidedSelfFrames = 2;
 
 constexpr int kAddr2LineTimeoutMs = 3000;
 constexpr char kAddr2LinePath[] = "/usr/bin/addr2line";
@@ -543,7 +543,10 @@ class Addr2Line {
       if (devnull >= 0) SysDup3(static_cast<int>(devnull), 2, 0);
       char arg0[] = "addr2line";
       char opt_e[] = "-e";
-      char* argv[] = {arg0, opt_e, g_exe_arg, nullptr};
+      char opt_s[] = "-s";
+      char opt_f[] = "-f";
+      char opt_C[] = "-C";
+      char* argv[] = {arg0, opt_s, opt_f, opt_C, opt_e, g_exe_arg, nullptr};
       char env0[] = "LC_ALL=C";  // Deterministic output for parsing.
       char* envp[] = {env0, nullptr};
       SysExecve(kAddr2LinePath, argv, envp);
@@ -572,7 +575,7 @@ class Addr2Line {
       Poison();
       return false;
     }
-    return ReadLine(out, out_size);
+    return ReadOutput(out, out_size);
   }
 
   void Stop() {
@@ -617,18 +620,26 @@ class Addr2Line {
     ok_ = false;
   }
 
-  // One line of addr2line output, with a bounded wait so that a wedged
-  // coprocess cannot hang a crash handler.
-  bool ReadLine(char* out, size_t out_size) {
+  // One addr2line output, generally two lines, with a bounded wait so that a
+  // wedged coprocess cannot hang a crash handler.
+  //
+  // Rewrite the first newline to ' ' to assist the printing routine.
+  bool ReadOutput(char* out, size_t out_size) {
     size_t n = 0;
+    int newlines = 0;
     for (;;) {
       while (pos_ < len_) {
         char c = g_a2l_buf[pos_++];
         if (c == '\n') {
-          out[n] = '\0';
-          return true;
+          ++newlines;
+          if (2 == newlines) {
+            out[n] = '\0';
+            return true;
+          }
+          out[n++] = ' ';
+        } else {
+          if (n + 1 < out_size) out[n++] = c;
         }
-        if (n + 1 < out_size) out[n++] = c;
       }
       struct pollfd pfd = {out_fd_, POLLIN, 0};
       long pr = SysPoll(&pfd, 1, kAddr2LineTimeoutMs);
@@ -697,10 +708,11 @@ void EmitFrames(async_safe::Writer* w, Addr2Line* a2l, const uint64_t* frames,
         }
       }
     }
+
     if (resolved) {
       w->Str(g_sym_buf);
     } else {
-      w->Str("[unknown/stripped]");
+      w->Str("[unknown]");
     }
     w->Char('\n');
   }
