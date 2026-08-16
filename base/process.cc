@@ -138,11 +138,4 @@ void Initialize(int argc, char* argv[]) {
   // Future site of flag parsing.
 }
 
-void DumpStackTrace(int fd) {
-  constexpr size_t kStackDepth = 32;
-  void* stacks[kStackDepth];
-  const size_t stack_count = backtrace(stacks, kStackDepth);
-  backtrace_symbols_fd(stacks, stack_count, fd);
-}
-
 }  // namespace base
