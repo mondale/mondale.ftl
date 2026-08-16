@@ -54,3 +54,6 @@ endfunction
 " Trigger automatically before saving C and C++ files
 autocmd BufWritePre *.c,*.cc,*.cpp,*.h,*.hpp call FormatOnSave()
 autocmd BufRead,BufNewFile *.c,*.cc,*.cpp,*.h,*.hpp set filetype=cpp
+
+" Markdown behaviors: wrap on word boundaries at 80 columns.
+autocmd FileType markdown setlocal wrap linebreak colorcolumn=80 textwidth=80
