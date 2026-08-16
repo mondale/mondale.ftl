@@ -13,6 +13,10 @@ Follow any directory-specific README.md with higher precedence than this file.
 The following style guidance should be used for all code. Examples are
 considered to be authoritative.
 
+## Forbidden Patterns.
+
+C++ exceptions may not be used.
+
 ### Naming.
 
 ```cpp
@@ -29,7 +33,7 @@ class ClassDeclaration final {
 
 ```
 
-### Exceptions.
+### Exceptions to these rules.
 
 Fils may be individually labeled as exempt from this guidance. This is commonly
 used for AI-implemented sections of the codebase. An exemption takes the form of
