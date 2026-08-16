@@ -28,6 +28,19 @@ class RawLogger final {
   std::ostream& stream_;
 };
 
+class CheckHelper final {
+ public:
+  CheckHelper(const char* file, int line, bool condition,
+              const char* expression);
+  ~CheckHelper();
+
+  std::ostream& stream() { return stream_; }
+
+ private:
+  const bool condition_;
+  std::ostream& stream_;
+};
+
 }  // namespace base::rawlog
 
 #define RAW_INFO                                                             \
@@ -39,5 +52,8 @@ class RawLogger final {
 #define RAW_FATAL                                                            \
   (::base::rawlog::RawLogger(true, "F] ", *::base::rawlog::GetErrorStream()) \
        .stream())
+
+#define RAW_CHECK(b) \
+  (::base::rawlog::CheckHelper(__FILE__, __LINE__, b, #b).stream())
 
 #endif  // #ifndef BASE_RAW_LOG_H_

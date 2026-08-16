@@ -18,6 +18,7 @@ cc_library(
   hdrs = ["basic_test.h"],
   srcs = ["basic_test.cc",
           "basic_test_main.cc"],
+  deps = [":process"],
 )
 
 cc_test(
