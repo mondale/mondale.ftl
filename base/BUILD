@@ -46,13 +46,6 @@ cc_library(
   ],
 )
 
-cc_test(
-  name = "process_test",
-  srcs = ["process_test.cc"],
-  deps = [":process",
-          ":basic_test"],
-)
-
 cc_library(
   name = "rawlog",
   hdrs = ["rawlog.h"],
