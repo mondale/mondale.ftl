@@ -1,3 +1,5 @@
+// Exempt from style expectations.
+
 #include <fcntl.h>
 #include <sys/syscall.h>
 

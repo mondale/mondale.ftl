@@ -1,5 +1,7 @@
 // Stacktrace dumper. Credit to Claude.
 //
+// Exempt from style expectations.
+//
 // Claude's comments, which are a little bit wrong after refactoring to several
 // files:
 // Async-signal-safe whole-process stack dumper for Linux x86_64.

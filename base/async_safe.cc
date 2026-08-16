@@ -1,3 +1,5 @@
+// Exempt from style expectations.
+
 #include <errno.h>
 #include <fcntl.h>
 

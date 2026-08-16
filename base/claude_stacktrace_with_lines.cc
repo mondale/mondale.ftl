@@ -1,3 +1,5 @@
+// Exempt from style expectations.
+//
 // Async-signal-safe whole-process stack dumper for Linux x86_64.
 // See stack_dump.h for the contract.
 //
