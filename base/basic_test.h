@@ -1,6 +1,8 @@
 #ifndef BASE_BASIC_TEST_H_
 #define BASE_BASIC_TEST_H_
 
+#include <signal.h>
+
 #include <iostream>
 #include <list>
 #include <memory>
@@ -150,7 +152,7 @@ class BasicTest {
     std::cerr << "Assertion failed, aborting test." << std::endl;
     std::cout << std::flush;
     if (expect_assert_) return;
-    exit(1);
+    raise(SIGABRT);
   }
 
   template <typename T>

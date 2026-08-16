@@ -1,5 +1,19 @@
 
 cc_library(
+  name = "async_safe",
+  hdrs = ["async_safe.h"],
+  srcs = ["async_safe.cc"],
+  deps = [":raw_syscalls"],
+)
+
+cc_test(
+  name = "async_safe_test",
+  srcs = ["async_safe_test.cc"],
+  deps = [":async_safe",
+          ":basic_test",],
+)
+
+cc_library(
   name = "basic_test",
   hdrs = ["basic_test.h"],
   srcs = ["basic_test.cc",
@@ -17,6 +31,28 @@ cc_binary(
   srcs = ["empty_main.cc"],
 )
 
+cc_binary(
+  name = "claude_stacktrace_with_lines",
+  srcs = ["claude_stacktrace_with_lines.cc"],
+)
+
+cc_library(
+  name = "process",
+  hdrs = ["process.h"],
+  srcs = ["process.cc"],
+  deps = [":async_safe",
+          ":raw_syscalls",
+          ":stacktrace",
+  ],
+)
+
+cc_test(
+  name = "process_test",
+  srcs = ["process_test.cc"],
+  deps = [":process",
+          ":basic_test"],
+)
+
 cc_library(
   name = "rawlog",
   hdrs = ["rawlog.h"],
@@ -28,4 +64,38 @@ cc_test(
   srcs = ["rawlog_test.cc"],
   deps = [":rawlog",
           ":basic_test",],
+)
+
+cc_library(
+  name = "raw_syscalls",
+  hdrs = ["raw_syscalls.h"],
+  srcs = ["raw_syscalls.cc"],
+)
+
+cc_test(
+  name = "raw_syscalls_test",
+  srcs = ["raw_syscalls_test.cc"],
+  deps = [":basic_test",
+          ":raw_syscalls"],
+)
+
+cc_binary(
+  name = "segfaulter",
+  srcs = ["segfaulter.cc"],
+  deps = [":process",]
+)
+
+cc_library(
+  name = "stacktrace",
+  hdrs = ["stacktrace.h"],
+  srcs = ["stacktrace.cc"],
+  deps = [":async_safe",
+          ":raw_syscalls"],
+)
+
+cc_test(
+  name = "stacktrace_test",
+  srcs = ["stacktrace_test.cc"],
+  deps = [":stacktrace",
+          ":basic_test"],
 )
