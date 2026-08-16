@@ -11,6 +11,9 @@
 [parse]
 preloadsubincludes = ///cc//build_defs:cc
 
+[build]
+config = dbg
+
 [Plugin "cc"]
 Target = //plugins:cc
 CoverageTool = llvm-cov
