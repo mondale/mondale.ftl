@@ -93,7 +93,6 @@ class BasicTest {
   std::list<std::string> outs_;
   bool passing_ = true;
   bool expect_passing_ = true;
-  bool expect_assert_ = false;
 };
 
 [[nodiscard]] bool RegisterTest(std::unique_ptr<BasicTest> test);

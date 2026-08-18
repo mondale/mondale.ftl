@@ -12,6 +12,7 @@
 
 #include <atomic>
 #include <csignal>
+#include <iostream>
 
 #include "base/async_safe.h"
 #include "base/process.h"
@@ -132,9 +133,28 @@ void SetupThreadCaptureHandler() {
   sigaction(kCaptureSignal, &s, nullptr);
 }
 
+bool ValidateEnvironment() {
+  // Invariant required by integer types that may union against pointers, such
+  // as the codes libraries.
+  const int min_addr =
+      async_safe::ParseFileContentsAsDecimal("/proc/sys/vm/mmap_min_addr");
+  if (min_addr < 65536) {
+    std::cerr << "mondale.ftl requires mmap minimum address >= 65536; found ["
+              << min_addr << "]" << std::endl;
+    return false;
+  }
+
+  return true;
+}
+
 }  // namespace
 
 void Initialize(int argc, char* argv[]) {
+  if (!ValidateEnvironment()) {
+    std::cerr << "Unsuitable environment. Exiting." << std::endl;
+    exit(1);
+  }
+
   SetupThreadCaptureHandler();
   SetupDeadlySignalHandler();
   // Future site of flag parsing.

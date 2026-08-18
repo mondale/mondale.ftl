@@ -2,6 +2,7 @@
 
 #include <errno.h>
 #include <fcntl.h>
+#include <limits.h>
 
 #include "base/async_safe.h"
 #include "base/raw_syscalls.h"
@@ -111,6 +112,79 @@ bool ParseHex(const char** p, const char* end, uint64_t* out) {
   *p = q;
   *out = v;
   return true;
+}
+
+int ParseFileContentsAsDecimal(const char* filename) {
+  const int fd = SysOpen(filename, O_RDONLY);
+  if (fd < 0) {
+    return -1;
+  }
+
+  // Use a fixed stack buffer to avoid dynamic memory allocation.
+  char buf[256];
+  const ssize_t bytes_read = SysRead(fd, buf, sizeof(buf) - 1);
+
+  // Always close the file descriptor promptly.
+  SysClose(fd);
+
+  if (bytes_read <= 0) {
+    return -1;
+  }
+
+  buf[bytes_read] = '\0';
+
+  // Manual string parsing to guarantee async-signal safety,
+  // avoiding non-signal-safe libc routines like strtol, sscanf, or atoi.
+  const char* p = buf;
+
+  // Trim leading whitespace
+  while (*p == ' ' || *p == '\t' || *p == '\r') {
+    p++;
+  }
+
+  // Handle sign
+  int sign = 1;
+  if (*p == '-') {
+    sign = -1;
+    p++;
+  } else if (*p == '+') {
+    p++;
+  }
+
+  // Must contain at least one valid digit
+  if (*p < '0' || *p > '9') {
+    return -1;
+  }
+
+  long acc = 0;
+  while (*p >= '0' && *p <= '9') {
+    int digit = *p - '0';
+
+    // Overflow check before multiplying
+    if (acc > (INT_MAX - digit) / 10) {
+      return -1;
+    }
+
+    acc = acc * 10 + digit;
+    p++;
+  }
+
+  // Trim trailing whitespace and single-line newlines
+  while (*p == ' ' || *p == '\t' || *p == '\r' || *p == '\n') {
+    p++;
+  }
+
+  // Reject input if unparsed non-whitespace characters remain
+  if (*p != '\0') {
+    return -1;
+  }
+
+  long val = acc * sign;
+  if (val < INT_MIN || val > INT_MAX) {
+    return -1;
+  }
+
+  return static_cast<int>(val);
 }
 
 int EnumerateThreads(int* tids, int max_tids) {

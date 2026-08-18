@@ -19,11 +19,22 @@ C++ exceptions may not be used.
 
 ### Naming.
 
+Prefix globval variables' names with `global`.
+
 ```cpp
 int global_variable_is_prefixed_by_global = 0;
+```
 
+Methods are named in `PascalCase`.
+
+```cpp
 void MethodDeclaration();
+```
 
+Classes are named in `PascalCase` and are marked `final` if not intende for
+further inheritance.
+
+```cpp
 class ClassDeclaration final {
  public:
   ...
@@ -31,6 +42,61 @@ class ClassDeclaration final {
   ...
 };
 
+```
+
+Use short names for method parameters, preferably initialisms.
+```cpp
+class Foo final {
+ public:
+  Foo(const BarBaz* bb) : bar_baz_(bb) {}
+  ...
+};
+```
+
+Use desciptive names in `snake_case` with a trailing `_` for member variables.
+```cpp
+class Foo final {
+ public:
+  ...
+
+ private:
+  Bar bar_;
+};
+```
+
+### Common practices.
+
+Use yoda comparisons to avoid accidental assignment in conditionals. I.e.,:
+```cpp
+  if (4 == x) {  // Preferred over x == 4
+    ...
+  }
+```
+
+Use `const` on all local variables that are not intended for mutation. I.e.,:
+```cpp
+  const int x = 4;
+  ... // x not mutated
+```
+
+Most types should support `operator<<` as a freestanding method and either
+`x.ToString()` or `ToString(x)` as human-readable debug aids.
+
+```cpp
+class X final {
+ public:
+  // Where possible without corruption risk.
+  std::string_view ToString() const;
+
+  // Where necessary.
+  std::string ToString() const;
+  ...
+};
+
+std::ostream& operator<<(std::ostream& out, const X& x) {
+  out << x.ToString();
+  return out;
+}
 ```
 
 ### Exceptions to these rules.

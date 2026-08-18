@@ -67,6 +67,7 @@ CheckHelper::CheckHelper(const char* file, int line, bool condition,
 
 CheckHelper::~CheckHelper() {
   if (condition_) return;
+  stream() << "\n";
   raise(SIGABRT);
 }
 

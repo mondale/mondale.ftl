@@ -19,6 +19,8 @@ cc_library(
   srcs = ["basic_test.cc",
           "basic_test_main.cc"],
   deps = [":process"],
+  visibility = ["//base/...",
+                "//core/...",],
 )
 
 cc_test(
@@ -51,6 +53,8 @@ cc_library(
   name = "rawlog",
   hdrs = ["rawlog.h"],
   srcs = ["rawlog.cc"],
+  visibility = ["//base/...",
+                "//core/...",],
 )
 
 cc_test(

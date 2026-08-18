@@ -56,4 +56,11 @@ class CheckHelper final {
 #define RAW_CHECK(b) \
   (::base::rawlog::CheckHelper(__FILE__, __LINE__, b, #b).stream())
 
+#ifdef DEBUG
+#define RAW_DCHECK(b) \
+  (::base::rawlog::CheckHelper(__FILE__, __LINE__, b, #b).stream())
+#else
+#define RAW_DCHECK(b)
+#endif
+
 #endif  // #ifndef BASE_RAW_LOG_H_
