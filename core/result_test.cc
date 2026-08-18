@@ -7,6 +7,7 @@
 using core::BaseCode;
 using core::Code;
 using core::Result;
+using core::ResultOr;
 
 namespace {
 
@@ -261,6 +262,92 @@ TEST(Result_Engaged_CopyAssign) {
     EXPECT_EQ(2, to.refs());
   }  // to drops its ref
   EXPECT_EQ(1, from.refs());
+}
+
+TEST(ResultOr_ConstructFromValue) {
+  ResultOr<int> ro(42);
+  EXPECT_TRUE(ro.ok());
+  EXPECT_EQ(42, ro.ValueOrDie());
+  EXPECT_EQ(Code::kOk, ro.result().base_code());
+}
+
+TEST(ResultOr_ConstructFromUnengagedResult) {
+  ResultOr<int> ro((Result(Code::kInvalidArgument)));
+  EXPECT_FALSE(ro.ok());
+  EXPECT_EQ(Code::kInvalidArgument, ro.result().base_code());
+  EXPECT_FALSE(ro.result().ErpEngaged());
+}
+
+TEST(ResultOr_ConstructFromEngagedResult) {
+  ResultOr<std::string> ro(Result(Code::kError, "File not found"));
+  EXPECT_FALSE(ro.ok());
+  EXPECT_EQ(Code::kError, ro.result().base_code());
+  EXPECT_TRUE(ro.result().ErpEngaged());
+  EXPECT_EQ(std::string("kError//File not found"), ro.result().ToString());
+}
+
+TEST(ResultOr_ImplicitConstructFromBaseCode) {
+  ResultOr<int> ro(Code::kUnimplemented);
+  EXPECT_FALSE(ro.ok());
+  EXPECT_EQ(Code::kUnimplemented, ro.result().base_code());
+}
+
+TEST(ResultOr_CopyConstruct) {
+  const ResultOr<std::string> original("Hello World");
+  const ResultOr<std::string> copy(original);
+
+  ASSERT_TRUE(copy.ok());
+  EXPECT_EQ(std::string("Hello World"), copy.ValueOrDie());
+  ASSERT_TRUE(original.ok());
+  EXPECT_EQ(std::string("Hello World"), original.ValueOrDie());
+}
+
+TEST(ResultOr_CopyAssign) {
+  const ResultOr<int> src(100);
+  ResultOr<int> dest(Code::kError);
+
+  dest = src;
+  EXPECT_TRUE(dest.ok());
+  EXPECT_EQ(100, dest.ValueOrDie());
+  EXPECT_TRUE(src.ok());
+}
+
+TEST(ResultOr_MoveConstructValue) {
+  ResultOr<std::string> src("Move Me");
+  ResultOr<std::string> dest(std::move(src));
+
+  EXPECT_TRUE(dest.ok());
+  EXPECT_EQ(std::string("Move Me"), dest.ValueOrDie());
+}
+
+TEST(ResultOr_MoveAssignValue) {
+  ResultOr<std::string> src("Move Me Too");
+  ResultOr<std::string> dest(Code::kError);
+
+  dest = std::move(src);
+  EXPECT_TRUE(dest.ok());
+  EXPECT_EQ(std::string("Move Me Too"), dest.ValueOrDie());
+}
+
+TEST(ResultOr_ValueOr) {
+  const ResultOr<int> ok_ro(10);
+  EXPECT_EQ(10, ok_ro.ValueOr(20));
+
+  const ResultOr<int> err_ro(Code::kNotFound);
+  EXPECT_EQ(20, err_ro.ValueOr(20));
+}
+
+TEST(ResultOr_InPlaceConstruct) {
+  struct ComplexType {
+    int a;
+    std::string b;
+    ComplexType(int a, std::string b) : a(a), b(std::move(b)) {}
+  };
+
+  ResultOr<ComplexType> ro(std::in_place, 5, "test");
+  EXPECT_TRUE(ro.ok());
+  EXPECT_EQ(5, ro.ValueOrDie().a);
+  EXPECT_EQ(std::string("test"), ro.ValueOrDie().b);
 }
 
 }  // namespace

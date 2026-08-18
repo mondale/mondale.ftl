@@ -5,6 +5,8 @@
 #include <ostream>
 #include <string>
 #include <string_view>
+#include <utility>
+#include <variant>
 
 namespace core {
 
@@ -206,6 +208,119 @@ static_assert(sizeof(Result) == 8, "Result should be precisely 64 bits");
 inline bool IsOk(Result r) { return r.IsOk(); }
 std::string ToString(Result r);
 std::ostream& operator<<(std::ostream& out, const Result& r);
+
+template <typename T>
+class [[nodiscard]] ResultOr final {
+ public:
+  using value_type = T;
+
+  // Disallow default construction (requires either a Result or a Value)
+  ResultOr() = delete;
+
+  // Construct from a non-OK Result.
+  ResultOr(Result r) : storage_(std::move(r)) {
+    RAW_CHECK(!result().IsOk())
+        << "Cannot construct ResultOr with an OK Result; use a value instead.";
+  }
+
+  ResultOr& operator=(Result r) {
+    RAW_CHECK(!r.IsOk())
+        << "Cannot assign an OK Result to ResultOr; use a value instead.";
+    storage_ = std::move(r);
+    return *this;
+  }
+
+  // Implicit conversion from BaseCode or Code error
+  ResultOr(BaseCode bc) : ResultOr(Result(bc)) {}
+  ResultOr(Code c) : ResultOr(Result(c)) {}
+
+  // Construct from T value (implicit)
+  template <typename U = T>
+    requires(!std::is_same_v<std::decay_t<U>, ResultOr<T>> &&
+             !std::is_same_v<std::decay_t<U>, Result> &&
+             std::is_constructible_v<T, U &&>)
+  ResultOr(U&& value)
+      : storage_(std::in_place_type<T>, std::forward<U>(value)) {}
+
+  // In-place construction helper
+  template <typename... Args>
+    requires std::is_constructible_v<T, Args...>
+  explicit ResultOr(std::in_place_t, Args&&... args)
+      : storage_(std::in_place_type<T>, std::forward<Args>(args)...) {}
+
+  ~ResultOr() = default;
+
+  // Copy / Move semantics automatically generated via std::variant
+  ResultOr(const ResultOr&) = default;
+  ResultOr& operator=(const ResultOr&) = default;
+  ResultOr(ResultOr&&) noexcept(std::is_nothrow_move_constructible_v<T>) =
+      default;
+  ResultOr& operator=(ResultOr&&) noexcept(
+      std::is_nothrow_move_assignable_v<T>) = default;
+
+  [[nodiscard]] bool ok() const noexcept {
+    return std::holds_alternative<T>(storage_);
+  }
+
+  [[nodiscard]] const Result& result() const& noexcept {
+    if (ok()) {
+      static const Result* perma_ok = new Result();
+      return *perma_ok;
+    }
+    return std::get<Result>(storage_);
+  }
+
+  [[nodiscard]] Result result() && {
+    if (ok()) {
+      return Result::Ok();
+    }
+    return std::get<Result>(std::move(storage_));
+  }
+
+  [[nodiscard]] const T& ValueOrDie() const& {
+    CheckOk();
+    return std::get<T>(storage_);
+  }
+
+  [[nodiscard]] T& ValueOrDie() & {
+    CheckOk();
+    return std::get<T>(storage_);
+  }
+
+  [[nodiscard]] const T&& ValueOrDie() const&& {
+    CheckOk();
+    return std::get<T>(std::move(storage_));
+  }
+
+  [[nodiscard]] T&& ValueOrDie() && {
+    CheckOk();
+    return std::get<T>(std::move(storage_));
+  }
+
+  template <typename U>
+  [[nodiscard]] T ValueOr(U&& default_value) const& {
+    if (ok()) {
+      return std::get<T>(storage_);
+    }
+    return static_cast<T>(std::forward<U>(default_value));
+  }
+
+  template <typename U>
+  [[nodiscard]] T value_or(U&& default_value) && {
+    if (ok()) {
+      return std::get<T>(std::move(storage_));
+    }
+    return static_cast<T>(std::forward<U>(default_value));
+  }
+
+ private:
+  void CheckOk() const {
+    RAW_CHECK(ok()) << "Attempted to access value of non-OK ResultOr"
+                    << result();
+  }
+
+  std::variant<Result, T> storage_;
+};
 
 }  // namespace core
 
