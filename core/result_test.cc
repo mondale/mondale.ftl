@@ -83,29 +83,29 @@ TEST(Code_DefaultOk) {
   EXPECT_EQ(c, Code::Ok());
   EXPECT_TRUE(IsOk(c));
   EXPECT_TRUE(c.IsOk());
-  EXPECT_TRUE(c.Is(BaseCode::kOk));
-  EXPECT_EQ(BaseCode::kOk, c.base_code());
+  EXPECT_TRUE(c.Is(Code::kOk));
+  EXPECT_EQ(Code::kOk, c.base_code());
   EXPECT_EQ(ToString(c), ToString(Code::Ok()));
 }
 
 TEST(Code_ExplicitConstruct) {
-  Code c(BaseCode::kInvalidArgument);
+  Code c(Code::kInvalidArgument);
   EXPECT_FALSE(IsOk(c));
-  EXPECT_EQ(BaseCode::kInvalidArgument, c.base_code());
-  EXPECT_TRUE(c == BaseCode::kInvalidArgument);
-  EXPECT_TRUE(BaseCode::kInvalidArgument == c);
-  EXPECT_TRUE(c != BaseCode::kError);
-  EXPECT_TRUE(BaseCode::kError != c);
+  EXPECT_EQ(Code::kInvalidArgument, c.base_code());
+  EXPECT_TRUE(c == Code::kInvalidArgument);
+  EXPECT_TRUE(Code::kInvalidArgument == c);
+  EXPECT_TRUE(c != Code::kError);
+  EXPECT_TRUE(Code::kError != c);
 }
 
 Code TakesBaseReturnsCode(BaseCode bc) { return bc; }
 
 TEST(Code_ImplicitConstruct) {
-  EXPECT_TRUE(TakesBaseReturnsCode(BaseCode::kError).Is(BaseCode::kError));
+  EXPECT_TRUE(TakesBaseReturnsCode(Code::kError).Is(Code::kError));
 }
 
 TEST(Code_TrivialCopy) {
-  Code c1(BaseCode::kError);
+  Code c1(Code::kError);
   Code c2;
   c1 = c2;
   EXPECT_TRUE(IsOk(c1));
@@ -120,8 +120,8 @@ bool StringsAreEqual(Code c) {
 }
 
 TEST(Code_Strings) {
-  EXPECT_TRUE(StringsAreEqual(Code(BaseCode::kOk)));
-  EXPECT_TRUE(StringsAreEqual(Code(BaseCode::kUnimplemented)));
+  EXPECT_TRUE(StringsAreEqual(Code(Code::kOk)));
+  EXPECT_TRUE(StringsAreEqual(Code(Code::kUnimplemented)));
 }
 
 TEST(Result_DefaultIsOk) {
@@ -129,7 +129,7 @@ TEST(Result_DefaultIsOk) {
   EXPECT_EQ(Code::Ok(), result.code());
   EXPECT_TRUE(result.IsOk());
   EXPECT_TRUE(IsOk(result));
-  EXPECT_EQ(BaseCode::kOk, result.base_code());
+  EXPECT_EQ(Code::kOk, result.base_code());
   EXPECT_FALSE(result.ErpEngaged());
 }
 
@@ -143,54 +143,124 @@ bool StringsAreEqual(const Result& r) {
 
 TEST(Result_Unengaged_ToString) {
   EXPECT_TRUE(StringsAreEqual(Result()));
-  const Result r(BaseCode::kError);
+  const Result r(Code::kError);
   RAW_CHECK(!r.ErpEngaged());
   EXPECT_TRUE(StringsAreEqual(r));
+  EXPECT_EQ(0, r.refs());
 }
 
 TEST(Result_Unengaged_NotAPointer) {
-  const Result r(BaseCode::kError);
+  const Result r(Code::kError);
   EXPECT_FALSE(r.ErpEngaged());
   EXPECT_LT(static_cast<int>(r.rep_bits()), 65536);
+  EXPECT_EQ(0, r.refs());
 }
 
-Result ResultFromMove() { return Result(BaseCode::kError); }
+Result ResultFromMove() { return Result(Code::kError); }
 
 TEST(Result_Unengaged_MoveCtor) {
   Result moved = ResultFromMove();
   EXPECT_FALSE(moved.ErpEngaged());
-  EXPECT_EQ(BaseCode::kError, moved.base_code());
+  EXPECT_EQ(Code::kError, moved.base_code());
+  EXPECT_EQ(0, moved.refs());
 }
 
 TEST(Result_Unengaged_MoveAssign) {
-  Result from(BaseCode::kError);
+  Result from(Code::kError);
   Result to = std::move(from);
   EXPECT_FALSE(to.ErpEngaged());
-  EXPECT_EQ(BaseCode::kError, to.base_code());
+  EXPECT_EQ(Code::kError, to.base_code());
+  EXPECT_EQ(0, to.refs());
 
   // As it was unungaged, 'from' should still be viable.
   EXPECT_FALSE(from.ErpEngaged());
-  EXPECT_EQ(BaseCode::kError, from.base_code());
+  EXPECT_EQ(Code::kError, from.base_code());
+  EXPECT_EQ(0, from.refs());
 }
 
 TEST(Result_Unengaged_CopyCtor) {
-  const Result from(BaseCode::kError);
+  const Result from(Code::kError);
   EXPECT_FALSE(from.ErpEngaged());
-  EXPECT_EQ(BaseCode::kError, from.base_code());
+  EXPECT_EQ(Code::kError, from.base_code());
+  EXPECT_EQ(0, from.refs());
 
   const Result to(from);
   EXPECT_FALSE(to.ErpEngaged());
-  EXPECT_EQ(BaseCode::kError, to.base_code());
+  EXPECT_EQ(Code::kError, to.base_code());
+  EXPECT_EQ(0, to.refs());
 }
 
 TEST(Result_Unengaged_CopyAssign) {
-  const Result from(BaseCode::kError);
+  const Result from(Code::kError);
   EXPECT_FALSE(from.ErpEngaged());
-  EXPECT_EQ(BaseCode::kError, from.base_code());
+  EXPECT_EQ(Code::kError, from.base_code());
+  EXPECT_EQ(0, from.refs());
 
   const Result to = from;
   EXPECT_FALSE(to.ErpEngaged());
-  EXPECT_EQ(BaseCode::kError, to.base_code());
+  EXPECT_EQ(Code::kError, to.base_code());
+  EXPECT_EQ(0, to.refs());
+}
+
+TEST(Result_Engaged_String) {
+  const Result r(Code::kError, "An error occurred!");
+  ASSERT_TRUE(r.ErpEngaged());
+  EXPECT_EQ(1, r.refs());
+  EXPECT_EQ(std::string("kError//An error occurred!"), r.ToString());
+}
+
+Result EngagedResultFromMove() { return Result(Code::kError, "Oh noes!"); }
+
+TEST(Result_Engaged_MoveCtor) {
+  Result r(EngagedResultFromMove());
+  ASSERT_TRUE(r.ErpEngaged());
+  EXPECT_EQ(1, r.refs());
+  EXPECT_EQ(std::string("kError//Oh noes!"), r.ToString());
+}
+
+TEST(Result_Engaged_MoveAssign) {
+  Result from(Code::kUnimplemented, "Haven't done this yet.");
+  ASSERT_TRUE(from.ErpEngaged());
+  Result to = std::move(from);
+  ASSERT_TRUE(to.ErpEngaged());
+  EXPECT_EQ(Code::kUnimplemented, to.base_code());
+  EXPECT_EQ(1, to.refs());
+
+  // 'from' should not be clean and empty of the string.
+  EXPECT_FALSE(from.ErpEngaged());
+  EXPECT_EQ(Code::kUnimplemented, from.base_code());
+}
+
+TEST(Result_Engaged_CopyCtor) {
+  const Result from(Code::kError, "Nope!");
+  ASSERT_TRUE(from.ErpEngaged());
+  EXPECT_EQ(Code::kError, from.base_code());
+  EXPECT_EQ(1, from.refs());
+
+  {
+    const Result to(from);
+    EXPECT_EQ(2, from.refs());
+    ASSERT_TRUE(to.ErpEngaged());
+    EXPECT_EQ(Code::kError, to.base_code());
+    EXPECT_EQ(2, to.refs());
+  }  // to drops its ref
+  EXPECT_EQ(1, from.refs());
+}
+
+TEST(Result_Engaged_CopyAssign) {
+  const Result from(Code::kError, "Nope!");
+  ASSERT_TRUE(from.ErpEngaged());
+  EXPECT_EQ(Code::kError, from.base_code());
+  EXPECT_EQ(1, from.refs());
+
+  {
+    const Result to = from;
+    EXPECT_EQ(2, from.refs());
+    ASSERT_TRUE(to.ErpEngaged());
+    EXPECT_EQ(Code::kError, to.base_code());
+    EXPECT_EQ(2, to.refs());
+  }  // to drops its ref
+  EXPECT_EQ(1, from.refs());
 }
 
 }  // namespace

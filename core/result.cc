@@ -1,3 +1,5 @@
+#include <memory>
+
 #include "base/rawlog.h"
 #include "core/result.h"
 
@@ -41,11 +43,12 @@ std::ostream& operator<<(std::ostream& out, Code c) {
 }
 
 void Result::DropRef() {
+  std::unique_ptr<ExtendedRep> deleter;
   RAW_DCHECK(ErpEngaged());
   auto* const erp = rep.erp;
   erp->refs--;
   if (0 == erp->refs) {
-    delete erp;
+    deleter.reset(erp);
   }
 }
 
@@ -71,7 +74,7 @@ std::string_view Result::message() const {
 std::string Result::ToString() const {
   std::string ret(::core::ToString(code()));
   if (ErpEngaged()) {
-    ret += " ";
+    ret += "//";
     ret += message();
   }
   return ret;

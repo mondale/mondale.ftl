@@ -44,6 +44,18 @@ std::string_view ToString(BaseCode bc);
 std::ostream& operator<<(std::ostream& out, BaseCode bc);
 
 struct Code final {
+  // Abbreviations for BaseCodes.
+  static constexpr BaseCode kOk = BaseCode::kOk;
+  static constexpr BaseCode kError = BaseCode::kError;
+  static constexpr BaseCode kInvalidArgument = BaseCode::kInvalidArgument;
+  static constexpr BaseCode kPermission = BaseCode::kPermission;
+  static constexpr BaseCode kCanceled = BaseCode::kCanceled;
+  static constexpr BaseCode kDeadline = BaseCode::kDeadline;
+  static constexpr BaseCode kNotFound = BaseCode::kNotFound;
+  static constexpr BaseCode kPrecondition = BaseCode::kPrecondition;
+  static constexpr BaseCode kExhausted = BaseCode::kExhausted;
+  static constexpr BaseCode kUnimplemented = BaseCode::kUnimplemented;
+
   Code() = default;
   static Code Ok() { return Code(); }
   Code(BaseCode c) : code(c) {}
@@ -71,7 +83,19 @@ struct Code final {
   [[maybe_unused]] int16_t pad16{};
   [[maybe_unused]] int32_t pad32{};
 };
-static_assert(sizeof(Code) == 8, "Code should be precisely 64 bits");
+
+// Ensure Code is as trivial as an int64_t return type except for default
+// construction which is obliged to zero.
+static_assert(sizeof(Code) == sizeof(int64_t), "Code must be exactly 64 bits");
+static_assert(alignof(Code) <= alignof(int64_t),
+              "Code alignment must fit standard register usage");
+static_assert(std::is_trivially_copyable_v<Code>,
+              "Code must be trivially copyable to pass in registers");
+static_assert(
+    std::is_standard_layout_v<Code>,
+    "Code must be standard layout for predictable C-style ABI layout");
+static_assert(std::is_trivially_destructible_v<Code>,
+              "Code destructor must be trivial");
 
 inline bool IsOk(Code c) { return BaseCode::kOk == c.base_code(); }
 std::string_view ToString(Code c);
@@ -83,7 +107,7 @@ inline bool operator==(BaseCode bc, Code c) { return c == bc; }
 inline bool operator!=(Code c, BaseCode bc) { return c.base_code() != bc; }
 inline bool operator!=(BaseCode bc, Code c) { return c != bc; }
 
-class Result final {
+class [[nodiscard]] Result final {
  public:
   Result() = default;
   Result(Code c) : rep(c) {
@@ -146,11 +170,15 @@ class Result final {
   }
 
   // Testing aids.
-  // Returns true when the underlying object holds a heap allocation.
+  // Returns true when the underlying Extended Representation Pointer is
+  // engaged, i.e., this object holds a heap allocation.
   bool ErpEngaged() const { return !Code::ValidBits(rep.bits); }
 
   // Returns the raw bits of rep.
   intptr_t rep_bits() const { return rep.bits; }
+
+  // Returns the refcount or zero if not engaged.
+  int refs() const { return ErpEngaged() ? rep.erp->refs : 0; }
 
  private:
   struct ExtendedRep {
