@@ -18,6 +18,9 @@
 :set incsearch
 :set hlsearch
 
+" Stop all the swapfile litter
+set noswapfile
+
 " Always display line numbers.
 :set number
 
