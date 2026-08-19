@@ -350,4 +350,118 @@ TEST(ResultOr_InPlaceConstruct) {
   EXPECT_EQ(std::string("test"), ro.ValueOrDie().b);
 }
 
+TEST(TryWithBaseCode) {
+  auto fn = []() -> BaseCode { return BaseCode::kError; };
+  auto uut = [&]() -> Result {
+    TRY(fn());
+    RAW_FATAL << "Should not be reached.";
+    return Result::Ok();
+  };
+  EXPECT_EQ(BaseCode::kError, uut().base_code());
+}
+
+TEST(TryWithCode) {
+  auto fn = []() -> Code { return Code(Code::kError); };
+  auto uut = [&]() -> Result {
+    TRY(fn());
+    RAW_FATAL << "Should not be reached.";
+    return Result::Ok();
+  };
+  EXPECT_EQ(Code(Code::kError), uut().code());
+}
+
+TEST(TryWithResult) {
+  auto fn = []() -> Result { return Result(Code::kError); };
+  auto uut = [&]() -> Result {
+    TRY(fn());
+    RAW_FATAL << "Should not be reached.";
+    return Result::Ok();
+  };
+  EXPECT_TRUE(uut().Is(Code::kError));
+}
+
+TEST(TryWithResultOr) {
+  auto fn = []() -> Result { return Result(Code::kError); };
+  auto uut = [&]() -> ResultOr<int> {
+    TRY(fn());
+    RAW_FATAL << "Should not be reached.";
+    return 7;
+  };
+  EXPECT_TRUE(uut().result().Is(Code::kError));
+}
+
+TEST(TryAssignSuccess) {
+  auto fn = []() -> ResultOr<int> { return 42; };
+  auto uut = [&]() -> ResultOr<int> {
+    TRY_ASSIGN(auto val, fn());
+    return val + 8;
+  };
+
+  auto res = uut();
+  ASSERT_TRUE(res.ok());
+  EXPECT_EQ(50, res.ValueOrDie());
+}
+
+TEST(TryAssignExistingVariable) {
+  auto fn = []() -> ResultOr<int> { return 100; };
+  auto uut = [&]() -> Result {
+    TRY_ASSIGN(int val, fn());
+    EXPECT_EQ(100, val);
+    return Result::Ok();
+  };
+
+  EXPECT_TRUE(uut().IsOk());
+}
+
+TEST(TryAssignPropagatesToResult) {
+  auto fn = []() -> ResultOr<int> { return Result(Code::kError); };
+  auto uut = [&]() -> Result {
+    TRY_ASSIGN(auto val, fn());
+    static_cast<void>(val);
+    RAW_FATAL << "Should not be reached.";
+    return Result::Ok();
+  };
+
+  EXPECT_TRUE(uut().Is(Code::kError));
+}
+
+TEST(TryAssignPropagatesToResultOr) {
+  auto fn = []() -> ResultOr<int> { return Result(Code::kInvalidArgument); };
+  auto uut = [&]() -> ResultOr<std::string> {
+    TRY_ASSIGN(auto val, fn());
+    RAW_FATAL << "Should not be reached.";
+    return std::to_string(val);
+  };
+
+  auto res = uut();
+  EXPECT_FALSE(res.ok());
+  EXPECT_TRUE(res.result().Is(Code::kInvalidArgument));
+}
+
+TEST(TryAssignPropagatesToBaseCode) {
+  auto fn = []() -> ResultOr<int> { return Result(BaseCode::kNotFound); };
+  auto uut = [&]() -> BaseCode {
+    TRY_ASSIGN(auto val, fn());
+    RAW_FATAL << "Should not be reached.";
+    static_cast<void>(val);
+    return BaseCode::kOk;
+  };
+
+  EXPECT_EQ(BaseCode::kNotFound, uut());
+}
+
+TEST(TryAssignMoveOnlyType) {
+  auto fn = []() -> ResultOr<std::unique_ptr<int>> {
+    return std::make_unique<int>(42);
+  };
+  auto uut = [&]() -> ResultOr<int> {
+    TRY_ASSIGN(auto ptr, fn());
+    return *ptr;
+  };
+
+  auto res = uut();
+  ASSERT_TRUE(res.ok());
+  EXPECT_EQ(42, res.ValueOrDie());
+}
+
 }  // namespace

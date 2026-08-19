@@ -210,6 +210,55 @@ std::string ToString(Result r);
 std::ostream& operator<<(std::ostream& out, const Result& r);
 
 template <typename T>
+class [[nodiscard]] ResultOr;
+
+namespace internal {
+
+struct ErrorPropagator {
+  Result result;
+
+  explicit ErrorPropagator(Result r) : result(std::move(r)) {}
+  explicit ErrorPropagator(Code c) : result(c) {}
+  explicit ErrorPropagator(BaseCode bc) : result(bc) {}
+
+  operator Result() && { return std::move(result); }
+  operator Code() const { return result.code(); }
+  operator BaseCode() const { return result.base_code(); }
+
+  template <typename T>
+  operator ResultOr<T>() && {
+    return std::move(result);
+  }
+};
+
+template <typename T>
+struct is_error_propagator : std::false_type {};
+
+template <>
+struct is_error_propagator<ErrorPropagator> : std::true_type {};
+
+template <typename T>
+inline constexpr bool is_error_propagator_v = is_error_propagator<T>::value;
+
+inline bool IsStatusOk(BaseCode bc) { return ::core::IsOk(bc); }
+inline bool IsStatusOk(Code c) { return ::core::IsOk(c); }
+inline bool IsStatusOk(const Result& r) { return r.IsOk(); }
+template <typename T>
+inline bool IsStatusOk(const ResultOr<T>& ro) {
+  return ro.ok();
+}
+
+inline Result ExtractResult(BaseCode bc) { return Result(bc); }
+inline Result ExtractResult(Code c) { return Result(c); }
+inline Result ExtractResult(Result r) { return r; }
+template <typename T>
+inline Result ExtractResult(ResultOr<T> ro) {
+  return std::move(ro).result();
+}
+
+}  // namespace internal
+
+template <typename T>
 class [[nodiscard]] ResultOr final {
  public:
   using value_type = T;
@@ -234,10 +283,12 @@ class [[nodiscard]] ResultOr final {
   ResultOr(BaseCode bc) : ResultOr(Result(bc)) {}
   ResultOr(Code c) : ResultOr(Result(c)) {}
 
-  // Construct from T value (implicit)
+  // Generic value constructor: explicitly disables ErrorPropagator
+  // so it won't attempt to construct T from ErrorPropagator
   template <typename U = T>
     requires(!std::is_same_v<std::decay_t<U>, ResultOr<T>> &&
              !std::is_same_v<std::decay_t<U>, Result> &&
+             !internal::is_error_propagator_v<std::decay_t<U>> &&
              std::is_constructible_v<T, U &&>)
   ResultOr(U&& value)
       : storage_(std::in_place_type<T>, std::forward<U>(value)) {}
@@ -323,5 +374,34 @@ class [[nodiscard]] ResultOr final {
 };
 
 }  // namespace core
+
+// Macro concatenation helpers.
+#define CORE_IMPL_CONCAT_INNER(x, y) x##y
+#define CORE_IMPL_CONCAT(x, y) CORE_IMPL_CONCAT_INNER(x, y)
+
+// Early-return on error for expressions returning BaseCode, Code, Result, or
+// ResultOr<T>.
+#define TRY(expr)                                                           \
+  do {                                                                      \
+    auto&& _core_status_val = (expr);                                       \
+    if (!::core::internal::IsStatusOk(_core_status_val)) {                  \
+      return ::core::internal::ErrorPropagator(                             \
+          ::core::internal::ExtractResult(                                  \
+              std::forward<decltype(_core_status_val)>(_core_status_val))); \
+    }                                                                       \
+  } while (0)
+
+// Evaluates `rexpr` (which returns ResultOr<T>), returning early on error or
+// assigning the unwrapped T value to `lhs`.
+#define TRY_ASSIGN(lhs, rexpr) \
+  CORE_TRY_ASSIGN_IMPL(CORE_IMPL_CONCAT(_core_res_or_, __LINE__), lhs, rexpr)
+
+#define CORE_TRY_ASSIGN_IMPL(status_var, lhs, rexpr)             \
+  auto status_var = (rexpr);                                     \
+  if (!::core::internal::IsStatusOk(status_var)) {               \
+    return ::core::internal::ErrorPropagator(                    \
+        ::core::internal::ExtractResult(std::move(status_var))); \
+  }                                                              \
+  lhs = std::move(status_var).ValueOrDie()
 
 #endif  // #ifndef CORE_RESULT_H_

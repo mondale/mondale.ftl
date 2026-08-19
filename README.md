@@ -99,6 +99,13 @@ std::ostream& operator<<(std::ostream& out, const X& x) {
 }
 ```
 
+When suppressing a `[[nodiscard]]` or an unused variable warning, use a
+C++-style `static_cast<void>`:
+```cpp
+  int unused = 0;
+  static_cast<void>(unused);  // no compiler warning
+```
+
 ### Exceptions to these rules.
 
 Fils may be individually labeled as exempt from this guidance. This is commonly
