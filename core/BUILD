@@ -1,3 +1,15 @@
+cc_library(
+  name = "handle",
+  hdrs = ["handle.h"],
+  deps = []
+)
+
+cc_test(
+  name = "handle_test",
+  srcs = ["handle_test.cc"],
+  deps = [":handle",
+          "//base:basic_test",]
+)
 
 cc_library(
   name = "result",
