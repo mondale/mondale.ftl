@@ -8,6 +8,8 @@
 #include <utility>
 #include <variant>
 
+#include "base/rawlog.h"
+
 namespace core {
 
 enum class BaseCode : uint8_t {

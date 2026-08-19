@@ -56,4 +56,82 @@ TEST(JoinEmptyDelimiter) {
 
 TEST(JoinBracerList) { EXPECT_EQ(Join({"a", "b", "cd"}, ", "), "a, b, cd"s); }
 
+TEST(ParseAsValidIntegers) {
+  auto val_int = ParseAs<int>("42").ValueOrDie();
+  EXPECT_EQ(val_int, 42);
+
+  uint64_t val_u64 = ParseAs<uint64_t>("18446744073709551615").ValueOrDie();
+  EXPECT_EQ(val_u64, 18446744073709551615ul);
+
+  auto val_hex = ParseAs<int>("1a", 16).ValueOrDie();
+  EXPECT_EQ(val_hex, 26);
+}
+
+TEST(ParseAsValidFloats) {
+  const auto val_double = ParseAs<double>("3.14159").ValueOrDie();
+  // Basic test has no double support.
+  EXPECT_GT(val_double, 3.14);
+  EXPECT_LT(val_double, 3.142);
+}
+
+TEST(ParseAsInvalidInput) {
+  auto res1 = ParseAs<int>("42abc");
+  EXPECT_FALSE(res1.ok());  // Trailing unparsed characters
+
+  auto res2 = ParseAs<int>("not_a_number");
+  EXPECT_FALSE(res2.ok());  // Invalid format
+
+  auto res3 = ParseAs<uint8_t>("256");
+  EXPECT_FALSE(res3.ok());  // Out of range
+}
+
+TEST(ParseAsStringViewPassThrough) {
+  auto sv = ParseAs<std::string_view>("hello").ValueOrDie();
+  EXPECT_EQ(sv, std::string_view("hello"));
+}
+
+TEST(SplitStandardDelimiter) {
+  std::vector<std::string_view> tokens;
+  for (std::string_view token : Split("apple,banana,cherry", ",")) {
+    tokens.push_back(token);
+  }
+  std::vector<std::string_view> expected = {"apple", "banana", "cherry"};
+  for (int i = 0; i < expected.size(); ++i) {
+    EXPECT_EQ(tokens[i], expected[i]);
+  }
+}
+
+TEST(SplitConsecutiveAndEdgeDelimiters) {
+  std::vector<std::string_view> tokens;
+  for (std::string_view token : Split(",a,,b,", ",")) {
+    tokens.push_back(token);
+  }
+  std::vector<std::string_view> expected = {"", "a", "", "b", ""};
+  for (int i = 0; i < expected.size(); ++i) {
+    EXPECT_EQ(tokens[i], expected[i]);
+  }
+}
+
+TEST(SplitEmptyDelimiter) {
+  std::vector<std::string_view> tokens;
+  for (std::string_view token : Split("abc", "")) {
+    tokens.push_back(token);
+  }
+  std::vector<std::string_view> expected = {"a", "b", "c"};
+  for (int i = 0; i < expected.size(); ++i) {
+    EXPECT_EQ(tokens[i], expected[i]);
+  }
+}
+
+TEST(SplitMultiCharacterDelimiter) {
+  std::vector<std::string_view> tokens;
+  for (std::string_view token : Split("one::two::three", "::")) {
+    tokens.push_back(token);
+  }
+  std::vector<std::string_view> expected = {"one", "two", "three"};
+  for (int i = 0; i < expected.size(); ++i) {
+    EXPECT_EQ(tokens[i], expected[i]);
+  }
+}
+
 }  // namespace core::strings

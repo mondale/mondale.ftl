@@ -30,3 +30,19 @@ cc_test(
           "//base:basic_test",
           "//base:rawlog",],
 )
+
+cc_library(
+  name = "util",
+  hdrs = ["util.h"],
+  srcs = ["util.cc"],
+  deps = [":result"],
+  compiler_flags = ["-fno-exceptions"],
+)
+
+cc_test(
+  name = "util_test",
+  srcs = ["util_test.cc"],
+  deps = [":util",
+          "//base:basic_test",
+          "//base:rawlog",],
+)
