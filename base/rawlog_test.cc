@@ -23,6 +23,15 @@ TEST(LogErrorTest) {
   EXPECT_EQ(expected, ss.str());
 }
 
+TEST(LogWarningTest) {
+  std::stringstream ss;
+  ::base::rawlog::TESTONLY_SetWarningStream(&ss);
+  RAW_WARNING << "Danger Will Robinson!";
+  ::base::rawlog::TESTONLY_SetWarningStream(nullptr);
+  std::string expected = "W base/rawlog_test.cc:29] Danger Will Robinson!\n";
+  EXPECT_EQ(expected, ss.str());
+}
+
 volatile int global_aborts = 0;
 void AbortHandler(int sig) { global_aborts = global_aborts + 1; }
 

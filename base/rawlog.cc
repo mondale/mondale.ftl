@@ -11,6 +11,7 @@ namespace {
 
 std::ostream* global_rawerror_override = nullptr;
 std::ostream* global_rawinfo_override = nullptr;
+std::ostream* global_rawwarning_override = nullptr;
 
 class NullStreambuf final : public std::streambuf {
  private:
@@ -53,6 +54,15 @@ void TESTONLY_SetErrorStream(std::ostream* out) {
 std::ostream* GetErrorStream() {
   if (nullptr == global_rawerror_override) return &std::cerr;
   return global_rawerror_override;
+}
+
+void TESTONLY_SetWarningStream(std::ostream* out) {
+  global_rawwarning_override = out;
+}
+
+std::ostream* GetWarningStream() {
+  if (nullptr == global_rawwarning_override) return &std::cerr;
+  return global_rawwarning_override;
 }
 
 CheckHelper::CheckHelper(const char* file, int line, bool condition,

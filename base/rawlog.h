@@ -10,6 +10,8 @@ void TESTONLY_SetInfoStream(std::ostream* out);
 std::ostream* GetInfoStream();
 void TESTONLY_SetErrorStream(std::ostream* out);
 std::ostream* GetErrorStream();
+void TESTONLY_SetWarningStream(std::ostream* out);
+std::ostream* GetWarningStream();
 
 class RawLogger final {
  public:
@@ -51,6 +53,10 @@ class CheckHelper final {
 #define RAW_ERROR                                                             \
   (::base::rawlog::RawLogger(false, "E ", __builtin_FILE(), __builtin_LINE(), \
                              *::base::rawlog::GetErrorStream())               \
+       .stream())
+#define RAW_WARNING                                                           \
+  (::base::rawlog::RawLogger(false, "W ", __builtin_FILE(), __builtin_LINE(), \
+                             *::base::rawlog::GetWarningStream())             \
        .stream())
 #define RAW_FATAL                                                            \
   (::base::rawlog::RawLogger(true, "F ", __builtin_FILE(), __builtin_LINE(), \
