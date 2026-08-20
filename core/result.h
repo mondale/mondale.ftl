@@ -39,13 +39,21 @@ enum class BaseCode : uint8_t {
   // Not enough of something.
   kExhausted = 8,
 
+  // Temporary, retryable error.
+  kUnavailable = 9,
+
+  // Posix error codes.
+  kEintr,
+  kEnoent,
+
   // Unimplemented code path reached.
-  kUnimplemented = 9,
+  kUnimplemented,
 };
 
 inline bool IsOk(BaseCode code) { return BaseCode::kOk == code; }
 std::string_view ToString(BaseCode bc);
 std::ostream& operator<<(std::ostream& out, BaseCode bc);
+BaseCode BaseCodeFromErrno(int saved_errno);
 
 struct Code final {
   // Abbreviations for BaseCodes.
@@ -110,6 +118,8 @@ inline bool operator==(Code c, BaseCode bc) { return c.base_code() == bc; }
 inline bool operator==(BaseCode bc, Code c) { return c == bc; }
 inline bool operator!=(Code c, BaseCode bc) { return c.base_code() != bc; }
 inline bool operator!=(BaseCode bc, Code c) { return c != bc; }
+
+Code CodeFromErrno(int saved_errno);
 
 class [[nodiscard]] Result final {
  public:
@@ -210,6 +220,8 @@ static_assert(sizeof(Result) == 8, "Result should be precisely 64 bits");
 inline bool IsOk(Result r) { return r.IsOk(); }
 std::string ToString(Result r);
 std::ostream& operator<<(std::ostream& out, const Result& r);
+
+Result ResultFromErrno(int saved_errno);
 
 template <typename T>
 class [[nodiscard]] ResultOr;

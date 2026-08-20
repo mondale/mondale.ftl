@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include <memory>
 
 #include "base/rawlog.h"
@@ -26,6 +28,9 @@ std::string_view ToString(BaseCode bc) {
     ENUM_SWITCH_TOSTRING(BaseCode, kNotFound);
     ENUM_SWITCH_TOSTRING(BaseCode, kPrecondition);
     ENUM_SWITCH_TOSTRING(BaseCode, kExhausted);
+    ENUM_SWITCH_TOSTRING(BaseCode, kUnavailable);
+    ENUM_SWITCH_TOSTRING(BaseCode, kEintr);
+    ENUM_SWITCH_TOSTRING(BaseCode, kEnoent);
     ENUM_SWITCH_TOSTRING(BaseCode, kUnimplemented);
   }
 }
@@ -83,6 +88,32 @@ std::string Result::ToString() const {
 std::ostream& operator<<(std::ostream& out, const Result& r) {
   out << r.ToString();
   return out;
+}
+
+BaseCode BaseCodeFromErrno(int e) {
+  switch (e) {
+    case EINTR:
+      return BaseCode::kEintr;
+    case ENOENT:
+      return BaseCode::kEnoent;
+    default:
+      break;
+  }
+  RAW_WARNING << "Unhandled Errno coercing to kUnimplemented["
+              << strerrorname_np(e) << "]";
+  return BaseCode::kUnimplemented;
+}
+
+Code CodeFromErrno(int e) { return BaseCodeFromErrno(e); }
+Result ResultFromErrno(int e) {
+  const auto bc = BaseCodeFromErrno(e);
+  if (bc == BaseCode::kUnimplemented) {
+    std::string message = "Unhandled Errno[";
+    message += strerrorname_np(e);
+    message += "]";
+    return Result(bc, message);
+  }
+  return Result(bc);
 }
 
 }  // namespace core

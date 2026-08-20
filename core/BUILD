@@ -86,6 +86,25 @@ cc_test(
 )
 
 cc_library(
+  name = "syscalls",
+  hdrs = ["syscalls.h"],
+  srcs = ["syscalls.cc"],
+  deps = [":file_descriptor",
+          ":result",
+          "//base:rawlog",
+  ],
+)
+
+cc_test(
+  name = "syscalls_test",
+  srcs = ["syscalls_test.cc"],
+  deps = [":syscalls",
+          "//base:basic_test",
+         ],
+)
+
+
+cc_library(
   name = "util",
   hdrs = ["util.h"],
   srcs = ["util.cc"],
