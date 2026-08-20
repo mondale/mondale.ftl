@@ -1,4 +1,33 @@
 cc_library(
+  name = "file",
+  hdrs = ["file.h"],
+  srcs = ["file.cc"],
+  deps = [":result"],
+)
+
+cc_test(
+  name = "file_test",
+  srcs = ["file_test.cc"],
+  deps = [":file",
+          "//base:basic_test"]
+)
+
+cc_library(
+  name = "file_descriptor",
+  hdrs = ["file_descriptor.h"],
+  srcs = ["file_descriptor.cc"],
+  deps = [":result",
+          "//base:rawlog",],
+)
+
+cc_test(
+  name = "file_descriptor_test",
+  srcs = ["file_descriptor_test.cc"],
+  deps = [":file_descriptor",
+          "//base:basic_test"]
+)
+       
+cc_library(
   name = "handle",
   hdrs = ["handle.h"],
   deps = []
