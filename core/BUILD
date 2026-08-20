@@ -12,6 +12,19 @@ cc_test(
 )
 
 cc_library(
+  name = "hardened_int",
+  hdrs = ["hardened_int.h"],
+  deps = []
+)
+
+cc_test(
+  name = "hardened_int_test",
+  srcs = ["hardened_int_test.cc"],
+  deps = [":hardened_int",
+          "//base:basic_test",]
+)
+
+cc_library(
   name = "result",
   hdrs = ["result.h"],
   srcs = ["result.cc"],
