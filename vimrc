@@ -43,7 +43,7 @@ set showmode
 set gfn=Consolas\ 14
 
 " Run clang-format on every save
-function! FormatOnSave()
+function! FormatCppOnSave()
   " Save current cursor and view state
   let l:view = winsaveview()
   
@@ -55,7 +55,7 @@ function! FormatOnSave()
 endfunction
 
 " Trigger automatically before saving C and C++ files
-autocmd BufWritePre *.c,*.cc,*.cpp,*.h,*.hpp call FormatOnSave()
+autocmd BufWritePre *.c,*.cc,*.cpp,*.h,*.hpp call FormatCppOnSave()
 autocmd BufRead,BufNewFile *.c,*.cc,*.cpp,*.h,*.hpp set filetype=cpp
 
 " Markdown behaviors: wrap on word boundaries at 80 columns.

@@ -45,6 +45,7 @@ enum class BaseCode : uint8_t {
   // Posix error codes.
   kEintr,
   kEnoent,
+  kEinval,
 
   // Unimplemented code path reached.
   kUnimplemented,

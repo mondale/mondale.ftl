@@ -31,6 +31,7 @@ std::string_view ToString(BaseCode bc) {
     ENUM_SWITCH_TOSTRING(BaseCode, kUnavailable);
     ENUM_SWITCH_TOSTRING(BaseCode, kEintr);
     ENUM_SWITCH_TOSTRING(BaseCode, kEnoent);
+    ENUM_SWITCH_TOSTRING(BaseCode, kEinval);
     ENUM_SWITCH_TOSTRING(BaseCode, kUnimplemented);
   }
 }
@@ -96,6 +97,8 @@ BaseCode BaseCodeFromErrno(int e) {
       return BaseCode::kEintr;
     case ENOENT:
       return BaseCode::kEnoent;
+    case EINVAL:
+      return BaseCode::kEinval;
     default:
       break;
   }

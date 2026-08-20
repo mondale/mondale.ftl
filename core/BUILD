@@ -2,7 +2,11 @@ cc_library(
   name = "file",
   hdrs = ["file.h"],
   srcs = ["file.cc"],
-  deps = [":result"],
+  deps = [":result",
+":syscalls",
+":idioms",
+":strings",
+],
 )
 
 cc_test(
@@ -51,6 +55,13 @@ cc_test(
   srcs = ["hardened_int_test.cc"],
   deps = [":hardened_int",
           "//base:basic_test",]
+)
+
+cc_library(
+  name = "idioms",
+  hdrs = ["idioms.h"],
+  srcs = ["idioms.cc"],
+  deps = [":syscalls",],
 )
 
 cc_library(
