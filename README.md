@@ -106,6 +106,11 @@ C++-style `static_cast<void>`:
   static_cast<void>(unused);  // no compiler warning
 ```
 
+Use raw integral type names, not prefixed by `std::`. E.g.,:
+```cpp
+  int32_t no_std_prefix_necessary = 0;
+```
+
 ### Exceptions to these rules.
 
 Fils may be individually labeled as exempt from this guidance. This is commonly

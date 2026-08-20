@@ -1,0 +1,164 @@
+#ifndef BASE_TIME_H_
+#define BASE_TIME_H_
+
+#include <compare>
+#include <cstdint>
+#include <ctime>
+
+namespace base {
+
+// Represents a high-resolution duration in nanoseconds.
+class Duration {
+ public:
+  constexpr Duration() noexcept = default;
+  constexpr explicit Duration(int64_t nanos) noexcept : nanos_(nanos) {}
+
+  [[nodiscard]] static constexpr Duration FromNanoseconds(int64_t ns) noexcept {
+    return Duration(ns);
+  }
+  [[nodiscard]] static constexpr Duration FromMicroseconds(
+      int64_t us) noexcept {
+    return Duration(us * 1'000);
+  }
+  [[nodiscard]] static constexpr Duration FromMilliseconds(
+      int64_t ms) noexcept {
+    return Duration(ms * 1'000'000);
+  }
+  [[nodiscard]] static constexpr Duration FromSeconds(int64_t s) noexcept {
+    return Duration(s * 1'000'000'000);
+  }
+
+  [[nodiscard]] constexpr int64_t ToNanoseconds() const noexcept {
+    return nanos_;
+  }
+
+  constexpr Duration& operator+=(Duration rhs) noexcept {
+    nanos_ += rhs.nanos_;
+    return *this;
+  }
+  constexpr Duration& operator-=(Duration rhs) noexcept {
+    nanos_ -= rhs.nanos_;
+    return *this;
+  }
+
+  [[nodiscard]] friend constexpr Duration operator+(Duration lhs,
+                                                    Duration rhs) noexcept {
+    return Duration(lhs.nanos_ + rhs.nanos_);
+  }
+  [[nodiscard]] friend constexpr Duration operator-(Duration lhs,
+                                                    Duration rhs) noexcept {
+    return Duration(lhs.nanos_ - rhs.nanos_);
+  }
+
+  [[nodiscard]] friend constexpr auto operator<=>(Duration,
+                                                  Duration) noexcept = default;
+
+ private:
+  int64_t nanos_ = 0;
+};
+
+// Real-world clock time. Supports offset arithmetic with Duration.
+class WallTime {
+ public:
+  constexpr WallTime() noexcept = default;
+
+  [[nodiscard]] static WallTime Now() noexcept {
+    timespec ts;
+    ::clock_gettime(CLOCK_REALTIME, &ts);
+    return WallTime(static_cast<int64_t>(ts.tv_sec) * 1'000'000'000 +
+                    ts.tv_nsec);
+  }
+
+  [[nodiscard]] constexpr int64_t UnixNanoseconds() const noexcept {
+    return nanos_since_epoch_;
+  }
+
+  constexpr WallTime& operator+=(Duration d) noexcept {
+    nanos_since_epoch_ += d.ToNanoseconds();
+    return *this;
+  }
+  constexpr WallTime& operator-=(Duration d) noexcept {
+    nanos_since_epoch_ -= d.ToNanoseconds();
+    return *this;
+  }
+
+  [[nodiscard]] friend constexpr WallTime operator+(WallTime wt,
+                                                    Duration d) noexcept {
+    return WallTime(wt.nanos_since_epoch_ + d.ToNanoseconds());
+  }
+  [[nodiscard]] friend constexpr WallTime operator+(Duration d,
+                                                    WallTime wt) noexcept {
+    return WallTime(wt.nanos_since_epoch_ + d.ToNanoseconds());
+  }
+  [[nodiscard]] friend constexpr WallTime operator-(WallTime wt,
+                                                    Duration d) noexcept {
+    return WallTime(wt.nanos_since_epoch_ - d.ToNanoseconds());
+  }
+  [[nodiscard]] friend constexpr Duration operator-(WallTime lhs,
+                                                    WallTime rhs) noexcept {
+    return Duration(lhs.nanos_since_epoch_ - rhs.nanos_since_epoch_);
+  }
+
+  [[nodiscard]] friend constexpr auto operator<=>(WallTime,
+                                                  WallTime) noexcept = default;
+
+ private:
+  constexpr explicit WallTime(int64_t nanos) noexcept
+      : nanos_since_epoch_(nanos) {}
+  int64_t nanos_since_epoch_ = 0;
+};
+
+// Opaque steady system clock. Math and cross-timebase conversions disabled.
+class MonotonicTime {
+ public:
+  constexpr MonotonicTime() noexcept = default;
+
+  [[nodiscard]] static MonotonicTime Now() noexcept {
+    timespec ts;
+    ::clock_gettime(CLOCK_MONOTONIC, &ts);
+    return MonotonicTime(static_cast<int64_t>(ts.tv_sec) * 1'000'000'000 +
+                         ts.tv_nsec);
+  }
+
+  [[nodiscard]] constexpr int64_t nanos() const noexcept { return nanos_; }
+  [[nodiscard]] friend constexpr auto operator<=>(
+      MonotonicTime, MonotonicTime) noexcept = default;
+
+ private:
+  constexpr explicit MonotonicTime(int64_t nanos) noexcept : nanos_(nanos) {}
+  int64_t nanos_ = 0;
+};
+
+// Opaque CPU instruction cycle counter. No arithmetic allowed.
+class CycleTime {
+ public:
+  constexpr CycleTime() noexcept = default;
+
+  [[nodiscard]] static CycleTime Now() noexcept {
+#if defined(__aarch64__)
+    uint64_t val;
+    __asm__ __volatile__("mrs %0, cntvct_el0" : "=r"(val));
+    return CycleTime(val);
+#elif defined(__x86_64__)
+    uint32_t lo, hi;
+    __asm__ __volatile__("rdtsc" : "=a"(lo), "=d"(hi));
+    return CycleTime((static_cast<uint64_t>(hi) << 32) | lo);
+#else
+#error "Unsupported architecture"
+#endif
+  }
+
+  static int64_t CpuFrequencyHz();
+
+  [[nodiscard]] constexpr uint64_t value() const noexcept { return value_; }
+  [[nodiscard]] friend constexpr auto operator<=>(CycleTime,
+                                                  CycleTime) noexcept = default;
+
+ private:
+  constexpr explicit CycleTime(uint64_t value) noexcept : value_(value) {}
+  uint64_t value_ = 0;
+};
+
+}  // namespace base
+
+#endif  // #ifndef BASE_TIME_H_

@@ -142,16 +142,6 @@ class BasicTest {
 #define ASSERT_GE(a, b)                             \
   ExpectGeHelper(__FILE__, __LINE__, #a, #b, a, b); \
   return
-/*
-#define ASSERT_TRUE(a) AssertTrue(__FILE__, __LINE__, #a, a)
-#define ASSERT_FALSE(a) AssertFalse(__FILE__, __LINE__, #a, a)
-#define ASSERT_EQ(a, b) AssertEqHelper(__FILE__, __LINE__, #a, #b, a, b)
-#define ASSERT_NE(a, b) AssertNeHelper(__FILE__, __LINE__, #a, #b, a, b)
-#define ASSERT_LT(a, b) AssertLtHelper(__FILE__, __LINE__, #a, #b, a, b)
-#define ASSERT_LE(a, b) AssertLeHelper(__FILE__, __LINE__, #a, #b, a, b)
-#define ASSERT_GT(a, b) AssertGtHelper(__FILE__, __LINE__, #a, #b, a, b)
-#define ASSERT_GE(a, b) AssertGeHelper(__FILE__, __LINE__, #a, #b, a, b)
-*/
 
 }  // namespace base::testing
 

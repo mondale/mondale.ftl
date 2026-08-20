@@ -109,3 +109,18 @@ cc_test(
   deps = [":stacktrace",
           ":basic_test"],
 )
+
+cc_library(
+  name = "time",
+  hdrs = ["time.h"],
+  srcs = ["time.cc"],
+  deps = []
+)
+
+cc_test(
+  name = "time_test",
+  srcs = ["time_test.cc"],
+  deps = [":time",
+          ":basic_test"],
+)
+  
