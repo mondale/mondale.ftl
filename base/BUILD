@@ -84,6 +84,22 @@ cc_binary(
 )
 
 cc_library(
+  name = "sleep",
+  hdrs = ["sleep.h"],
+  srcs = ["sleep.cc"],
+  deps = [":time",],
+)
+
+cc_test(
+  name = "sleep_test",
+  srcs = ["sleep_test.cc"],
+  deps = [":sleep",
+          ":basic_test",
+          ":time",
+         ]
+)
+
+cc_library(
   name = "source_location",
   hdrs = ["source_location.h"],
   deps = [])

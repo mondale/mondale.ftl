@@ -17,6 +17,8 @@ TEST(DurationFactoriesAndAccessors) {
 
   const auto d_nanos = Duration::FromNanoseconds(500);
   EXPECT_EQ(d_nanos.ToNanoseconds(), int64_t{500});
+  EXPECT_EQ(d_nanos.ToTimespec().tv_sec, time_t{0});
+  EXPECT_EQ(d_nanos.ToTimespec().tv_nsec, long{500});
 
   const auto d_micros = Duration::FromMicroseconds(2);
   EXPECT_EQ(d_micros.ToNanoseconds(), int64_t{2'000});
@@ -26,10 +28,12 @@ TEST(DurationFactoriesAndAccessors) {
 
   const auto d_secs = Duration::FromSeconds(4);
   EXPECT_EQ(d_secs.ToNanoseconds(), int64_t{4'000'000'000});
+  EXPECT_EQ(d_secs.ToTimespec().tv_sec, time_t{4});
+  EXPECT_EQ(d_secs.ToTimespec().tv_nsec, long{0});
 }
 
 TEST(DurationArithmeticAndComparisons) {
-  const auto d1 = Duration::FromMilliseconds(100);
+  const auto d1 = Milliseconds(100);
   const auto d2 = Duration::FromMilliseconds(50);
 
   EXPECT_EQ((d1 + d2).ToNanoseconds(), int64_t{150'000'000});
@@ -83,7 +87,7 @@ TEST(WallTimeMutableArithmetic) {
 
 TEST(WallTimeComparisons) {
   const WallTime t1 = WallTime::Now();
-  const WallTime t2 = t1 + Duration::FromNanoseconds(2000);
+  const WallTime t2 = t1 + Nanoseconds(2000);
   const WallTime t1_dup(t1);
 
   EXPECT_LT(t1, t2);
@@ -125,6 +129,23 @@ TEST(CpuFrequencyFetch) {
   const int64_t freq = CycleTime::CpuFrequencyHz();
   EXPECT_GT(freq, int64_t{0});
   EXPECT_EQ(freq, CycleTime::CpuFrequencyHz());
+  const auto cycles_per_second = CycleTime::CyclesFromDuration(Seconds(1));
+  auto error = (cycles_per_second * 1.0 - freq * 1.0) / (freq * 1.0);
+  error = (error < 0.0) ? -error : error;
+  EXPECT_LT(error, 0.01);
+
+  const auto about_one_second =
+      CycleTime::DurationFromCycles(cycles_per_second);
+  EXPECT_GT(about_one_second.ToNanoseconds(), int64_t{999'999'000});
+  EXPECT_LT(about_one_second.ToNanoseconds(), int64_t{1'000'001'000});
+}
+
+TEST(CyclesMathWithDuration) {
+  CycleTime c = CycleTime::Now();
+  const auto c_capture = c;
+  c += Seconds(1);
+  EXPECT_GT(c, c_capture);
+  EXPECT_GT(c + Seconds(1), c);
 }
 
 }  // namespace

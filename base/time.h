@@ -1,6 +1,8 @@
 #ifndef BASE_TIME_H_
 #define BASE_TIME_H_
 
+#include <time.h>
+
 #include <compare>
 #include <cstdint>
 #include <ctime>
@@ -57,9 +59,34 @@ class Duration {
 
   std::string ToString() const { return std::to_string(nanos_); }
 
+  struct timespec ToTimespec() const {
+    struct timespec ts;
+    if (nanos_ < 1'000'000'000) {
+      ts.tv_sec = 0;
+      ts.tv_nsec = nanos_;
+    } else {
+      ts.tv_sec = nanos_ / 1'000'000'000;
+      ts.tv_nsec = nanos_ % 1'000'000'000;
+    }
+    return ts;
+  }
+
  private:
   int64_t nanos_ = 0;
 };
+
+inline constexpr Duration Nanoseconds(int64_t ns) {
+  return Duration::FromNanoseconds(ns);
+}
+inline constexpr Duration Microseconds(int64_t us) {
+  return Duration::FromMicroseconds(us);
+}
+inline constexpr Duration Milliseconds(int64_t ms) {
+  return Duration::FromMilliseconds(ms);
+}
+inline constexpr Duration Seconds(int64_t s) {
+  return Duration::FromSeconds(s);
+}
 
 // Real-world clock time. Supports offset arithmetic with Duration.
 class WallTime {
@@ -130,6 +157,32 @@ class MonotonicTime {
   [[nodiscard]] friend constexpr auto operator<=>(
       MonotonicTime, MonotonicTime) noexcept = default;
 
+  constexpr MonotonicTime& operator+=(Duration d) noexcept {
+    nanos_ += d.ToNanoseconds();
+    return *this;
+  }
+  constexpr MonotonicTime& operator-=(Duration d) noexcept {
+    nanos_ -= d.ToNanoseconds();
+    return *this;
+  }
+
+  [[nodiscard]] friend constexpr MonotonicTime operator+(MonotonicTime wt,
+                                                         Duration d) noexcept {
+    return MonotonicTime(wt.nanos_ + d.ToNanoseconds());
+  }
+  [[nodiscard]] friend constexpr MonotonicTime operator+(
+      Duration d, MonotonicTime wt) noexcept {
+    return MonotonicTime(wt.nanos_ + d.ToNanoseconds());
+  }
+  [[nodiscard]] friend constexpr MonotonicTime operator-(MonotonicTime wt,
+                                                         Duration d) noexcept {
+    return MonotonicTime(wt.nanos_ - d.ToNanoseconds());
+  }
+  [[nodiscard]] friend constexpr Duration operator-(
+      MonotonicTime lhs, MonotonicTime rhs) noexcept {
+    return Duration(lhs.nanos_ - rhs.nanos_);
+  }
+
   std::string ToString() const { return std::to_string(nanos_); }
 
  private:
@@ -164,8 +217,33 @@ class CycleTime {
 
   std::string ToString() const { return std::to_string(value_); }
 
- private:
+  static uint64_t CyclesFromDuration(Duration d) noexcept {
+    return static_cast<uint64_t>((static_cast<double>(d.ToNanoseconds()) *
+                                  static_cast<double>(CpuFrequencyHz())) /
+                                 1e9);
+  }
+
+  static Duration DurationFromCycles(uint64_t cycles) noexcept {
+    const double cycles_per_ns = CpuFrequencyHz() / 1e9;
+    return Nanoseconds(cycles / cycles_per_ns);
+  }
+
+  CycleTime& operator+=(Duration d) noexcept {
+    value_ += CyclesFromDuration(d);
+    return *this;
+  }
+
+  [[nodiscard]] friend CycleTime operator+(CycleTime t, Duration d) noexcept {
+    return CycleTime(t.value_ + CyclesFromDuration(d));
+  }
+
+  [[nodiscard]] friend CycleTime operator+(Duration d, CycleTime t) noexcept {
+    return CycleTime(t.value_ + CyclesFromDuration(d));
+  }
+
   constexpr explicit CycleTime(uint64_t value) noexcept : value_(value) {}
+
+ private:
   uint64_t value_ = 0;
 };
 

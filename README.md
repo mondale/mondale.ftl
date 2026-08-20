@@ -142,6 +142,8 @@ Formatting is strictly enforced across C++ source and header files using
 * **Include Management**:
   * Sorted alphabetically and grouped logically (Standard Library headers 
     first, followed by system headers, then repository-relative headers).
+  * Source files need not redundantly include headers that are provided by the
+    same-name header file associated with the source file.
 
 ---
 
