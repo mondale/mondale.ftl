@@ -148,4 +148,11 @@ TEST(CyclesMathWithDuration) {
   EXPECT_GT(c + Seconds(1), c);
 }
 
+TEST(CycleTimerTest) {
+  CycleTimer ct;
+  const auto first = ct.Elapsed();
+  EXPECT_GT(first, Duration::Zero());
+  EXPECT_GT(ct.Elapsed(), first);
+}
+
 }  // namespace

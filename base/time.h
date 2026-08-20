@@ -16,6 +16,7 @@ class Duration {
  public:
   constexpr Duration() noexcept = default;
   constexpr explicit Duration(int64_t nanos) noexcept : nanos_(nanos) {}
+  static constexpr Duration Zero() { return Duration(); }
 
   [[nodiscard]] static constexpr Duration FromNanoseconds(int64_t ns) noexcept {
     return Duration(ns);
@@ -245,6 +246,19 @@ class CycleTime {
 
  private:
   uint64_t value_ = 0;
+};
+
+class CycleTimer final {
+ public:
+  CycleTimer() = default;
+  CycleTime start() const { return start_; }
+  Duration Elapsed() const {
+    return CycleTime::DurationFromCycles(CycleTime::Now().value() -
+                                         start().value());
+  }
+
+ private:
+  const CycleTime start_ = CycleTime::Now();
 };
 
 inline std::ostream& operator<<(std::ostream& out, Duration d) {
