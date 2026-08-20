@@ -84,6 +84,18 @@ cc_binary(
 )
 
 cc_library(
+  name = "source_location",
+  hdrs = ["source_location.h"],
+  deps = [])
+
+cc_test(
+  name = "source_location_test",
+  srcs = ["source_location_test.cc"],
+  deps = [":source_location",
+          ":basic_test",]
+)
+
+cc_library(
   name = "stacktrace",
   hdrs = ["stacktrace.h"],
   srcs = ["stacktrace.cc"],
