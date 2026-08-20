@@ -13,9 +13,10 @@ std::ostream* GetErrorStream();
 
 class RawLogger final {
  public:
-  RawLogger(bool fatal, const char* prefix, std::ostream& stream)
+  RawLogger(bool fatal, const char* prefix, const char* file, int line,
+            std::ostream& stream)
       : fatal_(fatal), stream_(stream) {
-    stream_ << prefix;
+    stream_ << prefix << file << ":" << line << "] ";
   }
   ~RawLogger() {
     stream_ << std::endl << std::flush;
@@ -43,22 +44,27 @@ class CheckHelper final {
 
 }  // namespace base::rawlog
 
-#define RAW_INFO                                                             \
-  (::base::rawlog::RawLogger(false, "I] ", *::base::rawlog::GetInfoStream()) \
+#define RAW_INFO                                                              \
+  (::base::rawlog::RawLogger(false, "I ", __builtin_FILE(), __builtin_LINE(), \
+                             *::base::rawlog::GetInfoStream())                \
        .stream())
 #define RAW_ERROR                                                             \
-  (::base::rawlog::RawLogger(false, "E] ", *::base::rawlog::GetErrorStream()) \
+  (::base::rawlog::RawLogger(false, "E ", __builtin_FILE(), __builtin_LINE(), \
+                             *::base::rawlog::GetErrorStream())               \
        .stream())
 #define RAW_FATAL                                                            \
-  (::base::rawlog::RawLogger(true, "F] ", *::base::rawlog::GetErrorStream()) \
+  (::base::rawlog::RawLogger(true, "F ", __builtin_FILE(), __builtin_LINE(), \
+                             *::base::rawlog::GetErrorStream())              \
        .stream())
 
-#define RAW_CHECK(b) \
-  (::base::rawlog::CheckHelper(__FILE__, __LINE__, b, #b).stream())
+#define RAW_CHECK(b)                                                      \
+  (::base::rawlog::CheckHelper(__builtin_FILE(), __builtin_LINE(), b, #b) \
+       .stream())
 
 #ifdef DEBUG
-#define RAW_DCHECK(b) \
-  (::base::rawlog::CheckHelper(__FILE__, __LINE__, b, #b).stream())
+#define RAW_DCHECK(b)                                                     \
+  (::base::rawlog::CheckHelper(__builtin_FILE(), __builtin_LINE(), b, #b) \
+       .stream())
 #else
 #define RAW_DCHECK(b)
 #endif

@@ -9,18 +9,18 @@ TEST(LogInfoTest) {
   std::stringstream ss;
   ::base::rawlog::TESTONLY_SetInfoStream(&ss);
   RAW_INFO << "Hello " << "Everyone!";
-  std::string expected = "I] Hello Everyone!\n";
-  EXPECT_EQ(expected, ss.str());
   ::base::rawlog::TESTONLY_SetInfoStream(nullptr);
+  std::string expected = "I base/rawlog_test.cc:11] Hello Everyone!\n";
+  EXPECT_EQ(expected, ss.str());
 }
 
 TEST(LogErrorTest) {
   std::stringstream ss;
   ::base::rawlog::TESTONLY_SetErrorStream(&ss);
   RAW_ERROR << "Oh no I had an error :(";
-  std::string expected = "E] Oh no I had an error :(\n";
-  EXPECT_EQ(expected, ss.str());
   ::base::rawlog::TESTONLY_SetErrorStream(nullptr);
+  std::string expected = "E base/rawlog_test.cc:20] Oh no I had an error :(\n";
+  EXPECT_EQ(expected, ss.str());
 }
 
 volatile int global_aborts = 0;
