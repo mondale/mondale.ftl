@@ -16,31 +16,31 @@ enum class BaseCode : uint8_t {
   kOk = 0,
 
   // Generic error condition.
-  kError = 1,
+  kError,
 
   // Invalid argument.
-  kInvalidArgument = 2,
+  kInvalidArgument,
 
   // Permission denied or authentication failure.
-  kPermission = 3,
+  kPermission,
 
   // Operation canceled by caller.
-  kCanceled = 4,
+  kCanceled,
 
   // Specified deadline has elapsed.
-  kDeadline = 5,
+  kDeadline,
 
   // Requested object not found.
-  kNotFound = 6,
+  kNotFound,
 
   // System is not in a state to fulfill the request.
-  kPrecondition = 7,
+  kPrecondition,
 
   // Not enough of something.
-  kExhausted = 8,
+  kExhausted,
 
   // Temporary, retryable error.
-  kUnavailable = 9,
+  kUnavailable,
 
   // Posix error codes.
   kEintr,
