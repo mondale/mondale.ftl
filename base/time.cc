@@ -88,7 +88,7 @@ int64_t DetectCpuFrequencyHz() {
     return detected;
   }
   const int64_t measured = MeasureCpuFrequency();
-  RAW_INFO << "Using measured CPU frequency of " << measured / 1e9 << "Ghz.";
+  RAW_WARNING << "Using measured CPU frequency of " << measured / 1e9 << "Ghz.";
   return measured;
 }
 
