@@ -114,7 +114,7 @@ cc_library(
   name = "time",
   hdrs = ["time.h"],
   srcs = ["time.cc"],
-  deps = []
+  deps = [":rawlog"]
 )
 
 cc_test(

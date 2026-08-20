@@ -4,6 +4,8 @@
 #include <compare>
 #include <cstdint>
 #include <ctime>
+#include <iostream>
+#include <string>
 
 namespace base {
 
@@ -52,6 +54,8 @@ class Duration {
 
   [[nodiscard]] friend constexpr auto operator<=>(Duration,
                                                   Duration) noexcept = default;
+
+  std::string ToString() const { return std::to_string(nanos_); }
 
  private:
   int64_t nanos_ = 0;
@@ -102,6 +106,8 @@ class WallTime {
   [[nodiscard]] friend constexpr auto operator<=>(WallTime,
                                                   WallTime) noexcept = default;
 
+  std::string ToString() const { return std::to_string(nanos_since_epoch_); }
+
  private:
   constexpr explicit WallTime(int64_t nanos) noexcept
       : nanos_since_epoch_(nanos) {}
@@ -123,6 +129,8 @@ class MonotonicTime {
   [[nodiscard]] constexpr int64_t nanos() const noexcept { return nanos_; }
   [[nodiscard]] friend constexpr auto operator<=>(
       MonotonicTime, MonotonicTime) noexcept = default;
+
+  std::string ToString() const { return std::to_string(nanos_); }
 
  private:
   constexpr explicit MonotonicTime(int64_t nanos) noexcept : nanos_(nanos) {}
@@ -154,10 +162,32 @@ class CycleTime {
   [[nodiscard]] friend constexpr auto operator<=>(CycleTime,
                                                   CycleTime) noexcept = default;
 
+  std::string ToString() const { return std::to_string(value_); }
+
  private:
   constexpr explicit CycleTime(uint64_t value) noexcept : value_(value) {}
   uint64_t value_ = 0;
 };
+
+inline std::ostream& operator<<(std::ostream& out, Duration d) {
+  out << d.ToString();
+  return out;
+}
+
+inline std::ostream& operator<<(std::ostream& out, WallTime w) {
+  out << w.ToString();
+  return out;
+}
+
+inline std::ostream& operator<<(std::ostream& out, MonotonicTime m) {
+  out << m.ToString();
+  return out;
+}
+
+inline std::ostream& operator<<(std::ostream& out, CycleTime c) {
+  out << c.ToString();
+  return out;
+}
 
 }  // namespace base
 

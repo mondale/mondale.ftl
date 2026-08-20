@@ -2,6 +2,7 @@
 
 #include <cstdint>
 
+#include "base/rawlog.h"
 #include "base/time.h"
 
 namespace base {
@@ -64,9 +65,31 @@ uint64_t DetectCpuFrequencyHzARM64() {
   return frequency_hz;
 }
 
+int64_t MeasureCpuFrequency() {
+  const CycleTime start_a = CycleTime::Now();
+  const WallTime wall_start = WallTime::Now();
+  const CycleTime start_b = CycleTime::Now();
+  const WallTime wall_stop = wall_start + Duration::FromMilliseconds(1);
+  CycleTime stop_a = CycleTime::Now();
+  while (WallTime::Now() < wall_stop) {
+    stop_a = CycleTime::Now();
+  }
+  const CycleTime stop_b = CycleTime::Now();
+  const uint64_t cycles_start = (start_a.value() + start_b.value()) / 2;
+  const uint64_t cycles_end = (stop_a.value() + stop_b.value()) / 2;
+  const uint64_t cycles_elapsed = cycles_end - cycles_start;
+  return static_cast<int64_t>(cycles_elapsed) * 1000ll;  // one milli.
+}
+
 int64_t DetectCpuFrequencyHz() {
-  return static_cast<int64_t>(DetectCpuFrequencyHzX64() +
-                              DetectCpuFrequencyHzARM64());
+  const int64_t detected = static_cast<int64_t>(DetectCpuFrequencyHzX64() +
+                                                DetectCpuFrequencyHzARM64());
+  if (0 != detected) {
+    return detected;
+  }
+  const int64_t measured = MeasureCpuFrequency();
+  RAW_INFO << "Using measured CPU frequency of " << measured / 1e9 << "Ghz.";
+  return measured;
 }
 
 int64_t GetCachedCpuFrequencyHz() {
