@@ -51,6 +51,8 @@ const char* SigToName(int sig) {
       return "SIGBUS";
     case SIGILL:
       return "SIGILL";
+    case SIGFPE:
+      return "SIGFPE";
     default:
       return "SIG_IDK";
   }
@@ -123,6 +125,7 @@ void SetupDeadlySignalHandler() {
   sigaction(SIGABRT, &s, nullptr);
   sigaction(SIGILL, &s, nullptr);
   sigaction(SIGBUS, &s, nullptr);
+  sigaction(SIGFPE, &s, nullptr);
 }
 
 void SetupThreadCaptureHandler() {
