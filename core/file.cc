@@ -8,13 +8,14 @@ namespace core {
 Result WriteContentsToFile(std::string_view file_name,
                            std::string_view contents) {
   // Open file.
-  TRY_ASSIGN(auto fd, syscalls::Open(file_name, O_WRONLY | O_CREAT, 0664));
+  TRY_ASSIGN(auto fd,
+             syscalls::Open(file_name, O_WRONLY | O_CREAT | O_CLOEXEC, 0664));
   return idioms::WriteExactly(fd, contents);
 }
 
 ResultOr<std::string> ReadContentsFromFile(std::string_view file_name) {
   // Open file.
-  TRY_ASSIGN(auto fd, syscalls::Open(file_name, O_RDONLY, 0));
+  TRY_ASSIGN(auto fd, syscalls::Open(file_name, O_RDONLY | O_CLOEXEC, 0));
 
   // Stat file and size the output buffer.
   constexpr size_t kCowardiceThreshold = 1024 * 1024;
