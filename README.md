@@ -8,6 +8,8 @@ Follow any directory-specific README.md with higher precedence than this file.
 
 `//base` may not depend on any libraries outside of `//base`.
 
+`//core` may not depend on any libraries outside of `//base` and `//core`.
+
 ## Style Guidance
 
 The following style guidance should be used for all code. Examples are
