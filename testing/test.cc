@@ -85,7 +85,6 @@ std::string StripNamespace(const std::string& str) {
   return str;
 }
 
-std::list<std::unique_ptr<Test>>* global_all_tests = nullptr;
 Test* global_current_test = nullptr;
 
 }  // namespace
@@ -101,32 +100,58 @@ void Test::AddFailure(const char* file, int line, std::string message) {
   outs_.push_back(ss.str());
 }
 
-bool RegisterTest(std::unique_ptr<Test> test) {
-  if (nullptr == global_all_tests) {
-    global_all_tests = new std::list<std::unique_ptr<Test>>();
-  }
-  global_all_tests->push_back(std::move(test));
-  return true;
-}
+namespace internal {
 
 // static
-Test* Test::Current() { return global_current_test; }
+TestRegistry* TestRegistry::Instance() {
+  static TestRegistry* instance = new TestRegistry();
+  return instance;
+}
 
-int RunAllTests() {
+void TestRegistry::RegisterTest(const std::string& suite_name,
+                                const std::string& test_name,
+                                std::unique_ptr<TestFactory> factory) {
+  tests_.push_back({suite_name, test_name, std::move(factory)});
+}
+
+int TestRegistry::RunAllTests() {
   int failures = 0;
-  if (nullptr == global_all_tests) return EXIT_SUCCESS;
-  for (auto& test : *global_all_tests) {
+  for (const auto& entry : tests_) {
+    std::cout << "[ RUN      ] " << entry.suite_name << "." << entry.test_name
+              << "\n";
+    std::unique_ptr<Test> test(entry.factory->CreateTest());
     global_current_test = test.get();
+    test->SetUp();
     const auto start = std::chrono::steady_clock::now();
-    test->Run();
+    test->TestBody();
     const auto end = std::chrono::steady_clock::now();
+    test->TearDown();
     global_current_test = nullptr;
     const std::chrono::duration<double> elapsed = end - start;
     const bool passed = test->IsPassing();
     AppendResultOrDie(test->GetName(), passed, elapsed.count(), test->outs());
+    if (passed) {
+      std::cout << "[       OK ] ";
+    } else {
+      std::cout << "[   FAILED ] ";
+    }
+    std::cout << entry.suite_name << "." << entry.test_name << "\n";
     failures += (passed) ? 0 : 1;
   }
   return (failures > 0) ? -1 : EXIT_SUCCESS;
 }
+
+TestRegistrar::TestRegistrar(const char* suite_name, const char* test_name,
+                             std::unique_ptr<TestFactory> factory) {
+  TestRegistry::Instance()->RegisterTest(suite_name, test_name,
+                                         std::move(factory));
+}
+
+}  // namespace internal
+
+// static
+Test* Test::Current() { return global_current_test; }
+
+int RunAllTests() { return internal::TestRegistry::Instance()->RunAllTests(); }
 
 }  // namespace testing

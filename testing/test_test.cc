@@ -180,4 +180,41 @@ void UseAMacroOutsideTheMethod() {
 
 TEST(MacrosWorkOutsideTheMethod) { UseAMacroOutsideTheMethod(); }
 
+class SimpleFixture : public ::testing::Test {
+ protected:
+  int fixture_int_ = 7;
+};
+
+TEST_F(SimpleFixture, FixturesWork) { EXPECT_EQ(7, fixture_int_); }
+
+class SetupFixture : public ::testing::Test {
+ protected:
+  SetupFixture() {
+    Require(!setup_ran_, "SetUp ran?");
+    Require(!teardown_ran_, "TearDown ran?");
+  }
+
+  ~SetupFixture() override {
+    Require(setup_ran_, "SetUp did not run?");
+    Require(teardown_ran_, "TearDown did not run?");
+  }
+
+  void Require(bool condition, const char* msg) {
+    if (!condition) {
+      std::cerr << msg << std::endl;
+      raise(SIGABRT);
+    }
+  }
+
+  void SetUp() final { setup_ran_ = true; }
+  void TearDown() final { teardown_ran_ = true; }
+  bool setup_ran_ = false;
+  bool teardown_ran_ = false;
+};
+
+TEST_F(SetupFixture, SetUpAndTearDownWorks) {
+  EXPECT_TRUE(setup_ran_);
+  EXPECT_FALSE(teardown_ran_);
+}
+
 }  // namespace
