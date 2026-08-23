@@ -1,7 +1,8 @@
 # Basic Test
 
 Basic Test is a tiny library to facilitate testing of the lowest-level
-components of `mondale.ftl`.
+components of `mondale.ftl`. Only components in `//base` and `//core` may use
+Basic Test. Other components should use `//testing`.
 
 The only file to include is `base/basic_test.h`. `BUILD` files should link
 against `//base/basic_test` in the `deps` section.
