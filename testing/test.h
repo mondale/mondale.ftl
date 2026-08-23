@@ -121,6 +121,11 @@ struct TestRegistrar {
   (::testing::Test::Current()->ExpectGt(__FILE__, __LINE__, #a, #b, a, b))
 #define EXPECT_GE(a, b) \
   (::testing::Test::Current()->ExpectGe(__FILE__, __LINE__, #a, #b, a, b))
+#define EXPECT_NEAR(a, b) \
+  (::testing::Test::Current()->ExpectNear(__FILE__, __LINE__, #a, #b, a, b))
+#define EXPECT_NEAR_ABS(a, b, u)                                             \
+  (::testing::Test::Current()->ExpectNear(__FILE__, __LINE__, #a, #b, #u, a, \
+                                          b, u))
 
 #define ASSERT_TRUE(a)                                                 \
   (::testing::Test::Current()->ExpectTrue(__FILE__, __LINE__, #a, a)); \
@@ -145,6 +150,13 @@ struct TestRegistrar {
   return
 #define ASSERT_GE(a, b)                                                     \
   (::testing::Test::Current()->ExpectGe(__FILE__, __LINE__, #a, #b, a, b)); \
+  return
+#define ASSERT_NEAR(a, b)                                                     \
+  (::testing::Test::Current()->ExpectNear(__FILE__, __LINE__, #a, #b, a, b)); \
+  return
+#define ASSERT_NEAR_ABS(a, b, u)                                             \
+  (::testing::Test::Current()->ExpectNear(__FILE__, __LINE__, #a, #b, #u, a, \
+                                          b, u));                            \
   return
 
 [[nodiscard]] int RunAllTests();

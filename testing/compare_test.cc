@@ -74,4 +74,11 @@ TEST(Le) {
   EXPECT_FALSE(Compare::Le(7u, 5));
 }
 
+TEST(Nearness) {
+  EXPECT_TRUE(Compare::Near(0.1 + 0.2, 0.3));
+  EXPECT_TRUE(Compare::Near(0.1 + 0.2, 0.3, 0.01));
+  EXPECT_TRUE(Compare::Near(0.33, 0.3, 0.04));
+  EXPECT_FALSE(Compare::Near(0.33, 0.3, 0.02));
+}
+
 }  // namespace

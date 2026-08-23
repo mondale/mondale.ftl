@@ -69,6 +69,23 @@ class Expectation {
     FailExpectation(file, line, a_name, b_name, " != ", a, b);
   }
 
+  template <typename L, typename R>
+  void ExpectNear(const char* file, int line, const char* a_name,
+                  const char* b_name, L a, R b) {
+    if (Compare::Near(a, b)) return;
+    FailExpectation(file, line, a_name, b_name, " near ", a, b);
+  }
+
+  template <typename L, typename R, typename U>
+  void ExpectNear(const char* file, int line, const char* a_name,
+                  const char* b_name, const char* u_name, L a, R b, U u) {
+    if (Compare::Near(a, b, u)) return;
+    std::stringstream ss;
+    ss << " within +/-" << u_name << " (" << u << ") of ";
+    std::string s = ss.str();
+    FailExpectation(file, line, a_name, b_name, s.c_str(), a, b);
+  }
+
   void ExpectFailure() { expect_passing_ = false; }
   void RestorePassing();
 
