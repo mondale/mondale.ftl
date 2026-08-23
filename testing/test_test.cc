@@ -5,7 +5,7 @@
 #include <thread>
 
 #include "testing/death_test_subprocess.h"
-#include "testing/test.h"
+#include "testing/testing.h"
 
 namespace {
 
@@ -284,6 +284,10 @@ TEST(DeathTestTimeout) {
   EXPECT_DEATH([]() { std::this_thread::sleep_for(std::chrono::seconds(50)); },
                testing::TimedOut());
   testing::internal::DeathTestSubprocess::SetTimeout(30);
+}
+
+TEST(HasSubstrMatcherTest) {
+  EXPECT_THAT("There is no I in team.", testing::HasSubstr("I"));
 }
 
 }  // namespace

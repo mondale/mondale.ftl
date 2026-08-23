@@ -127,6 +127,9 @@ struct TestRegistrar {
   (::testing::Test::Current()->ExpectNear(__FILE__, __LINE__, #a, #b, #u, a, \
                                           b, u))
 
+#define EXPECT_THAT(v, m) \
+  (::testing::Test::Current()->ExpectThat(__FILE__, __LINE__, #v, #m, v, m))
+
 #define ASSERT_TRUE(a)                                        \
   for (auto helper = (::testing::Test::Current()->ExpectTrue( \
            __FILE__, __LINE__, #a, a));                       \

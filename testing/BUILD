@@ -5,6 +5,7 @@ cc_library(
   srcs = ["test_main.cc",],
   deps = [":test",
           ":death",
+          ":matchers",
           "//base:process"],
   visibility = ["//...", ],
 )
@@ -45,6 +46,19 @@ cc_library(
           ":death",
           ":death_test_subprocess",
   ],
+)
+
+cc_library(
+  name = "matchers",
+  hdrs = ["matchers.h"],
+  srcs = ["matchers.cc"],
+  deps = [],
+)
+
+cc_test(
+  name = "matchers_test",
+  srcs = ["matchers_test.cc"],
+  deps = [":testing",],
 )
 
 cc_library(

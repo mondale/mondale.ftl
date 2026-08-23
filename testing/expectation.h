@@ -134,6 +134,27 @@ class Expectation {
                                 std::function<void()> expression,
                                 DeathMatcher m);
 
+  template <typename ValueT, typename MatcherT>
+  ExpectationResult ExpectThat(const char* file, int line, const char* v_name,
+                               const char* m_name, const ValueT& val,
+                               MatcherT&& m) {
+    const auto mr = m.Match(val);
+    if (mr.matched) return ExpectationResult(true, nullptr);
+    std::stringstream ss;
+    ss << "\n  Value of [" << v_name << "]\n";
+    ss << "\n  Expected [";
+    m.DescribeTo(ss);
+    ss << "]\n";
+    ss << "\n  Actual [";
+    if (mr.explanation.empty()) {
+      ss << val;
+    } else {
+      ss << mr.explanation;
+    }
+    ss << "]\n";
+    return AddFailure(file, line, ss.str());
+  }
+
   void ExpectFailure() { expect_passing_ = false; }
   void RestorePassing();
 
