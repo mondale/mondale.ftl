@@ -288,6 +288,7 @@ TEST(DeathTestTimeout) {
 
 TEST(HasSubstrMatcherTest) {
   EXPECT_THAT("There is no I in team.", testing::HasSubstr("I"));
+  ASSERT_THAT("Your mom.", testing::Not(testing::HasSubstr("dad")));
 }
 
 }  // namespace

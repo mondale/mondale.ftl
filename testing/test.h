@@ -130,115 +130,58 @@ struct TestRegistrar {
 #define EXPECT_THAT(v, m) \
   (::testing::Test::Current()->ExpectThat(__FILE__, __LINE__, #v, #m, v, m))
 
-#define ASSERT_TRUE(a)                                        \
-  for (auto helper = (::testing::Test::Current()->ExpectTrue( \
-           __FILE__, __LINE__, #a, a));                       \
-       true;)                                                 \
-    if (const auto h = helper.LoopingHelper(); h == 9)        \
-      break;                                                  \
-    else if (h == 1)                                          \
-      return;                                                 \
-    else                                                      \
+#define ASSERT_RETURN_SHENNANIGANS(expectation)        \
+  for (auto helper = (expectation); true;)             \
+    if (const auto h = helper.LoopingHelper(); h == 9) \
+      break;                                           \
+    else if (h == 1)                                   \
+      return;                                          \
+    else                                               \
       helper
 
-#define ASSERT_FALSE(a)                                        \
-  for (auto helper = (::testing::Test::Current()->ExpectFalse( \
-           __FILE__, __LINE__, #a, a));                        \
-       true;)                                                  \
-    if (const auto h = helper.LoopingHelper(); h == 9)         \
-      break;                                                   \
-    else if (h == 1)                                           \
-      return;                                                  \
-    else                                                       \
-      helper
+#define ASSERT_TRUE(a)        \
+  ASSERT_RETURN_SHENNANIGANS( \
+      ::testing::Test::Current()->ExpectTrue(__FILE__, __LINE__, #a, a))
 
-#define ASSERT_EQ(a, b)                                                        \
-  for (auto helper = (::testing::Test::Current()->ExpectEq(__FILE__, __LINE__, \
-                                                           #a, #b, a, b));     \
-       true;)                                                                  \
-    if (const auto h = helper.LoopingHelper(); h == 9)                         \
-      break;                                                                   \
-    else if (h == 1)                                                           \
-      return;                                                                  \
-    else                                                                       \
-      helper
+#define ASSERT_FALSE(a)       \
+  ASSERT_RETURN_SHENNANIGANS( \
+      ::testing::Test::Current()->ExpectFalse(__FILE__, __LINE__, #a, a))
 
-#define ASSERT_NE(a, b)                                                        \
-  for (auto helper = (::testing::Test::Current()->ExpectNe(__FILE__, __LINE__, \
-                                                           #a, #b, a, b));     \
-       true;)                                                                  \
-    if (const auto h = helper.LoopingHelper(); h == 9)                         \
-      break;                                                                   \
-    else if (h == 1)                                                           \
-      return;                                                                  \
-    else                                                                       \
-      helper
+#define ASSERT_EQ(a, b)       \
+  ASSERT_RETURN_SHENNANIGANS( \
+      ::testing::Test::Current()->ExpectEq(__FILE__, __LINE__, #a, #b, a, b))
 
-#define ASSERT_LT(a, b)                                                        \
-  for (auto helper = (::testing::Test::Current()->ExpectLt(__FILE__, __LINE__, \
-                                                           #a, #b, a, b));     \
-       true;)                                                                  \
-    if (const auto h = helper.LoopingHelper(); h == 9)                         \
-      break;                                                                   \
-    else if (h == 1)                                                           \
-      return;                                                                  \
-    else                                                                       \
-      helper
+#define ASSERT_NE(a, b)       \
+  ASSERT_RETURN_SHENNANIGANS( \
+      ::testing::Test::Current()->ExpectNe(__FILE__, __LINE__, #a, #b, a, b))
 
-#define ASSERT_LE(a, b)                                                        \
-  for (auto helper = (::testing::Test::Current()->ExpectLe(__FILE__, __LINE__, \
-                                                           #a, #b, a, b));     \
-       true;)                                                                  \
-    if (const auto h = helper.LoopingHelper(); h == 9)                         \
-      break;                                                                   \
-    else if (h == 1)                                                           \
-      return;                                                                  \
-    else                                                                       \
-      helper
+#define ASSERT_LT(a, b)       \
+  ASSERT_RETURN_SHENNANIGANS( \
+      ::testing::Test::Current()->ExpectLt(__FILE__, __LINE__, #a, #b, a, b))
 
-#define ASSERT_GT(a, b)                                                        \
-  for (auto helper = (::testing::Test::Current()->ExpectGt(__FILE__, __LINE__, \
-                                                           #a, #b, a, b));     \
-       true;)                                                                  \
-    if (const auto h = helper.LoopingHelper(); h == 9)                         \
-      break;                                                                   \
-    else if (h == 1)                                                           \
-      return;                                                                  \
-    else                                                                       \
-      helper
+#define ASSERT_LE(a, b)       \
+  ASSERT_RETURN_SHENNANIGANS( \
+      ::testing::Test::Current()->ExpectLe(__FILE__, __LINE__, #a, #b, a, b))
 
-#define ASSERT_GE(a, b)                                                        \
-  for (auto helper = (::testing::Test::Current()->ExpectGe(__FILE__, __LINE__, \
-                                                           #a, #b, a, b));     \
-       true;)                                                                  \
-    if (const auto h = helper.LoopingHelper(); h == 9)                         \
-      break;                                                                   \
-    else if (h == 1)                                                           \
-      return;                                                                  \
-    else                                                                       \
-      helper
+#define ASSERT_GT(a, b)       \
+  ASSERT_RETURN_SHENNANIGANS( \
+      ::testing::Test::Current()->ExpectGt(__FILE__, __LINE__, #a, #b, a, b))
 
-#define ASSERT_NEAR(a, b)                                     \
-  for (auto helper = (::testing::Test::Current()->ExpectNear( \
-           __FILE__, __LINE__, #a, #b, a, b));                \
-       true;)                                                 \
-    if (const auto h = helper.LoopingHelper(); h == 9)        \
-      break;                                                  \
-    else if (h == 1)                                          \
-      return;                                                 \
-    else                                                      \
-      helper
+#define ASSERT_GE(a, b)       \
+  ASSERT_RETURN_SHENNANIGANS( \
+      ::testing::Test::Current()->ExpectGe(__FILE__, __LINE__, #a, #b, a, b))
 
-#define ASSERT_NEAR_ABS(a, b, u)                              \
-  for (auto helper = (::testing::Test::Current()->ExpectNear( \
-           __FILE__, __LINE__, #a, #b, #u, a, b, u));         \
-       true;)                                                 \
-    if (const auto h = helper.LoopingHelper(); h == 9)        \
-      break;                                                  \
-    else if (h == 1)                                          \
-      return;                                                 \
-    else                                                      \
-      helper
+#define ASSERT_NEAR(a, b)                                            \
+  ASSERT_RETURN_SHENNANIGANS(::testing::Test::Current()->ExpectNear( \
+      __FILE__, __LINE__, #a, #b, a, b))
+
+#define ASSERT_NEAR_ABS(a, b, u)                                     \
+  ASSERT_RETURN_SHENNANIGANS(::testing::Test::Current()->ExpectNear( \
+      __FILE__, __LINE__, #a, #b, #u, a, b, u))
+
+#define ASSERT_THAT(v, m)                                            \
+  ASSERT_RETURN_SHENNANIGANS(::testing::Test::Current()->ExpectThat( \
+      __FILE__, __LINE__, #v, #m, v, m))
 
 #define EXPECT_DEATH(statement, matcher)                                  \
   (::testing::Test::Current()->ExpectDeath(__FILE__, __LINE__, statement, \

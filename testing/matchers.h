@@ -24,6 +24,42 @@ class Matcher {
   virtual void DescribeTo(std::ostream& os) const = 0;
 };
 
+template <typename InnerMatcher>
+class NotMatcher {
+ public:
+  explicit NotMatcher(InnerMatcher matcher) : matcher_(std::move(matcher)) {}
+
+  template <typename Actual>
+  MatchResult Match(const Actual& actual) const {
+    MatchResult inner_res = matcher_.Match(actual);
+    if (!inner_res.matched) {
+      // Inner matcher failed, so NotMatcher succeeds
+      return {true, ""};
+    }
+    // Inner matcher passed, so NotMatcher fails
+    std::ostringstream ss;
+    ss << "which does match (";
+    matcher_.DescribeTo(ss);
+    ss << ")";
+    return {false, ss.str()};
+  }
+
+  void DescribeTo(std::ostream& os) const {
+    os << "does not ";
+    matcher_.DescribeTo(os);
+  }
+
+ private:
+  InnerMatcher matcher_;
+};
+
+// Factory function template enabling automatic type deduction
+template <typename InnerMatcher>
+auto Not(InnerMatcher&& matcher) {
+  return NotMatcher<std::decay_t<InnerMatcher>>(
+      std::forward<InnerMatcher>(matcher));
+}
+
 // String Contains Matcher
 class HasSubstrMatcher final {
  public:
