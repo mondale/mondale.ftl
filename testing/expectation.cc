@@ -4,11 +4,12 @@
 
 namespace testing::internal {
 
-void Expectation::AddFailure(const char* file, int line, std::string message) {
+ExpectationResult Expectation::AddFailure(const char* file, int line,
+                                          std::string message) {
+  ExpectationResult r(false, &outs_);
   passing_ = false;
-  std::stringstream ss;
-  ss << file << "[" << line << "]: " << message;
-  outs_.push_back(ss.str());
+  r << file << "[" << line << "]: " << message;
+  return r;
 }
 
 void Expectation::RestorePassing() {

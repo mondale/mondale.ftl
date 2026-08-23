@@ -8,6 +8,35 @@
 
 namespace testing::internal {
 
+class ExpectationResult {
+ public:
+  ExpectationResult(bool success, std::list<std::string>* outs)
+      : success_(success), outs_(outs) {}
+  ~ExpectationResult() {
+    if (!success_) outs_->push_back(ss_.str());
+  }
+
+  // Allows the result object to evaluate directly in 'if' statements
+  explicit operator bool() const { return success_; }
+
+  // Stream operator captures custom user message if the assertion failed
+  template <typename T>
+  ExpectationResult& operator<<(const T& val) {
+    if (!success_) {
+      ss_ << val;
+    }
+    return *this;
+  }
+
+  ExpectationResult(ExpectationResult&& other) = default;
+  ExpectationResult& operator=(ExpectationResult&& other) = default;
+
+ private:
+  bool success_;
+  std::stringstream ss_;
+  std::list<std::string>* outs_;
+};
+
 class Expectation {
  public:
   virtual ~Expectation() = default;
@@ -15,75 +44,78 @@ class Expectation {
   bool IsPassing() const { return expect_passing_ == passing_; }
   const std::list<std::string>& outs() const { return outs_; }
 
-  void AddFailure(const char* file, int line, std::string message);
+  ExpectationResult AddFailure(const char* file, int line, std::string message);
 
-  void ExpectTrue(const char* file, int line, const char* name, bool value) {
-    if (value) return;
-    FailExpectation(file, line, name, "true", " is ", value, true);
+  ExpectationResult ExpectTrue(const char* file, int line, const char* name,
+                               bool value) {
+    if (value) return ExpectationResult(true, nullptr);
+    return FailExpectation(file, line, name, "true", " is ", value, true);
   }
 
-  void ExpectFalse(const char* file, int line, const char* name, bool value) {
-    if (!value) return;
-    FailExpectation(file, line, name, "false", " is ", value, false);
-  }
-
-  template <typename L, typename R>
-  void ExpectEq(const char* file, int line, const char* a_name,
-                const char* b_name, L a, R b) {
-    if (Compare::Eq(a, b)) return;
-    FailExpectation(file, line, a_name, b_name, " == ", a, b);
+  ExpectationResult ExpectFalse(const char* file, int line, const char* name,
+                                bool value) {
+    if (!value) return ExpectationResult(true, nullptr);
+    return FailExpectation(file, line, name, "false", " is ", value, false);
   }
 
   template <typename L, typename R>
-  void ExpectLe(const char* file, int line, const char* a_name,
-                const char* b_name, L a, R b) {
-    if (Compare::Le(a, b)) return;
-    FailExpectation(file, line, a_name, b_name, " <= ", a, b);
+  ExpectationResult ExpectEq(const char* file, int line, const char* a_name,
+                             const char* b_name, L a, R b) {
+    if (Compare::Eq(a, b)) return ExpectationResult(true, nullptr);
+    return FailExpectation(file, line, a_name, b_name, " == ", a, b);
   }
 
   template <typename L, typename R>
-  void ExpectLt(const char* file, int line, const char* a_name,
-                const char* b_name, L a, R b) {
-    if (Compare::Lt(a, b)) return;
-    FailExpectation(file, line, a_name, b_name, " < ", a, b);
+  ExpectationResult ExpectLe(const char* file, int line, const char* a_name,
+                             const char* b_name, L a, R b) {
+    if (Compare::Le(a, b)) return ExpectationResult(true, nullptr);
+    return FailExpectation(file, line, a_name, b_name, " <= ", a, b);
   }
 
   template <typename L, typename R>
-  void ExpectGe(const char* file, int line, const char* a_name,
-                const char* b_name, L a, R b) {
-    if (Compare::Ge(a, b)) return;
-    FailExpectation(file, line, a_name, b_name, " >= ", a, b);
+  ExpectationResult ExpectLt(const char* file, int line, const char* a_name,
+                             const char* b_name, L a, R b) {
+    if (Compare::Lt(a, b)) return ExpectationResult(true, nullptr);
+    return FailExpectation(file, line, a_name, b_name, " < ", a, b);
   }
 
   template <typename L, typename R>
-  void ExpectGt(const char* file, int line, const char* a_name,
-                const char* b_name, L a, R b) {
-    if (Compare::Gt(a, b)) return;
-    FailExpectation(file, line, a_name, b_name, " > ", a, b);
+  ExpectationResult ExpectGe(const char* file, int line, const char* a_name,
+                             const char* b_name, L a, R b) {
+    if (Compare::Ge(a, b)) return ExpectationResult(true, nullptr);
+    return FailExpectation(file, line, a_name, b_name, " >= ", a, b);
   }
 
   template <typename L, typename R>
-  void ExpectNe(const char* file, int line, const char* a_name,
-                const char* b_name, L a, R b) {
-    if (Compare::Ne(a, b)) return;
-    FailExpectation(file, line, a_name, b_name, " != ", a, b);
+  ExpectationResult ExpectGt(const char* file, int line, const char* a_name,
+                             const char* b_name, L a, R b) {
+    if (Compare::Gt(a, b)) return ExpectationResult(true, nullptr);
+    return FailExpectation(file, line, a_name, b_name, " > ", a, b);
   }
 
   template <typename L, typename R>
-  void ExpectNear(const char* file, int line, const char* a_name,
-                  const char* b_name, L a, R b) {
-    if (Compare::Near(a, b)) return;
-    FailExpectation(file, line, a_name, b_name, " near ", a, b);
+  ExpectationResult ExpectNe(const char* file, int line, const char* a_name,
+                             const char* b_name, L a, R b) {
+    if (Compare::Ne(a, b)) return ExpectationResult(true, nullptr);
+    return FailExpectation(file, line, a_name, b_name, " != ", a, b);
+  }
+
+  template <typename L, typename R>
+  ExpectationResult ExpectNear(const char* file, int line, const char* a_name,
+                               const char* b_name, L a, R b) {
+    if (Compare::Near(a, b)) return ExpectationResult(true, nullptr);
+    return FailExpectation(file, line, a_name, b_name, " near ", a, b);
   }
 
   template <typename L, typename R, typename U>
-  void ExpectNear(const char* file, int line, const char* a_name,
-                  const char* b_name, const char* u_name, L a, R b, U u) {
-    if (Compare::Near(a, b, u)) return;
+  ExpectationResult ExpectNear(const char* file, int line, const char* a_name,
+                               const char* b_name, const char* u_name, L a, R b,
+                               U u) {
+    if (Compare::Near(a, b, u)) return ExpectationResult(true, nullptr);
     std::stringstream ss;
     ss << " within +/-" << u_name << " (" << u << ") of ";
     std::string s = ss.str();
-    FailExpectation(file, line, a_name, b_name, s.c_str(), a, b);
+    return FailExpectation(file, line, a_name, b_name, s.c_str(), a, b);
   }
 
   void ExpectFailure() { expect_passing_ = false; }
@@ -91,12 +123,13 @@ class Expectation {
 
  private:
   template <typename L, typename R>
-  void FailExpectation(const char* file, int line, const char* a_name,
-                       const char* b_name, const char* op, L a, R b) {
+  ExpectationResult FailExpectation(const char* file, int line,
+                                    const char* a_name, const char* b_name,
+                                    const char* op, L a, R b) {
     std::stringstream ss;
     ss << "\nExpected " << a_name << op << b_name << "\n";
     ss << "        {" << a << "}" << op << "{" << b << "}\n";
-    AddFailure(file, line, ss.str());
+    return AddFailure(file, line, ss.str());
   }
 
   std::list<std::string> outs_;

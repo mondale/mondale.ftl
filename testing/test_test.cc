@@ -236,4 +236,6 @@ TEST(Nearness) {
   ASSERT_NEAR_ABS(9.9, 7.8, 2);
 }
 
+TEST(StreamingWorks) { EXPECT_EQ(8, 8) << "nope"; }
+
 }  // namespace
