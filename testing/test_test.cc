@@ -223,4 +223,10 @@ class UseMacrosInCtorFixture : public ::testing::Test {
 
 TEST_F(UseMacrosInCtorFixture, ShadyButOk) {}
 
+TEST(DISABLED_DisableTestDoesNothing) { ASSERT_TRUE(false); }
+
+TEST_F(SimpleFixture, DISABLED_DisabledTestWithFixtureDoesNothing) {
+  ASSERT_FALSE(true);
+}
+
 }  // namespace

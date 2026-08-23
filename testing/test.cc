@@ -78,6 +78,12 @@ void AppendResultOrDie(const std::string& name, bool pass,
   file.close();
 }
 
+constexpr std::string_view kDisabledPrefix = "DISABLED_";
+
+inline bool IsDisabled(std::string_view test_name) {
+  return test_name.starts_with(kDisabledPrefix);
+}
+
 std::string Demangle(const char* mangled) {
   int status = 0;
   std::unique_ptr<char, void (*)(void*)> res{
@@ -125,8 +131,17 @@ void TestRegistry::RegisterTest(const std::string& suite_name,
 }
 
 int TestRegistry::RunAllTests() {
+  int passing = 0;
   int failures = 0;
+  int disabled = 0;
   for (const auto& entry : tests_) {
+    if (IsDisabled(entry.test_name)) {
+      std::cout << "[ DISABLED ] " << entry.suite_name << "." << entry.test_name
+                << "\n";
+      ++disabled;
+      continue;
+    }
+
     std::cout << "[ RUN      ] " << entry.suite_name << "." << entry.test_name
               << "\n";
     std::unique_ptr<Test> test(entry.factory->CreateTest());
@@ -144,13 +159,24 @@ int TestRegistry::RunAllTests() {
                       global_scope_expectation_doohickey->outs());
     if (passed) {
       std::cout << "[       OK ] ";
+      ++passing;
     } else {
       std::cout << "[   FAILED ] ";
+      ++failures;
     }
     std::cout << entry.suite_name << "." << entry.test_name << "\n";
-    failures += (passed) ? 0 : 1;
     global_scope_expectation_doohickey->RestorePassing();
   }
+
+  std::cout << "\n[==========] Test Summary\n"
+            << "[  PASSED  ] " << passing << " test(s)\n";
+  if (failures > 0) {
+    std::cout << "[  FAILED  ] " << failures << " test(s)\n";
+  }
+  if (disabled > 0) {
+    std::cout << "[ DISABLED ] " << disabled << " test(s)\n";
+  }
+
   return (failures > 0) ? -1 : EXIT_SUCCESS;
 }
 
