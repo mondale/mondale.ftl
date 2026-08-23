@@ -11,4 +11,10 @@ void Expectation::AddFailure(const char* file, int line, std::string message) {
   outs_.push_back(ss.str());
 }
 
+void Expectation::RestorePassing() {
+  passing_ = true;
+  expect_passing_ = true;
+  outs_.clear();
+}
+
 }  // namespace testing::internal

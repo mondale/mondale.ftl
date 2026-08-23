@@ -68,6 +68,7 @@ class Expectation {
   }
 
   void ExpectFailure() { expect_passing_ = false; }
+  void RestorePassing();
 
  private:
   template <typename T>

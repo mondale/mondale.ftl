@@ -25,15 +25,20 @@ std::string MakeSafeDuration(double secs) {
 
 void AppendResultOrDie(const std::string& name, bool pass,
                        double duration_seconds,
-                       const std::list<std::string>& findings) {
+                       const std::list<std::string>& fixture_findings,
+                       const std::list<std::string>& additional_findings) {
   const auto safe_duration = MakeSafeDuration(duration_seconds);
 
   // 1. Fetch the environment variable
   const char* result_path = std::getenv("RESULTS_FILE");
   if (!result_path) {
-    std::cerr
-        << "Error: RESULTS_FILE environment variable is not set. Using out.txt"
-        << std::endl;
+    static bool warned = false;
+    if (!warned) {
+      std::cerr << "Warning: RESULTS_FILE environment variable is not set. "
+                   "Using out.txt"
+                << std::endl;
+      warned = true;
+    }
     result_path = "out.txt";
   }
 
@@ -54,7 +59,10 @@ void AppendResultOrDie(const std::string& name, bool pass,
   } else {
     // file << "--- FAIL: " << name << " (0.02s)\n";
     file << "--- FAIL: " << name << " (" << safe_duration << "s)\n";
-    for (const auto& finding : findings) {
+    for (const auto& finding : fixture_findings) {
+      file << finding << "\n";
+    }
+    for (const auto& finding : additional_findings) {
       file << finding << "\n";
     }
     file << "FAIL\n";
@@ -86,6 +94,15 @@ std::string StripNamespace(const std::string& str) {
 }
 
 Test* global_current_test = nullptr;
+
+// Test macros invoked without a running test. This'll make 'em work albeit
+// shakily.
+class GlobalScopeExpectations : public ::testing::Test {
+ public:
+  void TestBody() final {}
+};
+::testing::Test* global_scope_expectation_doohickey =
+    new GlobalScopeExpectations();
 
 }  // namespace
 
@@ -121,8 +138,10 @@ int TestRegistry::RunAllTests() {
     test->TearDown();
     global_current_test = nullptr;
     const std::chrono::duration<double> elapsed = end - start;
-    const bool passed = test->IsPassing();
-    AppendResultOrDie(test->GetName(), passed, elapsed.count(), test->outs());
+    const bool passed =
+        test->IsPassing() && global_scope_expectation_doohickey->IsPassing();
+    AppendResultOrDie(test->GetName(), passed, elapsed.count(), test->outs(),
+                      global_scope_expectation_doohickey->outs());
     if (passed) {
       std::cout << "[       OK ] ";
     } else {
@@ -130,6 +149,7 @@ int TestRegistry::RunAllTests() {
     }
     std::cout << entry.suite_name << "." << entry.test_name << "\n";
     failures += (passed) ? 0 : 1;
+    global_scope_expectation_doohickey->RestorePassing();
   }
   return (failures > 0) ? -1 : EXIT_SUCCESS;
 }
@@ -143,7 +163,12 @@ TestRegistrar::TestRegistrar(const char* suite_name, const char* test_name,
 }  // namespace internal
 
 // static
-Test* Test::Current() { return global_current_test; }
+Test* Test::Current() {
+  if (nullptr == global_current_test) {
+    return global_scope_expectation_doohickey;
+  }
+  return global_current_test;
+}
 
 int RunAllTests() { return internal::TestRegistry::Instance()->RunAllTests(); }
 

@@ -217,4 +217,11 @@ TEST_F(SetupFixture, SetUpAndTearDownWorks) {
   EXPECT_FALSE(teardown_ran_);
 }
 
+class UseMacrosInCtorFixture : public ::testing::Test {
+ public:
+  UseMacrosInCtorFixture() { EXPECT_TRUE(true); }
+};
+
+TEST_F(UseMacrosInCtorFixture, ShadyButOk) {}
+
 }  // namespace
