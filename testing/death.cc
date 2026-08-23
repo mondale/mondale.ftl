@@ -7,8 +7,14 @@ namespace testing {
 DeathMatcher DiesWithExitCode(int expected_code) {
   return [expected_code](const DeathTestResult& res, std::string& reason) {
     if (!res.exited_normal) {
-      reason = "Process did not exit normally (terminated by signal " +
-               std::to_string(res.signal_number) + ")";
+      reason = "Process did not exit normally.";
+      if (res.signal_number != -1) {
+        reason.append(" (terminated by signal " +
+                      std::to_string(res.signal_number) + ")");
+      }
+      if (res.timed_out) {
+        reason.append(" (timed out)");
+      }
       return false;
     }
     if (res.exit_code != expected_code) {
@@ -41,6 +47,20 @@ DeathMatcher StderrContains(const std::string& pattern) {
       return false;
     }
     return true;
+  };
+}
+
+DeathMatcher TimedOut() {
+  return [](const DeathTestResult& res, std::string reason) {
+    if (res.timed_out) return true;
+    if (res.signal_number != -1) {
+      reason.append("Did not timeout: terminated by signal " +
+                    std::to_string(res.signal_number));
+    } else {
+      reason.append("Did not timeout: exited with code " +
+                    std::to_string(res.exit_code));
+    }
+    return false;
   };
 }
 

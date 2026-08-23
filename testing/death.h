@@ -27,6 +27,7 @@ using DeathMatcher = std::function<bool(
 DeathMatcher DiesWithExitCode(int expected_code);
 DeathMatcher StdoutContains(const std::string& pattern);
 DeathMatcher StderrContains(const std::string& pattern);
+DeathMatcher TimedOut();
 
 // Combine matchers using variadic templates or operator&&
 template <typename M1, typename M2>

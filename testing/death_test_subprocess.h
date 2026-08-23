@@ -10,6 +10,8 @@ namespace testing::internal {
 class DeathTestSubprocess final {
  public:
   static DeathTestResult Execute(std::function<void()> statement);
+
+  static void SetTimeout(int seconds);
 };
 
 }  // namespace testing::internal

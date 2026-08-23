@@ -23,7 +23,14 @@ void ReadAllNonBlocking(int fd, std::string& out) {
   }
 }
 
+int global_timeout_seconds = 30;
+
 }  // namespace
+
+// static
+void DeathTestSubprocess::SetTimeout(int seconds) {
+  global_timeout_seconds = seconds;
+}
 
 // static
 DeathTestResult DeathTestSubprocess::Execute(std::function<void()> statement) {
@@ -73,14 +80,14 @@ DeathTestResult DeathTestSubprocess::Execute(std::function<void()> statement) {
   fcntl(stdout_pipe[0], F_SETFL, O_NONBLOCK);
   fcntl(stderr_pipe[0], F_SETFL, O_NONBLOCK);
 
-  constexpr auto kTimeout = std::chrono::seconds(30);
+  const auto timeout = std::chrono::seconds(global_timeout_seconds);
   constexpr auto kPollInterval = std::chrono::milliseconds(10);
   auto start_time = std::chrono::steady_clock::now();
 
   int status = 0;
   bool child_exited = false;
 
-  while (std::chrono::steady_clock::now() - start_time < kTimeout) {
+  while ((std::chrono::steady_clock::now() - start_time) < timeout) {
     // Drain output pipes while waiting
     ReadAllNonBlocking(stdout_pipe[0], result.stdout_str);
     ReadAllNonBlocking(stderr_pipe[0], result.stderr_str);

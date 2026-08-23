@@ -1,7 +1,10 @@
 #include <cassert>
+#include <chrono>
 #include <iostream>
 #include <memory>
+#include <thread>
 
+#include "testing/death_test_subprocess.h"
 #include "testing/test.h"
 
 namespace {
@@ -274,6 +277,13 @@ TEST(DeathTestDebugDeath) {
 #endif
       },
       testing::DiesWithExitCode(14) && testing::StderrContains("Oh no!"));
+}
+
+TEST(DeathTestTimeout) {
+  testing::internal::DeathTestSubprocess::SetTimeout(1);
+  EXPECT_DEATH([]() { std::this_thread::sleep_for(std::chrono::seconds(50)); },
+               testing::TimedOut());
+  testing::internal::DeathTestSubprocess::SetTimeout(30);
 }
 
 }  // namespace
