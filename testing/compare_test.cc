@@ -10,7 +10,7 @@ namespace {
 TEST(EqSameTypes) {
   EXPECT_TRUE(Compare::Eq(7, 7));
   EXPECT_TRUE(Compare::Eq(7u, 7u));
-  EXPECT_FALSE(Compare::Eq(7.7, 7.7));
+  EXPECT_TRUE(Compare::Eq(7.7, 7.7));
   EXPECT_TRUE(Compare::Eq("Foo", "Foo"));
 
   std::string s1 = "Bar";

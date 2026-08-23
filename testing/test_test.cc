@@ -171,4 +171,13 @@ TEST(AssertGeFailingTest) {
   ASSERT_GE(6, 87);
 }
 
+TEST(CurrentTestIsMyself) { EXPECT_TRUE(this == Test::Current()); }
+
+void UseAMacroOutsideTheMethod() {
+  EXPECT_TRUE(true);
+  ASSERT_FALSE(false);
+}
+
+TEST(MacrosWorkOutsideTheMethod) { UseAMacroOutsideTheMethod(); }
+
 }  // namespace

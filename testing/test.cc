@@ -86,6 +86,7 @@ std::string StripNamespace(const std::string& str) {
 }
 
 std::list<std::unique_ptr<Test>>* global_all_tests = nullptr;
+Test* global_current_test = nullptr;
 
 }  // namespace
 
@@ -108,13 +109,18 @@ bool RegisterTest(std::unique_ptr<Test> test) {
   return true;
 }
 
+// static
+Test* Test::Current() { return global_current_test; }
+
 int RunAllTests() {
   int failures = 0;
   if (nullptr == global_all_tests) return EXIT_SUCCESS;
   for (auto& test : *global_all_tests) {
+    global_current_test = test.get();
     const auto start = std::chrono::steady_clock::now();
     test->Run();
     const auto end = std::chrono::steady_clock::now();
+    global_current_test = nullptr;
     const std::chrono::duration<double> elapsed = end - start;
     const bool passed = test->IsPassing();
     AppendResultOrDie(test->GetName(), passed, elapsed.count(), test->outs());
