@@ -23,6 +23,21 @@ std::string MakeSafeDuration(double secs) {
   return std::format("{:.2f}", secs);
 }
 
+class DualAppender final {
+ public:
+  DualAppender(std::ostream& one, std::ostream& two) : one_(one), two_(two) {}
+  template <typename T>
+  DualAppender& operator<<(const T& val) {
+    one_ << val;
+    two_ << val;
+    return *this;
+  }
+
+ private:
+  std::ostream& one_;
+  std::ostream& two_;
+};
+
 void AppendResultOrDie(const std::string& name, bool pass,
                        double duration_seconds,
                        const std::list<std::string>& fixture_findings,
@@ -50,6 +65,9 @@ void AppendResultOrDie(const std::string& name, bool pass,
     Die();
   }
 
+  // Mirror findings to std::cout and the file.
+  DualAppender da(file, std::cout);
+
   // 3. Write outcome to the file
   file << "=== RUN   " << name << "\n";
   if (pass) {
@@ -60,10 +78,10 @@ void AppendResultOrDie(const std::string& name, bool pass,
     // file << "--- FAIL: " << name << " (0.02s)\n";
     file << "--- FAIL: " << name << " (" << safe_duration << "s)\n";
     for (const auto& finding : fixture_findings) {
-      file << finding << "\n";
+      da << finding << "\n";
     }
     for (const auto& finding : additional_findings) {
-      file << finding << "\n";
+      da << finding << "\n";
     }
     file << "FAIL\n";
   }
