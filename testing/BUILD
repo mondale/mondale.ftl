@@ -23,9 +23,17 @@ cc_test(
 )
 
 cc_library(
+  name = "expectation",
+  hdrs = ["expectation.h"],
+  srcs = ["expectation.cc"],
+  deps = []
+)
+
+cc_library(
   name = "test",
   hdrs = ["test.h"],
   srcs = ["test.cc"],
+  deps = [":expectation"],
 )
 
 cc_test(

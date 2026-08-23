@@ -93,13 +93,6 @@ std::string Test::GetName() const {
   return StripNamespace(Demangle(typeid(*this).name()));
 }
 
-void Test::AddFailure(const char* file, int line, std::string message) {
-  passing_ = false;
-  std::stringstream ss;
-  ss << file << "[" << line << "]: " << message;
-  outs_.push_back(ss.str());
-}
-
 namespace internal {
 
 // static
