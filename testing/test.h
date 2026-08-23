@@ -9,11 +9,11 @@
 #include <sstream>
 #include <string>
 
-#include "testing/expectation.h"
+#include "testing/expect_helper.h"
 
 namespace testing {
 
-class Test : public internal::Expectation {
+class Test : public internal::ExpectHelper {
  public:
   virtual ~Test() = default;
 

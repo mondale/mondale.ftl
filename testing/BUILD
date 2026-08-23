@@ -39,9 +39,9 @@ cc_library(
 )
 
 cc_library(
-  name = "expectation",
-  hdrs = ["expectation.h"],
-  srcs = ["expectation.cc"],
+  name = "expect_helper",
+  hdrs = ["expect_helper.h"],
+  srcs = ["expect_helper.cc"],
   deps = [":compare",
           ":death",
           ":death_test_subprocess",
@@ -65,7 +65,7 @@ cc_library(
   name = "test",
   hdrs = ["test.h"],
   srcs = ["test.cc"],
-  deps = [":expectation"],
+  deps = [":expect_helper"],
 )
 
 cc_test(
