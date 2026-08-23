@@ -1,17 +1,16 @@
-# Basic Test
+# FTL Testing
 
-Basic Test is a tiny library to facilitate testing of the lowest-level
-components of `mondale.ftl`.
+`//testing` is a library for gerneric unit testing in `mondale.ftl`.
 
-The only file to include is `base/basic_test.h`. `BUILD` files should link
-against `//base/basic_test` in the `deps` section.
+The only file to include is `testing/testing.h`. `BUILD` files should link
+against `//testing` in the `deps` section.
 
-The behavior of Basic Test is illustrated in the code example below:
+Code example:
 ```
-#include "base/basic_test.h"  // Basic Test header
 #include "path/to/thing/to/test.h"  // Other includes as needed
+#include "testing/testing.h"
 
-// Any namespace except `base::testing` may be used. Select the namespace that
+// Any namespace except `::testing` may be used. Select the namespace that
 // makes the test code most readable if testing within a single target
 // namespace, or use an anonymous namespace if testing across multple target
 // namespaces or if the choice of namespace doesn't assist test readability.
@@ -48,7 +47,7 @@ TEST(ThisIsAPassingTest) {
 }  // namespace
 ```
 The example above is a complete file. Do not include a `main()` in test
-definitions as this is provided by the `//base:basic_test` target.
+definitions as this is provided by the `//testing` target.
 
 The set of expectations is intentionally minimal in Basic Test. Streaming
 outputs to macros is not supported except for the `ADD_FAILURE()` macro.
