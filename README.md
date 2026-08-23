@@ -6,9 +6,10 @@
 
 Follow any directory-specific README.md with higher precedence than this file.
 
-`//base` may not depend on any libraries outside of `//base`.
+`//base` may not depend on any libraries outside of `//base` and `//testing`.
 
-`//core` may not depend on any libraries outside of `//base` and `//core`.
+`//core` may not depend on any libraries outside of `//base`, `//core`, and
+`//testing'.
 
 ## Style Guidance
 

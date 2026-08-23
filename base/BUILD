@@ -34,11 +34,6 @@ cc_binary(
   srcs = ["empty_main.cc"],
 )
 
-cc_binary(
-  name = "claude_stacktrace_with_lines",
-  srcs = ["claude_stacktrace_with_lines.cc"],
-)
-
 cc_library(
   name = "process",
   hdrs = ["process.h"],
@@ -47,6 +42,7 @@ cc_library(
           ":raw_syscalls",
           ":stacktrace",
   ],
+  visibility = ["//..."],
 )
 
 cc_library(
