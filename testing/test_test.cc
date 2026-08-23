@@ -233,9 +233,14 @@ TEST(Nearness) {
   EXPECT_NEAR(7.7, 7.7);
   EXPECT_NEAR_ABS(7.7, 7.8, 0.2);
   ASSERT_NEAR(4.7, 4.4 + 0.3);
-  ASSERT_NEAR_ABS(9.9, 7.8, 2);
+  ASSERT_NEAR_ABS(9.9, 7.91, 2);
 }
 
-TEST(StreamingWorks) { EXPECT_EQ(8, 8) << "nope"; }
+TEST(StreamingWorks) {
+  EXPECT_EQ(8, 8) << "nope";
+  ASSERT_EQ(8, 8) << "stuff";
+  ASSERT_TRUE(true) << "more nope";
+  ASSERT_NE(999, 4) << "more stuff";
+}
 
 }  // namespace

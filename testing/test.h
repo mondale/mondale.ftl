@@ -127,37 +127,115 @@ struct TestRegistrar {
   (::testing::Test::Current()->ExpectNear(__FILE__, __LINE__, #a, #b, #u, a, \
                                           b, u))
 
-#define ASSERT_TRUE(a)                                                 \
-  (::testing::Test::Current()->ExpectTrue(__FILE__, __LINE__, #a, a)); \
-  return
-#define ASSERT_FALSE(a)                                                 \
-  (::testing::Test::Current()->ExpectFalse(__FILE__, __LINE__, #a, a)); \
-  return
-#define ASSERT_EQ(a, b)                                                     \
-  (::testing::Test::Current()->ExpectEq(__FILE__, __LINE__, #a, #b, a, b)); \
-  return
-#define ASSERT_NE(a, b)                                                     \
-  (::testing::Test::Current()->ExpectNe(__FILE__, __LINE__, #a, #b, a, b)); \
-  return
-#define ASSERT_LT(a, b)                                                     \
-  (::testing::Test::Current()->ExpectLt(__FILE__, __LINE__, #a, #b, a, b)); \
-  return
-#define ASSERT_LE(a, b)                                                     \
-  (::testing::Test::Current()->ExpectLe(__FILE__, __LINE__, #a, #b, a, b)); \
-  return
-#define ASSERT_GT(a, b)                                                     \
-  (::testing::Test::Current()->ExpectGt(__FILE__, __LINE__, #a, #b, a, b)); \
-  return
-#define ASSERT_GE(a, b)                                                     \
-  (::testing::Test::Current()->ExpectGe(__FILE__, __LINE__, #a, #b, a, b)); \
-  return
-#define ASSERT_NEAR(a, b)                                                     \
-  (::testing::Test::Current()->ExpectNear(__FILE__, __LINE__, #a, #b, a, b)); \
-  return
-#define ASSERT_NEAR_ABS(a, b, u)                                             \
-  (::testing::Test::Current()->ExpectNear(__FILE__, __LINE__, #a, #b, #u, a, \
-                                          b, u));                            \
-  return
+#define ASSERT_TRUE(a)                                        \
+  for (auto helper = (::testing::Test::Current()->ExpectTrue( \
+           __FILE__, __LINE__, #a, a));                       \
+       true;)                                                 \
+    if (const auto h = helper.LoopingHelper(); h == 9)        \
+      break;                                                  \
+    else if (h == 1)                                          \
+      return;                                                 \
+    else                                                      \
+      helper
+
+#define ASSERT_FALSE(a)                                        \
+  for (auto helper = (::testing::Test::Current()->ExpectFalse( \
+           __FILE__, __LINE__, #a, a));                        \
+       true;)                                                  \
+    if (const auto h = helper.LoopingHelper(); h == 9)         \
+      break;                                                   \
+    else if (h == 1)                                           \
+      return;                                                  \
+    else                                                       \
+      helper
+
+#define ASSERT_EQ(a, b)                                                        \
+  for (auto helper = (::testing::Test::Current()->ExpectEq(__FILE__, __LINE__, \
+                                                           #a, #b, a, b));     \
+       true;)                                                                  \
+    if (const auto h = helper.LoopingHelper(); h == 9)                         \
+      break;                                                                   \
+    else if (h == 1)                                                           \
+      return;                                                                  \
+    else                                                                       \
+      helper
+
+#define ASSERT_NE(a, b)                                                        \
+  for (auto helper = (::testing::Test::Current()->ExpectNe(__FILE__, __LINE__, \
+                                                           #a, #b, a, b));     \
+       true;)                                                                  \
+    if (const auto h = helper.LoopingHelper(); h == 9)                         \
+      break;                                                                   \
+    else if (h == 1)                                                           \
+      return;                                                                  \
+    else                                                                       \
+      helper
+
+#define ASSERT_LT(a, b)                                                        \
+  for (auto helper = (::testing::Test::Current()->ExpectLt(__FILE__, __LINE__, \
+                                                           #a, #b, a, b));     \
+       true;)                                                                  \
+    if (const auto h = helper.LoopingHelper(); h == 9)                         \
+      break;                                                                   \
+    else if (h == 1)                                                           \
+      return;                                                                  \
+    else                                                                       \
+      helper
+
+#define ASSERT_LE(a, b)                                                        \
+  for (auto helper = (::testing::Test::Current()->ExpectLe(__FILE__, __LINE__, \
+                                                           #a, #b, a, b));     \
+       true;)                                                                  \
+    if (const auto h = helper.LoopingHelper(); h == 9)                         \
+      break;                                                                   \
+    else if (h == 1)                                                           \
+      return;                                                                  \
+    else                                                                       \
+      helper
+
+#define ASSERT_GT(a, b)                                                        \
+  for (auto helper = (::testing::Test::Current()->ExpectGt(__FILE__, __LINE__, \
+                                                           #a, #b, a, b));     \
+       true;)                                                                  \
+    if (const auto h = helper.LoopingHelper(); h == 9)                         \
+      break;                                                                   \
+    else if (h == 1)                                                           \
+      return;                                                                  \
+    else                                                                       \
+      helper
+
+#define ASSERT_GE(a, b)                                                        \
+  for (auto helper = (::testing::Test::Current()->ExpectGe(__FILE__, __LINE__, \
+                                                           #a, #b, a, b));     \
+       true;)                                                                  \
+    if (const auto h = helper.LoopingHelper(); h == 9)                         \
+      break;                                                                   \
+    else if (h == 1)                                                           \
+      return;                                                                  \
+    else                                                                       \
+      helper
+
+#define ASSERT_NEAR(a, b)                                     \
+  for (auto helper = (::testing::Test::Current()->ExpectNear( \
+           __FILE__, __LINE__, #a, #b, a, b));                \
+       true;)                                                 \
+    if (const auto h = helper.LoopingHelper(); h == 9)        \
+      break;                                                  \
+    else if (h == 1)                                          \
+      return;                                                 \
+    else                                                      \
+      helper
+
+#define ASSERT_NEAR_ABS(a, b, u)                              \
+  for (auto helper = (::testing::Test::Current()->ExpectNear( \
+           __FILE__, __LINE__, #a, #b, #u, a, b, u));         \
+       true;)                                                 \
+    if (const auto h = helper.LoopingHelper(); h == 9)        \
+      break;                                                  \
+    else if (h == 1)                                          \
+      return;                                                 \
+    else                                                      \
+      helper
 
 [[nodiscard]] int RunAllTests();
 

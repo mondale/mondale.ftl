@@ -31,10 +31,21 @@ class ExpectationResult {
   ExpectationResult(ExpectationResult&& other) = default;
   ExpectationResult& operator=(ExpectationResult&& other) = default;
 
+  int LoopingHelper() {
+    if (success_) {
+      return 9;
+    }
+    if (looping_helper_ >= 1) {
+      return 1;
+    }
+    return looping_helper_++;
+  }
+
  private:
   bool success_;
   std::stringstream ss_;
   std::list<std::string>* outs_;
+  int looping_helper_ = 0;
 };
 
 class Expectation {
@@ -60,57 +71,57 @@ class Expectation {
 
   template <typename L, typename R>
   ExpectationResult ExpectEq(const char* file, int line, const char* a_name,
-                             const char* b_name, L a, R b) {
+                             const char* b_name, const L& a, const R& b) {
     if (Compare::Eq(a, b)) return ExpectationResult(true, nullptr);
     return FailExpectation(file, line, a_name, b_name, " == ", a, b);
   }
 
   template <typename L, typename R>
   ExpectationResult ExpectLe(const char* file, int line, const char* a_name,
-                             const char* b_name, L a, R b) {
+                             const char* b_name, const L& a, const R& b) {
     if (Compare::Le(a, b)) return ExpectationResult(true, nullptr);
     return FailExpectation(file, line, a_name, b_name, " <= ", a, b);
   }
 
   template <typename L, typename R>
   ExpectationResult ExpectLt(const char* file, int line, const char* a_name,
-                             const char* b_name, L a, R b) {
+                             const char* b_name, const L& a, const R& b) {
     if (Compare::Lt(a, b)) return ExpectationResult(true, nullptr);
     return FailExpectation(file, line, a_name, b_name, " < ", a, b);
   }
 
   template <typename L, typename R>
   ExpectationResult ExpectGe(const char* file, int line, const char* a_name,
-                             const char* b_name, L a, R b) {
+                             const char* b_name, const L& a, const R& b) {
     if (Compare::Ge(a, b)) return ExpectationResult(true, nullptr);
     return FailExpectation(file, line, a_name, b_name, " >= ", a, b);
   }
 
   template <typename L, typename R>
   ExpectationResult ExpectGt(const char* file, int line, const char* a_name,
-                             const char* b_name, L a, R b) {
+                             const char* b_name, const L& a, const R& b) {
     if (Compare::Gt(a, b)) return ExpectationResult(true, nullptr);
     return FailExpectation(file, line, a_name, b_name, " > ", a, b);
   }
 
   template <typename L, typename R>
   ExpectationResult ExpectNe(const char* file, int line, const char* a_name,
-                             const char* b_name, L a, R b) {
+                             const char* b_name, const L& a, const R& b) {
     if (Compare::Ne(a, b)) return ExpectationResult(true, nullptr);
     return FailExpectation(file, line, a_name, b_name, " != ", a, b);
   }
 
   template <typename L, typename R>
   ExpectationResult ExpectNear(const char* file, int line, const char* a_name,
-                               const char* b_name, L a, R b) {
+                               const char* b_name, const L& a, const R& b) {
     if (Compare::Near(a, b)) return ExpectationResult(true, nullptr);
     return FailExpectation(file, line, a_name, b_name, " near ", a, b);
   }
 
   template <typename L, typename R, typename U>
   ExpectationResult ExpectNear(const char* file, int line, const char* a_name,
-                               const char* b_name, const char* u_name, L a, R b,
-                               U u) {
+                               const char* b_name, const char* u_name,
+                               const L& a, const R& b, const U& u) {
     if (Compare::Near(a, b, u)) return ExpectationResult(true, nullptr);
     std::stringstream ss;
     ss << " within +/-" << u_name << " (" << u << ") of ";
@@ -125,7 +136,7 @@ class Expectation {
   template <typename L, typename R>
   ExpectationResult FailExpectation(const char* file, int line,
                                     const char* a_name, const char* b_name,
-                                    const char* op, L a, R b) {
+                                    const char* op, const L& a, const R& b) {
     std::stringstream ss;
     ss << "\nExpected " << a_name << op << b_name << "\n";
     ss << "        {" << a << "}" << op << "{" << b << "}\n";
