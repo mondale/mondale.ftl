@@ -9,6 +9,20 @@ cc_library(
 )
 
 cc_library(
+  name = "compare",
+  hdrs = ["compare.h"],
+  srcs = [],
+  deps = [],
+)
+
+cc_test(
+  name = "compare_test",
+  srcs = ["compare_test.cc"],
+  deps = [":compare",
+          ":testing",],
+)
+
+cc_library(
   name = "test",
   hdrs = ["test.h"],
   srcs = ["test.cc"],
