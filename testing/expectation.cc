@@ -1,5 +1,6 @@
 #include <sstream>
 
+#include "testing/death_test_subprocess.h"
 #include "testing/expectation.h"
 
 namespace testing::internal {
@@ -16,6 +17,15 @@ void Expectation::RestorePassing() {
   passing_ = true;
   expect_passing_ = true;
   outs_.clear();
+}
+
+ExpectationResult Expectation::ExpectDeath(const char* file, int line,
+                                           std::function<void()> expression,
+                                           DeathMatcher m) {
+  const auto result = DeathTestSubprocess::Execute(expression);
+  std::string complaint;
+  if (m(result, complaint)) return ExpectationResult(true, nullptr);
+  return AddFailure(file, line, complaint);
 }
 
 }  // namespace testing::internal

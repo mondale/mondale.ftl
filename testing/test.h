@@ -237,6 +237,20 @@ struct TestRegistrar {
     else                                                      \
       helper
 
+#define EXPECT_DEATH(statement, matcher)                                  \
+  (::testing::Test::Current()->ExpectDeath(__FILE__, __LINE__, statement, \
+                                           matcher))
+
+#ifndef NDEBUG
+#define EXPECT_DEBUG_DEATH(statement, matcher) EXPECT_DEATH(statement, matcher)
+#else
+#define EXPECT_DEBUG_DEATH(statement, matcher) \
+  do {                                         \
+    static_cast<void>(matcher);                \
+    static_cast<void>(statement);              \
+  } while (false)
+#endif
+
 [[nodiscard]] int RunAllTests();
 
 }  // namespace testing

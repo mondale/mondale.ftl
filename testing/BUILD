@@ -4,6 +4,7 @@ cc_library(
   hdrs = ["testing.h"],
   srcs = ["test_main.cc",],
   deps = [":test",
+          ":death",
           "//base:process"],
   visibility = ["//...", ],
 )
@@ -23,10 +24,27 @@ cc_test(
 )
 
 cc_library(
+  name = "death",
+  hdrs = ["death.h"],
+  srcs = ["death.cc"],
+  deps = [],
+)
+
+cc_library(
+  name = "death_test_subprocess",
+  hdrs = ["death_test_subprocess.h"],
+  srcs = ["death_test_subprocess.cc"],
+  deps = [":death"],
+)
+
+cc_library(
   name = "expectation",
   hdrs = ["expectation.h"],
   srcs = ["expectation.cc"],
-  deps = [":compare"]
+  deps = [":compare",
+          ":death",
+          ":death_test_subprocess",
+  ],
 )
 
 cc_library(

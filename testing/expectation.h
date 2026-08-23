@@ -5,6 +5,7 @@
 #include <string>
 
 #include "testing/compare.h"
+#include "testing/death.h"
 
 namespace testing::internal {
 
@@ -128,6 +129,10 @@ class Expectation {
     std::string s = ss.str();
     return FailExpectation(file, line, a_name, b_name, s.c_str(), a, b);
   }
+
+  ExpectationResult ExpectDeath(const char* file, int line,
+                                std::function<void()> expression,
+                                DeathMatcher m);
 
   void ExpectFailure() { expect_passing_ = false; }
   void RestorePassing();

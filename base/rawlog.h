@@ -72,7 +72,10 @@ class CheckHelper final {
   (::base::rawlog::CheckHelper(__builtin_FILE(), __builtin_LINE(), b, #b) \
        .stream())
 #else
-#define RAW_DCHECK(b)
+#define RAW_DCHECK(b)                                                    \
+  (::base::rawlog::CheckHelper(__builtin_FILE(), __builtin_LINE(), true, \
+                               "True")                                   \
+       .stream())
 #endif
 
 #endif  // #ifndef BASE_RAW_LOG_H_

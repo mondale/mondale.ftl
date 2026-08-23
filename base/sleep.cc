@@ -10,15 +10,9 @@ void SpinUntil(CycleTime c) {
 }  // namespace
 
 void SleepFor(Duration d) {
-  // Bail early on very small sleeps, that's silly.
-  constexpr Duration kMin = Nanoseconds(50);
-  if (d < kMin) {
-    return;
-  }
-
-  // Spinrange; subtrace off the min to approximate a perfect landing.
+  // Spinrange.
   if (d < Microseconds(10)) {
-    const auto target_cycles = CycleTime::Now() + (d - kMin);
+    const auto target_cycles = CycleTime::Now() + d;
     SpinUntil(target_cycles);
     return;
   }

@@ -243,4 +243,37 @@ TEST(StreamingWorks) {
   ASSERT_NE(999, 4) << "more stuff";
 }
 
+TEST(DeathTestErrorCode) {
+  EXPECT_DEATH([]() { exit(3); }, testing::DiesWithExitCode(3));
+}
+
+TEST(DeathTestStdoutContains) {
+  EXPECT_DEATH(
+      []() {
+        std::cout << "Oh no!" << std::flush;
+        exit(4);
+      },
+      testing::DiesWithExitCode(4) && testing::StdoutContains("Oh no!"));
+}
+
+TEST(DeathTestStderrContains) {
+  EXPECT_DEATH(
+      []() {
+        std::cerr << "Oh no!" << std::flush;
+        exit(99);
+      },
+      testing::DiesWithExitCode(99) && testing::StderrContains("Oh no!"));
+}
+
+TEST(DeathTestDebugDeath) {
+  EXPECT_DEBUG_DEATH(
+      []() {
+        std::cerr << "Oh no!" << std::flush;
+#ifndef NDEBUG
+        exit(14);
+#endif
+      },
+      testing::DiesWithExitCode(14) && testing::StderrContains("Oh no!"));
+}
+
 }  // namespace
