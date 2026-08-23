@@ -4,6 +4,8 @@
 #include <list>
 #include <string>
 
+#include "testing/compare.h"
+
 namespace testing::internal {
 
 class Expectation {
@@ -25,45 +27,45 @@ class Expectation {
     FailExpectation(file, line, name, "false", " is ", value, false);
   }
 
-  template <typename T>
-  void ExpectEqHelper(const char* file, int line, const char* a_name,
-                      const char* b_name, T a, T b) {
-    if (a == b) return;
+  template <typename L, typename R>
+  void ExpectEq(const char* file, int line, const char* a_name,
+                const char* b_name, L a, R b) {
+    if (Compare::Eq(a, b)) return;
     FailExpectation(file, line, a_name, b_name, " == ", a, b);
   }
 
-  template <typename T>
-  void ExpectLeHelper(const char* file, int line, const char* a_name,
-                      const char* b_name, T a, T b) {
-    if (a <= b) return;
+  template <typename L, typename R>
+  void ExpectLe(const char* file, int line, const char* a_name,
+                const char* b_name, L a, R b) {
+    if (Compare::Le(a, b)) return;
     FailExpectation(file, line, a_name, b_name, " <= ", a, b);
   }
 
-  template <typename T>
-  void ExpectLtHelper(const char* file, int line, const char* a_name,
-                      const char* b_name, T a, T b) {
-    if (a < b) return;
+  template <typename L, typename R>
+  void ExpectLt(const char* file, int line, const char* a_name,
+                const char* b_name, L a, R b) {
+    if (Compare::Lt(a, b)) return;
     FailExpectation(file, line, a_name, b_name, " < ", a, b);
   }
 
-  template <typename T>
-  void ExpectGeHelper(const char* file, int line, const char* a_name,
-                      const char* b_name, T a, T b) {
-    if (a >= b) return;
+  template <typename L, typename R>
+  void ExpectGe(const char* file, int line, const char* a_name,
+                const char* b_name, L a, R b) {
+    if (Compare::Ge(a, b)) return;
     FailExpectation(file, line, a_name, b_name, " >= ", a, b);
   }
 
-  template <typename T>
-  void ExpectGtHelper(const char* file, int line, const char* a_name,
-                      const char* b_name, T a, T b) {
-    if (a > b) return;
+  template <typename L, typename R>
+  void ExpectGt(const char* file, int line, const char* a_name,
+                const char* b_name, L a, R b) {
+    if (Compare::Gt(a, b)) return;
     FailExpectation(file, line, a_name, b_name, " > ", a, b);
   }
 
-  template <typename T>
-  void ExpectNeHelper(const char* file, int line, const char* a_name,
-                      const char* b_name, T a, T b) {
-    if (a != b) return;
+  template <typename L, typename R>
+  void ExpectNe(const char* file, int line, const char* a_name,
+                const char* b_name, L a, R b) {
+    if (Compare::Ne(a, b)) return;
     FailExpectation(file, line, a_name, b_name, " != ", a, b);
   }
 
@@ -71,9 +73,9 @@ class Expectation {
   void RestorePassing();
 
  private:
-  template <typename T>
+  template <typename L, typename R>
   void FailExpectation(const char* file, int line, const char* a_name,
-                       const char* b_name, const char* op, T a, T b) {
+                       const char* b_name, const char* op, L a, R b) {
     std::stringstream ss;
     ss << "\nExpected " << a_name << op << b_name << "\n";
     ss << "        {" << a << "}" << op << "{" << b << "}\n";

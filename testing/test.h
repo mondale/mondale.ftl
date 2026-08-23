@@ -110,17 +110,17 @@ struct TestRegistrar {
 #define EXPECT_FALSE(a) \
   (::testing::Test::Current()->ExpectFalse(__FILE__, __LINE__, #a, a))
 #define EXPECT_EQ(a, b) \
-  (::testing::Test::Current()->ExpectEqHelper(__FILE__, __LINE__, #a, #b, a, b))
+  (::testing::Test::Current()->ExpectEq(__FILE__, __LINE__, #a, #b, a, b))
 #define EXPECT_NE(a, b) \
-  (::testing::Test::Current()->ExpectNeHelper(__FILE__, __LINE__, #a, #b, a, b))
+  (::testing::Test::Current()->ExpectNe(__FILE__, __LINE__, #a, #b, a, b))
 #define EXPECT_LT(a, b) \
-  (::testing::Test::Current()->ExpectLtHelper(__FILE__, __LINE__, #a, #b, a, b))
+  (::testing::Test::Current()->ExpectLt(__FILE__, __LINE__, #a, #b, a, b))
 #define EXPECT_LE(a, b) \
-  (::testing::Test::Current()->ExpectLeHelper(__FILE__, __LINE__, #a, #b, a, b))
+  (::testing::Test::Current()->ExpectLe(__FILE__, __LINE__, #a, #b, a, b))
 #define EXPECT_GT(a, b) \
-  (::testing::Test::Current()->ExpectGtHelper(__FILE__, __LINE__, #a, #b, a, b))
+  (::testing::Test::Current()->ExpectGt(__FILE__, __LINE__, #a, #b, a, b))
 #define EXPECT_GE(a, b) \
-  (::testing::Test::Current()->ExpectGeHelper(__FILE__, __LINE__, #a, #b, a, b))
+  (::testing::Test::Current()->ExpectGe(__FILE__, __LINE__, #a, #b, a, b))
 
 #define ASSERT_TRUE(a)                                                 \
   (::testing::Test::Current()->ExpectTrue(__FILE__, __LINE__, #a, a)); \
@@ -128,32 +128,25 @@ struct TestRegistrar {
 #define ASSERT_FALSE(a)                                                 \
   (::testing::Test::Current()->ExpectFalse(__FILE__, __LINE__, #a, a)); \
   return
-#define ASSERT_EQ(a, b)                                                      \
-  (::testing::Test::Current()->ExpectEqHelper(__FILE__, __LINE__, #a, #b, a, \
-                                              b));                           \
+#define ASSERT_EQ(a, b)                                                     \
+  (::testing::Test::Current()->ExpectEq(__FILE__, __LINE__, #a, #b, a, b)); \
   return
-#define ASSERT_NE(a, b)                                                      \
-  (::testing::Test::Current()->ExpectNeHelper(__FILE__, __LINE__, #a, #b, a, \
-                                              b));                           \
+#define ASSERT_NE(a, b)                                                     \
+  (::testing::Test::Current()->ExpectNe(__FILE__, __LINE__, #a, #b, a, b)); \
   return
-#define ASSERT_LT(a, b)                                                      \
-  (::testing::Test::Current()->ExpectLtHelper(__FILE__, __LINE__, #a, #b, a, \
-                                              b));                           \
+#define ASSERT_LT(a, b)                                                     \
+  (::testing::Test::Current()->ExpectLt(__FILE__, __LINE__, #a, #b, a, b)); \
   return
-#define ASSERT_LE(a, b)                                                      \
-  (::testing::Test::Current()->ExpectLeHelper(__FILE__, __LINE__, #a, #b, a, \
-                                              b));                           \
+#define ASSERT_LE(a, b)                                                     \
+  (::testing::Test::Current()->ExpectLe(__FILE__, __LINE__, #a, #b, a, b)); \
   return
-#define ASSERT_GT(a, b)                                                      \
-  (::testing::Test::Current()->ExpectGtHelper(__FILE__, __LINE__, #a, #b, a, \
-                                              b));                           \
+#define ASSERT_GT(a, b)                                                     \
+  (::testing::Test::Current()->ExpectGt(__FILE__, __LINE__, #a, #b, a, b)); \
   return
-#define ASSERT_GE(a, b)                                                      \
-  (::testing::Test::Current()->ExpectGeHelper(__FILE__, __LINE__, #a, #b, a, \
-                                              b));                           \
+#define ASSERT_GE(a, b)                                                     \
+  (::testing::Test::Current()->ExpectGe(__FILE__, __LINE__, #a, #b, a, b)); \
   return
 
-[[nodiscard]] bool RegisterTest(std::unique_ptr<Test> test);
 [[nodiscard]] int RunAllTests();
 
 }  // namespace testing

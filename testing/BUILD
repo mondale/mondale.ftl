@@ -26,7 +26,7 @@ cc_library(
   name = "expectation",
   hdrs = ["expectation.h"],
   srcs = ["expectation.cc"],
-  deps = []
+  deps = [":compare"]
 )
 
 cc_library(

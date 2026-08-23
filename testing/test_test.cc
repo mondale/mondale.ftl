@@ -35,11 +35,11 @@ TEST(ExpectFalseFailingTest) {
 
 TEST(ExpectEqPassingTest) {
   EXPECT_EQ(7, 7);
+  EXPECT_EQ(7, 7u);
   EXPECT_EQ(7.7, 7.7);
 
   std::string a = "foo";
-  std::string b = "foo";
-  EXPECT_EQ(a, b);
+  EXPECT_EQ(a, "foo");
 }
 
 TEST(ExpectEqFailingTest) {
@@ -114,8 +114,7 @@ TEST(AssertEqPassingTest) {
   ASSERT_EQ(7.7, 7.7);
 
   std::string a = "foo";
-  std::string b = "foo";
-  ASSERT_EQ(a, b);
+  ASSERT_EQ(a, "foo");
 }
 
 TEST(AssertEqFailingTest) {
@@ -124,7 +123,7 @@ TEST(AssertEqFailingTest) {
 }
 
 TEST(AssertNePassingTest) {
-  ASSERT_NE(7, 8);
+  ASSERT_NE(7, 8u);
   ASSERT_NE(7.7, 8.8);
 
   std::string a = "foo";
@@ -134,7 +133,7 @@ TEST(AssertNePassingTest) {
 
 TEST(AssertNeFailingTest) {
   ExpectFailure();
-  ASSERT_NE(7, 7);
+  ASSERT_NE(7, 7u);
 }
 
 TEST(AssertLtPassingTest) { ASSERT_LT(6, 7); }
