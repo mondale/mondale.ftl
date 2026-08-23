@@ -11,9 +11,9 @@
 
 namespace testing {
 
-class BasicTest {
+class Test {
  public:
-  virtual ~BasicTest() {}
+  virtual ~Test() {}
 
   virtual void Run() = 0;
 
@@ -95,16 +95,16 @@ class BasicTest {
   bool expect_passing_ = true;
 };
 
-[[nodiscard]] bool RegisterTest(std::unique_ptr<BasicTest> test);
+[[nodiscard]] bool RegisterTest(std::unique_ptr<Test> test);
 [[nodiscard]] int RunAllTests();
 
-#define TEST(name)                                 \
-  class name final : public ::testing::BasicTest { \
-   protected:                                      \
-    void Run() final;                              \
-  };                                               \
-  static bool global_##name##_registered =         \
-      RegisterTest(std::make_unique<name>());      \
+#define TEST(name)                            \
+  class name final : public ::testing::Test { \
+   protected:                                 \
+    void Run() final;                         \
+  };                                          \
+  static bool global_##name##_registered =    \
+      RegisterTest(std::make_unique<name>()); \
   void name::Run()
 
 #define ADD_FAILURE(msg) AddFailure(__FILE__, __LINE__, msg)

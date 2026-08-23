@@ -85,24 +85,24 @@ std::string StripNamespace(const std::string& str) {
   return str;
 }
 
-std::list<std::unique_ptr<BasicTest>>* global_all_tests = nullptr;
+std::list<std::unique_ptr<Test>>* global_all_tests = nullptr;
 
 }  // namespace
 
-std::string BasicTest::GetName() const {
+std::string Test::GetName() const {
   return StripNamespace(Demangle(typeid(*this).name()));
 }
 
-void BasicTest::AddFailure(const char* file, int line, std::string message) {
+void Test::AddFailure(const char* file, int line, std::string message) {
   passing_ = false;
   std::stringstream ss;
   ss << file << "[" << line << "]: " << message;
   outs_.push_back(ss.str());
 }
 
-bool RegisterTest(std::unique_ptr<BasicTest> test) {
+bool RegisterTest(std::unique_ptr<Test> test) {
   if (nullptr == global_all_tests) {
-    global_all_tests = new std::list<std::unique_ptr<BasicTest>>();
+    global_all_tests = new std::list<std::unique_ptr<Test>>();
   }
   global_all_tests->push_back(std::move(test));
   return true;
