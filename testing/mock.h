@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <iostream>
+#include <list>
 #include <memory>
 #include <string>
 #include <tuple>
@@ -67,6 +68,7 @@ class Expectation {
   virtual bool Matches(const std::tuple<Args...>& args) const = 0;
   virtual Ret Invoke(Args... args) = 0;
   virtual bool IsSatisfied() const = 0;
+  virtual bool IsRepeatable() const = 0;
   virtual void DescribeTo(std::ostream& os) const = 0;
   virtual const char* file() const = 0;
   virtual int line() const = 0;
@@ -78,52 +80,94 @@ template <typename Ret, typename... Args>
 class ExpectationImpl : public Expectation<Ret, Args...> {
  public:
   using MatcherTuple = std::tuple<std::function<bool(const Args&)>...>;
+  using ActionFunc = std::function<Ret(Args...)>;
 
   ExpectationImpl(MatcherTuple matchers, const char* file, int line)
       : matchers_(std::move(matchers)), file_(file), line_(line) {}
+
+  template <typename F>
+  ExpectationImpl& WillOnce(F&& fn) {
+    static_assert(std::is_invocable_v<std::decay_t<F>, Args...>,
+                  "\n=========================================================="
+                  "===============\n"
+                  "ERROR: Lambda passed to WillOnce does not accept the mock "
+                  "function's arguments!\n"
+                  "Check the parameter list of your lambda to ensure it "
+                  "matches the mock signature.\n"
+                  "============================================================"
+                  "=============\n");
+
+    will_once_actions_.push_back(ActionFunc(std::forward<F>(fn)));
+    return *this;
+  }
+
+  template <typename F>
+  ExpectationImpl& WillRepeatedly(F&& fn) {
+    static_assert(std::is_invocable_v<std::decay_t<F>, Args...>,
+                  "\n=========================================================="
+                  "===============\n"
+                  "ERROR: Lambda passed to WillRepeatedly does not accept the "
+                  "mock function's arguments!\n"
+                  "Check the parameter list of your lambda to ensure it "
+                  "matches the mock signature.\n"
+                  "============================================================"
+                  "=============\n");
+
+    will_repeatedly_action_ = ActionFunc(std::forward<F>(fn));
+    return *this;
+  }
 
   bool Matches(const std::tuple<Args...>& args) const override {
     return MatchArgs(args, std::index_sequence_for<Args...>{});
   }
 
-  // Default expectation is exactly 1 call if not overridden
-  bool IsSatisfied() const override {
-    int expected = (expected_calls_ >= 0) ? expected_calls_ : 1;
-    return actual_calls_ == expected;
-  }
-
-  ExpectationImpl& WillOnce(std::function<Ret(Args...)> action) {
-    actions_.push_back(std::move(action));
-    expected_calls_ = static_cast<int>(actions_.size());
-    return *this;
-  }
-
-  ExpectationImpl& WillRepeatedly(std::function<Ret(Args...)> action) {
-    default_action_ = std::move(action);
-    // WillRepeatedly allows 0 or more calls unless expected_calls_ was set
-    if (expected_calls_ < 0) expected_calls_ = 0;
-    return *this;
-  }
-
+  // Call execution routing
   Ret Invoke(Args... args) override {
     actual_calls_++;
-    if (call_index_ < actions_.size()) {
-      return actions_[call_index_++](std::forward<Args>(args)...);
+
+    // First, drain any WillOnce lambdas in order
+    if (will_once_index_ < will_once_actions_.size()) {
+      return will_once_actions_[will_once_index_++](
+          std::forward<Args>(args)...);
     }
-    if (default_action_) {
-      return default_action_(std::forward<Args>(args)...);
+
+    // Second, fall back to WillRepeatedly if defined
+    if (will_repeatedly_action_) {
+      return will_repeatedly_action_(std::forward<Args>(args)...);
     }
+
+    // Third, bare EXPECT_CALL(...) defaults to default-constructed Ret()
     return Ret();
   }
 
+  // Cardinality validation
+  bool IsSatisfied() const override {
+    if (!will_once_actions_.empty() && !will_repeatedly_action_) {
+      // If only WillOnce calls exist, exact match is required
+      return actual_calls_ == static_cast<int>(will_once_actions_.size());
+    }
+    if (will_repeatedly_action_) {
+      // WillRepeatedly requires at least enough calls to exhaust WillOnce
+      return actual_calls_ >= static_cast<int>(will_once_actions_.size());
+    }
+    // Bare EXPECT_CALL(...) requires exactly 1 call
+    return actual_calls_ == 1;
+  }
+
+  bool IsRepeatable() const override { return !!will_repeatedly_action_; }
+
+  int expected_calls() const override {
+    if (!will_once_actions_.empty() && !will_repeatedly_action_) {
+      return static_cast<int>(will_once_actions_.size());
+    }
+    return 1;
+  }
+
   void DescribeTo(std::ostream& os) const override {
-    os << file_ << ":" << line_ << ": Expected " << expected_calls_
+    os << file_ << ":" << line_ << ": Expected " << expected_calls()
        << " call(s), actual: " << actual_calls_;
   }
 
-  int expected_calls() const override {
-    return (expected_calls_ >= 0) ? expected_calls_ : 1;
-  }
   int actual_calls() const override { return actual_calls_; }
   const char* file() const override { return file_; }
   int line() const override { return line_; }
@@ -136,10 +180,9 @@ class ExpectationImpl : public Expectation<Ret, Args...> {
   }
 
   MatcherTuple matchers_;
-  std::vector<std::function<Ret(Args...)>> actions_;
-  std::function<Ret(Args...)> default_action_;
-  std::size_t call_index_ = 0;
-  int expected_calls_ = -1;  // -1 signifies "unset, default to 1"
+  std::vector<ActionFunc> will_once_actions_;
+  ActionFunc will_repeatedly_action_;
+  std::size_t will_once_index_ = 0;
   int actual_calls_ = 0;
   const char* file_;
   int line_;
@@ -181,8 +224,16 @@ class MockSpec {
 
   Ret Invoke(Args... args) {
     auto arg_tuple = std::tie(args...);
+    // Look for matching required calls.
     for (auto& exp : expectations_) {
-      if (exp->Matches(arg_tuple)) {
+      if (!exp->IsSatisfied() && exp->Matches(arg_tuple)) {
+        return exp->Invoke(std::forward<Args>(args)...);
+      }
+    }
+
+    // Look for matching allowed calls.
+    for (auto& exp : expectations_) {
+      if (exp->IsRepeatable() && exp->Matches(arg_tuple)) {
         return exp->Invoke(std::forward<Args>(args)...);
       }
     }
@@ -528,9 +579,49 @@ auto Le(V val) {
   return [val = std::move(val)](const auto& actual) { return actual <= val; };
 }
 
-// Any value (wildcard matcher)
-inline auto _() {
-  return [](const auto&) { return true; };
+// Wildcard matcher structure
+struct WildcardMatcher {
+  // Implicitly converts to any type T, allowing it to pass where any T is
+  // expected
+  template <typename T>
+  operator T() const {
+    return T{};
+  }
+};
+
+// Global instance of the wildcard matcher
+inline constexpr WildcardMatcher _{};
+
+// Overloaded equality operators so that Matcher comparisons evaluated via
+// operator== pass automatically
+template <typename T>
+constexpr bool operator==(const WildcardMatcher&, const T&) noexcept {
+  return true;
+}
+
+template <typename T>
+constexpr bool operator==(const T&, const WildcardMatcher&) noexcept {
+  return true;
+}
+
+constexpr bool operator==(const WildcardMatcher&,
+                          const WildcardMatcher&) noexcept {
+  return true;
+}
+
+template <typename T>
+constexpr bool operator!=(const WildcardMatcher&, const T&) noexcept {
+  return false;
+}
+
+template <typename T>
+constexpr bool operator!=(const T&, const WildcardMatcher&) noexcept {
+  return false;
+}
+
+constexpr bool operator!=(const WildcardMatcher&,
+                          const WildcardMatcher&) noexcept {
+  return false;
 }
 
 }  // namespace testing
