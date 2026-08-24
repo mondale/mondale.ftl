@@ -6,6 +6,7 @@ cc_library(
   deps = [":test",
           ":death",
           ":matchers",
+          ":mock",
           "//base:process"],
   visibility = ["//...", ],
 )
@@ -59,6 +60,19 @@ cc_test(
   name = "matchers_test",
   srcs = ["matchers_test.cc"],
   deps = [":testing",],
+)
+
+cc_library(
+  name = "mock",
+  hdrs = ["mock.h"],
+  srcs = [],
+  deps = [":test",],
+)
+
+cc_test(
+  name = "mock_test",
+  srcs = ["mock_test.cc"],
+  deps = [":testing"],
 )
 
 cc_library(
