@@ -22,7 +22,7 @@ C++ exceptions may not be used.
 
 ### Naming.
 
-Prefix globval variables' names with `global`.
+Prefix global variables' names with `global`.
 
 ```cpp
 int global_variable_is_prefixed_by_global = 0;
@@ -34,7 +34,7 @@ Methods are named in `PascalCase`.
 void MethodDeclaration();
 ```
 
-Classes are named in `PascalCase` and are marked `final` if not intende for
+Classes are named in `PascalCase` and are marked `final` if not intended for
 further inheritance.
 
 ```cpp
