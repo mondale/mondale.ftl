@@ -5,8 +5,8 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#include "base/basic_test.h"
 #include "base/raw_syscalls.h"
+#include "testing/testing.h"
 
 namespace {
 

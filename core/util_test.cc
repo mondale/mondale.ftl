@@ -1,6 +1,5 @@
-#include "base/basic_test.h"
-#include "base/rawlog.h"
 #include "core/util.h"
+#include "testing/testing.h"
 
 using namespace core;
 

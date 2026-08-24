@@ -2,8 +2,8 @@
 #include <list>
 #include <vector>
 
-#include "base/basic_test.h"
 #include "core/strings.h"
+#include "testing/testing.h"
 
 using namespace std::string_literals;
 

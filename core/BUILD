@@ -1,132 +1,149 @@
 cc_library(
-  name = "file",
-  hdrs = ["file.h"],
-  srcs = ["file.cc"],
-  deps = [":result",
-":syscalls",
-":idioms",
-":strings",
-],
+    name = "file",
+    srcs = ["file.cc"],
+    hdrs = ["file.h"],
+    deps = [
+        ":idioms",
+        ":result",
+        ":strings",
+        ":syscalls",
+    ],
 )
 
 cc_test(
-  name = "file_test",
-  srcs = ["file_test.cc"],
-  deps = [":file",
-          "//base:basic_test"]
+    name = "file_test",
+    srcs = ["file_test.cc"],
+    deps = [
+        ":file",
+        "//testing",
+    ],
 )
 
 cc_library(
-  name = "file_descriptor",
-  hdrs = ["file_descriptor.h"],
-  srcs = ["file_descriptor.cc"],
-  deps = [":result",
-          "//base:rawlog",],
+    name = "file_descriptor",
+    srcs = ["file_descriptor.cc"],
+    hdrs = ["file_descriptor.h"],
+    deps = [
+        ":result",
+        "//base:rawlog",
+    ],
 )
 
 cc_test(
-  name = "file_descriptor_test",
-  srcs = ["file_descriptor_test.cc"],
-  deps = [":file_descriptor",
-          "//base:basic_test"]
+    name = "file_descriptor_test",
+    srcs = ["file_descriptor_test.cc"],
+    deps = [
+        ":file_descriptor",
+        "//testing",
+    ],
 )
-       
+
 cc_library(
-  name = "handle",
-  hdrs = ["handle.h"],
-  deps = []
+    name = "handle",
+    hdrs = ["handle.h"],
+    deps = [],
 )
 
 cc_test(
-  name = "handle_test",
-  srcs = ["handle_test.cc"],
-  deps = [":handle",
-          "//base:basic_test",]
+    name = "handle_test",
+    srcs = ["handle_test.cc"],
+    deps = [
+        ":handle",
+        "//testing",
+    ],
 )
 
 cc_library(
-  name = "hardened_int",
-  hdrs = ["hardened_int.h"],
-  deps = []
+    name = "hardened_int",
+    hdrs = ["hardened_int.h"],
+    deps = [],
 )
 
 cc_test(
-  name = "hardened_int_test",
-  srcs = ["hardened_int_test.cc"],
-  deps = [":hardened_int",
-          "//base:basic_test",]
+    name = "hardened_int_test",
+    srcs = ["hardened_int_test.cc"],
+    deps = [
+        ":hardened_int",
+        "//testing",
+    ],
 )
 
 cc_library(
-  name = "idioms",
-  hdrs = ["idioms.h"],
-  srcs = ["idioms.cc"],
-  deps = [":syscalls",],
+    name = "idioms",
+    srcs = ["idioms.cc"],
+    hdrs = ["idioms.h"],
+    deps = [":syscalls"],
 )
 
 cc_library(
-  name = "result",
-  hdrs = ["result.h"],
-  srcs = ["result.cc"],
-  deps = ["//base:rawlog",],
+    name = "result",
+    srcs = ["result.cc"],
+    hdrs = ["result.h"],
+    deps = ["//base:rawlog"],
 )
 
 cc_test(
-  name = "result_test",
-  srcs = ["result_test.cc"],
-  deps = [":result",
-          "//base:basic_test",
-          "//base:rawlog",
-  ],
+    name = "result_test",
+    srcs = ["result_test.cc"],
+    deps = [
+        ":result",
+        "//base:rawlog",
+        "//testing",
+    ],
 )
 
 cc_library(
-  name = "strings",
-  hdrs = ["strings.h"],
-  srcs = ["strings.cc"],
-  deps = [":result"],
-  compiler_flags = ["-fno-exceptions"],
+    name = "strings",
+    srcs = ["strings.cc"],
+    hdrs = ["strings.h"],
+    compiler_flags = ["-fno-exceptions"],
+    deps = [":result"],
 )
 
 cc_test(
-  name = "strings_test",
-  srcs = ["strings_test.cc"],
-  deps = [":strings",
-          "//base:basic_test",
-          "//base:rawlog",],
+    name = "strings_test",
+    srcs = ["strings_test.cc"],
+    deps = [
+        ":strings",
+        "//base:rawlog",
+        "//testing",
+    ],
 )
 
 cc_library(
-  name = "syscalls",
-  hdrs = ["syscalls.h"],
-  srcs = ["syscalls.cc"],
-  deps = [":file_descriptor",
-          ":result",
-          "//base:rawlog",
-  ],
+    name = "syscalls",
+    srcs = ["syscalls.cc"],
+    hdrs = ["syscalls.h"],
+    deps = [
+        ":file_descriptor",
+        ":result",
+        "//base:rawlog",
+    ],
 )
 
 cc_test(
-  name = "syscalls_test",
-  srcs = ["syscalls_test.cc"],
-  deps = [":syscalls",
-          "//base:basic_test",
-         ],
+    name = "syscalls_test",
+    srcs = ["syscalls_test.cc"],
+    deps = [
+        ":syscalls",
+        "//testing",
+    ],
 )
-
 
 cc_library(
-  name = "util",
-  hdrs = ["util.h"],
-  srcs = ["util.cc"],
-  deps = [":result"],
-  compiler_flags = ["-fno-exceptions"],
+    name = "util",
+    srcs = ["util.cc"],
+    hdrs = ["util.h"],
+    compiler_flags = ["-fno-exceptions"],
+    deps = [":result"],
 )
 
 cc_test(
-  name = "util_test",
-  srcs = ["util_test.cc"],
-  deps = [":util",
-          "//base:basic_test",
-          "//base:rawlog",],
+    name = "util_test",
+    srcs = ["util_test.cc"],
+    deps = [
+        ":util",
+        "//base:rawlog",
+        "//testing",
+    ],
 )

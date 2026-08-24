@@ -1,6 +1,6 @@
-#include "base/basic_test.h"
 #include "base/sleep.h"
 #include "base/time.h"
+#include "testing/testing.h"
 
 using namespace base;
 

@@ -2,8 +2,8 @@
 #include <sstream>
 #include <unordered_set>
 
-#include "base/basic_test.h"
 #include "core/hardened_int.h"
+#include "testing/testing.h"
 
 namespace {
 

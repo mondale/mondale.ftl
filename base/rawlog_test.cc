@@ -1,7 +1,7 @@
 #include <sstream>
 
-#include "base/basic_test.h"
 #include "base/rawlog.h"
+#include "testing/testing.h"
 
 namespace {
 

@@ -20,8 +20,8 @@
 
 #include <atomic>
 
-#include "base/basic_test.h"
 #include "base/stacktrace.h"
+#include "testing/testing.h"
 
 using base::stacktrace::DumpAllStacksWithLineNumbers;
 

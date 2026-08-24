@@ -1,5 +1,5 @@
-#include "base/basic_test.h"
 #include "base/time.h"
+#include "testing/testing.h"
 
 using namespace base;
 
@@ -79,7 +79,7 @@ TEST(WallTimeMutableArithmetic) {
   const int64_t base = t_mut.UnixNanoseconds();
   ASSERT_GT(base, int64_t(100));
   t_mut += Duration::FromNanoseconds(200);
-  EXPECT_EQ(t_mut.UnixNanoseconds(), base + int64_t{700});
+  EXPECT_EQ(t_mut.UnixNanoseconds(), base + int64_t{200});
 
   t_mut -= Duration::FromNanoseconds(300);
   EXPECT_EQ(t_mut.UnixNanoseconds(), base - 100);

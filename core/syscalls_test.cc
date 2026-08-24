@@ -1,6 +1,6 @@
-#include "base/basic_test.h"
 #include "base/rawlog.h"
 #include "core/syscalls.h"
+#include "testing/testing.h"
 
 using namespace core;
 

@@ -1,8 +1,8 @@
 #include <sstream>
 
-#include "base/basic_test.h"
 #include "base/rawlog.h"
 #include "core/result.h"
+#include "testing/testing.h"
 
 using core::BaseCode;
 using core::Code;
