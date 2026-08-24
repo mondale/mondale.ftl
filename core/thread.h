@@ -2,6 +2,7 @@
 #define CORE_THREAD_H_
 
 #include <memory>
+#include <string_view>
 
 #include "core/result.h"
 
@@ -12,6 +13,8 @@ class ThreadImpl;
 
 class Thread final {
  public:
+  explicit Thread(std::unique_ptr<internal::ThreadImpl> impl);
+
   // Thread's dtor blocks until the underlying thread has completed execution.
   ~Thread();
 
@@ -22,16 +25,15 @@ class Thread final {
 
   // Returns true when Join() is done. May be polled as in indicator of
   // deletion readiness.
-  bool Joinable();
+  bool ReadyToJoin() const;
 
  private:
-  std::unique_ptr<ThreadImpl> impl_;
+  std::unique_ptr<internal::ThreadImpl> impl_;
 };
 
-ResultOr<std::unique_ptr<Thread>> CreateThread(absl::string_view name_prefix,
+ResultOr<std::unique_ptr<Thread>> CreateThread(std::string_view name_prefix,
                                                std::function<void()> fn);
-
-Result CreateDetachedThread(absl::string_view name_prefix,
+Result CreateDetachedThread(std::string_view name_prefix,
                             std::function<void()> fn);
 
 }  // namespace core

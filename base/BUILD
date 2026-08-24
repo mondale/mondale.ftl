@@ -63,6 +63,8 @@ cc_library(
   hdrs = ["sleep.h"],
   srcs = ["sleep.cc"],
   deps = [":time",],
+  visibility = ["//base/...",
+                "//core"],
 )
 
 cc_test(
@@ -105,7 +107,9 @@ cc_library(
   name = "time",
   hdrs = ["time.h"],
   srcs = ["time.cc"],
-  deps = [":rawlog"]
+  deps = [":rawlog"],
+  visibility = ["//base/...",
+                "//core"],
 )
 
 cc_test(

@@ -1,12 +1,14 @@
 cc_library(
     name = "core",
-    headers = ["vocabulary.h"],
+    hdrs = ["vocabulary.h"],
     srcs = [],
     deps = [
          ":handle",
-         ":hardened_Int",
+         ":hardened_int",
          ":result",
          ":util",
+         "//base:sleep",
+         "//base:time",
     ],
 )
 
@@ -140,6 +142,23 @@ cc_test(
         ":syscalls",
         "//testing",
     ],
+)
+
+cc_library(
+    name = "thread",
+    hdrs = ["thread.h"],
+    srcs = ["thread.cc"],
+    deps = [":result",
+           ],
+)
+
+cc_test(
+    name = "thread_test",
+    srcs = ["thread_test.cc"],
+    deps = [":thread",
+            "//core",
+            "//testing",
+           ],
 )
 
 cc_library(

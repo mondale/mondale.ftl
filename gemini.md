@@ -1,4 +1,7 @@
+Review these instructions and LMK when you are ready to proceed.
+
 Instructions for code generation:
+ * Write C++ code for Linux x64 and ARM64, using clang.
  * The essential vocabulary of the project can be brought in with `#include
    "core/vocabulary.h"`.
  * Use `Result` and `ResultOr<T>` akin to `Status` and `StatusOr<T>`.
@@ -8,9 +11,11 @@ Instructions for code generation:
    macros, akin to `RETURN_IF_ERROR()` and `ASSIGN_OR_RETURN` respectively.
  * Target C++26 with Clang.
  * Do not use exceptions.
+ * Do not use `absl`. You may use `std` variants where they exist.
  * Unless I request high performance implementations, prefer to define minimal
    code in headers and as much as possible source files. Use anonymous
    namespaces where you can. Types specific to the implementation should use a
    nested `internal` namespace or an `Impl` suffix.
  * For naming, use Google Style in general, exept for parameter/argument names
    which are usually just initialisims or something 2-3 characters long.
+ * When writing tests, include `testing/testing.h` and use gUnit-like syntax.
