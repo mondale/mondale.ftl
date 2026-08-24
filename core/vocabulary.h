@@ -23,7 +23,7 @@ using core::Code;
 using core::Result;
 using core::ResultOr;
 
-#include "core/thread.h"
+#include "base/thread.h"
 
 // TODO logging
 

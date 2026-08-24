@@ -7,9 +7,8 @@ namespace {
 
 TEST(MakeMeAThread) {
   std::atomic<pid_t> tid{0};
-  auto thread = core::CreateThread("my_thread", [&]() {
-                  tid.store(gettid(), std::memory_order_release);
-                }).ValueOrDie();
+  auto thread = base::CreateThread(
+      "my_thread", [&]() { tid.store(gettid(), std::memory_order_release); });
   while (0 == tid.load(std::memory_order_acquire) || !thread->ReadyToJoin()) {
     SleepFor(Milliseconds(1));
   }
@@ -20,9 +19,8 @@ TEST(MakeMeAThread) {
 
 TEST(DetachMeAThread) {
   std::atomic<bool> ran{false};
-  EXPECT_EQ(Code::kOk, core::CreateDetachedThread("my_thread", [&]() {
-                         ran.store(true, std::memory_order_release);
-                       }).code());
+  base::CreateDetachedThread(
+      "my_thread", [&]() { ran.store(true, std::memory_order_release); });
   while (!ran.load(std::memory_order_acquire)) {
     SleepFor(Milliseconds(1));
   }

@@ -10,6 +10,7 @@ cc_library(
          "//base:sleep",
          "//base:time",
     ],
+    visibility = ["//..."],
 )
 
 cc_library(
@@ -142,23 +143,6 @@ cc_test(
         ":syscalls",
         "//testing",
     ],
-)
-
-cc_library(
-    name = "thread",
-    hdrs = ["thread.h"],
-    srcs = ["thread.cc"],
-    deps = [":result",
-           ],
-)
-
-cc_test(
-    name = "thread_test",
-    srcs = ["thread_test.cc"],
-    deps = [":thread",
-            "//core",
-            "//testing",
-           ],
 )
 
 cc_library(

@@ -1,12 +1,10 @@
-#ifndef CORE_THREAD_H_
-#define CORE_THREAD_H_
+#ifndef BASE_THREAD_H_
+#define BASE_THREAD_H_
 
 #include <memory>
 #include <string_view>
 
-#include "core/result.h"
-
-namespace core {
+namespace base {
 namespace internal {
 class ThreadImpl;
 }  // namespace internal
@@ -31,11 +29,11 @@ class Thread final {
   std::unique_ptr<internal::ThreadImpl> impl_;
 };
 
-ResultOr<std::unique_ptr<Thread>> CreateThread(std::string_view name_prefix,
-                                               std::function<void()> fn);
-Result CreateDetachedThread(std::string_view name_prefix,
-                            std::function<void()> fn);
+std::unique_ptr<Thread> CreateThread(std::string_view name_prefix,
+                                     std::function<void()> fn);
+void CreateDetachedThread(std::string_view name_prefix,
+                          std::function<void()> fn);
 
-}  // namespace core
+}  // namespace base
 
-#endif  // #ifndef CORE_THREAD_H_
+#endif  // #ifndef BASE_THREAD_H_

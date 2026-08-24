@@ -104,6 +104,22 @@ cc_test(
 )
 
 cc_library(
+    name = "thread",
+    hdrs = ["thread.h"],
+    srcs = ["thread.cc"],
+    deps = [],
+)
+
+cc_test(
+    name = "thread_test",
+    srcs = ["thread_test.cc"],
+    deps = [":thread",
+            "//core",
+            "//testing",
+           ],
+)
+
+cc_library(
   name = "time",
   hdrs = ["time.h"],
   srcs = ["time.cc"],
