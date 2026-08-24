@@ -6,11 +6,11 @@
 namespace {
 
 TEST(MakeMeAThread) {
-  std::atomic<bool> ran{false};
+  std::atomic<pid_t> tid{0};
   auto thread = core::CreateThread("my_thread", [&]() {
-                  ran.store(true, std::memory_order_release);
+                  tid.store(gettid(), std::memory_order_release);
                 }).ValueOrDie();
-  while (!ran.load(std::memory_order_acquire) || !thread->ReadyToJoin()) {
+  while (0 == tid.load(std::memory_order_acquire) || !thread->ReadyToJoin()) {
     SleepFor(Milliseconds(1));
   }
   ASSERT_TRUE(thread->ReadyToJoin());

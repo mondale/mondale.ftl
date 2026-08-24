@@ -1,3 +1,5 @@
+#include <pthread.h>
+
 #include <functional>
 #include <memory>
 #include <string>
@@ -11,8 +13,7 @@ namespace internal {
 namespace {
 
 void ThreadStart(std::string name, std::function<void()> fn) {
-  // Setting the thread name via OS primitives can be added here using
-  // np.
+  pthread_setname_np(pthread_self(), name.c_str());
   fn();
 }
 
