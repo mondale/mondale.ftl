@@ -1,4 +1,16 @@
 cc_library(
+    name = "core",
+    headers = ["vocabulary.h"],
+    srcs = [],
+    deps = [
+         ":handle",
+         ":hardened_Int",
+         ":result",
+         ":util",
+    ],
+)
+
+cc_library(
     name = "file",
     srcs = ["file.cc"],
     hdrs = ["file.h"],
