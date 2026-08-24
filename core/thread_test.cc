@@ -18,4 +18,14 @@ TEST(MakeMeAThread) {
   thread->Join();  // obnoxiously do this more than once.
 }
 
+TEST(DetachMeAThread) {
+  std::atomic<bool> ran{false};
+  EXPECT_EQ(Code::kOk, core::CreateDetachedThread("my_thread", [&]() {
+                         ran.store(true, std::memory_order_release);
+                       }).code());
+  while (!ran.load(std::memory_order_acquire)) {
+    SleepFor(Milliseconds(1));
+  }
+}
+
 }  // namespace

@@ -19,6 +19,7 @@ using core::util::MakeCleanup;
 #include "core/handle.h"
 #include "core/hardened_int.h"
 #include "core/result.h"
+using core::Code;
 using core::Result;
 using core::ResultOr;
 
