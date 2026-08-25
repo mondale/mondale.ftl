@@ -17,7 +17,8 @@ cc_library(
   name = "mutex",
   hdrs = ["mutex.h"],
   srcs = ["mutex.cc"],
-  deps = [],
+  deps = [":thread_annotations",],
+  visibility = ["//..."],
 )
 
 cc_test(
@@ -133,6 +134,14 @@ cc_test(
             "//core",
             "//testing",
            ],
+)
+
+cc_library(
+    name = "thread_annotations",
+    hdrs = ["thread_annotations.h"],
+    srcs = [],
+    deps = [],
+    visibility = ["//..."],
 )
 
 cc_library(

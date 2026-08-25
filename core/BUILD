@@ -7,9 +7,11 @@ cc_library(
          ":hardened_int",
          ":result",
          ":util",
+         "//base:mutex",
          "//base:sleep",
-         "//base:time",
          "//base:thread",
+         "//base:thread_annotations",
+         "//base:time",
     ],
     visibility = ["//..."],
 )

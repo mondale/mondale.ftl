@@ -17,12 +17,17 @@ TEST(BasicLockUnlock) {
 TEST(TryLockSuccessAndFailure) {
   Mutex m;
 
-  EXPECT_TRUE(m.TryLock());
+  // Thread safety analysis needs to see the conditionality around the trylock.
+  const bool locked = m.TryLock();
+  EXPECT_TRUE(locked);
+  if (!locked) return;
   EXPECT_FALSE(m.TryLock());
 
   m.Unlock();
 
-  EXPECT_TRUE(m.TryLock());
+  const bool also_locked = m.TryLock();
+  EXPECT_TRUE(also_locked);
+  if (!also_locked) return;
   m.Unlock();
 }
 
@@ -114,6 +119,68 @@ TEST(TryLockContention) {
 
   hold_lock.store(false, std::memory_order_release);
   m.Unlock();
+}
+
+TEST(MutexLockScopedAcquisitionAndRelease) {
+  Mutex m;
+  int protected_value = 0;
+
+  {
+    MutexLock lock(&m);
+    protected_value = 42;
+  }  // lock destroyed here, m unlocked
+
+  const bool locked = m.TryLock();
+  EXPECT_TRUE(locked);
+  if (!locked) return;
+  static_cast<void>(protected_value);
+  m.Unlock();
+}
+
+TEST(MutexLockMutualExclusion) {
+  Mutex m;
+  int counter = 0;
+  constexpr int kIncrementsPerThread = 1000;
+
+  auto worker = [&]() {
+    for (int i = 0; i < kIncrementsPerThread; ++i) {
+      MutexLock lock(&m);
+      ++counter;
+    }
+  };
+
+  auto t1 = CreateThread("test", worker);
+  auto t2 = CreateThread("test", worker);
+
+  t1->Join();
+  t2->Join();
+
+  EXPECT_EQ(counter, kIncrementsPerThread * 2);
+}
+
+// Verifies that GUARDED_BY works correctly with MutexLock under Clang
+// analysis.
+class ThreadSafeAccount final {
+ public:
+  void Deposit(int amount) {
+    MutexLock lock(&mu_);
+    balance_ += amount;
+  }
+
+  int GetBalance() {
+    MutexLock lock(&mu_);
+    return balance_;
+  }
+
+ private:
+  Mutex mu_;
+  int balance_ GUARDED_BY(mu_) = 0;
+};
+
+TEST(MutexLockThreadSafetyAnnotationIntegration) {
+  ThreadSafeAccount account;
+  account.Deposit(100);
+  EXPECT_EQ(account.GetBalance(), 100);
 }
 
 }  // namespace

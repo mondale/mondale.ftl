@@ -25,3 +25,5 @@ Instructions for code generation:
    `core/vocabulary.h`; this returns a `std::unique_ptr<Thread>` which can be
    `Join()`ed and is otherwise RAII. Do not use `TRY_ASSIGN` with `CreateThread`
    as the latter does not fail.
+ * Use the following thread safety annotations where necessary: `GUARDED_BY`,
+   `PT_GUARDED_BY`, `LOCKS_EXCLUDED`, and `LOCKS_REQUIRED`.
