@@ -18,4 +18,10 @@ Instructions for code generation:
    nested `internal` namespace or an `Impl` suffix.
  * For naming, use Google Style in general, exept for parameter/argument names
    which are usually just initialisims or something 2-3 characters long.
- * When writing tests, include `testing/testing.h` and use gUnit-like syntax.
+ * When writing tests, include `testing/testing.h` and use gUnit-like syntax,
+   with the except that tests not using a fixture are declared as `TEST(Foo)`
+   not as `TEST(Suite, Foo)`.
+ * When spawining threads, use `CreateThread(name_prefix, lambda)` from
+   `core/vocabulary.h`; this returns a `std::unique_ptr<Thread>` which can be
+   `Join()`ed and is otherwise RAII. Do not use `TRY_ASSIGN` with `CreateThread`
+   as the latter does not fail.

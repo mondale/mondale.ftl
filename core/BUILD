@@ -9,6 +9,7 @@ cc_library(
          ":util",
          "//base:sleep",
          "//base:time",
+         "//base:thread",
     ],
     visibility = ["//..."],
 )

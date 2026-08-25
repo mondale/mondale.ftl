@@ -24,6 +24,7 @@ using core::Result;
 using core::ResultOr;
 
 #include "base/thread.h"
+using base::CreateThread;
 
 // TODO logging
 

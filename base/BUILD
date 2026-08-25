@@ -14,6 +14,21 @@ cc_test(
 )
 
 cc_library(
+  name = "mutex",
+  hdrs = ["mutex.h"],
+  srcs = ["mutex.cc"],
+  deps = [],
+)
+
+cc_test(
+  name = "mutex_test",
+  srcs = ["mutex_test.cc"],
+  deps = [":mutex",
+          "//core",
+          "//testing"],
+)
+
+cc_library(
   name = "process",
   hdrs = ["process.h"],
   srcs = ["process.cc"],
@@ -108,6 +123,7 @@ cc_library(
     hdrs = ["thread.h"],
     srcs = ["thread.cc"],
     deps = [],
+    visibility = ["//..."],
 )
 
 cc_test(
