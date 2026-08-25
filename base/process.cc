@@ -51,6 +51,10 @@ const char* SigToName(int sig) {
       return "SIGBUS";
     case SIGILL:
       return "SIGILL";
+    case SIGTERM:
+      return "SIGTERM";
+    case SIGINT:
+      return "SIGINT";
     case SIGFPE:
       return "SIGFPE";
     default:
@@ -124,6 +128,8 @@ void SetupDeadlySignalHandler() {
   sigaction(SIGSEGV, &s, nullptr);
   sigaction(SIGABRT, &s, nullptr);
   sigaction(SIGILL, &s, nullptr);
+  sigaction(SIGINT, &s, nullptr);
+  sigaction(SIGTERM, &s, nullptr);
   sigaction(SIGBUS, &s, nullptr);
   sigaction(SIGFPE, &s, nullptr);
 }
