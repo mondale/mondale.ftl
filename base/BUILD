@@ -17,7 +17,8 @@ cc_library(
   name = "mutex",
   hdrs = ["mutex.h"],
   srcs = ["mutex.cc"],
-  deps = [":thread_annotations",],
+  deps = [":thread_annotations",
+          ":time",],
   visibility = ["//..."],
 )
 

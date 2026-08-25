@@ -98,9 +98,9 @@ TEST(TryLockContention) {
   m.Lock();
 
   auto worker = [&]() {
-    thread_started.store(true, std::memory_order_release);
     // TryLock should fail while main thread holds m.
     EXPECT_FALSE(m.TryLock());
+    thread_started.store(true, std::memory_order_release);
 
     while (hold_lock.load(std::memory_order_acquire)) {
       // Wait for main thread to release lock.
