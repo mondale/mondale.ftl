@@ -27,3 +27,5 @@ Instructions for code generation:
    as the latter does not fail.
  * Use the following thread safety annotations where necessary: `GUARDED_BY`,
    `PT_GUARDED_BY`, `LOCKS_EXCLUDED`, and `LOCKS_REQUIRED`.
+ * Never use `mutable` on class members
+ * Do not litter the code with `noexcept`.

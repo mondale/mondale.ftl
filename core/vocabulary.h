@@ -31,6 +31,9 @@ using base::CreateThread;
 using base::Mutex;
 using base::MutexLock;
 
+#include "base/notification.h"
+using base::Notification;
+
 #include "base/thread_annotations.h"
 // TODO logging
 

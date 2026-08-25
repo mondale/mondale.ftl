@@ -30,6 +30,23 @@ cc_test(
 )
 
 cc_library(
+  name = "notification",
+  hdrs = ["notification.h"],
+  srcs = ["notification.cc"],
+  deps = [":time"],
+  visibility = ["//..."],
+)
+
+cc_test(
+  name = "notification_test",
+  srcs = ["notification_test.cc"],
+  deps = [":notification",
+          "//core",
+          "//testing"],
+)
+
+
+cc_library(
   name = "process",
   hdrs = ["process.h"],
   srcs = ["process.cc"],
