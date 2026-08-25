@@ -5,9 +5,10 @@ Instructions for code generation:
  * The essential vocabulary of the project can be brought in with `#include
    "core/vocabulary.h"`.
  * Use `Result` and `ResultOr<T>` akin to `Status` and `StatusOr<T>`.
- * Create an erroneous `Result` with `Result(Code::kError, "Message")`.
+ * Create an erroneous `Result` with `Result(Code::kError, "Message")` which
+   implicitly converts to `ResultOr<T>`.
  * Create an OK `Result` with `Result::Ok()`.
- * Use `TRY(Expr())` and `TRY_ASSIGN(auto x, Expr())` as your propogation
+ * Use `TRY(Expr())` and `TRY_ASSIGN(auto x, Expr())` as your propagation
    macros, akin to `RETURN_IF_ERROR()` and `ASSIGN_OR_RETURN` respectively.
  * Target C++26 with Clang.
  * Do not use exceptions.
@@ -21,11 +22,17 @@ Instructions for code generation:
  * When writing tests, include `testing/testing.h` and use gUnit-like syntax,
    with the except that tests not using a fixture are declared as `TEST(Foo)`
    not as `TEST(Suite, Foo)`.
- * When spawining threads, use `CreateThread(name_prefix, lambda)` from
+ * When spawning threads, use `CreateThread(name_prefix, lambda)` from
    `core/vocabulary.h`; this returns a `std::unique_ptr<Thread>` which can be
    `Join()`ed and is otherwise RAII. Do not use `TRY_ASSIGN` with `CreateThread`
    as the latter does not fail.
- * Use the following thread safety annotations where necessary: `GUARDED_BY`,
-   `PT_GUARDED_BY`, `LOCKS_EXCLUDED`, and `LOCKS_REQUIRED`.
  * Never use `mutable` on class members
  * Do not litter the code with `noexcept`.
+ * Use thread safety annotations: `GUARDED_BY`, `PT_GUARDED_BY`,
+   `LOCKS_EXCLUDED`, `LOCKS_REQUIRED`.  
+ * Do not use `std::chrono` types or `std::this_thread::sleep_for` directly.
+ * Use `#include "core/vocabulary.h"` and project time abstractions: `Duration`,
+   `MonotonicTime::Now()`, `Milliseconds(n)`, `Seconds(n)`, and
+   `SleepFor(d)`.  `Duration` objects support `.ToTimespec()` for direct system
+   call compatibility.
+

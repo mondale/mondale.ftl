@@ -183,5 +183,89 @@ TEST(MutexLockThreadSafetyAnnotationIntegration) {
   EXPECT_EQ(account.GetBalance(), 100);
 }
 
+TEST(MutexAwaitBasic) {
+  Mutex mu;
+  bool ready = false;
+
+  auto th = CreateThread("await_worker", [&mu, &ready]() {
+    MutexLock lock(&mu);
+    ready = true;
+  });
+
+  MutexLock lock(&mu);
+  mu.Await([&ready]() { return ready; });
+  EXPECT_TRUE(ready);
+}
+
+TEST(MutexAwaitMultipleWaiters) {
+  Mutex mu;
+  int state = 0;
+  constexpr int kWaiters = 4;
+
+  std::vector<std::unique_ptr<Thread>> threads;
+  threads.reserve(kWaiters);
+
+  for (int i = 0; i < kWaiters; ++i) {
+    threads.push_back(
+        CreateThread("multi_waiter", [&mu, &state, target = i + 1]() {
+          MutexLock lock(&mu);
+          mu.Await([&state, target]() { return state >= target; });
+        }));
+  }
+
+  for (int i = 1; i <= kWaiters; ++i) {
+    {
+      MutexLock lock(&mu);
+      state = i;
+    }
+  }
+
+  for (auto& th : threads) {
+    th->Join();
+  }
+
+  EXPECT_EQ(state, kWaiters);
+}
+
+TEST(MutexAwaitWithTimeoutTriggers) {
+  Mutex mu;
+  bool ready = false;
+
+  MutexLock lock(&mu);
+  const auto start = MonotonicTime::Now();
+  bool result =
+      mu.AwaitWithTimeout([&ready]() { return ready; }, Milliseconds(50));
+  const auto elapsed = MonotonicTime::Now() - start;
+
+  EXPECT_FALSE(result);
+  EXPECT_GE(elapsed, Milliseconds(50));
+}
+
+TEST(MutexAwaitWithTimeoutSucceedsBeforeTimeout) {
+  Mutex mu;
+  bool ready = false;
+
+  auto th = CreateThread("signaler", [&mu, &ready]() {
+    SleepFor(Milliseconds(20));
+    MutexLock lock(&mu);
+    ready = true;
+  });
+
+  MutexLock lock(&mu);
+  bool result =
+      mu.AwaitWithTimeout([&ready]() { return ready; }, Milliseconds(500));
+  EXPECT_TRUE(result);
+  EXPECT_TRUE(ready);
+}
+
+TEST(MutexAwaitWithTimeoutConditionAlreadyMet) {
+  Mutex mu;
+  bool ready = true;
+
+  MutexLock lock(&mu);
+  bool result = mu.AwaitWithTimeout([&ready]() { return ready; }, Seconds(1));
+  EXPECT_TRUE(result);
+}
+
 }  // namespace
 }  // namespace base
