@@ -34,8 +34,10 @@ class Thread final {
 
 std::unique_ptr<Thread> CreateThread(std::string_view name_prefix,
                                      std::function<void()> fn);
+std::unique_ptr<Thread> CreateThread(std::function<void()> fn);
 void CreateDetachedThread(std::string_view name_prefix,
                           std::function<void()> fn);
+void CreateDetachedThread(std::function<void()> fn);
 
 pid_t GetTid();
 inline pid_t GetCachedTid() {

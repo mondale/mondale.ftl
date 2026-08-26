@@ -64,12 +64,20 @@ std::unique_ptr<Thread> CreateThread(std::string_view np,
   return std::make_unique<Thread>(std::move(impl));
 }
 
+std::unique_ptr<Thread> CreateThread(std::function<void()> fn) {
+  return CreateThread("", fn);
+}
+
 void CreateDetachedThread(std::string_view np, std::function<void()> fn) {
   std::string n = std::string(np);
   std::thread t([n = std::move(n), fn = std::move(fn)]() {
     internal::ThreadStart(n, fn);
   });
   t.detach();
+}
+
+void CreateDetachedThread(std::function<void()> fn) {
+  CreateDetachedThread("", fn);
 }
 
 pid_t GetTid() { return syscall(SYS_gettid); }
