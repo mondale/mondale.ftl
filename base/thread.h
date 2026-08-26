@@ -32,13 +32,17 @@ class Thread final {
   std::unique_ptr<internal::ThreadImpl> impl_;
 };
 
+// Thread creation.
 std::unique_ptr<Thread> CreateThread(std::string_view name_prefix,
                                      std::function<void()> fn);
 std::unique_ptr<Thread> CreateThread(std::function<void()> fn);
+
+// Throwaway thread creation.
 void CreateDetachedThread(std::string_view name_prefix,
                           std::function<void()> fn);
 void CreateDetachedThread(std::function<void()> fn);
 
+// Want to know your TID? Of course you do.
 pid_t GetTid();
 inline pid_t GetCachedTid() {
   thread_local static const pid_t tid = GetTid();
