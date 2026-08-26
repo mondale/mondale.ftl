@@ -28,6 +28,24 @@ cc_test(
 )
 
 cc_library(
+    name = "mpsc_queue",
+    hdrs = ["mpsc_queue.h"],
+    deps = [],
+)
+
+cc_test(
+    name = "mpsc_queue_test",
+    srcs = ["mpsc_queue_test.cc"],
+    deps = [
+        ":mpsc_queue",
+        ":thread",
+        ":time",
+        ":sleep",
+        "//testing",
+    ],
+)
+
+cc_library(
   name = "mutex",
   hdrs = ["mutex.h"],
   srcs = ["mutex.cc"],
