@@ -62,3 +62,9 @@
 * **Shutdown Lifecycle:**
   * Registers an `atexit` handler to flush all active queue buffers to disk during normal process exit.
   * Any `Log` statements issued during or after `atexit` handler execution are silently dropped.
+
+## 5. File organization.
+* `base/logging.h` contains APIs commonly use by logging operations.
+* `base/logging_control.h` contains ancillary, rarely used APIs.
+* `base/logging.cc` contains the bulk of the implementation.
+* `base/logging_test.cc` containts unit tests for the logging infrastructure.
