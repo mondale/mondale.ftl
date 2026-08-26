@@ -30,4 +30,5 @@ Instructions for code generation:
  * Thread safety is provided by `base/mutex.h` via `base::Mutex` and
    `base::MutexLock` unless otherwise specified. You may also use
    `base::Notification` from `base/notification.h` if necessary.
-
+ * `base/cpu.h` provides `base::CurrentCpu()`, `base::NumCpus()`,
+   `base::NumNumaDomains()`, and `base::NumaDomainFor(int cpu)`.
