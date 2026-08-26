@@ -65,6 +65,7 @@
 
 ## 5. File organization.
 * `base/logging.h` contains APIs commonly use by logging operations.
-* `base/logging_control.h` contains ancillary, rarely used APIs.
+* `base/logging_control.h` contains ancillary, rarely used APIs (config,
+   lifecycle).
 * `base/logging.cc` contains the bulk of the implementation.
 * `base/logging_test.cc` containts unit tests for the logging infrastructure.
