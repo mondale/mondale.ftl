@@ -1,6 +1,8 @@
 #ifndef BASE_THREAD_H_
 #define BASE_THREAD_H_
 
+#include <unistd.h>
+
 #include <memory>
 #include <string_view>
 
@@ -33,6 +35,12 @@ std::unique_ptr<Thread> CreateThread(std::string_view name_prefix,
                                      std::function<void()> fn);
 void CreateDetachedThread(std::string_view name_prefix,
                           std::function<void()> fn);
+
+pid_t GetTid();
+inline pid_t GetCachedTid() {
+  thread_local static const pid_t tid = GetTid();
+  return tid;
+}
 
 }  // namespace base
 

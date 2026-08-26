@@ -14,6 +14,20 @@ cc_test(
 )
 
 cc_library(
+  name = "cpu",
+  hdrs = ["cpu.h"],
+  srcs = ["cpu.cc"],
+  deps = []
+)
+
+cc_test(
+  name = "cpu_test",
+  srcs = ["cpu_test.cc"],
+  deps = [":cpu",
+          "//testing",],
+)
+
+cc_library(
   name = "mutex",
   hdrs = ["mutex.h"],
   srcs = ["mutex.cc"],

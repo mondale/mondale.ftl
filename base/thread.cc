@@ -1,4 +1,6 @@
 #include <pthread.h>
+#include <sys/syscall.h>
+#include <unistd.h>
 
 #include <functional>
 #include <memory>
@@ -69,5 +71,7 @@ void CreateDetachedThread(std::string_view np, std::function<void()> fn) {
   });
   t.detach();
 }
+
+pid_t GetTid() { return syscall(SYS_gettid); }
 
 }  // namespace base

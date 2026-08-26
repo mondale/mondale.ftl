@@ -7,8 +7,9 @@ namespace {
 
 TEST(MakeMeAThread) {
   std::atomic<pid_t> tid{0};
-  auto thread = base::CreateThread(
-      "my_thread", [&]() { tid.store(gettid(), std::memory_order_release); });
+  auto thread = base::CreateThread("my_thread", [&]() {
+    tid.store(GetCachedTid(), std::memory_order_release);
+  });
   while (0 == tid.load(std::memory_order_acquire) || !thread->ReadyToJoin()) {
     SleepFor(Milliseconds(1));
   }
