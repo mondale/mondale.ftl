@@ -102,6 +102,21 @@ cc_test(
           "//testing"],
 )
 
+cc_library(
+  name = "numa",
+  hdrs = ["numa.h"],
+  srcs = ["numa.cc"],
+  deps = [":cpu"],
+  linker_flags = ["-lnuma"],
+)
+
+cc_test(
+  name = "numa_test",
+  srcs = ["numa_test.cc"],
+  deps = [":numa",
+          ":cpu",
+          "//testing",],
+)
 
 cc_library(
   name = "process",
