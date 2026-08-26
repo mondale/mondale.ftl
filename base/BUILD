@@ -31,7 +31,16 @@ cc_library(
   name = "logging_internal",
   hdrs = ["logging_internal.h"],
   srcs = ["logging_internal.cc"],
-  deps = []
+  deps = [":time",],
+)
+
+cc_test(
+  name = "logging_internal_test",
+  srcs = ["logging_internal_test.cc"],
+  deps = [":logging_internal",
+          ":time",
+          "//testing",
+  ]
 )
 
 cc_library(

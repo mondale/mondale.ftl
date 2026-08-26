@@ -12,7 +12,7 @@
 namespace base {
 
 // Represents a high-resolution duration in nanoseconds.
-class Duration {
+class Duration final {
  public:
   constexpr Duration() noexcept = default;
   constexpr explicit Duration(int64_t nanos) noexcept : nanos_(nanos) {}
@@ -90,7 +90,7 @@ inline constexpr Duration Seconds(int64_t s) {
 }
 
 // Real-world clock time. Supports offset arithmetic with Duration.
-class WallTime {
+class WallTime final {
  public:
   constexpr WallTime() noexcept = default;
 
@@ -104,6 +104,7 @@ class WallTime {
   [[nodiscard]] constexpr int64_t UnixNanoseconds() const noexcept {
     return nanos_since_epoch_;
   }
+  static WallTime FromUnixNanoseconds(int64_t nanos) { return WallTime(nanos); }
 
   constexpr WallTime& operator+=(Duration d) noexcept {
     nanos_since_epoch_ += d.ToNanoseconds();
@@ -143,7 +144,7 @@ class WallTime {
 };
 
 // Opaque steady system clock. Math and cross-timebase conversions disabled.
-class MonotonicTime {
+class MonotonicTime final {
  public:
   constexpr MonotonicTime() noexcept = default;
 
@@ -192,7 +193,7 @@ class MonotonicTime {
 };
 
 // Opaque CPU instruction cycle counter. No arithmetic allowed.
-class CycleTime {
+class CycleTime final {
  public:
   constexpr CycleTime() noexcept = default;
 
