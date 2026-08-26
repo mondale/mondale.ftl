@@ -13,9 +13,7 @@
 namespace base {
 
 template <typename T>
-concept MpscQueueElement =
-    std::movable<T> && std::is_nothrow_destructible_v<T> &&
-    std::is_default_constructible_v<T>;
+concept MpscQueueElement = std::movable<T> && std::is_nothrow_destructible_v<T>;
 
 // Generic Multi-Producer, Single-Consumer (MPSC) bounded lock-free ring buffer.
 // Zero heap allocations during Enqueue/Dequeue operations.
@@ -37,15 +35,19 @@ class MpscQueue {
   MpscQueue& operator=(const MpscQueue&) = delete;
 
   // Enqueues an item. Returns false if the queue is full.
-  // Lock-free and thread-safe for multiple concurrent producers.
-  [[nodiscard]] bool TryEnqueue(T item) {
+  // Thread-safe for multiple concurrent producers.
+  [[nodiscard]] bool TryEnqueue(T item, int64_t* occupancy = nullptr) {
     int64_t current_tail = tail_.load(std::memory_order_relaxed);
+    int64_t current_head = 0;
+
     while (true) {
-      int64_t current_head = head_.load(std::memory_order_relaxed);
+      current_head = head_.load(std::memory_order_relaxed);
       if (current_tail - current_head >= static_cast<int64_t>(Capacity)) {
         return false;
       }
 
+      // Only advance tail_ if there is capacity and no other producer beat us
+      // to this ticket.
       if (tail_.compare_exchange_weak(current_tail, current_tail + 1,
                                       std::memory_order_relaxed,
                                       std::memory_order_relaxed)) {
@@ -58,6 +60,10 @@ class MpscQueue {
 
     ::new (static_cast<void*>(cell.storage)) T(std::move(item));
     cell.ready.store(true, std::memory_order_release);
+
+    if (occupancy != nullptr) {
+      *occupancy = (current_tail + 1) - current_head;
+    }
     return true;
   }
 

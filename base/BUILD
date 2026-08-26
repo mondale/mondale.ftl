@@ -28,6 +28,30 @@ cc_test(
 )
 
 cc_library(
+  name = "logging_internal",
+  hdrs = ["logging_internal.h"],
+  srcs = ["logging_internal.cc"],
+  deps = []
+)
+
+cc_library(
+  name = "log_queue",
+  hdrs = ["log_queue.h"],
+  srcs = [],
+  deps = [":logging_internal",
+          ":mpsc_queue",
+  ],
+)
+
+cc_test(
+  name = "log_queue_test",
+  srcs = ["log_queue_test.cc"],
+  deps = [":log_queue",
+          ":thread",
+          "//testing"],
+)
+
+cc_library(
     name = "mpsc_queue",
     hdrs = ["mpsc_queue.h"],
     deps = [],

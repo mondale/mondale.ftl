@@ -53,6 +53,27 @@ TEST(MpscQueueCapacityBoundaries) {
   EXPECT_FALSE(queue.TryEnqueue(5));
 }
 
+TEST(MpscQueueOccupancyOutput) {
+  MpscQueue<int, 4> queue;
+  int64_t occupancy = 0;
+  int out = 0;
+
+  EXPECT_TRUE(queue.TryEnqueue(100, &occupancy));
+  EXPECT_EQ(occupancy, 1);
+
+  EXPECT_TRUE(queue.TryEnqueue(200, &occupancy));
+  EXPECT_EQ(occupancy, 2);
+
+  EXPECT_TRUE(queue.TryEnqueue(300, &occupancy));
+  EXPECT_EQ(occupancy, 3);
+
+  EXPECT_TRUE(queue.Dequeue(&out));
+  EXPECT_EQ(out, 100);
+
+  EXPECT_TRUE(queue.TryEnqueue(400, &occupancy));
+  EXPECT_EQ(occupancy, 3);
+}
+
 TEST(MpscQueueMoveOnlyType) {
   struct MoveOnly {
     MoveOnly() = default;
