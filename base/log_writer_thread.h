@@ -2,6 +2,7 @@
 #define BASE_LOG_WRITER_THREAD_H_
 
 #include <array>
+#include <atomic>
 #include <cstdint>
 #include <list>
 #include <memory>
@@ -10,6 +11,7 @@
 
 #include "base/log_queue.h"
 #include "base/logging_internal.h"
+#include "base/mutex.h"
 #include "base/notification.h"
 
 namespace base::internal {
@@ -40,8 +42,10 @@ class LogWriterThread final {
                    std::vector<SinkState> sinks);
 
   static LogWriterThread* Instance();
+  static std::function<void()> PokeFunction();
 
   void Stop();
+  void Poke();
 
  private:
   LogWriterThread(std::vector<std::unique_ptr<LogQueue>> queues,
@@ -64,8 +68,10 @@ class LogWriterThread final {
   bool AcceptsSeverity(const SinkState& sink, LogSeverity sev) const;
 
   std::vector<std::unique_ptr<LogQueue>> queues_;
-  base::Notification stop_notification_;
   std::vector<SinkState> sinks_;
+  base::Notification stop_notification_;
+  std::atomic<int64_t> poke_generation_{0};
+  Mutex poke_mu_;  // guards writing to poke_generation_;
 };
 
 }  // namespace base::internal

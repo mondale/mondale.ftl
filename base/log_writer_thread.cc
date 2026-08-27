@@ -1,11 +1,17 @@
 #include <fcntl.h>
+#include <sys/types.h>
 #include <unistd.h>
 
 #include <algorithm>
 #include <cstdio>
-#include <system_error>
+#include <cstring>
+#include <memory>
+#include <string>
+#include <vector>
 
+#include "base/log_queue.h"
 #include "base/log_writer_thread.h"
+#include "base/logging_internal.h"
 #include "base/sleep.h"
 #include "base/thread.h"
 #include "base/time.h"
@@ -13,6 +19,7 @@
 namespace base::internal {
 
 namespace {
+
 LogWriterThread* g_log_writer_thread = nullptr;
 
 void MakeNonBlocking(int fd) {
@@ -21,6 +28,26 @@ void MakeNonBlocking(int fd) {
     fcntl(fd, F_SETFL, flags | O_NONBLOCK);
   }
 }
+
+std::string GetProcessSpecificLogPath() {
+  char buf[1024];
+  ssize_t len = readlink("/proc/self/exe", buf, sizeof(buf) - 1);
+
+  const char* binary_name = "mondale_service";
+  if (len != -1) {
+    buf[len] = '\0';
+    const char* last_slash = std::strrchr(buf, '/');
+    if (last_slash != nullptr) {
+      binary_name = last_slash + 1;
+    } else {
+      binary_name = buf;
+    }
+  }
+
+  return std::string("/var/log/mondale/") + binary_name + "_" +
+         std::to_string(getpid()) + ".log";
+}
+
 }  // namespace
 
 LogWriterThread::LogWriterThread(std::vector<std::unique_ptr<LogQueue>> queues,
@@ -47,7 +74,19 @@ void LogWriterThread::Init(std::vector<std::unique_ptr<LogQueue>> queues,
 
 LogWriterThread* LogWriterThread::Instance() { return g_log_writer_thread; }
 
-void LogWriterThread::Stop() { stop_notification_.Notify(); }
+// static
+std::function<void()> LogWriterThread::PokeFunction() {
+  return []() {
+    auto* const instance = LogWriterThread::Instance();
+    if (nullptr == instance) return;
+    instance->Poke();
+  };
+}
+
+void LogWriterThread::Stop() {
+  stop_notification_.Notify();
+  Poke();
+}
 
 bool LogWriterThread::AcceptsSeverity(const SinkState& sink,
                                       LogSeverity sev) const {
@@ -118,7 +157,6 @@ void LogWriterThread::ProcessAndRouteEntry(const LogEntry& entry) {
   for (auto& sink : sinks_) {
     if (AcceptsSeverity(sink, entry.severity)) {
       AppendToSink(sink, formatted);
-      break;
     }
   }
 }
@@ -221,14 +259,72 @@ void LogWriterThread::RunLoop() {
       // Reset backoff and immediately re-run loop without sleeping
       current_sleep_ms = kMinSleepMs;
     } else {
-      base::SleepFor(base::Milliseconds(current_sleep_ms));
-      if (current_sleep_ms < kMaxSleepMs) {
-        ++current_sleep_ms;
+      const int64_t expected_gen =
+          poke_generation_.load(std::memory_order_relaxed);
+      MutexLock l(&poke_mu_);
+      const bool woken_early = poke_mu_.AwaitWithTimeout(
+          [this, expected_gen]() {
+            return stop_notification_.HasBeenNotified() ||
+                   (poke_generation_.load(std::memory_order_relaxed) >
+                    expected_gen);
+          },
+          base::Milliseconds(current_sleep_ms));
+
+      if (woken_early) {
+        current_sleep_ms = kMinSleepMs;
+      } else {
+        if (current_sleep_ms < kMaxSleepMs) {
+          ++current_sleep_ms;
+        }
       }
     }
   }
 
   DrainRemainingQueues();
+}
+
+// Called by external threads.
+void LogWriterThread::Poke() {
+  MutexLock l(&poke_mu_);
+  poke_generation_.store(poke_generation_.load(std::memory_order_relaxed),
+                         std::memory_order_relaxed);
+}
+
+void InitializeLoggingSinks(std::vector<std::unique_ptr<LogQueue>> queues) {
+  std::vector<SinkState> sinks;
+  size_t num_queues = queues.size();
+
+  // 1. Stdout Sink (FD 1): Captures Info and Warning severities
+  SinkState stdout_sink;
+  stdout_sink.fd = STDOUT_FILENO;
+  stdout_sink.severity_mask = (1 << static_cast<int>(LogSeverity::kInfo)) |
+                              (1 << static_cast<int>(LogSeverity::kWarning));
+  stdout_sink.last_reported_drops.resize(num_queues, {});
+  sinks.push_back(std::move(stdout_sink));
+
+  // 2. Stderr Sink (FD 2): Captures Error and Fatal severities
+  SinkState stderr_sink;
+  stderr_sink.fd = STDERR_FILENO;
+  stderr_sink.severity_mask = (1 << static_cast<int>(LogSeverity::kError)) |
+                              (1 << static_cast<int>(LogSeverity::kFatal));
+  stderr_sink.last_reported_drops.resize(num_queues, {});
+  sinks.push_back(std::move(stderr_sink));
+
+  // 3. File Sink: Captures all severities into a process-specific file under
+  // /var/log/mondale
+  std::string log_path = GetProcessSpecificLogPath();
+  int file_fd = open(log_path.c_str(), O_WRONLY | O_CREAT | O_APPEND, 0644);
+
+  if (file_fd >= 0) {
+    internal::SinkState file_sink;
+    file_sink.fd = file_fd;
+    file_sink.severity_mask = 0xFF;  // Accept all severities
+    file_sink.last_reported_drops.resize(num_queues, {});
+    sinks.push_back(std::move(file_sink));
+  }
+
+  // Start the background writer thread singleton
+  LogWriterThread::Init(std::move(queues), std::move(sinks));
 }
 
 }  // namespace base::internal

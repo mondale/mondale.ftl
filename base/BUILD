@@ -65,6 +65,7 @@ cc_library(
   hdrs = ["log_writer_thread.h"],
   srcs = ["log_writer_thread.cc"],
   deps = [":log_queue",
+          ":mutex",
           ":notification",
           ":sleep",
           ":logging_internal",

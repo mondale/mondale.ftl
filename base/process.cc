@@ -5,13 +5,16 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/ucontext.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
 #include <atomic>
+#include <cerrno>
 #include <csignal>
+#include <cstdlib>
 #include <iostream>
 
 #include "base/async_safe.h"
@@ -23,6 +26,19 @@ using namespace base::raw_syscalls;
 
 namespace base {
 namespace {
+
+bool IsLogDirectoryWritable() {
+  // mkstemp requires a modifiable character array template
+  char temp_path[] = "/var/log/mondale/directory_probe_XXXXXX";
+  const int fd = mkstemp(temp_path);
+  if (fd < 0) {
+    return false;
+  }
+
+  close(fd);
+  ::unlink(temp_path);
+  return true;
+}
 
 const int kCaptureSignal = SIGRTMIN + 1;
 std::atomic<int> global_stopped_count{0};
@@ -151,6 +167,12 @@ bool ValidateEnvironment() {
     std::cerr << "mondale.ftl requires mmap minimum address >= 65536; found ["
               << min_addr << "]" << std::endl;
     return false;
+  }
+
+  // Require that the /var/log/mondale directory exists and accomodates writes.
+  if (!IsLogDirectoryWritable()) {
+    std::cerr << "[/var/log/mondale/] does not exist or is not writeable."
+              << std::endl;
   }
 
   return true;
