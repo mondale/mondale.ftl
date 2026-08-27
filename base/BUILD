@@ -61,6 +61,26 @@ cc_test(
 )
 
 cc_library(
+  name = "log_writer_thread",
+  hdrs = ["log_writer_thread.h"],
+  srcs = ["log_writer_thread.cc"],
+  deps = [":log_queue",
+          ":notification",
+          ":sleep",
+          ":logging_internal",
+          ":thread",],
+)
+
+cc_test(
+  name = "log_writer_thread_test",
+  srcs = ["log_writer_thread_test.cc"],
+  deps = [":log_writer_thread",
+          "//core:file",
+          "//core",
+          "//testing",],
+)
+
+cc_library(
     name = "mpsc_queue",
     hdrs = ["mpsc_queue.h"],
     deps = [],

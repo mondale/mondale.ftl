@@ -27,6 +27,8 @@ cc_library(
         ":strings",
         ":syscalls",
     ],
+    visibility = ["//core/...",
+                  "//base:log_writer_thread_test",],
 )
 
 cc_test(
