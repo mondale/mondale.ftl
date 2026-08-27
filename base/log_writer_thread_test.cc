@@ -13,34 +13,13 @@
 #include "base/thread.h"
 #include "base/time.h"
 #include "core/file.h"
+#include "testing/helpers.h"
 #include "testing/testing.h"
+
+using testing::ScopedTempFile;
 
 namespace base::internal {
 namespace {
-
-class ScopedTempFile {
- public:
-  ScopedTempFile() {
-    char filename_template[] = "/tmp/log_writer_test_XXXXXX";
-    fd_ = mkstemp(filename_template);
-    EXPECT_GE(fd_, 0);
-    filename_ = filename_template;
-  }
-
-  ~ScopedTempFile() {
-    if (fd_ >= 0) {
-      close(fd_);
-    }
-    ::unlink(filename_.c_str());
-  }
-
-  int fd() const { return fd_; }
-  const std::string& filename() const { return filename_; }
-
- private:
-  int fd_ = -1;
-  std::string filename_;
-};
 
 TEST(LogWriterThreadTest_WritesAndRoutesLogEntries) {
   ScopedTempFile info_file;

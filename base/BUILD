@@ -77,7 +77,9 @@ cc_test(
   deps = [":log_writer_thread",
           "//core:file",
           "//core",
-          "//testing",],
+          "//testing",
+          "//testing:helpers",
+  ],
 )
 
 cc_library(

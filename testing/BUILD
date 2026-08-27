@@ -12,6 +12,14 @@ cc_library(
 )
 
 cc_library(
+  name = "helpers",
+  hdrs = ["helpers.h"],
+  srcs = [],
+  deps = [":scoped_temp_file"],
+  visibility = ["//...", ],
+)
+
+cc_library(
   name = "compare",
   hdrs = ["compare.h"],
   srcs = [],
@@ -73,6 +81,20 @@ cc_test(
   name = "mock_test",
   srcs = ["mock_test.cc"],
   deps = [":testing"],
+)
+
+cc_library(
+  name = "scoped_temp_file",
+  hdrs = ["scoped_temp_file.h"],
+  srcs = ["scoped_temp_file.cc"],
+  deps = [],
+)
+
+cc_test(
+  name = "scoped_temp_file_test",
+  srcs = ["scoped_temp_file_test.cc"],
+  deps = [":scoped_temp_file",
+          ":testing"],
 )
 
 cc_library(
