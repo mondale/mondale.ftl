@@ -23,4 +23,67 @@ TEST(CpuRoutinesTest) {
   EXPECT_EQ(base::NumaDomainFor(100000), -1);
 }
 
+TEST(NumaMapDefaultConstruction) {
+  base::NumaMap map;
+  EXPECT_EQ(map.NumCpus(), 0);
+}
+
+TEST(NumaMapBuildFromSystemTopology) {
+  base::NumaMap map = base::NumaMap::BuildFromSystemTopology();
+  int total_cpus = base::NumCpus();
+
+  EXPECT_EQ(map.NumCpus(), total_cpus);
+
+  for (int cpu = 0; cpu < total_cpus; ++cpu) {
+    EXPECT_EQ(map.NumaDomainForCpu(cpu), base::NumaDomainFor(cpu));
+  }
+}
+
+TEST(NumaMapCopyConstruction) {
+  base::NumaMap orig = base::NumaMap::BuildFromSystemTopology();
+  base::NumaMap copy(orig);
+
+  EXPECT_EQ(copy.NumCpus(), orig.NumCpus());
+  for (int cpu = 0; cpu < orig.NumCpus(); ++cpu) {
+    EXPECT_EQ(copy.NumaDomainForCpu(cpu), orig.NumaDomainForCpu(cpu));
+  }
+}
+
+TEST(NumaMapMoveConstruction) {
+  base::NumaMap orig = base::NumaMap::BuildFromSystemTopology();
+  int orig_cpus = orig.NumCpus();
+  int first_numa = orig_cpus > 0 ? orig.NumaDomainForCpu(0) : -1;
+
+  base::NumaMap moved(std::move(orig));
+  EXPECT_EQ(moved.NumCpus(), orig_cpus);
+  if (orig_cpus > 0) {
+    EXPECT_EQ(moved.NumaDomainForCpu(0), first_numa);
+  }
+}
+
+TEST(NumaMapCopyAssignment) {
+  base::NumaMap orig = base::NumaMap::BuildFromSystemTopology();
+  base::NumaMap copy;
+  copy = orig;
+
+  EXPECT_EQ(copy.NumCpus(), orig.NumCpus());
+  for (int cpu = 0; cpu < orig.NumCpus(); ++cpu) {
+    EXPECT_EQ(copy.NumaDomainForCpu(cpu), orig.NumaDomainForCpu(cpu));
+  }
+}
+
+TEST(NumaMapMoveAssignment) {
+  base::NumaMap orig = base::NumaMap::BuildFromSystemTopology();
+  int orig_cpus = orig.NumCpus();
+  int first_numa = orig_cpus > 0 ? orig.NumaDomainForCpu(0) : -1;
+
+  base::NumaMap moved;
+  moved = std::move(orig);
+
+  EXPECT_EQ(moved.NumCpus(), orig_cpus);
+  if (orig_cpus > 0) {
+    EXPECT_EQ(moved.NumaDomainForCpu(0), first_numa);
+  }
+}
+
 }  // namespace

@@ -2,6 +2,7 @@
 #define BASE_CPU_H_
 
 #include <cstdint>
+#include <vector>
 
 namespace base {
 
@@ -19,6 +20,26 @@ int NumNumaDomains();
 // [0, NumNumaDomains()) when cpu is [0, NumCpus()).
 // -1 otherwise. GIGO.
 int NumaDomainFor(int cpu);
+
+// Memoized mapping from CPU to NUMA domain.
+class NumaMap final {
+ public:
+  NumaMap() = default;  // empty map
+  ~NumaMap() = default;
+  NumaMap(const NumaMap&) = default;
+  NumaMap& operator=(const NumaMap&) = default;
+  NumaMap(NumaMap&&) = default;
+  NumaMap& operator=(NumaMap&&) = default;
+
+  static NumaMap BuildFromSystemTopology();
+  static NumaMap BuildFrom(std::vector<int> numa_by_cpu);
+
+  int NumCpus() const { return numa_by_cpu_.size(); }
+  int NumaDomainForCpu(int cpu) const { return numa_by_cpu_[cpu]; }
+
+ private:
+  std::vector<int> numa_by_cpu_;
+};
 
 inline int CurrentCpu() {
 #if defined(__x86_64__)

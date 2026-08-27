@@ -61,6 +61,20 @@ cc_test(
 )
 
 cc_library(
+  name = "log_queue_map",
+  hdrs = ["log_queue_map.h"],
+  srcs = ["log_queue_map.cc"],
+  deps = [":cpu"],
+)
+
+cc_test(
+  name = "log_queue_map_test",
+  srcs = ["log_queue_map_test.cc"],
+  deps = [":log_queue_map",
+          "//testing"],
+)
+
+cc_library(
   name = "log_writer_thread",
   hdrs = ["log_writer_thread.h"],
   srcs = ["log_writer_thread.cc"],

@@ -115,4 +115,22 @@ int NumaDomainFor(int cpu) {
   return GetCpuCache().numa_map[cpu];
 }
 
+// static
+NumaMap NumaMap::BuildFromSystemTopology() {
+  const int n = ::base::NumCpus();
+  std::vector<int> m;
+  m.resize(n);
+  for (int i = 0; i < n; ++i) {
+    m[i] = NumaDomainFor(i);
+  }
+  return BuildFrom(std::move(m));
+}
+
+// static
+NumaMap NumaMap::BuildFrom(std::vector<int> numa_by_cpu) {
+  NumaMap m;
+  m.numa_by_cpu_ = std::move(numa_by_cpu);
+  return m;
+}
+
 }  // namespace base
