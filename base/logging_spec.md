@@ -30,7 +30,7 @@
 * **Assertion Checks (`CHECK`):**
   * `CHECK(condition)`: Triggers a `FATAL` log if the condition evaluates to `false`.
   * `CHECK_[EQ|NE|LE|LT|GE|GT](val1, val2)`: Evaluates operands once, captures symbol names, streams evaluated values of both sides if the check fails (e.g., `Check failed: x < foo() (10 vs 5)`), and triggers `FATAL`.
-  * `CHECK_OK(status)`: Evaluates a status object; triggers `FATAL` with the status error string if not OK.
+  * `CHECK_OK(status)`: Evaluates a status-like object; triggers `FATAL` with the status error string if not OK.
   * `DCHECK_*`: Debug-only variants; compiled out in optimized builds (`NDEBUG`).
   * *Formatting Requirement:* Types streamed into `CHECK` macros or `Log` statements must implement `operator<<`. Absence of `operator<<` causes a compile-time error.
 
@@ -44,11 +44,8 @@
   * *Overflow Policy:* If a queue's byte limit is exceeded, calling threads targeting that queue drop incoming log messages immediately without blocking.
   * *Recovery Accounting:* The background worker tracks dropped log counts and automatically emits an `ERROR` log indicating the total number of dropped entries as soon as queues unclog.
 * **Queue Topology & Migration Mechanics:**
-  * The inter-thread queue topology between producer threads and the background logging thread is configurable:
-    1. Single global queue (`1`).
-    2. One queue per CPU core (`NumCpus()`).
-    3. One queue per NUMA domain (`NumNumaDomains()`).
-  * *Default:* One queue per NUMA domain.
+  * The inter-thread queue topology between producer threads and the background
+    logging threads uses MPSP queues.
   * *System Helpers:* Topology utilizes `NumCpus()`, `GetCurrentCpu()`, `NumNumaDomains()`, and `NumaDomainFor(int cpu_number)`.
   * *Thread Safety & Migration:* All queue tails are thread-safe. Thread migration across CPUs/NUMA domains between log construction and dispatch is tolerated as a transient performance impact; correctness is preserved.
 
@@ -56,16 +53,16 @@
 
 * `SetLoggingVerbosity(int level)` *(Default: `0` / off)*
 * `SetVmodules(const std::vector<std::string>& module_names)`
-* `SetLogDestination(LogLevel level, const std::string& filepath_or_stream)`
-* `SetQueueTopology(QueueTopology topology)`
-* `SetPerQueueBufferLimit(size_t max_bytes)`
 * **Shutdown Lifecycle:**
   * Registers an `atexit` handler to flush all active queue buffers to disk during normal process exit.
   * Any `Log` statements issued during or after `atexit` handler execution are silently dropped.
 
 ## 5. File organization.
-* `base/logging.h` contains APIs commonly use by logging operations.
+* `base/logging.h` contains APIs commonly use by logging operations; this header
+   is inclued throughout the project and contains the macro definitions.
+* `base/logging_internal.[h|cc]` contain internal types for the logging
+   implementation.
 * `base/logging_control.h` contains ancillary, rarely used APIs (config,
    lifecycle).
-* `base/logging.cc` contains the bulk of the implementation.
+* `base/log_writer_thread.[h|cc]` contains the logging thread's logic and implementation.
 * `base/logging_test.cc` containts unit tests for the logging infrastructure.

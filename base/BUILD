@@ -28,6 +28,37 @@ cc_test(
 )
 
 cc_library(
+  name = "logging",
+  hdrs = ["logging.h"],
+  srcs = [],
+  deps = [":cpu",
+          ":log_writer_thread",
+          ":logging_internal",
+          ":source_location",
+          ":thread",
+          ":time",
+  ],
+)
+
+cc_test(
+  name = "logging_basic_test",
+  srcs = ["logging_basic_test.cc"],
+  deps = [":logging",
+          "//core",
+          "//core:file",
+          "//testing",
+  ],
+)
+
+cc_test(
+  name = "logging_check_test",
+  srcs = ["logging_check_test.cc"],
+  deps = [":logging",
+          "//testing",
+  ],
+)
+
+cc_library(
   name = "logging_internal",
   hdrs = ["logging_internal.h"],
   srcs = ["logging_internal.cc"],
