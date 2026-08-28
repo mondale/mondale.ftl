@@ -58,6 +58,16 @@ cc_test(
   ],
 )
 
+cc_test(
+  name = "logging_modifiers_test",
+  srcs = ["logging_modifiers_test.cc"],
+  deps = [":logging",
+          "//core",
+          "//core:file",
+          "//testing",
+  ],
+)
+
 cc_library(
   name = "logging_internal",
   hdrs = ["logging_internal.h"],

@@ -88,6 +88,149 @@ class LogMessageProxy final {
   std::ostringstream stream_;
 };
 
+struct NilModifier {
+  bool Evaluate() const { return true; }
+};
+
+struct FirstModifier {
+  int lim;
+  std::atomic<int>* cnt;
+
+  bool Evaluate() const {
+    int val = cnt->load(std::memory_order_relaxed);
+    if (val < lim) {
+      cnt->store(val + 1, std::memory_order_relaxed);
+      return true;
+    }
+    return false;
+  }
+};
+
+struct EveryModifier {
+  int intv;
+  std::atomic<int>* cnt;
+
+  bool Evaluate() const {
+    int val = cnt->fetch_add(1, std::memory_order_relaxed);
+    return (val % intv) == 0;
+  }
+};
+
+struct IfModifier {
+  bool cnd;
+
+  bool Evaluate() const { return cnd; }
+};
+
+template <typename T>
+inline bool EvaluateModifier(const T& mod) {
+  return mod.Evaluate();
+}
+
+}  // namespace base
+
+#define FIRST_IMPL(n)                        \
+  ([]() {                                    \
+    static std::atomic<int> s_cnt{0};        \
+    return ::base::FirstModifier{n, &s_cnt}; \
+  }())
+
+#define EVERY_IMPL(n)                        \
+  ([]() {                                    \
+    static std::atomic<int> s_cnt{0};        \
+    return ::base::EveryModifier{n, &s_cnt}; \
+  }())
+
+#define IF_IMPL(c) \
+  ::base::IfModifier { static_cast<bool>(c) }
+
+#define First(n) FIRST_IMPL(n)
+#define Every(n) EVERY_IMPL(n)
+#define If(c) IF_IMPL(c)
+
+#define _LOG_SELECT_NAME(_1, _2, NAME, ...) NAME
+#define _LOG_CHOOSER(...) _LOG_SELECT_NAME(__VA_ARGS__, _LOG_2, _LOG_1)
+
+#define _LOG_1(sev) \
+  ::base::LogMessageProxy(sev, ::base::SourceLocation::Current())
+
+#define _LOG_2(sev, mod)             \
+  if (::base::EvaluateModifier(mod)) \
+  ::base::LogMessageProxy(sev, ::base::SourceLocation::Current())
+
+#define Log(...) _LOG_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
+
+#define VLOG(n) \
+  if (false) ::base::LogMessageProxy(INFO, ::base::SourceLocation::Current())
+
+#ifdef NDEBUG
+#define DVLOG(n) \
+  while (false) ::base::LogMessageProxy(INFO, ::base::SourceLocation::Current())
+#else
+#define DVLOG(n) VLOG(n)
+#endif
+
+#define CHECK(cond)                                                 \
+  if (auto v = (cond); !v)                                          \
+  ::base::LogMessageProxy(FATAL, ::base::SourceLocation::Current()) \
+      << "Check failed: " << #cond << " "
+
+#define CHECK_OP(name, op, v1, v2)                                           \
+  if (auto val1 = (v1), val2 = (v2); !(val1 op val2))                        \
+  ::base::LogMessageProxy(FATAL, ::base::SourceLocation::Current())          \
+      << "Check failed: " << #v1 << " " << #op << " " << #v2 << " (" << val1 \
+      << " vs " << val2 << ") "
+
+#define CHECK_EQ(v1, v2) CHECK_OP(_EQ, ==, v1, v2)
+#define CHECK_NE(v1, v2) CHECK_OP(_NE, !=, v1, v2)
+#define CHECK_LE(v1, v2) CHECK_OP(_LE, <=, v1, v2)
+#define CHECK_LT(v1, v2) CHECK_OP(_LT, <, v1, v2)
+#define CHECK_GE(v1, v2) CHECK_OP(_GE, >=, v1, v2)
+#define CHECK_GT(v1, v2) CHECK_OP(_GT, >, v1, v2)
+
+#define CHECK_OK(result)                                            \
+  if (auto r = (result); !IsOk(r))                                  \
+  ::base::LogMessageProxy(FATAL, ::base::SourceLocation::Current()) \
+      << "Check failed: " << #result << " is not OK: " << r
+
+#ifdef NDEBUG
+#define DCHECK(cond) \
+  while (false) ::base::LogMessageProxy(INFO, ::base::SourceLocation::Current())
+#define DCHECK_EQ(v1, v2) \
+  while (false) ::base::LogMessageProxy(INFO, ::base::SourceLocation::Current())
+#define DCHECK_NE(v1, v2) \
+  while (false) ::base::LogMessageProxy(INFO, ::base::SourceLocation::Current())
+#define DCHECK_LE(v1, v2) \
+  while (false) ::base::LogMessageProxy(INFO, ::base::SourceLocation::Current())
+#define DCHECK_LT(v1, v2) \
+  while (false) ::base::LogMessageProxy(INFO, ::base::SourceLocation::Current())
+#define DCHECK_GE(v1, v2) \
+  while (false) ::base::LogMessageProxy(INFO, ::base::SourceLocation::Current())
+#define DCHECK_GT(v1, v2) \
+  while (false) ::base::LogMessageProxy(INFO, ::base::SourceLocation::Current())
+#else
+#define DCHECK(cond)                                                 \
+  if (auto v = (cond); !v)                                           \
+  ::base::LogMessageProxy(DFATAL, ::base::SourceLocation::Current()) \
+      << "Check failed: " << #cond << " "
+
+#define DCHECK_OP(name, op, v1, v2)                                          \
+  if (auto val1 = (v1), val2 = (v2); !(val1 op val2))                        \
+  ::base::LogMessageProxy(DFATAL, ::base::SourceLocation::Current())         \
+      << "Check failed: " << #v1 << " " << #op << " " << #v2 << " (" << val1 \
+      << " vs " << val2 << ") "
+
+#define DCHECK_EQ(v1, v2) DCHECK_OP(_EQ, ==, v1, v2)
+#define DCHECK_NE(v1, v2) DCHECK_OP(_NE, !=, v1, v2)
+#define DCHECK_LE(v1, v2) DCHECK_OP(_LE, <=, v1, v2)
+#define DCHECK_LT(v1, v2) DCHECK_OP(_LT, <, v1, v2)
+#define DCHECK_GE(v1, v2) DCHECK_OP(_GE, >=, v1, v2)
+#define DCHECK_GT(v1, v2) DCHECK_OP(_GT, >, v1, v2)
+#endif
+
+#endif  // BASE_LOGGING_H_
+
+/*
 struct NilModifier {};
 
 inline bool EvaluateModifier(NilModifier) { return true; }
@@ -180,3 +323,4 @@ std::string GetLogPath();
 #endif
 
 #endif  // BASE_LOGGING_H_
+*/
