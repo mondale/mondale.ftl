@@ -16,6 +16,7 @@
 #include <csignal>
 #include <cstdlib>
 #include <iostream>
+#include <list>
 
 #include "base/async_safe.h"
 #include "base/process.h"
@@ -178,7 +179,29 @@ bool ValidateEnvironment() {
   return true;
 }
 
+std::list<std::function<void()>>* global_startup_hooks = nullptr;
+std::list<std::function<void()>>* GetStartupHooks() {
+  if (nullptr == global_startup_hooks) {
+    global_startup_hooks = new std::list<std::function<void()>>();
+  }
+  return global_startup_hooks;
+}
+
+void RunStartupHooks() {
+  auto& l = *GetStartupHooks();
+  for (auto& fn : l) {
+    fn();
+  }
+  delete global_startup_hooks;
+  global_startup_hooks = nullptr;
+}
+
 }  // namespace
+
+bool RegisterStartupHook(std::function<void()> fn) {
+  GetStartupHooks()->push_back(std::move(fn));
+  return true;
+}
 
 void Initialize(int argc, char* argv[]) {
   if (!ValidateEnvironment()) {
@@ -189,6 +212,8 @@ void Initialize(int argc, char* argv[]) {
   SetupThreadCaptureHandler();
   SetupDeadlySignalHandler();
   // Future site of flag parsing.
+
+  RunStartupHooks();
 }
 
 }  // namespace base

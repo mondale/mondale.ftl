@@ -1,10 +1,16 @@
 #ifndef BASE_PROCESS_H_
 #define BASE_PROCESS_H_
 
+#include <functional>
+
 namespace base {
 
 // Initialize process-wide common behaviors.
 void Initialize(int argc, char* argv[]);
+
+// Request a startup hook. Safe to call before main.
+// Just hold onto the return value for good luck.
+bool RegisterStartupHook(std::function<void()> fn);
 
 }  // namespace base
 

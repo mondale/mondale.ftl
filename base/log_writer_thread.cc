@@ -13,6 +13,7 @@
 #include "base/log_queue.h"
 #include "base/log_writer_thread.h"
 #include "base/logging_internal.h"
+#include "base/process.h"
 #include "base/sleep.h"
 #include "base/thread.h"
 #include "base/time.h"
@@ -53,7 +54,9 @@ std::string GetProcessSpecificLogPath() {
 
 LogWriterThread::LogWriterThread(std::vector<std::unique_ptr<LogQueue>> queues,
                                  std::vector<SinkState> sinks)
-    : queues_(std::move(queues)), sinks_(std::move(sinks)) {
+    : lqm_(queues, NumaMap::BuildFromSystemTopology()),
+      queues_(std::move(queues)),
+      sinks_(std::move(sinks)) {
   for (auto& sink : sinks_) {
     MakeNonBlocking(sink.fd);
   }
@@ -337,6 +340,10 @@ void InitializeLoggingSinks(std::vector<std::unique_ptr<LogQueue>> queues) {
   LogWriterThread::Init(std::move(queues), std::move(sinks));
 }
 
+std::string GetLogPath() { return GetProcessSpecificLogPath(); }
+
+namespace {
+
 void InitializeLoggingThread() {
   const int num_queues = std::min<int>(16, NumCpus());
   std::vector<std::unique_ptr<LogQueue>> qs;
@@ -346,5 +353,10 @@ void InitializeLoggingThread() {
   }
   InitializeLoggingSinks(std::move(qs));
 }
+
+const bool global_logging_init_hook =
+    RegisterStartupHook([]() { InitializeLoggingThread(); });
+
+}  // namespace
 
 }  // namespace base::internal

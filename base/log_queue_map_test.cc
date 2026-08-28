@@ -4,9 +4,11 @@
 #include "base/log_queue_map.h"
 #include "testing/testing.h"
 
-namespace base::internal {
-
+namespace base {
 class LogQueue final {};
+}  // namespace base
+
+namespace base::internal {
 
 class MockQueues final {
  public:

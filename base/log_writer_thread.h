@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "base/log_queue.h"
+#include "base/log_queue_map.h"
 #include "base/logging_internal.h"
 #include "base/mutex.h"
 #include "base/notification.h"
@@ -47,6 +48,8 @@ class LogWriterThread final {
   void Stop();
   void Poke();
 
+  LogQueue* QueueForCpu(int cpu) const { return lqm_.QueueForCpu(cpu); }
+
  private:
   LogWriterThread(std::vector<std::unique_ptr<LogQueue>> queues,
                   std::vector<SinkState> sinks);
@@ -68,6 +71,7 @@ class LogWriterThread final {
   bool AcceptsSeverity(const SinkState& sink, LogSeverity sev) const;
   void CloseFiles();
 
+  const LogQueueMap lqm_;
   std::vector<std::unique_ptr<LogQueue>> queues_;
   std::vector<SinkState> sinks_;
   base::Notification stop_notification_;
@@ -75,7 +79,7 @@ class LogWriterThread final {
   Mutex poke_mu_;  // guards writing to poke_generation_;
 };
 
-void InitializeLoggingThread();
+std::string GetLogPath();
 
 }  // namespace base::internal
 

@@ -80,8 +80,10 @@ cc_library(
   srcs = ["log_writer_thread.cc"],
   deps = [":cpu",
           ":log_queue",
+          ":log_queue_map",
           ":mutex",
           ":notification",
+          ":process",
           ":sleep",
           ":logging_internal",
           ":thread",],
@@ -94,7 +96,6 @@ cc_test(
           "//core:file",
           "//core",
           "//testing",
-          "//testing:helpers",
   ],
 )
 

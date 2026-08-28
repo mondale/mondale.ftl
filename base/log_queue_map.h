@@ -6,22 +6,24 @@
 
 #include "base/cpu.h"
 
-namespace base::internal {
+namespace base {
 
 class LogQueue;
+
+namespace internal {
 
 class LogQueueMap final {
  public:
   LogQueueMap(const std::vector<std::unique_ptr<LogQueue>>& queues,
               const NumaMap& m);
 
-  LogQueue* QueueForThisCpu() const;
   LogQueue* QueueForCpu(int cpu) const { return map_[cpu]; }
 
  private:
   const std::vector<LogQueue*> map_;
 };
 
-}  // namespace base::internal
+}  // namespace internal
+}  // namespace base
 
 #endif  // #ifndef BASE_LOG_QUEUE_MAP_H_

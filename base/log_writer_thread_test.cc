@@ -13,43 +13,13 @@
 #include "base/thread.h"
 #include "base/time.h"
 #include "core/file.h"
-#include "testing/helpers.h"
 #include "testing/testing.h"
-
-using testing::ScopedTempFile;
 
 namespace base::internal {
 namespace {
 
 TEST(LogWriterThreadTest_WritesAndRoutesLogEntries) {
-  ScopedTempFile info_file;
-  ScopedTempFile error_file;
-
-  auto queue = std::make_unique<LogQueue>([]() {});
-  LogQueue* raw_queue = queue.get();
-  std::vector<std::unique_ptr<LogQueue>> queues;
-  queues.push_back(std::move(queue));
-
-  // Sink 1: Accepts Info and Warning (bitmask bits 0 and 1 -> 0x03)
-  SinkState info_sink;
-  info_sink.fd = info_file.fd();
-  info_sink.severity_mask = (1 << static_cast<int>(LogSeverity::kInfo)) |
-                            (1 << static_cast<int>(LogSeverity::kWarning));
-  info_sink.last_reported_drops.resize(1, {0, 0, 0, 0});
-
-  // Sink 2: Accepts Error and Fatal (bitmask bits 2 and 3 -> 0x0C)
-  SinkState error_sink;
-  error_sink.fd = error_file.fd();
-  error_sink.severity_mask = (1 << static_cast<int>(LogSeverity::kError)) |
-                             (1 << static_cast<int>(LogSeverity::kFatal));
-  error_sink.last_reported_drops.resize(1, {0, 0, 0, 0});
-
-  std::vector<SinkState> sinks;
-  sinks.push_back(std::move(info_sink));
-  sinks.push_back(std::move(error_sink));
-
-  // Initialize the singleton thread once
-  LogWriterThread::Init(std::move(queues), std::move(sinks));
+  const auto path = GetLogPath();
 
   // Construct and push test entries
   LogEntry info_entry;
@@ -70,22 +40,28 @@ TEST(LogWriterThreadTest_WritesAndRoutesLogEntries) {
   error_entry.line = 110;
   error_entry.message = "Critical failure detected!";
 
-  raw_queue->Push(info_entry);
-  raw_queue->Push(error_entry);
+  ASSERT_FALSE(LogWriterThread::Instance() == nullptr);
+  auto* const q = LogWriterThread::Instance()->QueueForCpu(0);
+  ASSERT_FALSE(nullptr == q);
+
+  q->Push(info_entry);
+  q->Push(error_entry);
 
   while (true) {
     // Read back contents and look for correct routing and formatting
-    auto info_content = core::ReadContentsFromFile(info_file.filename());
-    auto error_content = core::ReadContentsFromFile(error_file.filename());
+    auto content = core::ReadContentsFromFile(path);
 
-    ASSERT_TRUE(info_content.ok());
-    ASSERT_TRUE(error_content.ok());
+    ASSERT_TRUE(content.ok());
 
-    if (info_content.ValueOrDie().empty() || error_content.ValueOrDie().empty())
+    if (content.ValueOrDie().empty()) {
+      base::SleepFor(base::Milliseconds(20));
       continue;
-    base::SleepFor(base::Milliseconds(20));
-    EXPECT_EQ(info_content.ValueOrDie(), info_entry.ToString());
-    EXPECT_EQ(error_content.ValueOrDie(), error_entry.ToString());
+    }
+
+    EXPECT_THAT(content.ValueOrDie(),
+                testing::HasSubstr(info_entry.ToString()));
+    EXPECT_THAT(content.ValueOrDie(),
+                testing::HasSubstr(error_entry.ToString()));
     break;
   }
 }
