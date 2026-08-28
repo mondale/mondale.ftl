@@ -30,7 +30,9 @@ class LogQueue {
   // Enqueues a log entry.
   // If capacity is exceeded, increments the drop counter for entry's severity
   // and pokes. Triggers poke_fn if post-enqueue occupancy exceeds kThreshold.
-  void Push(internal::LogEntry entry) {
+  //
+  // Returns true when successfully pushed.
+  bool Push(internal::LogEntry entry) {
     int64_t occupancy = 0;
     internal::LogSeverity severity = entry.severity;
 
@@ -40,12 +42,13 @@ class LogQueue {
         dropped_counts_[idx].fetch_add(1, std::memory_order_relaxed);
       }
       poke_fn_();
-      return;
+      return false;
     }
 
     if (occupancy > kThreshold) {
       poke_fn_();
     }
+    return true;
   }
 
   // Dequeues a single log entry. Single consumer thread only.

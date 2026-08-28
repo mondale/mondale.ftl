@@ -43,12 +43,14 @@ inline void SubmitLogEntry(LogSeverity severity, base::SourceLocation loc,
   entry.message = std::move(message);
 
   const int cpu = base::CurrentCpu();
-  if (FATAL == severity) {
-    std::cerr << entry.ToString() << std::endl;
+  if (FATAL != severity) {
     LogWriterThread::Instance()->QueueForCpu(cpu)->Push(std::move(entry));
-    raise(SIGABRT);
+    return;
   }
-  LogWriterThread::Instance()->QueueForCpu(cpu)->Push(std::move(entry));
+
+  // Fatal path.
+  std::cerr << entry.ToString() << std::endl;
+  raise(SIGABRT);
 }
 
 }  // namespace base::internal

@@ -50,6 +50,10 @@ class LogWriterThread final {
 
   LogQueue* QueueForCpu(int cpu) const { return lqm_.QueueForCpu(cpu); }
 
+  // Returns when all previously-enqueued elements have been pulled from
+  // LogQueues. Not a firm guarantee that logging is on disc.
+  void Flush();
+
  private:
   LogWriterThread(std::vector<std::unique_ptr<LogQueue>> queues,
                   std::vector<SinkState> sinks);
@@ -61,6 +65,7 @@ class LogWriterThread final {
   void CheckDropsForSeverity(size_t q_idx, LogSeverity sev, int severity_idx);
 
   bool DrainQueues();
+  void HandleFlush(const LogEntry& entry);
   void ProcessAndRouteEntry(const LogEntry& entry);
   void AppendToSink(SinkState& sink, const std::string& formatted);
 

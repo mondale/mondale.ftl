@@ -48,7 +48,7 @@ TEST(CheckGtMacro) {
 TEST(CheckOkMacro) {
   TestResult bad_res{false, 42};
   EXPECT_DEATH([&] { CHECK_OK(bad_res); },
-               StderrContains("Check failed: bad_res is not OK: Code(42)"));
+               StderrContains("Check failed: bad_res is not OK: Code\\(42\\)"));
 }
 
 TEST(DCheckMacro) {

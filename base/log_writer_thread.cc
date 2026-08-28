@@ -94,6 +94,23 @@ void LogWriterThread::Stop() {
   Poke();
 }
 
+void LogWriterThread::Flush() {
+  LogEntry e;
+  std::atomic<int64_t> countdown{static_cast<int64_t>(queues_.size())};
+  e.file = reinterpret_cast<char*>(&countdown);
+  for (auto& q : queues_) {
+    bool pushed = false;
+    do {
+      pushed = q->Push(e);
+      if (!pushed) base::SleepFor(base::Milliseconds(1));
+    } while (!pushed);
+  }
+
+  while (countdown.load(std::memory_order_acquire) > 0) {
+    base::SleepFor(base::Milliseconds(1));
+  }
+}
+
 bool LogWriterThread::AcceptsSeverity(const SinkState& sink,
                                       LogSeverity sev) const {
   int severity_idx = static_cast<int>(sev);
@@ -158,7 +175,19 @@ void LogWriterThread::AppendToSink(SinkState& sink,
   sink.total_buffered_bytes += formatted.size();
 }
 
+void LogWriterThread::HandleFlush(const LogEntry& entry) {
+  auto* const a = const_cast<std::atomic<int64_t>*>(
+      reinterpret_cast<const std::atomic<int64_t>*>(entry.file));
+  a->store(a->load(std::memory_order_acquire) - 1, std::memory_order_release);
+}
+
 void LogWriterThread::ProcessAndRouteEntry(const LogEntry& entry) {
+  if (entry.tid == 0 && entry.line == 0) {
+    // This is a flush.
+    HandleFlush(entry);
+    return;
+  }
+
   std::string formatted = entry.ToString();
   for (auto& sink : sinks_) {
     if (AcceptsSeverity(sink, entry.severity)) {

@@ -46,6 +46,7 @@ TEST(LogWriterThreadTest_WritesAndRoutesLogEntries) {
 
   q->Push(info_entry);
   q->Push(error_entry);
+  LogWriterThread::Instance()->Flush();
 
   while (true) {
     // Read back contents and look for correct routing and formatting
