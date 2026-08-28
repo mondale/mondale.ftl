@@ -30,7 +30,7 @@ cc_test(
 cc_library(
   name = "logging",
   hdrs = ["logging.h"],
-  srcs = [],
+  srcs = ["logging.cc"],
   deps = [":cpu",
           ":log_writer_thread",
           ":logging_internal",
@@ -61,6 +61,16 @@ cc_test(
 cc_test(
   name = "logging_modifiers_test",
   srcs = ["logging_modifiers_test.cc"],
+  deps = [":logging",
+          "//core",
+          "//core:file",
+          "//testing",
+  ],
+)
+
+cc_test(
+  name = "logging_vlog_test",
+  srcs = ["logging_vlog_test.cc"],
   deps = [":logging",
           "//core",
           "//core:file",

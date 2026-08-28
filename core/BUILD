@@ -30,6 +30,7 @@ cc_library(
     visibility = ["//core/...",
                   "//base:logging_basic_test",
                   "//base:logging_modifiers_test",
+                  "//base:logging_vlog_test",
                   "//base:log_writer_thread_test",
     ],
 )
