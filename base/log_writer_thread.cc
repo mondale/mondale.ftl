@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 
+#include "base/cpu.h"
 #include "base/log_queue.h"
 #include "base/log_writer_thread.h"
 #include "base/logging_internal.h"
@@ -325,6 +326,16 @@ void InitializeLoggingSinks(std::vector<std::unique_ptr<LogQueue>> queues) {
 
   // Start the background writer thread singleton
   LogWriterThread::Init(std::move(queues), std::move(sinks));
+}
+
+void InitializeLoggingThread() {
+  const int num_queues = std::min<int>(16, NumCpus());
+  std::vector<std::unique_ptr<LogQueue>> qs;
+  qs.reserve(num_queues);
+  for (int i = 0; i < num_queues; ++i) {
+    qs.push_back(std::make_unique<LogQueue>(LogWriterThread::PokeFunction()));
+  }
+  InitializeLoggingSinks(std::move(qs));
 }
 
 }  // namespace base::internal

@@ -74,6 +74,8 @@ class LogWriterThread final {
   Mutex poke_mu_;  // guards writing to poke_generation_;
 };
 
+void InitializeLoggingThread();
+
 }  // namespace base::internal
 
 #endif  // BASE_LOG_WRITER_THREAD_H_
