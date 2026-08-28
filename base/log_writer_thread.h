@@ -66,6 +66,7 @@ class LogWriterThread final {
 
   void DrainRemainingQueues();
   bool AcceptsSeverity(const SinkState& sink, LogSeverity sev) const;
+  void CloseFiles();
 
   std::vector<std::unique_ptr<LogQueue>> queues_;
   std::vector<SinkState> sinks_;

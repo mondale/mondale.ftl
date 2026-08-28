@@ -71,6 +71,8 @@ void LogWriterThread::Init(std::vector<std::unique_ptr<LogQueue>> queues,
       new LogWriterThread(std::move(queues), std::move(sinks));
 
   CreateDetachedThread([]() { g_log_writer_thread->RunLoop(); });
+
+  atexit([]() { LogWriterThread::Instance()->Stop(); });
 }
 
 LogWriterThread* LogWriterThread::Instance() { return g_log_writer_thread; }
@@ -244,6 +246,12 @@ void LogWriterThread::DrainRemainingQueues() {
   }
 }
 
+void LogWriterThread::CloseFiles() {
+  for (auto& sink : sinks_) {
+    ::close(sink.fd);
+  }
+}
+
 void LogWriterThread::RunLoop() {
   int current_sleep_ms = 1;
   constexpr int kMinSleepMs = 1;
@@ -282,6 +290,7 @@ void LogWriterThread::RunLoop() {
   }
 
   DrainRemainingQueues();
+  CloseFiles();
 }
 
 // Called by external threads.
