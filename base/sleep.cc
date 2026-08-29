@@ -46,6 +46,7 @@ void SleepUntil(CycleTime c) {
   const uint64_t sleep_cycles = c.value() - now.value();
   const Duration sleep_duration = CycleTime::DurationFromCycles(sleep_cycles);
   SleepFor(sleep_duration);
+  SpinUntil(c);
 }
 
 }  // namespace base

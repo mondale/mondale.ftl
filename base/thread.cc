@@ -9,6 +9,7 @@
 #include <utility>
 
 #include "base/thread.h"
+#include "base/thread_registry.h"
 
 namespace base {
 namespace internal {
@@ -16,6 +17,7 @@ namespace {
 
 void ThreadStart(std::string name, std::function<void()> fn) {
   pthread_setname_np(pthread_self(), name.c_str());
+  ScopedThreadRegistration str(name);
   fn();
 }
 

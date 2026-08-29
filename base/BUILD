@@ -327,7 +327,7 @@ cc_library(
     name = "thread",
     hdrs = ["thread.h"],
     srcs = ["thread.cc"],
-    deps = [],
+    deps = [":thread_registry",],
     visibility = ["//..."],
 )
 
@@ -346,6 +346,22 @@ cc_library(
     srcs = [],
     deps = [],
     visibility = ["//..."],
+)
+
+cc_library(
+    name = "thread_registry",
+    hdrs = ["thread_registry.h"],
+    srcs = ["thread_registry.cc"],
+    deps = [":async_safe",
+            ":mutex",
+           ],
+)
+
+cc_test(
+  name = "thread_registry_test",
+  srcs = ["thread_registry_test.cc"],
+  deps = [":thread_registry",
+          "//testing"],
 )
 
 cc_library(
