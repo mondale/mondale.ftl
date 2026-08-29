@@ -3,6 +3,7 @@
 #include <thread>
 
 #include "base/process.h"
+#include "base/thread.h"
 
 // This stack is spinning.
 __attribute__((noinline)) void SpinOne() {
@@ -33,7 +34,7 @@ int main(int argc, char* argv[]) {
   using namespace std::chrono_literals;
   base::Initialize(argc, argv);
   std::thread blocker(&Block);
-  std::thread spinner(&Spin);
+  auto spinner = base::CreateThread("Spinner", []() { Spin(); });
   std::this_thread::sleep_for(500ms);
   DoingASegfault();
   return 0;

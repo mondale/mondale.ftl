@@ -23,6 +23,8 @@
 #include "base/process.h"
 #include "base/raw_syscalls.h"
 #include "base/stacktrace.h"
+#include "base/thread.h"
+#include "base/thread_registry.h"
 
 using namespace base::raw_syscalls;
 
@@ -197,6 +199,12 @@ void RunStartupHooks() {
   global_startup_hooks = nullptr;
 }
 
+void RegisterMainThread() {
+  auto* const registry = ThreadRegistry::GetOrCreate();
+  const auto tid = GetCachedTid();
+  registry->Add(tid, "Main");
+}
+
 }  // namespace
 
 bool RegisterStartupHook(std::function<void()> fn) {
@@ -210,6 +218,7 @@ void Initialize(int argc, char* argv[]) {
     exit(1);
   }
 
+  RegisterMainThread();
   SetupThreadCaptureHandler();
   SetupDeadlySignalHandler();
 

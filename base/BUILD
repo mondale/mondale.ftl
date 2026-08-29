@@ -240,6 +240,8 @@ cc_library(
           ":flags",
           ":raw_syscalls",
           ":stacktrace",
+          ":thread_registry",
+          ":thread",
   ],
   visibility = ["//..."],
 )
@@ -275,7 +277,7 @@ cc_test(
 cc_binary(
   name = "segfaulter",
   srcs = ["segfaulter.cc"],
-  deps = [":process",]
+  deps = [":process", ":thread",]
 )
 
 cc_library(
@@ -313,7 +315,9 @@ cc_library(
   hdrs = ["stacktrace.h"],
   srcs = ["stacktrace.cc"],
   deps = [":async_safe",
-          ":raw_syscalls"],
+          ":raw_syscalls",
+          ":thread_registry",
+],
 )
 
 cc_test(

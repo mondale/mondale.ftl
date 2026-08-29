@@ -73,6 +73,7 @@
 #include "base/async_safe.h"
 #include "base/raw_syscalls.h"
 #include "base/stacktrace.h"
+#include "base/thread_registry.h"
 
 namespace base::stacktrace {
 
@@ -718,8 +719,24 @@ void EmitFrames(async_safe::Writer* w, Addr2Line* a2l, const uint64_t* frames,
   }
 }
 
+void EmitThreadName(async_safe::Writer* w, int tid) {
+  auto* const registry = ThreadRegistry::GetNoCreate();
+  if (nullptr == registry) {
+    return;
+  }
+  char name[256];
+  if (!registry->Lookup(tid, name, 256)) {
+    w->Str("[NotFound] ");
+    return;
+  }
+  w->Str("[");
+  w->Str(name);
+  w->Str("] ");
+}
+
 void EmitThreadHeader(async_safe::Writer* w, int tid, bool calling) {
   w->Str("--- Thread ");
+  EmitThreadName(w, tid);
   w->Dec(tid);
   w->Str(calling ? " (Calling Thread) ---\n" : " ---\n");
 }
