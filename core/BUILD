@@ -6,6 +6,7 @@ cc_library(
          ":handle",
          ":hardened_int",
          ":result",
+         ":strings",
          ":util",
          "//base:mutex",
          "//base:notification",

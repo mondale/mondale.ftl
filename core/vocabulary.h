@@ -38,4 +38,7 @@ using base::Notification;
 #include "base/thread_annotations.h"
 // TODO logging
 
+#include "core/strings.h"
+namespace strings = core::strings;
+
 #endif  // #ifndef CORE_VOCABULARY_H_
