@@ -19,6 +19,7 @@
 #include <list>
 
 #include "base/async_safe.h"
+#include "base/flags.h"
 #include "base/process.h"
 #include "base/raw_syscalls.h"
 #include "base/stacktrace.h"
@@ -211,7 +212,12 @@ void Initialize(int argc, char* argv[]) {
 
   SetupThreadCaptureHandler();
   SetupDeadlySignalHandler();
-  // Future site of flag parsing.
+
+  std::string err;
+  if (!ParseFlags(argc, argv, &err)) {
+    std::cerr << "Flag parsing failed: " << err << std::endl;
+    exit(1);
+  }
 
   RunStartupHooks();
 }

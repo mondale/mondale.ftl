@@ -28,6 +28,21 @@ cc_test(
 )
 
 cc_library(
+  name = "flags",
+  hdrs = ["flags.h"],
+  srcs = ["flags.cc"],
+  deps = [],
+)
+
+cc_test(
+  name = "flags_test",
+  srcs = ["flags_test.cc"],
+  deps = [":flags",
+          "//testing",
+  ],
+)
+
+cc_library(
   name = "logging",
   hdrs = ["logging.h"],
   srcs = ["logging.cc"],
@@ -222,6 +237,7 @@ cc_library(
   hdrs = ["process.h"],
   srcs = ["process.cc"],
   deps = [":async_safe",
+          ":flags",
           ":raw_syscalls",
           ":stacktrace",
   ],
