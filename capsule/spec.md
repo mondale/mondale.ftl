@@ -23,7 +23,9 @@ Files are suffixed with `.capsule` and parsed via `capsule::Parser`.
 
 * **`@default(value)`:** Specifies a fallback scalar or string value when
   omitted in binary payloads. All fiends are optional in capsule. Fields with no
-  specified default value are default-constructed if accessed.
+  specified default value are default-constructed if accessed. Default strings
+  are zero length. Default cosntruction rules apply transitively to nested
+  capsules.
 * **`@retired`:** Marks a field as deprecated; stops builder generation while
   retaining its hash slot. The programmer bears the burden of not renaming
   fields and otherwise properly maintaining retired fields.
@@ -92,12 +94,15 @@ public:
 
 * **Storage Factory Injection:** The constructor accepts a reference to a `capsule::StorageFactory`, delegating buffer allocation to custom memory strategies without coupling generated code to concrete allocators.
 * **Fluent Interface:** All setter (`set_...`) and acknowledgment (`ack_...`) methods return `*this`, allowing chained initialization in any field order.
-* **Exhaustive Field Verification:** To prevent accidental omissions during object construction, calling `Build()` validates that **every** field declared in the capsule has either been passed to a `set_...` method or explicitly acknowledged via `ack_...`. If any field is missed, `Build()` fails and returns an error `Result`.
+* **Exhaustive Field Verification:** To prevent accidental omissions during
+* object construction, calling `Build()` validates that **every** non-retired
+  field declared in the capsule has either been passed to a `set_...` method or
+  explicitly acknowledged via `ack_...`. If any non-retired field is missed, `Build()` fails and returns an error `Result`.
 * **Underlying Assembly:** When `Build()` is executed, the builder computes natural alignment for fixed-width data, serializes the variable-length heap region, writes the compact hash-to-offset index table, computes the CRC32C trailer, and returns the finished `Storage` and its zero-copy `View` pair.
 
 ---
 
-## 4. Proposed Binary Serialization Format
+## 4. Binary Serialization Format
 
 All multi-byte numeric fields, lengths, and hashes are stored as **unsigned little-endian** values. Capsule and field hashes are 4-byte CRC32Cs.
 
@@ -122,12 +127,23 @@ All multi-byte numeric fields, lengths, and hashes are stored as **unsigned litt
 
 ```
 
-Offsets in the offsets are relative to the start-of-capsule, i.e., 0 always
-points to the capsule ID hash.
+Offsets and Pointers are synonymous in the serialization format. These are
+always relative to the start-of-capsule for their encompassing capsule. I.e.,
+offset 0 and pointer 0 are aliases, and point to the capsule ID hash.
 
 The offset table is ordered by data offset, which also allows the computation
 of the length of variable-length fields rather than direct storage of the
 length.
+
+Variable length strings and byte strings are encoded as a u32 length followed by
+the number of requierd bytes.
+
+Variable length vectors are encoded as the hash `vector<type>`, a u32
+length indicating the number of elements in the vector, and then each individual
+type uses its existing encoding rules.
+
+Padding is inserted to ensure all types have natural alignment in the storage
+format.
 
 When padding is needed, every byte has the value `0xda`.
 
