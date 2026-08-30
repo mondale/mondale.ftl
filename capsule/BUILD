@@ -1,79 +1,79 @@
-
 cc_library(
- name = "ast",
- hdrs = ["ast.h"],
- srcs = [],
+    name = "ast",
+    srcs = [],
+    hdrs = ["ast.h"],
 )
 
 cc_library(
-  name = "generator",
-  hdrs = ["generator.h"],
-  srcs = ["generator.cc"],
-  deps = [
-    ":ast",
-    "//core",
-  ],
+    name = "generator",
+    srcs = ["generator.cc"],
+    hdrs = ["generator.h"],
+    deps = [
+        ":ast",
+        "//core",
+    ],
 )
 
 cc_test(
-  name = "generator_smoke_test",
-  srcs = ["generator_smoke_test.cc"],
-  deps = [
-    ":generator",
-    ":parser",
-    "//testing",
-  ],
+    name = "generator_smoke_test",
+    srcs = ["generator_smoke_test.cc"],
+    deps = [
+        ":generator",
+        ":parser",
+        "//testing",
+    ],
 )
 
 cc_library(
-  name = "lexer",
-  hdrs = ["lexer.h"],
-  srcs = ["lexer.cc"],
-  deps = [
-    ":ast",
-    "//core",
-  ]
+    name = "lexer",
+    srcs = ["lexer.cc"],
+    hdrs = ["lexer.h"],
+    deps = [
+        ":ast",
+        "//core",
+    ],
 )
 
 cc_library(
-  name = "parser",
-  hdrs = ["parser.h"],
-  srcs = ["parser.cc"],
-  deps = [
-    ":ast",
-    ":lexer",
-    "//core",
-  ],
+    name = "parser",
+    srcs = ["parser.cc"],
+    hdrs = ["parser.h"],
+    deps = [
+        ":ast",
+        ":lexer",
+        "//core",
+    ],
 )
 
 cc_library(
-  name = "storage",
-  hdrs = ["storage.h"],
-  srcs = ["storage.cc"],
-  deps = [],
+    name = "storage",
+    srcs = ["storage.cc"],
+    hdrs = ["storage.h"],
+    deps = [],
 )
 
 cc_test(
-  name = "storage_test",
-  srcs = ["storage_test.cc"],
-  deps = [":storage",
-          "//testing",
-  ],
+    name = "storage_test",
+    srcs = ["storage_test.cc"],
+    deps = [
+        ":storage",
+        "//testing",
+    ],
 )
 
 cc_library(
-  name = "storage_factory",
-  hdrs = ["storage_factory.h"],
-  srcs = ["storage_factory.cc"],
-  deps = ["//core"],
+    name = "storage_factory",
+    srcs = ["storage_factory.cc"],
+    hdrs = ["storage_factory.h"],
+    deps = ["//core"],
 )
 
 cc_test(
-  name = "storage_factory_test",
-  srcs = ["storage_factory_test.cc",],
-  deps = [":storage_factory",
-          "//core",
-          "//testing",
-  ],
+    name = "storage_factory_test",
+    srcs = ["storage_factory_test.cc"],
+    deps = [
+        ":storage_factory",
+        "//core",
+        "//testing",
+    ],
 )
-

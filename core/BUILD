@@ -1,53 +1,56 @@
 cc_library(
     name = "core",
-    hdrs = ["vocabulary.h"],
     srcs = [],
-    deps = [
-         ":handle",
-         ":hardened_int",
-         ":result",
-         ":strings",
-         ":util",
-         "//base:logging",
-         "//base:mutex",
-         "//base:notification",
-         "//base:sleep",
-         "//base:thread",
-         "//base:thread_annotations",
-         "//base:time",
-    ],
+    hdrs = ["vocabulary.h"],
     visibility = ["//..."],
+    deps = [
+        ":handle",
+        ":hardened_int",
+        ":result",
+        ":strings",
+        ":util",
+        "//base:logging",
+        "//base:mutex",
+        "//base:notification",
+        "//base:sleep",
+        "//base:thread",
+        "//base:thread_annotations",
+        "//base:time",
+    ],
 )
 
 cc_library(
     name = "crc32c",
-    hdrs = ["crc32c.h"],
     srcs = ["crc32c.cc"],
-    deps = [":hardened_int",],
+    hdrs = ["crc32c.h"],
+    deps = [":hardened_int"],
 )
 
 cc_test(
     name = "crc32c_test",
     srcs = ["crc32c_test.cc"],
-    deps = [":crc32c",
-            "//testing",],
+    deps = [
+        ":crc32c",
+        "//testing",
+    ],
 )
 
 cc_library(
     name = "file",
     srcs = ["file.cc"],
     hdrs = ["file.h"],
+    visibility = [
+        "//base:log_writer_thread_test",
+        "//base:logging_basic_test",
+        "//base:logging_modifiers_test",
+        "//base:logging_vlog_test",
+        "//core/...",
+    ],
     deps = [
         ":idioms",
         ":result",
         ":strings",
         ":syscalls",
-    ],
-    visibility = ["//core/...",
-                  "//base:logging_basic_test",
-                  "//base:logging_modifiers_test",
-                  "//base:logging_vlog_test",
-                  "//base:log_writer_thread_test",
     ],
 )
 
