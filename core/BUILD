@@ -8,6 +8,7 @@ cc_library(
          ":result",
          ":strings",
          ":util",
+         "//base:logging",
          "//base:mutex",
          "//base:notification",
          "//base:sleep",

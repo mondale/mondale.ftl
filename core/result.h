@@ -262,6 +262,14 @@ template <typename T>
 inline bool IsStatusOk(const ResultOr<T>& ro) {
   return ro.ok();
 }
+template <typename T>
+inline bool IsOk(const ResultOr<T>& ro) {
+  return ro.ok();
+}
+template <typename T>
+inline bool IsOk(const T& t) {
+  return t.ok();
+}
 
 inline Result ExtractResult(BaseCode bc) { return Result(bc); }
 inline Result ExtractResult(Code c) { return Result(c); }

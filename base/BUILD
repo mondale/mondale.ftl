@@ -53,6 +53,7 @@ cc_library(
           ":thread",
           ":time",
   ],
+  visibility = ["//..."],
 )
 
 cc_test(

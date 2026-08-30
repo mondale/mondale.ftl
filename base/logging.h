@@ -199,6 +199,7 @@ void SetVmodules(std::string_view vmodules);
   ::base::LogMessageProxy(FATAL, ::base::SourceLocation::Current()) \
       << "Check failed: " << #cond << " "
 
+// TODO: This needs to be much more type forgiving.
 #define CHECK_OP(name, op, v1, v2)                                           \
   if (auto val1 = (v1), val2 = (v2); !(val1 op val2))                        \
   ::base::LogMessageProxy(FATAL, ::base::SourceLocation::Current())          \
@@ -213,7 +214,7 @@ void SetVmodules(std::string_view vmodules);
 #define CHECK_GT(v1, v2) CHECK_OP(_GT, >, v1, v2)
 
 #define CHECK_OK(result)                                            \
-  if (auto r = (result); !IsOk(r))                                  \
+  if (const auto& r = (result); !IsOk(r))                           \
   ::base::LogMessageProxy(FATAL, ::base::SourceLocation::Current()) \
       << "Check failed: " << #result << " is not OK: " << r
 

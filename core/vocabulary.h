@@ -32,6 +32,7 @@ using core::ResultOr;
 #include "base/thread.h"
 using base::CreateThread;
 using base::GetCachedTid;
+using base::Thread;
 
 #include "base/mutex.h"
 using base::Mutex;

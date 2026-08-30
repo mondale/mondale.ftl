@@ -30,6 +30,11 @@ Review these instructions and LMK when you are ready to proceed.
 ## Vocabulary.
  * The essential vocabulary of the project can be brought in with `#include
    "core/vocabulary.h"` unless otherwise noted.
+ * **Core Vocabulary Scoping:** Types and functions brought in via
+   `"core/vocabulary.h"` (such as `Thread`, `CreateThread`, `Mutex`, `Duration`,
+   `Log`, etc.) reside in the core vocabulary scope/namespace, **never** the
+   local module namespace Reference them directly without
+   local module prefixes.  
  * Use `Result` and `ResultOr<T>` akin to `Status` and `StatusOr<T>`.
    * Test for OK with `result.IsOk()`.
    * Use `TRY_ASSIGN(Type v, Method(...)` in lieu of `ASSIGN_OR_RETURN`, which
@@ -83,7 +88,7 @@ Review these instructions and LMK when you are ready to proceed.
  * Tests do not need a main.
  * Tests should be in an anonymous namespace. Use `using` directives for
    abbreviating commonly-used types. 
- * Tests that have no fixture are declared as `TEST(Foo) { body; }`
+ * Tests that have no fixture are declared **with a single argument** as `TEST(Foo) { body; }`
  * Tests with a fixture class are declared as
    `TEST_F(FixtureClass, Foo) { body; }`. `body` may use non-private members
    of the fixture class.
