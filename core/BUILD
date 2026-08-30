@@ -19,6 +19,20 @@ cc_library(
 )
 
 cc_library(
+    name = "crc32c",
+    hdrs = ["crc32c.h"],
+    srcs = ["crc32c.cc"],
+    deps = [":hardened_int",],
+)
+
+cc_test(
+    name = "crc32c_test",
+    srcs = ["crc32c_test.cc"],
+    deps = [":crc32c",
+            "//testing",],
+)
+
+cc_library(
     name = "file",
     srcs = ["file.cc"],
     hdrs = ["file.h"],
