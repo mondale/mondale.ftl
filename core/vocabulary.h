@@ -7,6 +7,7 @@ using base::SleepUntil;
 
 #include "base/time.h"
 using base::CycleTime;
+using base::Duration;
 using base::Microseconds;
 using base::Milliseconds;
 using base::MonotonicTime;
@@ -18,7 +19,11 @@ using base::WallTime;
 using core::util::MakeCleanup;
 
 #include "core/handle.h"
+// No specific usings.
+
 #include "core/hardened_int.h"
+// No specific usings.
+
 #include "core/result.h"
 using core::Code;
 using core::Result;
@@ -32,11 +37,14 @@ using base::GetCachedTid;
 using base::Mutex;
 using base::MutexLock;
 
+#include "base/thread_annotations.h"
+// No specific usings.
+
 #include "base/notification.h"
 using base::Notification;
 
-#include "base/thread_annotations.h"
-// TODO logging
+#include "base/logging.h"
+// No specific usings.
 
 #include "core/strings.h"
 namespace strings = core::strings;

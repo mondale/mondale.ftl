@@ -324,6 +324,7 @@ class [[nodiscard]] ResultOr final {
   ResultOr& operator=(ResultOr&&) noexcept(
       std::is_nothrow_move_assignable_v<T>) = default;
 
+  [[nodiscard]] bool IsOk() const noexcept { return ok(); }
   [[nodiscard]] bool ok() const noexcept {
     return std::holds_alternative<T>(storage_);
   }

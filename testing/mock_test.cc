@@ -2,6 +2,7 @@
 
 namespace {
 
+// Example type.
 class Thing {
  public:
   virtual ~Thing() = default;
@@ -22,6 +23,7 @@ class Thing {
                   int a8, int a9, int a10) = 0;
 };
 
+// All supported arities.
 class MockThing : public Thing {
  public:
   MOCK_METHOD0(void, Zero, override);
