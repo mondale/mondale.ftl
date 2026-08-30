@@ -2,7 +2,6 @@
 #define CAPSULE_STORAGE_FACTORY_H_
 
 #include <memory>
-#include <string_view>
 
 #include "core/vocabulary.h"
 
@@ -11,13 +10,19 @@ namespace capsule {
 // Holder for Storage memory. Exists to an overridden dtor.
 class StorageSpan {
  public:
-  explicit StorageSpan(std::string_view s) : span_(s) {}
+  StorageSpan(void* d, size_t n) : data_(d), n_(n) {}
   virtual ~StorageSpan() = 0;
 
-  std::string_view span() const { return span_; }
+  template <typename T>
+  T* DataAsPtrTo() const {
+    return reinterpret_cast<T*>(data_);
+  }
+
+  size_t n() const { return n_; }
 
  private:
-  std::string_view span_;
+  void* const data_;
+  size_t n_;
 };
 
 // StorageFactory subclases must be thread-safe.

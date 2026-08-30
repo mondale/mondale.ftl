@@ -30,8 +30,7 @@ TEST(HeapStorageFactoryTest_AllocateSpan) {
   std::unique_ptr<StorageSpan> span = std::move(span_result).ValueOrDie();
   ASSERT_NE(span, nullptr);
 
-  std::string_view sv = span->span();
-  EXPECT_EQ(sv.size(), 64);
+  EXPECT_EQ(span->n(), 64);
 }
 
 TEST(HeapStorageFactoryTest_AllocateZeroBytes) {
@@ -43,7 +42,7 @@ TEST(HeapStorageFactoryTest_AllocateZeroBytes) {
 
   std::unique_ptr<StorageSpan> span = std::move(span_result).ValueOrDie();
   ASSERT_NE(span, nullptr);
-  EXPECT_EQ(span->span().size(), 0);
+  EXPECT_EQ(span->n(), 0);
 }
 
 TEST(HeapStorageFactoryTest_ConcurrentAllocation) {
@@ -60,7 +59,7 @@ TEST(HeapStorageFactoryTest_ConcurrentAllocation) {
     threads.push_back(CreateThread("alloc_thread", [factory = factory.get()]() {
       for (int j = 0; j < kAllocationsPerThread; ++j) {
         auto span = factory->NewSpan(32).ValueOrDie();
-        CHECK_EQ(span->span().size(), size_t{32});
+        CHECK_EQ(span->n(), size_t{32});
       }
     }));
   }

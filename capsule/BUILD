@@ -49,7 +49,9 @@ cc_library(
     name = "storage",
     srcs = ["storage.cc"],
     hdrs = ["storage.h"],
-    deps = [],
+    deps = [":storage_factory",
+            "//core",
+    ],
 )
 
 cc_test(
@@ -57,6 +59,7 @@ cc_test(
     srcs = ["storage_test.cc"],
     deps = [
         ":storage",
+        ":storage_factory",
         "//testing",
     ],
 )
