@@ -47,6 +47,21 @@ cc_library(
 )
 
 cc_library(
+  name = "storage",
+  hdrs = ["storage.h"],
+  srcs = ["storage.cc"],
+  deps = [],
+)
+
+cc_test(
+  name = "storage_test",
+  srcs = ["storage_test.cc"],
+  deps = [":storage",
+          "//testing",
+  ],
+)
+
+cc_library(
   name = "storage_factory",
   hdrs = ["storage_factory.h"],
   srcs = ["storage_factory.cc"],
