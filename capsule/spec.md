@@ -12,15 +12,21 @@ Files are suffixed with `.capsule` and parsed via `capsule::Parser`.
 
 ### Supported Types
 
-* **Primitives:** `u64`, `u32`, `bool`
+* **Primitives:** `u64`, `u32`, `u16`, `u8`, `i64`, `i32`, `i16`, `i8`, `f32`,
+  `f64`, `bool`. 
 * **Strings:** `string` (UTF-8 binary data)
+* **Bytes:** `bytes`, Raw byte strings (C++ type is still `string`).
 * **Containers:** `vector<T>` (homogeneous dynamically sized arrays)
 * **Nested Types:** User-defined capsule identifiers
 
 ### Attributes & Static Validation
 
-* **`@default(value)`:** Specifies a fallback scalar or string value if omitted in binary payloads.
-* **`@retired`:** Marks a field as deprecated; stops builder generation while retaining its hash slot.
+* **`@default(value)`:** Specifies a fallback scalar or string value when
+  omitted in binary payloads. All fiends are optional in capsule. Fields with no
+  specified default value are default-constructed if accessed.
+* **`@retired`:** Marks a field as deprecated; stops builder generation while
+  retaining its hash slot. The programmer bears the burden of not renaming
+  fields and otherwise properly maintaining retired fields.
 * **Hash Collision Checking:** The compiler performs static uniqueness checks on all 4-byte CRC32C symbol hashes across scopes, halting compilation if a collision occurs.
 
 ---
@@ -33,21 +39,61 @@ Files are suffixed with `.capsule` and parsed via `capsule::Parser`.
 
 ### Generated Types
 
-* **`capsule::View` (Generated):** Zero-copy, read-optimized accessor backed by a `std::shared_ptr<Storage>`. At construction time, the View resolves all field offsets via hash lookup against the payload index table once, caching raw pointers into the underlying storage. Getters involve zero lookups, directly dereferencing these lifetime-guarded pointers.
+* **`capsule::View` (Generated):** Zero-copy, read-optimized accessor backed by
+  a `std::shared_ptr<Storage>`. At construction time, the View resolves all
+  field offsets via hash lookup against the payload index table once, caching
+  raw pointers into the underlying storage. Getters involve zero lookups,
+  directly dereferencing these lifetime-guarded pointers. Multiple `View`
+  objects do not provide thread safety but compose with external locking
+  patterns.
 * `bool has_field_name() const`: Returns `true` if the field is present in storage.
 * `field_name() const`: Returns the value from storage if present, or evaluates and returns the schema-defined default value if absent.
-* `Result set_field_name(ScalarType new_value)`: Permitted exclusively for present scalar fields. Fails if the field is missing or variable-length.
-* `std::string ToString() const`: Returns the `.capsule` text in canonical format.
+* `Result set_field_name(ScalarType new_value)`: Permitted exclusively for
+  present scalar fields. Fails if the field is missing or variable-length. Note
+  that `Result` is specified externally to this spec.
+* `std::string ToString() const`: Returns the `.capsule` text in canonical format. 
 
 
-* **`capsule::Builder` (Generated):** Sequential serialization engine. Accepts a `capsule::StorageFactory` and returns a `std::shared_ptr<Storage>` and `View` pair.
-* **`capsule::Materialized` (Generated):** Standard C++ heap-allocated struct representation mirroring the capsule schema for heavy mutations, inheriting from `capsule::Materialized`.
+* **`Builder Classes` (Generated):** Sequential serialization engine. Accepts a `capsule::StorageFactory` and returns a `std::shared_ptr<Storage>` and `View` pair.
+* **`Materialized Classes` (Generated):** Standard C++ heap-allocated struct representation mirroring the capsule schema for heavy mutations, inheriting from `capsule::Materialized`.
 * `static ResultOr<MaterializedType> FromView(const ViewType& view)`: Factory method.
 * `ResultOr<std::pair<std::shared_ptr<Storage>, ViewType>> Serialize(StorageFactory& factory) const`: Serializes structure into storage.
 * `std::string ToString() const override`: Returns canonical format.
 * Constructor from a `View` is private.
 
+### Generated Builder API
 
+Every capsule schema generates a strongly typed `Builder` class (inheriting from `capsule::BuilderBase`) designed for sequential, allocation-aware construction of binary payloads.
+
+```cpp
+class PlayerConfigBuilder : public capsule::BuilderBase {
+public:
+    // Lifecycle & Initialization
+    explicit PlayerConfigBuilder(capsule::StorageFactory& factory);
+
+    // Fluent Setters (order-independent)
+    PlayerConfigBuilder& set_id(uint64_t val);
+    PlayerConfigBuilder& set_name(std::string_view val);
+    PlayerConfigBuilder& set_tags(std::span<const std::string_view> val);
+    PlayerConfigBuilder& set_position(const Vector3& val);
+    PlayerConfigBuilder& set_health(uint32_t val);
+
+    // Explicit Acknowledgment 
+    // Marks a field as intentionally omitted without setting a value
+    PlayerConfigBuilder& ack_old_metric();
+
+    // Finalization
+    capsule::ResultOr<std::pair<std::shared_ptr<capsule::Storage>, PlayerConfigView>> Build();
+};
+
+```
+
+#### Builder Design & Constraints
+
+* **Storage Factory Injection:** The constructor accepts a reference to a `capsule::StorageFactory`, delegating buffer allocation to custom memory strategies without coupling generated code to concrete allocators.
+* **Fluent Interface:** All setter (`set_...`) and acknowledgment (`ack_...`) methods return `*this`, allowing chained initialization in any field order.
+* **Exhaustive Field Verification:** To prevent accidental omissions during object construction, calling `Build()` validates that **every** field declared in the capsule has either been passed to a `set_...` method or explicitly acknowledged via `ack_...`. If any field is missed, `Build()` fails and returns an error `Result`.
+* **Underlying Assembly:** When `Build()` is executed, the builder computes natural alignment for fixed-width data, serializes the variable-length heap region, writes the compact hash-to-offset index table, computes the CRC32C trailer, and returns the finished `Storage` and its zero-copy `View` pair.
 
 ---
 
@@ -75,6 +121,20 @@ All multi-byte numeric fields, lengths, and hashes are stored as **unsigned litt
 +-----------------------------------+-----------------------------------+
 
 ```
+
+Offsets in the offsets are relative to the start-of-capsule, i.e., 0 always
+points to the capsule ID hash.
+
+The offset table is ordered by data offset, which also allows the computation
+of the length of variable-length fields rather than direct storage of the
+length.
+
+When padding is needed, every byte has the value `0xda`.
+
+Note that nested blobs themselves are full capsules, and may within contain
+fixed- and variable-length sections, as well as CRC32Cs, and their offsets
+are relative to their own internal start-of-capsule.
+
 
 ### Layout Mechanics
 
