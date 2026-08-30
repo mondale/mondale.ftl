@@ -5,15 +5,17 @@ import pathlib
 
 def main():
     if len(sys.argv) < 2:
+        print("Error: Missing argument. Usage: ./tools/new_skeleton.py <directory/basename>", file=sys.stderr)
         sys.exit(1)
 
     target = pathlib.Path(sys.argv[1])
     directory = target.parent
     basename = target.name
 
-    # Check if BUILD file exists; if not, stop and do nothing.
+    # Check if BUILD file exists; if not, print an error and stop.
     build_path = (directory / "BUILD") if directory != pathlib.Path('.') else pathlib.Path("BUILD")
     if not build_path.exists():
+        print(f"Error: BUILD file not found in directory '{directory if directory != pathlib.Path('.') else '.'}'.", file=sys.stderr)
         return
 
     # Define paths for the new files
@@ -21,8 +23,10 @@ def main():
     cc_path = directory / f"{basename}.cc"
     test_path = directory / f"{basename}_test.cc"
 
-    # If any of the target files already exist, do nothing.
-    if h_path.exists() or cc_path.exists() or test_path.exists():
+    # If any of the target files already exist, print a warning and do nothing.
+    existing_files = [p for p in (h_path, cc_path, test_path) if p.exists()]
+    if existing_files:
+        print(f"Error: One or more target files already exist: {', '.join(str(p) for p in existing_files)}", file=sys.stderr)
         return
 
     # Derive naming conventions
@@ -91,13 +95,19 @@ cc_test(
 """
 
     # Write out the files
-    h_path.write_text(h_content, encoding="utf-8")
-    cc_path.write_text(cc_content, encoding="utf-8")
-    test_path.write_text(test_content, encoding="utf-8")
+    try:
+        h_path.write_text(h_content, encoding="utf-8")
+        cc_path.write_text(cc_content, encoding="utf-8")
+        test_path.write_text(test_content, encoding="utf-8")
 
-    # Append to BUILD file
-    with open(build_path, "a", encoding="utf-8") as f:
-        f.write(build_snippet)
+        # Append to BUILD file
+        with open(build_path, "a", encoding="utf-8") as f:
+            f.write(build_snippet)
+            
+        print(f"Successfully created skeleton files for {basename} in {directory if directory != pathlib.Path('.') else '.'}")
+    except Exception as e:
+        print(f"Error: Failed to write files or update BUILD: {e}", file=sys.stderr)
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
