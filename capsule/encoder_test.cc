@@ -21,12 +21,10 @@ class EncoderTest : public ::testing::Test {
   EncoderTest() {
     memset(&capsule0_, 0, sizeof(capsule0_));
     memset(&capsule1_, 0, sizeof(capsule1_));
-    memset(&capsule3_, 0, sizeof(capsule3_));
   }
 
   Capsule<0> capsule0_;
   Capsule<1> capsule1_;
-  Capsule<3> capsule3_;
 };
 
 TEST_F(EncoderTest, EncodeZeroFields) {
