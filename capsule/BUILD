@@ -109,3 +109,19 @@ cc_library(
     hdrs = ["abi.h"],
     deps = ["//core:crc32c"],
 )
+
+cc_library(
+  name = "view_mapper",
+  hdrs = ["view_mapper.h"],
+  srcs = ["view_mapper.cc"],
+  deps = [":abi", "//core", "//core:crc32c",],
+)
+
+cc_test(
+  name = "view_mapper_test",
+  srcs = ["view_mapper_test.cc"],
+  deps = [":view_mapper", ":abi",
+            "//core:crc32c",
+          "//testing",
+  ],
+)
