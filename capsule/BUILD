@@ -131,3 +131,18 @@ cc_test(
         "//testing",
     ],
 )
+
+cc_library(
+  name = "size_builder",
+  hdrs = ["size_builder.h"],
+  srcs = [],
+  deps = [":abi", ],
+)
+
+cc_test(
+  name = "size_builder_test",
+  srcs = ["size_builder_test.cc"],
+  deps = [":size_builder",
+          "//testing",
+  ],
+)
