@@ -1,5 +1,10 @@
 #include <sstream>
 
+// hack, but that's life
+namespace {
+bool IsOk(int x) { return x == 7; }
+}  // namespace
+
 #include "testing/matchers.h"
 #include "testing/test.h"
 
@@ -18,6 +23,11 @@ TEST(HasSubstr) {
   const auto nope = m.Match("gollum");
   EXPECT_FALSE(nope.matched);
   EXPECT_EQ(nope.explanation, "gollum");
+}
+
+TEST(IsOk) {
+  EXPECT_THAT(7, testing::IsOk());
+  EXPECT_THAT(8, testing::Not(testing::IsOk()));
 }
 
 }  // namespace

@@ -24,6 +24,7 @@ cc_library(
     srcs = ["crc32c.cc"],
     hdrs = ["crc32c.h"],
     deps = [":hardened_int"],
+    visibility = ["//..."],
 )
 
 cc_test(

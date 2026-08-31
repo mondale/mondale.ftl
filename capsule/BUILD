@@ -80,3 +80,29 @@ cc_test(
         "//testing",
     ],
 )
+
+
+cc_library(
+  name = "codec",
+  hdrs = ["codec.h"],
+  srcs = ["codec.cc"],
+  deps = [":abi",
+"//core",
+"//core:crc32c",
+],
+)
+
+cc_test(
+  name = "codec_test",
+  srcs = ["codec_test.cc"],
+  deps = [":abi", ":codec",
+          "//testing",
+  ],
+)
+
+cc_library(
+  name = "abi",
+  hdrs = ["abi.h"],
+  srcs = [],
+  deps = ["//core:crc32c",],
+)

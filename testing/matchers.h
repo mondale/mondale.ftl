@@ -77,6 +77,24 @@ inline auto HasSubstr(std::string substring) {
   return HasSubstrMatcher(std::move(substring));
 }
 
+// OK matcher.
+class IsOkMatcher final {
+ public:
+  IsOkMatcher() {}
+
+  template <typename T>
+  MatchResult Match(const T& t) const {
+    if (IsOk(t)) return {true, ""};
+    std::ostringstream ss;
+    ss << t;
+    return {false, ss.str()};
+  }
+
+  void DescribeTo(std::ostream& os) const;
+};
+
+inline auto IsOk() { return IsOkMatcher(); }
+
 }  // namespace testing
 
 #endif  // #ifndef TESTING_MATCHERS_H_

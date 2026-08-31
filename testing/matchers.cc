@@ -15,4 +15,8 @@ void HasSubstrMatcher::DescribeTo(std::ostream& os) const {
   os << "contains substring [" << substring_ << "]";
 }
 
+void IsOkMatcher::DescribeTo(std::ostream& os) const {
+  os << "contains an OK Result or Code.";
+}
+
 }  // namespace testing
