@@ -146,3 +146,18 @@ cc_test(
           "//testing",
   ],
 )
+
+cc_library(
+  name = "encoder",
+  hdrs = ["encoder.h"],
+  srcs = ["encoder.cc"],
+  deps = [":codec","//core"],
+)
+
+cc_test(
+  name = "encoder_test",
+  srcs = ["encoder_test.cc"],
+  deps = [":encoder",
+          "//testing",
+  ],
+)

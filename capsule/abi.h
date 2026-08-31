@@ -7,7 +7,7 @@
 
 namespace capsule::abi {
 
-struct Header {
+struct Header final {
   core::CRC32C capsule_id_hash;
   uint32_t capsule_length;
   uint32_t offset_table_count;
@@ -15,7 +15,13 @@ struct Header {
 };
 static_assert(sizeof(Header) == 16, "Header needs to be 4 DWORDS.");
 
-struct OffsetTableEntry {
+struct InnerHeader final {
+  uint32_t offset_table_count;
+  uint32_t capsule_length;
+};
+static_assert(sizeof(InnerHeader) == 8, "InnerHeader needs to be 2 DWORDS.");
+
+struct OffsetTableEntry final {
   core::CRC32C field_hash;
   uint32_t value;  // either a pointer, or the literal value.
 };
