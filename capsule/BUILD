@@ -49,8 +49,9 @@ cc_library(
     name = "storage",
     srcs = ["storage.cc"],
     hdrs = ["storage.h"],
-    deps = [":storage_factory",
-            "//core",
+    deps = [
+        ":storage_factory",
+        "//core",
     ],
 )
 
@@ -81,28 +82,30 @@ cc_test(
     ],
 )
 
-
 cc_library(
-  name = "codec",
-  hdrs = ["codec.h"],
-  srcs = ["codec.cc"],
-  deps = [":abi",
-"//core",
-"//core:crc32c",
-],
+    name = "codec",
+    srcs = ["codec.cc"],
+    hdrs = ["codec.h"],
+    deps = [
+        ":abi",
+        "//core",
+        "//core:crc32c",
+    ],
 )
 
 cc_test(
-  name = "codec_test",
-  srcs = ["codec_test.cc"],
-  deps = [":abi", ":codec",
-          "//testing",
-  ],
+    name = "codec_test",
+    srcs = ["codec_test.cc"],
+    deps = [
+        ":abi",
+        ":codec",
+        "//testing",
+    ],
 )
 
 cc_library(
-  name = "abi",
-  hdrs = ["abi.h"],
-  srcs = [],
-  deps = ["//core:crc32c",],
+    name = "abi",
+    srcs = [],
+    hdrs = ["abi.h"],
+    deps = ["//core:crc32c"],
 )

@@ -23,8 +23,8 @@ cc_library(
     name = "crc32c",
     srcs = ["crc32c.cc"],
     hdrs = ["crc32c.h"],
-    deps = [":hardened_int"],
     visibility = ["//..."],
+    deps = [":hardened_int"],
 )
 
 cc_test(

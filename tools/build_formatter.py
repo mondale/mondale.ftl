@@ -18,8 +18,6 @@ def main():
         return
 
     for build_file in build_files:
-        # Create the temporary file in the same directory as the target BUILD file
-        # to prevent cross-device link errors (EXDEV) across different mounts (e.g., in WSL).
         tmp_file = tempfile.NamedTemporaryFile(
             mode="w", delete=False, encoding="utf-8", dir=build_file.parent
         )
@@ -34,7 +32,11 @@ def main():
                     check=True,
                     text=True,
                 )
-            tmp_path.replace(build_file)
+            
+            if tmp_path.stat().st_size > 0:
+                tmp_path.replace(build_file)
+            else:
+                print(f"Warning: Formatter output for {build_file} was empty; skipping replacement.", file=sys.stderr)
         except subprocess.CalledProcessError as e:
             print(f"Error formatting {build_file}: {e}", file=sys.stderr)
             sys.exit(1)
