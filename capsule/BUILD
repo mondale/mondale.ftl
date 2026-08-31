@@ -133,31 +133,36 @@ cc_test(
 )
 
 cc_library(
-  name = "size_builder",
-  hdrs = ["size_builder.h"],
-  srcs = [],
-  deps = [":abi", ],
+    name = "size_builder",
+    srcs = [],
+    hdrs = ["size_builder.h"],
+    deps = [":abi"],
 )
 
 cc_test(
-  name = "size_builder_test",
-  srcs = ["size_builder_test.cc"],
-  deps = [":size_builder",
-          "//testing",
-  ],
+    name = "size_builder_test",
+    srcs = ["size_builder_test.cc"],
+    deps = [
+        ":size_builder",
+        "//testing",
+    ],
 )
 
 cc_library(
-  name = "encoder",
-  hdrs = ["encoder.h"],
-  srcs = ["encoder.cc"],
-  deps = [":codec","//core"],
+    name = "encoder",
+    srcs = ["encoder.cc"],
+    hdrs = ["encoder.h"],
+    deps = [
+        ":codec",
+        "//core",
+    ],
 )
 
 cc_test(
-  name = "encoder_test",
-  srcs = ["encoder_test.cc"],
-  deps = [":encoder",
-          "//testing",
-  ],
+    name = "encoder_test",
+    srcs = ["encoder_test.cc"],
+    deps = [
+        ":encoder",
+        "//testing",
+    ],
 )
