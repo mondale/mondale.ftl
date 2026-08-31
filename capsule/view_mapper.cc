@@ -21,7 +21,7 @@ ResultOr<ViewMapper> ViewMapper::Build(const abi::OffsetTableEntry* ot,
   ViewMapper v;
   for (int i = 0; i < num_entries; ++i) {
     const abi::OffsetTableEntry& ote = ot[i];
-    TRY(v.Insert(ote.field_hash, ote.data_offset));
+    TRY(v.Insert(ote.field_hash, ote.value));
   }
   return v;
 }

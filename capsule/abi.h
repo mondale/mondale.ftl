@@ -17,7 +17,7 @@ static_assert(sizeof(Header) == 16, "Header needs to be 4 DWORDS.");
 
 struct OffsetTableEntry {
   core::CRC32C field_hash;
-  uint32_t data_offset;
+  uint32_t value;  // either a pointer, or the literal value.
 };
 static_assert(sizeof(OffsetTableEntry) == 8,
               "Offset table entry needs to be 2 DWORDS.");

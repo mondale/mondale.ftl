@@ -28,7 +28,7 @@ TEST(BuildFromOt) {
   capsule::abi::OffsetTableEntry ot[3];
   for (int i = 0; i < 3; ++i) {
     ot[i].field_hash = CRC32C(i);
-    ot[i].data_offset = i * 100 + 30;
+    ot[i].value = i * 100 + 30;
   }
   auto v = ViewMapper::Build(ot, 3).ValueOrDie();
   EXPECT_EQ(v.Lookup(CRC32C(0)).ValueOrDie(), 0 * 100 + 30);
@@ -40,7 +40,7 @@ TEST(BuildFromBadOt) {
   capsule::abi::OffsetTableEntry ot[3];
   for (int i = 0; i < 3; ++i) {
     ot[i].field_hash = CRC32C(1);
-    ot[i].data_offset = i * 100 + 30;
+    ot[i].value = i * 100 + 30;
   }
   EXPECT_THAT(ViewMapper::Build(ot, 3).result().ToString(),
               HasSubstr("already present"));

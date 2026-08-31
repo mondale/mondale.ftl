@@ -90,10 +90,6 @@ CRC32C ComputeCrc(void* base, size_t n) {
   return core::ComputeCRC32C(base, n - 4);
 }
 
-abi::OffsetTableEntry* BaseToOffsetTableEntry(void* base, size_t i) {
-  return To<abi::OffsetTableEntry>(To<char>(base) + sizeof(abi::Header)) + i;
-}
-
 Result ValidateCrc(void* base, size_t n) {
   const auto computed = ComputeCrc(base, n);
   const auto stored = *BaseToCrcPointer(base, n);
@@ -103,42 +99,6 @@ Result ValidateCrc(void* base, size_t n) {
       strings::Format(
           "Capsule encodes CRC32C of {:08x} but computed CRC32C is {:08x}",
           stored.value(), computed.value()));
-}
-
-Result ValidateOffsetTable(void* base, size_t n) {
-  const auto* const h = To<abi::Header>(base);
-  const auto count = h->offset_table_count;
-
-  // Inclusive bound.
-  const uint32_t first_data_dword =
-      sizeof(abi::Header) + count * sizeof(abi::OffsetTableEntry);
-
-  // Exclusive bound.
-  const uint32_t upper = ((n / 4) - 1) * 4;
-
-  // Offset table may point multiple fields to the same data (to dedup), so we
-  // do not check for overlap.
-  for (int i = 0; i < count; ++i) {
-    const auto* const entry = BaseToOffsetTableEntry(base, i);
-    const auto o = entry->data_offset;
-    if ((o % 4) != 0) {
-      return Result(Code::kInvalidArgument,  // capsule fatal
-                    strings::Format(
-                        "Capsule object table for type 0x{:08x} encodes bogus "
-                        "intra-capsule offset [{}]; not 4B-aligned. ",
-                        entry->field_hash.value(), o));
-    }
-    if (o < first_data_dword || o >= upper) {
-      return Result(
-          Code::kInvalidArgument,  // capsule fatal
-          strings::Format(
-              "Capsule object table for type 0x{:08x} encodes bogus "
-              "intra-capsule offset [{}] on capsule of size [{}]. "
-              "Expected range [{}, {}).",
-              entry->field_hash.value(), o, n, first_data_dword, upper));
-    }
-  }
-  return Result::Ok();
 }
 
 }  // namespace
@@ -151,7 +111,6 @@ Result Codec::Validate(void* base, size_t n) {
   TRY(ValidateLengthMultiple(n));
   TRY(ValidateHeader(To<abi::Header>(base), n));
   TRY(ValidateCrc(base, n));
-  TRY(ValidateOffsetTable(base, n));
   return Result::Ok();
 }
 

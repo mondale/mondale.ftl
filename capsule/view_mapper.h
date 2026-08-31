@@ -20,10 +20,10 @@ class ViewMapper final {
     return NotFound(h);
   }
 
-  Result Insert(core::CRC32C h, uint32_t offset) {
+  Result Insert(core::CRC32C h, uint32_t value) {
     const auto i = map_.find(h);
     if (i == map_.end()) {
-      map_.insert(std::make_pair(h, offset));
+      map_.insert(std::make_pair(h, value));
       return Result::Ok();
     }
     return AlreadyExists(h);

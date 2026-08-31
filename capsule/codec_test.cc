@@ -27,7 +27,7 @@ std::unique_ptr<Capsule> MakeUnsignedOkCapsule() {
   c->h.capsule_length_reiteration = sizeof(Capsule);
   c->h.offset_table_count = 3;
   for (int i = 0; i < 3; ++i) {
-    c->ot[i].data_offset = offsetof(Capsule, data[i]);
+    c->ot[i].value = offsetof(Capsule, data[i]);
   }
   return c;
 }
@@ -82,22 +82,6 @@ TEST(CrcFail) {
   auto c = MakeUnsignedOkCapsule();
   ASSERT_THAT(Codec::Validate(c.get(), sizeof(Capsule)).ToString(),
               HasSubstr("CRC32C"));
-}
-
-TEST(OteBogusOffset) {
-  auto c = MakeUnsignedOkCapsule();
-  c->ot[1].data_offset--;
-  ASSERT_THAT(Codec::Sign(c.get(), sizeof(Capsule)), IsOk());
-  ASSERT_THAT(Codec::Validate(c.get(), sizeof(Capsule)).ToString(),
-              HasSubstr("not 4B-aligned"));
-  c->ot[1].data_offset = 0;
-  ASSERT_THAT(Codec::Sign(c.get(), sizeof(Capsule)), IsOk());
-  ASSERT_THAT(Codec::Validate(c.get(), sizeof(Capsule)).ToString(),
-              HasSubstr("intra-capsule offset [0]"));
-  c->ot[1].data_offset = sizeof(Capsule) - 4;
-  ASSERT_THAT(Codec::Sign(c.get(), sizeof(Capsule)), IsOk());
-  ASSERT_THAT(Codec::Validate(c.get(), sizeof(Capsule)).ToString(),
-              HasSubstr("intra-capsule offset [108]"));
 }
 
 }  // namespace
