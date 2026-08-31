@@ -36,7 +36,7 @@ def main():
             if tmp_path.stat().st_size > 0:
                 tmp_path.replace(build_file)
             else:
-                print(f"Warning: Formatter output for {build_file} was empty; skipping replacement.", file=sys.stderr)
+                print(f"Formatter output for {build_file} was empty; skipping replacement.", file=sys.stdout)
         except subprocess.CalledProcessError as e:
             print(f"Error formatting {build_file}: {e}", file=sys.stderr)
             sys.exit(1)
