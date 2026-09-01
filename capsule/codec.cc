@@ -46,7 +46,7 @@ Result ValidateHeader(const abi::Header* h, size_t n) {
   // A capsule must state and reiterate its full length.
   if (h->capsule_length_reiteration != h->capsule_length) {
     return Result(
-        Code::kInvalidArgument,  // becomes stream-fatal
+        Code::kInvalidArgument,  // TODO becomes stream-fatal
         strings::Format("Encoded capsule length [{}] differs from reiterated "
                         "capsule length [{}].",
                         h->capsule_length, h->capsule_length_reiteration));
@@ -55,7 +55,7 @@ Result ValidateHeader(const abi::Header* h, size_t n) {
   // The capsule's stated length must exactly match the framing.
   if (h->capsule_length != n) {
     return Result(
-        Code::kInvalidArgument,  // becomes stream-fatal
+        Code::kInvalidArgument,  // TODO becomes stream-fatal
         strings::Format(
             "Encoded capsule length [{}] differs from framed length [{}].",
             h->capsule_length, n));
@@ -67,14 +67,14 @@ Result ValidateHeader(const abi::Header* h, size_t n) {
       (n - sizeof(abi::Header) - sizeof(CRC32C)) / 12;
   if (h->offset_table_count > max_offset_table_entries) {
     return Result(
-        Code::kInvalidArgument,  // becomes capsule-fatal
+        Code::kInvalidArgument,  // TODO becomes capsule-fatal
         strings::Format("Capsule encodes offset table count [{}] in excess of "
                         "framing maximum [{}].",
                         h->offset_table_count, max_offset_table_entries));
   }
 
   if (h->offset_table_count == 0) {
-    return Result(Code::kInvalidArgument,  // becomes capsule-fatal
+    return Result(Code::kInvalidArgument,  // TODO becomes capsule-fatal
                   "Capsule encodes empty offset table.");
   }
 
@@ -95,7 +95,7 @@ Result ValidateCrc(void* base, size_t n) {
   const auto stored = *BaseToCrcPointer(base, n);
   if (computed == stored) return Result::Ok();
   return Result(
-      Code::kInvalidArgument,  // becomes capsule-fatal
+      Code::kInvalidArgument,  // TODO becomes capsule-fatal
       strings::Format(
           "Capsule encodes CRC32C of {:08x} but computed CRC32C is {:08x}",
           stored.value(), computed.value()));

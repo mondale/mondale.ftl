@@ -20,17 +20,17 @@ class Decoder final {
   ResultOr<bool> FindBoolean(core::CRC32C h) const {
     TRY_ASSIGN(const uint32_t v, vm_.Lookup(h));
     if ((v & 0xFFFFFFF0u) != 0xBBBBBBB0u) {
-      return Code::kError;  // capsule fatal
+      return Code::kError;  // TODO capsule fatal
     }
     if ((v & 0x0Fu) == 0x01) return true;
     if ((v & 0x0Fu) == 0x00) return false;
-    return Code::kError;  // capsule fatal
+    return Code::kError;  // TODO capsule fatal
   }
 
   ResultOr<uint8_t> FindU8(core::CRC32C h) const {
     TRY_ASSIGN(const uint32_t v, vm_.Lookup(h));
     if ((v & 0xFFFFFF00u) != 0x88888800u) {
-      return Code::kError;  // capsule fatal
+      return Code::kError;  // TODO capsule fatal
     }
     return static_cast<uint8_t>(v & 0x0FFu);
   }
@@ -43,7 +43,7 @@ class Decoder final {
   ResultOr<uint16_t> FindU16(core::CRC32C h) const {
     TRY_ASSIGN(const uint32_t v, vm_.Lookup(h));
     if ((v & 0xFFFF0000u) != 0x16160000u) {
-      return Code::kError;  // capsule fatal
+      return Code::kError;  // TODO capsule fatal
     }
     return static_cast<uint16_t>(v & 0x0FFFFu);
   }
@@ -67,7 +67,7 @@ class Decoder final {
 
   ResultOr<uint64_t> FindU64(core::CRC32C h) const {
     TRY_ASSIGN(const uint32_t ptr, FindU32(h));
-    if (ptr > (length_ - 8)) return Code::kError;  // capsule fatal
+    if (ptr > (length_ - 8)) return Code::kError;  // TODO capsule fatal
     return *reinterpret_cast<uint64_t*>(Codec::U32AtOffset(base_, ptr));
   }
 
@@ -83,7 +83,7 @@ class Decoder final {
 
   ResultOr<std::string_view> FindString(core::CRC32C h) const {
     TRY_ASSIGN(const uint32_t ptr, FindU32(h));
-    if (ptr > (length_ - 4)) return Code::kError;  // capsule fatal
+    if (ptr > (length_ - 4)) return Code::kError;  // TODO capsule fatal
     const uint32_t str_len = *Codec::U32AtOffset(base_, ptr);
     if ((ptr + 4 + str_len) > length_) return Code::kError;
     const char* const s =
@@ -93,7 +93,7 @@ class Decoder final {
 
   ResultOr<Decoder> FindCapsule(core::CRC32C h) const {
     TRY_ASSIGN(const uint32_t ptr, FindU32(h));
-    if ((ptr + 4) > length_) return Code::kError;  // capsule fatal
+    if ((ptr + 4) > length_) return Code::kError;  // TODO capsule fatal
     const uint32_t len = *Codec::U32AtOffset(base_, ptr + 4);
     return Build(const_cast<char*>(reinterpret_cast<const char*>(base_)) + ptr,
                  len);
