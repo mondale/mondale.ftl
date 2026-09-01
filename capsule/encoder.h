@@ -64,6 +64,27 @@ class Encoder final {
     AddU32(hash, v32);
   }
 
+  void AddU64(core::CRC32C hash, uint64_t value) {
+    if (payload_bytes_remain_ < 8) {
+      ErrorSpaceOverflow();
+      return;
+    }
+    AddU32(hash, payload_cursor_);
+    auto* const dst = reinterpret_cast<uint64_t*>(
+        reinterpret_cast<char*>(base_) + payload_cursor_);
+    *dst = value;
+    payload_cursor_ += 8;
+    payload_bytes_remain_ -= 8;
+  }
+
+  void AddI64(core::CRC32C hash, int64_t value) {
+    AddU64(hash, std::bit_cast<uint64_t>(value));
+  }
+
+  void AddF64(core::CRC32C hash, double value) {
+    AddU64(hash, std::bit_cast<uint64_t>(value));
+  }
+
   void AddString(core::CRC32C hash, const char* src, uint32_t len) {
     const uint32_t with_taxes = (4 + len + 7) / 8 * 8;
     const uint32_t taxes = with_taxes - len;

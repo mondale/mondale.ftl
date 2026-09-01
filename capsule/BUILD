@@ -166,3 +166,18 @@ cc_test(
         "//testing",
     ],
 )
+
+cc_library(
+  name = "decoder",
+  hdrs = ["decoder.h"],
+  srcs = ["decoder.cc"],
+  deps = [":abi", ":codec", ":view_mapper", "//core",],
+)
+
+cc_test(
+  name = "decoder_test",
+  srcs = ["decoder_test.cc"],
+  deps = [":decoder",
+          "//testing",
+  ],
+)

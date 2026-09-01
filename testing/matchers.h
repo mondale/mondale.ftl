@@ -77,6 +77,21 @@ inline auto HasSubstr(std::string substring) {
   return HasSubstrMatcher(std::move(substring));
 }
 
+// String equality matcher.
+class StrEqMatcher final {
+ public:
+  explicit StrEqMatcher(std::string s) : s_(std::move(s)) {}
+
+  MatchResult Match(std::string_view actual) const;
+  MatchResult Match(const std::string& actual) const;
+  void DescribeTo(std::ostream& os) const;
+
+ private:
+  std::string s_;
+};
+
+inline auto StrEq(std::string s) { return StrEqMatcher(std::move(s)); }
+
 // OK matcher.
 class IsOkMatcher final {
  public:

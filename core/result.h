@@ -337,6 +337,11 @@ class [[nodiscard]] ResultOr final {
     return std::holds_alternative<T>(storage_);
   }
 
+  [[nodiscard]] bool Is(Code c) const noexcept {
+    if (c == Code::kOk) return ok();
+    return result().Is(c);
+  }
+
   [[nodiscard]] const Result& result() const& noexcept {
     if (ok()) {
       static const Result* perma_ok = new Result();
@@ -390,7 +395,7 @@ class [[nodiscard]] ResultOr final {
 
  private:
   void CheckOk() const {
-    RAW_CHECK(ok()) << "Attempted to access value of non-OK ResultOr"
+    RAW_CHECK(ok()) << "Attempted to access value of non-OK ResultOr "
                     << result();
   }
 

@@ -23,10 +23,6 @@ class Codec final {
     return DwordRelative(base, 1);
   }
 
-  static char* InnerHeaderToPayloadArea(void* base, uint32_t field_count) {
-    return reinterpret_cast<char*>(OteEntryNumber(base, field_count));
-  }
-
   static uint32_t PayloadAreaSize(uint32_t capsule_length,
                                   uint32_t field_count) {
     return capsule_length - sizeof(abi::InnerHeader) -
@@ -37,6 +33,10 @@ class Codec final {
     return reinterpret_cast<abi::OffsetTableEntry*>(DwordRelative(
         base, sizeof(abi::InnerHeader) / sizeof(uint32_t) +
                   sizeof(abi::OffsetTableEntry) / sizeof(uint32_t) * which));
+  }
+
+  static uint32_t* U32AtOffset(void* base, uint32_t offset) {
+    return DwordRelative(base, offset / sizeof(uint32_t));
   }
 
  private:

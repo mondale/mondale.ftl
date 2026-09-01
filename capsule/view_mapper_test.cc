@@ -21,7 +21,7 @@ TEST(ItsAnInsertOnlyMap) {
   EXPECT_EQ(2, v.Lookup(CRC32C(2)).ValueOrDie());
 
   ASSERT_THAT(v.Insert(CRC32C(2), 44), Not(IsOk())) << "No redundant keys.";
-  EXPECT_THAT(v.Lookup(CRC32C(4)).result().ToString(), HasSubstr("not found"));
+  EXPECT_THAT(v.Lookup(CRC32C(4)).result(), Not(IsOk()));
 }
 
 TEST(BuildFromOt) {
@@ -42,8 +42,7 @@ TEST(BuildFromBadOt) {
     ot[i].field_hash = CRC32C(1);
     ot[i].value = i * 100 + 30;
   }
-  EXPECT_THAT(ViewMapper::Build(ot, 3).result().ToString(),
-              HasSubstr("already present"));
+  EXPECT_THAT(ViewMapper::Build(ot, 3).result(), Not(IsOk()));
 }
 
 }  // namespace

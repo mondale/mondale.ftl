@@ -140,6 +140,48 @@ TEST_F(EncoderTest, EncodeOneBoolean) {
   EXPECT_EQ(capsule1_.ot[0].value & 0xFFFFFF00u, 0xBBBBBB00u);
 }
 
+TEST_F(EncoderTest, EncodeOneU64) {
+  Encoder e(&capsule1_, sizeof(capsule1_), 1);
+  const auto crc = CRC32C{__LINE__};
+  e.AddU64(crc, 0x1234567890ABCDEFull);
+  EXPECT_THAT(e.result(), IsOk());
+  const auto len = e.Seal();
+  EXPECT_EQ(8 + 1 * 8 + 8, len)
+      << "Inner header plus one field plus 8B for the u64";
+  EXPECT_EQ(capsule1_.ot[0].field_hash, crc);
+  EXPECT_EQ(capsule1_.ot[0].value, offsetof(Capsule<1>, space));
+  EXPECT_EQ(*reinterpret_cast<uint64_t*>(&capsule1_.space[0]),
+            0x1234567890ABCDEFull);
+}
+
+TEST_F(EncoderTest, EncodeOneI64) {
+  Encoder e(&capsule1_, sizeof(capsule1_), 1);
+  const auto crc = CRC32C{__LINE__};
+  const int64_t val = 0xFEDCBA0987654321ll;
+  e.AddI64(crc, val);
+  EXPECT_THAT(e.result(), IsOk());
+  const auto len = e.Seal();
+  EXPECT_EQ(8 + 1 * 8 + 8, len)
+      << "Inner header plus one field plus 8B for the i64";
+  EXPECT_EQ(capsule1_.ot[0].field_hash, crc);
+  EXPECT_EQ(capsule1_.ot[0].value, offsetof(Capsule<1>, space));
+  EXPECT_EQ(*reinterpret_cast<int64_t*>(&capsule1_.space[0]), val);
+}
+
+TEST_F(EncoderTest, EncodeOneF64) {
+  Encoder e(&capsule1_, sizeof(capsule1_), 1);
+  const auto crc = CRC32C{__LINE__};
+  const double val = 41153.7;
+  e.AddF64(crc, val);
+  EXPECT_THAT(e.result(), IsOk());
+  const auto len = e.Seal();
+  EXPECT_EQ(8 + 1 * 8 + 8, len)
+      << "Inner header plus one field plus 8B for the F64";
+  EXPECT_EQ(capsule1_.ot[0].field_hash, crc);
+  EXPECT_EQ(capsule1_.ot[0].value, offsetof(Capsule<1>, space));
+  EXPECT_EQ(*reinterpret_cast<double*>(&capsule1_.space[0]), val);
+}
+
 TEST_F(EncoderTest, EncodeOneString) {
   Encoder e(&capsule1_, sizeof(capsule1_), 1);
   const auto crc = CRC32C{__LINE__};

@@ -17,7 +17,7 @@ class ViewMapper final {
   ResultOr<uint32_t> Lookup(core::CRC32C h) const {
     const auto i = map_.find(h);
     if (i != map_.end()) return i->second;
-    return NotFound(h);
+    return Code::kNotFound;
   }
 
   Result Insert(core::CRC32C h, uint32_t value) {
@@ -26,7 +26,7 @@ class ViewMapper final {
       map_.insert(std::make_pair(h, value));
       return Result::Ok();
     }
-    return AlreadyExists(h);
+    return Code::kPrecondition;
   }
 
   // Builds a populated map from the offset table in a serialized capsule.
@@ -34,9 +34,6 @@ class ViewMapper final {
                                     size_t num_entries);
 
  private:
-  Result NotFound(core::CRC32C h) const;
-  Result AlreadyExists(core::CRC32C h) const;
-
   std::flat_map<core::CRC32C, uint32_t> map_;
 };
 
