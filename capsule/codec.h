@@ -8,7 +8,7 @@ namespace capsule {
 
 class Codec final {
  public:
-  // APIs for a wire capsule with a full header.
+  // APIs for a wire capsule with a full FramedHeader.
   static Result Validate(void* base, size_t n);
   static Result Sign(void* base, size_t n);
 

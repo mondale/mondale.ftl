@@ -42,38 +42,41 @@ Result ValidateLengthMultiple(size_t n) {
       strings::Format("Storage length [{}] is not a multiple of 4.", n));
 }
 
-Result ValidateHeader(const abi::Header* h, size_t n) {
-  // A capsule must state and reiterate its full length.
-  if (h->capsule_length_reiteration != h->capsule_length) {
-    return Result(
-        Code::kInvalidArgument,  // TODO becomes stream-fatal
-        strings::Format("Encoded capsule length [{}] differs from reiterated "
-                        "capsule length [{}].",
-                        h->capsule_length, h->capsule_length_reiteration));
-  }
-
-  // The capsule's stated length must exactly match the framing.
-  if (h->capsule_length != n) {
+Result ValidateFrameHeader(const abi::FrameHeader* fh,
+                           const abi::InnerHeader* ih, size_t n) {
+  // Capsule length and frame length must agree.
+  const auto recovered_frame_length =
+      ih->capsule_length + sizeof(abi::FrameHeader) + sizeof(core::CRC32C);
+  if (fh->frame_length != recovered_frame_length) {
     return Result(
         Code::kInvalidArgument,  // TODO becomes stream-fatal
         strings::Format(
-            "Encoded capsule length [{}] differs from framed length [{}].",
-            h->capsule_length, n));
+            "Encoded frame length [{}] inconsistent with inner "
+            "capsule length [{}] which implies a frame of length [{}].",
+            fh->frame_length, ih->capsule_length, recovered_frame_length));
   }
 
-  // Every offset table entry requires at least 12B, 4B for the hash, 4B for the
-  // pointer, and min 4B for the value itself.
-  const size_t max_offset_table_entries =
-      (n - sizeof(abi::Header) - sizeof(CRC32C)) / 12;
-  if (h->offset_table_count > max_offset_table_entries) {
+  // The frame's stated length must exactly match the framing.
+  if (fh->frame_length != n) {
+    return Result(
+        Code::kInvalidArgument,  // TODO becomes stream-fatal
+        strings::Format(
+            "Encoded frame length [{}] differs from memory length [{}].",
+            fh->frame_length, n));
+  }
+
+  // Every offset table entry requires at least 8B: 4B for the hash, 4B for the
+  // value.
+  const size_t max_offset_table_entries = (ih->capsule_length) / 8;
+  if (ih->offset_table_count > max_offset_table_entries) {
     return Result(
         Code::kInvalidArgument,  // TODO becomes capsule-fatal
         strings::Format("Capsule encodes offset table count [{}] in excess of "
                         "framing maximum [{}].",
-                        h->offset_table_count, max_offset_table_entries));
+                        ih->offset_table_count, max_offset_table_entries));
   }
 
-  if (h->offset_table_count == 0) {
+  if (ih->offset_table_count == 0) {
     return Result(Code::kInvalidArgument,  // TODO becomes capsule-fatal
                   "Capsule encodes empty offset table.");
   }
@@ -109,7 +112,11 @@ Result Codec::Validate(void* base, size_t n) {
   TRY(ValidateAlignment(base));
   TRY(ValidateMinLength(n));
   TRY(ValidateLengthMultiple(n));
-  TRY(ValidateHeader(To<abi::Header>(base), n));
+  auto* const fh = To<abi::FrameHeader>(base);
+  auto* const ih = To<abi::InnerHeader>(fh + 1);
+  static_assert(sizeof(abi::FrameHeader) == sizeof(abi::InnerHeader),
+                "Dirty trick above only works with equal size structs.");
+  TRY(ValidateFrameHeader(fh, ih, n));
   TRY(ValidateCrc(base, n));
   return Result::Ok();
 }

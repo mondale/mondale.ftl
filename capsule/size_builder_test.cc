@@ -3,7 +3,7 @@
 
 namespace capsule {
 
-constexpr size_t kMin = sizeof(abi::Header) + sizeof(core::CRC32C);
+constexpr size_t kMin = sizeof(abi::FrameHeader) + sizeof(core::CRC32C);
 
 TEST(EmptyCapsuleTest) { EXPECT_EQ(kMin, SizeBuilder().Build()); }
 

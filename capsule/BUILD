@@ -181,3 +181,11 @@ cc_test(
           "//testing",
   ],
 )
+
+cc_test(
+  name = "by_hand_test",
+  srcs = ["by_hand_test.cc"],
+  deps = [":encoder", ":decoder", "//core", ":abi",
+          "//testing",
+  ],
+)

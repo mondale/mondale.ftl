@@ -7,19 +7,17 @@
 
 namespace capsule::abi {
 
-struct Header final {
+struct FrameHeader final {
   core::CRC32C capsule_id_hash;
-  uint32_t capsule_length;
-  uint32_t offset_table_count;
-  uint32_t capsule_length_reiteration;
+  uint32_t frame_length;
 };
-static_assert(sizeof(Header) == 16, "Header needs to be 4 DWORDS.");
+static_assert(sizeof(FrameHeader) == 8, "FrameHeader needs to be 2 DWORDS.");
 
 struct InnerHeader final {
   uint32_t offset_table_count;
   uint32_t capsule_length;
 };
-static_assert(sizeof(InnerHeader) == 8, "InnerHeader needs to be 2 DWORDS.");
+static_assert(sizeof(InnerHeader) == 8, "Header needs to be 2 DWORDS.");
 
 struct OffsetTableEntry final {
   core::CRC32C field_hash;

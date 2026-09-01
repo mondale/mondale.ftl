@@ -13,7 +13,7 @@ class SizeBuilder final {
     return payload_bytes_ +  // vars 8B and higher
            ote_count_ *
                sizeof(abi::OffsetTableEntry) +  // small vars & pointers
-           sizeof(abi::Header) +                // header
+           sizeof(abi::FrameHeader) +           // header
            sizeof(core::CRC32C);                // integrity protection CRC
   }
 
