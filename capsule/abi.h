@@ -26,6 +26,12 @@ struct OffsetTableEntry final {
 static_assert(sizeof(OffsetTableEntry) == 8,
               "Offset table entry needs to be 2 DWORDS.");
 
+struct VectorHeader final {
+  core::CRC32C capsule_hash;
+  uint32_t element_count;
+};
+static_assert(sizeof(VectorHeader) == 8, "VectorHeader needs to be 2 DWORDS.");
+
 }  // namespace capsule::abi
 
 #endif  // #ifndef CAPSULE_ABI_H_

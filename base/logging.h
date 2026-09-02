@@ -13,6 +13,8 @@
 #include "base/thread.h"
 #include "base/time.h"
 
+// TODO - flush logs at end of a test case.
+
 inline constexpr base::internal::LogSeverity INFO =
     base::internal::LogSeverity::kInfo;
 inline constexpr base::internal::LogSeverity WARNING =

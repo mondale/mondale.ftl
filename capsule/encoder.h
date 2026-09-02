@@ -24,6 +24,10 @@ class Encoder final {
     return payload_cursor_;
   }
 
+  // If this is called, you need to add a template specialization below.
+  template <typename T>
+  void Add(core::CRC32C hash, const T& t) = delete;
+
   void AddU32(core::CRC32C hash, uint32_t value) {
     if (field_cursor_ >= field_count_) {
       ErrorSlotOverflow();
@@ -33,6 +37,11 @@ class Encoder final {
     field_cursor_++;
     ote->field_hash = hash;
     ote->value = value;
+  }
+
+  template <>
+  void Add<int32_t>(core::CRC32C hash, const int32_t& v) {
+    AddI32(hash, v);
   }
 
   void AddI32(core::CRC32C hash, int32_t value) {
@@ -59,9 +68,19 @@ class Encoder final {
     AddU8(hash, std::bit_cast<uint8_t>(value));
   }
 
+  template <>
+  void Add<bool>(core::CRC32C hash, const bool& b) {
+    AddBoolean(hash, b);
+  }
+
   void AddBoolean(core::CRC32C hash, bool value) {
     const uint32_t v32 = 0xBBBBBBB0u | (value ? 0x1u : 0x0u);
     AddU32(hash, v32);
+  }
+
+  template <>
+  void Add<uint64_t>(core::CRC32C hash, const uint64_t& v) {
+    AddU64(hash, v);
   }
 
   void AddU64(core::CRC32C hash, uint64_t value) {
@@ -83,6 +102,11 @@ class Encoder final {
 
   void AddF64(core::CRC32C hash, double value) {
     AddU64(hash, std::bit_cast<uint64_t>(value));
+  }
+
+  template <>
+  void Add<std::string>(core::CRC32C hash, const std::string& s) {
+    AddString(hash, s.data(), s.length());
   }
 
   void AddString(core::CRC32C hash, const char* src, uint32_t len) {
@@ -111,6 +135,15 @@ class Encoder final {
     payload_cursor_ += len;
     payload_bytes_remain_ -= len;
     return Encoder(dst, len, field_count, this);
+  }
+
+  template <typename T>
+  void Add(core::CRC32C hash, const std::vector<T>& v) {
+    // TODO - WORKING HERE
+    // payload_bytes_ += 8;  // for vector length and type hash
+    for ([[maybe_unused]] const auto& item : v) {
+      // Add(item);  // needs to add an item of type 'hash'
+    }
   }
 
  private:

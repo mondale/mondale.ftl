@@ -47,13 +47,6 @@ void AppendResultOrDie(const std::string& name, bool pass,
   // 1. Fetch the environment variable
   const char* result_path = std::getenv("RESULTS_FILE");
   if (!result_path) {
-    static bool warned = false;
-    if (!warned) {
-      std::cerr << "Warning: RESULTS_FILE environment variable is not set. "
-                   "Using out.txt"
-                << std::endl;
-      warned = true;
-    }
     result_path = "out.txt";
   }
 

@@ -185,7 +185,7 @@ cc_test(
 cc_test(
   name = "by_hand_test",
   srcs = ["by_hand_test.cc"],
-  deps = [":encoder", ":decoder", "//core", ":abi",
+  deps = [":encoder", ":decoder", "//core", ":abi", ":codec", ":size_builder", ":storage", ":storage_factory",
           "//testing",
   ],
 )
