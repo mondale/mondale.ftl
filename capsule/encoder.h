@@ -10,7 +10,7 @@
 
 namespace capsule {
 
-// Encodes an inner capsule.
+// Encodes a capsule.
 class Encoder final {
  public:
   Encoder(void* base, size_t length, uint32_t field_count,
@@ -18,9 +18,9 @@ class Encoder final {
 
   const Result& result() const { return encoding_result_; }
 
-  // Returns the inner capsule length.
+  // Returns the capsule length.
   uint32_t Seal() {
-    *Codec::InnerHeaderToLength(base_) = payload_cursor_;
+    *Codec::HeaderToLength(base_) = payload_cursor_;
     return payload_cursor_;
   }
 

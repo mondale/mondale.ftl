@@ -31,17 +31,17 @@ Decoder::Decoder(void* base) : base_(base), length_(0), vm_() {}
 
 // static
 ResultOr<Decoder> Decoder::Build(void* base, size_t memory_length) {
-  if (memory_length < sizeof(abi::InnerHeader)) {
+  if (memory_length < sizeof(abi::Header)) {
     return ErrorInsufficientMemoryLength(memory_length);
   }
-  const uint32_t otes = *Codec::InnerHeaderToOteCount(base);
-  const uint32_t length = *Codec::InnerHeaderToLength(base);
+  const uint32_t otes = *Codec::HeaderToOteCount(base);
+  const uint32_t length = *Codec::HeaderToLength(base);
   if (length > memory_length) {
     return ErrorLengthDecoding(memory_length, length);
   }
 
   const uint32_t implied_length =
-      otes * sizeof(abi::OffsetTableEntry) + sizeof(abi::InnerHeader);
+      otes * sizeof(abi::OffsetTableEntry) + sizeof(abi::Header);
   if (implied_length > length) {
     return ErrorImpliedLengthDecoding(implied_length, length);
   }

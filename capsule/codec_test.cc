@@ -15,7 +15,7 @@ namespace {
 
 struct FramedCapsule {
   capsule::abi::FrameHeader fh;
-  capsule::abi::InnerHeader ih;
+  capsule::abi::Header ih;
   capsule::abi::OffsetTableEntry ot[3];
   uint64_t data[8];
   core::CRC32C crc;

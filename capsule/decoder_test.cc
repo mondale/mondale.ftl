@@ -20,9 +20,9 @@ struct Capsule {
 };
 
 struct NestedCapsule {
-  capsule::abi::InnerHeader outer_ih;
+  capsule::abi::Header outer_ih;
   capsule::abi::OffsetTableEntry outer_ot;
-  capsule::abi::InnerHeader inner_ih;
+  capsule::abi::Header inner_ih;
   capsule::abi::OffsetTableEntry inner_ot;
 };
 
@@ -167,8 +167,8 @@ TEST_F(DecoderTest, FindF32) {
 
 TEST_F(DecoderTest, FindU64) {
   capsule1_.ot[0].field_hash = core::CRC32C(__LINE__);
-  capsule1_.ot[0].value = sizeof(capsule::abi::InnerHeader) +
-                          sizeof(capsule::abi::OffsetTableEntry);
+  capsule1_.ot[0].value =
+      sizeof(capsule::abi::Header) + sizeof(capsule::abi::OffsetTableEntry);
   *reinterpret_cast<uint64_t*>(&capsule1_.space[0]) = 0xda4eda4eda4eda4eull;
   auto d = Decoder::Build(&capsule1_, sizeof(capsule1_)).ValueOrDie();
   EXPECT_EQ(0xda4eda4eda4eda4eull,
@@ -177,8 +177,8 @@ TEST_F(DecoderTest, FindU64) {
 
 TEST_F(DecoderTest, FindI64) {
   capsule1_.ot[0].field_hash = core::CRC32C(__LINE__);
-  capsule1_.ot[0].value = sizeof(capsule::abi::InnerHeader) +
-                          sizeof(capsule::abi::OffsetTableEntry);
+  capsule1_.ot[0].value =
+      sizeof(capsule::abi::Header) + sizeof(capsule::abi::OffsetTableEntry);
   *reinterpret_cast<int64_t*>(&capsule1_.space[0]) = -2715993493052925362;
   auto d = Decoder::Build(&capsule1_, sizeof(capsule1_)).ValueOrDie();
   EXPECT_EQ(-2715993493052925362,
@@ -187,8 +187,8 @@ TEST_F(DecoderTest, FindI64) {
 
 TEST_F(DecoderTest, FindF64) {
   capsule1_.ot[0].field_hash = core::CRC32C(__LINE__);
-  capsule1_.ot[0].value = sizeof(capsule::abi::InnerHeader) +
-                          sizeof(capsule::abi::OffsetTableEntry);
+  capsule1_.ot[0].value =
+      sizeof(capsule::abi::Header) + sizeof(capsule::abi::OffsetTableEntry);
   *reinterpret_cast<double*>(&capsule1_.space[0]) = 312.459;
   auto d = Decoder::Build(&capsule1_, sizeof(capsule1_)).ValueOrDie();
   EXPECT_EQ(312.459, d.FindF64(capsule1_.ot[0].field_hash).ValueOrDie());
@@ -196,8 +196,8 @@ TEST_F(DecoderTest, FindF64) {
 
 TEST_F(DecoderTest, FindString) {
   capsule1_.ot[0].field_hash = core::CRC32C(__LINE__);
-  capsule1_.ot[0].value = sizeof(capsule::abi::InnerHeader) +
-                          sizeof(capsule::abi::OffsetTableEntry);
+  capsule1_.ot[0].value =
+      sizeof(capsule::abi::Header) + sizeof(capsule::abi::OffsetTableEntry);
   const char* const kMessage = "Nope!";
   *reinterpret_cast<uint32_t*>(&capsule1_.space[0]) = 5;
   memcpy(&capsule1_.space[1], kMessage, 5);
@@ -208,8 +208,8 @@ TEST_F(DecoderTest, FindString) {
 
 TEST_F(DecoderTest, FindStringTooBig) {
   capsule1_.ot[0].field_hash = core::CRC32C(__LINE__);
-  capsule1_.ot[0].value = sizeof(capsule::abi::InnerHeader) +
-                          sizeof(capsule::abi::OffsetTableEntry);
+  capsule1_.ot[0].value =
+      sizeof(capsule::abi::Header) + sizeof(capsule::abi::OffsetTableEntry);
   const char* const kMessage = "Nope!";
   *reinterpret_cast<uint32_t*>(&capsule1_.space[0]) = 555;
   memcpy(&capsule1_.space[1], kMessage, 5);

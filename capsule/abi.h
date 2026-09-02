@@ -13,11 +13,11 @@ struct FrameHeader final {
 };
 static_assert(sizeof(FrameHeader) == 8, "FrameHeader needs to be 2 DWORDS.");
 
-struct InnerHeader final {
+struct Header final {
   uint32_t offset_table_count;
   uint32_t capsule_length;
 };
-static_assert(sizeof(InnerHeader) == 8, "Header needs to be 2 DWORDS.");
+static_assert(sizeof(Header) == 8, "Header needs to be 2 DWORDS.");
 
 struct OffsetTableEntry final {
   core::CRC32C field_hash;

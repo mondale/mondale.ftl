@@ -42,8 +42,8 @@ Result ValidateLengthMultiple(size_t n) {
       strings::Format("Storage length [{}] is not a multiple of 4.", n));
 }
 
-Result ValidateFrameHeader(const abi::FrameHeader* fh,
-                           const abi::InnerHeader* ih, size_t n) {
+Result ValidateFrameHeader(const abi::FrameHeader* fh, const abi::Header* ih,
+                           size_t n) {
   // Capsule length and frame length must agree.
   const auto recovered_frame_length =
       ih->capsule_length + sizeof(abi::FrameHeader) + sizeof(core::CRC32C);
@@ -113,8 +113,8 @@ Result Codec::Validate(void* base, size_t n) {
   TRY(ValidateMinLength(n));
   TRY(ValidateLengthMultiple(n));
   auto* const fh = To<abi::FrameHeader>(base);
-  auto* const ih = To<abi::InnerHeader>(fh + 1);
-  static_assert(sizeof(abi::FrameHeader) == sizeof(abi::InnerHeader),
+  auto* const ih = To<abi::Header>(fh + 1);
+  static_assert(sizeof(abi::FrameHeader) == sizeof(abi::Header),
                 "Dirty trick above only works with equal size structs.");
   TRY(ValidateFrameHeader(fh, ih, n));
   TRY(ValidateCrc(base, n));
