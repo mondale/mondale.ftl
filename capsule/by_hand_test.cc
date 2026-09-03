@@ -295,6 +295,7 @@ TEST(MsvTest) {
   ASSERT_EQ(framed_storage_size, span->n());
   ASSERT_EQ(reinterpret_cast<uintptr_t>(span->DataAsPtrTo<void>()) % 8, 0);
 
+  // Encode.
   capsule::Encoder e(span->DataAsPtrTo<void>(), capsule_storage_size,
                      TopLevelM::kFieldCount);
   e.Add(TopLevelM::kTypeHash, *m);
