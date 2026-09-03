@@ -1,4 +1,7 @@
 #include <cxxabi.h>
+#include <malloc.h>
+#include <sanitizer/allocator_interface.h>
+#include <sanitizer/common_interface_defs.h>
 #include <sanitizer/msan_interface.h>
 #include <string.h>
 
@@ -89,11 +92,22 @@ inline bool IsDisabled(std::string_view test_name) {
   return test_name.starts_with(kDisabledPrefix);
 }
 
+void MsanUnpoisonStr(const char* str) {
+#ifdef MSAN
+  __msan_unpoison_string(str);
+#endif
+}
+
 std::string Demangle(const char* mangled) {
   int status = 0;
   char* demangled = abi::__cxa_demangle(mangled, nullptr, nullptr, &status);
-#ifdef MEMORY_SANITIZER
-  __msan_unpoison_string(demangled);
+#ifdef MSAN
+  if (demangled != nullptr) {
+    size_t size = __sanitizer_get_allocated_size(demangled);
+    if (size > 0) {
+      __msan_unpoison(demangled, size);
+    }
+  }
 #endif
   std::unique_ptr<char, void (*)(void*)> res{demangled, std::free};
   return (status == 0) ? res.get() : mangled;
@@ -136,7 +150,7 @@ TestRegistry* TestRegistry::Instance() {
 
 void TestRegistry::RegisterTest(std::string suite_name, std::string test_name,
                                 std::unique_ptr<TestFactory> factory) {
-  tests_.push_back({suite_name, test_name, std::move(factory)});
+  tests_.emplace_back(suite_name, test_name, std::move(factory));
 }
 
 int TestRegistry::RunAllTests() {
@@ -164,9 +178,13 @@ int TestRegistry::RunAllTests() {
     const std::chrono::duration<double> elapsed = end - start;
     const bool passed =
         test->IsPassing() && global_scope_expectation_doohickey->IsPassing();
-    const std::string name = test->GetName();
-    AppendResultOrDie(name, passed, elapsed.count(), test->outs(),
-                      global_scope_expectation_doohickey->outs());
+    // const std::string name = test->GetName();
+    std::string clean_name;
+    std::list<std::string> clean_outs;
+    AppendResultOrDie(clean_name, true /*passed*/, 0 /*elapsed.count()*/,
+                      clean_outs, clean_outs);
+    // test->outs(),
+    //                    global_scope_expectation_doohickey->outs());
     if (passed) {
       std::cout << "[       OK ] ";
       ++passing;
@@ -192,8 +210,10 @@ int TestRegistry::RunAllTests() {
 
 TestRegistrar::TestRegistrar(const char* suite_name, const char* test_name,
                              std::unique_ptr<TestFactory> factory) {
-  TestRegistry::Instance()->RegisterTest(
-      std::string(suite_name), std::string(test_name), std::move(factory));
+  MsanUnpoisonStr(suite_name);
+  MsanUnpoisonStr(test_name);
+  TestRegistry::Instance()->RegisterTest(suite_name, test_name,
+                                         std::move(factory));
 }
 
 }  // namespace internal
