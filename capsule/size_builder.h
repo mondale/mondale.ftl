@@ -3,6 +3,7 @@
 
 #include <concepts>
 #include <string>
+#include <type_traits>
 #include <vector>
 
 #include "capsule/abi.h"
@@ -12,6 +13,21 @@ namespace internal {
 
 template <typename T>
 concept HasComputeStorageSize = requires(T t) { t.ComputeStorageSize(); };
+
+template <typename T>
+concept HasVecComputeStorageSize = requires(T t) { t[0].ComputeStorageSize(); };
+
+template <typename T>
+concept PrimitiveVectors = std::is_same_v<T, std::vector<int8_t>> ||
+                           std::is_same_v<T, std::vector<uint8_t>> ||
+                           std::is_same_v<T, std::vector<int16_t>> ||
+                           std::is_same_v<T, std::vector<uint16_t>> ||
+                           std::is_same_v<T, std::vector<int32_t>> ||
+                           std::is_same_v<T, std::vector<uint32_t>> ||
+                           std::is_same_v<T, std::vector<int64_t>> ||
+                           std::is_same_v<T, std::vector<uint64_t>> ||
+                           std::is_same_v<T, std::vector<float>> ||
+                           std::is_same_v<T, std::vector<double>>;
 
 }  // namespace internal
 
@@ -87,21 +103,45 @@ class SizeBuilder final {
 
   template <>
   void Add<std::string>(const std::string& s) {
+    // 4B for length plus all the bytes in the string.
     AddVariableLengthField(s.length() + 4);
   }
 
-  template <typename T>
-  void Add(const std::vector<T>& v) {
-    payload_bytes_ += sizeof(abi::VectorHeader);
-    for (const auto& item : v) {
-      Add(item);
-    }
+  template <internal::PrimitiveVectors T>
+  void Add(const T& v) {
+    // 4B for number of elements, plus all the bytes in data.
+    const size_t element_size = sizeof(typename T::value_type);
+    AddVariableLengthField(4 + element_size * v.size());
   }
 
+  template <>
+  void Add<std::vector<std::string>>(const std::vector<std::string>& v) {
+    // Every string has an individual byte length, and each string's encoding
+    // is rounded up to a multiple of 8.
+    size_t bytes = sizeof(abi::VectorHeader);
+    for (const auto& s : v) {
+      bytes += (4 + s.length() + 7) / 8 * 8;
+    }
+    AddVariableLengthField(bytes);
+  }
+
+  // Handler for a scalar capsule.
   template <typename T>
     requires internal::HasComputeStorageSize<T>
   void Add(const T& t) {
+    Add32bField();  // ote
     payload_bytes_ += t.ComputeStorageSize();
+  }
+
+  // Handler for a vector of capsules.
+  template <typename T>
+    requires internal::HasVecComputeStorageSize<T>
+  void Add(const T& t) {
+    Add32bField();  // ote
+    payload_bytes_ += sizeof(abi::VectorHeader);
+    for (const auto& elem : t) {
+      payload_bytes_ += elem.ComputeStorageSize();
+    }
   }
 
   SizeBuilder& Add8bField() {  // encodes in the OTE

@@ -20,9 +20,11 @@ struct MaterializedInterface {
 };
 
 struct SubSubM final : public MaterializedInterface {
-  static constexpr core::CRC32C b1_FieldHash = core::CRC32C(30);
-  static constexpr core::CRC32C i1_FieldHash = core::CRC32C(31);
-  static constexpr core::CRC32C s1_FieldHash = core::CRC32C(32);
+  [[maybe_unused]] static constexpr core::CRC32C kTypeHash = core::CRC32C(30);
+  [[maybe_unused]] static constexpr uint32_t kFieldCount = 3;
+  static constexpr core::CRC32C b1_FieldHash = core::CRC32C(31);
+  static constexpr core::CRC32C i1_FieldHash = core::CRC32C(32);
+  static constexpr core::CRC32C s1_FieldHash = core::CRC32C(33);
 
   bool b1;
   int32_t i1;
@@ -66,8 +68,10 @@ void SubSubM::Randomize(std::mt19937_64* rng) {
 };
 
 struct SubM final : public MaterializedInterface {
-  static constexpr core::CRC32C u64a_FieldHash = core::CRC32C(20);
-  static constexpr core::CRC32C vsub1_FieldHash = core::CRC32C(21);
+  [[maybe_unused]] static constexpr core::CRC32C kTypeHash = core::CRC32C(20);
+  [[maybe_unused]] static constexpr uint32_t kFieldCount = 2;
+  static constexpr core::CRC32C u64a_FieldHash = core::CRC32C(21);
+  static constexpr core::CRC32C vsub1_FieldHash = core::CRC32C(22);
 
   uint64_t u64a;
   std::vector<SubSubM> vsub1;
@@ -81,13 +85,13 @@ struct SubM final : public MaterializedInterface {
 size_t SubM::ComputeStorageSize() const {
   ::capsule::SizeBuilder sb;
   sb.Add(u64a);
-  // sb.Add(vsub1);  // TODO WORKING HERE
+  sb.Add(vsub1);
   return sb.Build();
 }
 
 void SubM::Encode(::capsule::Encoder* e) const {
   e->Add(u64a_FieldHash, u64a);
-  e->Add(vsub1_FieldHash, vsub1);
+  e->AddCapsuleVector(vsub1_FieldHash, vsub1);
 }
 
 void SubM::Randomize(std::mt19937_64* rng) {
@@ -106,6 +110,22 @@ void SubM::Randomize(std::mt19937_64* rng) {
 }
 
 struct TopLevelM final : public MaterializedInterface {
+  [[maybe_unused]] static constexpr core::CRC32C kTypeHash = core::CRC32C(100);
+  [[maybe_unused]] static constexpr uint32_t kFieldCount = 13;
+  static constexpr core::CRC32C u64a_FieldHash = core::CRC32C(101);
+  static constexpr core::CRC32C i64a_FieldHash = core::CRC32C(102);
+  static constexpr core::CRC32C u32a_FieldHash = core::CRC32C(103);
+  static constexpr core::CRC32C i32a_FieldHash = core::CRC32C(104);
+  static constexpr core::CRC32C u16a_FieldHash = core::CRC32C(105);
+  static constexpr core::CRC32C i16a_FieldHash = core::CRC32C(106);
+  static constexpr core::CRC32C u8a_FieldHash = core::CRC32C(107);
+  static constexpr core::CRC32C i8a_FieldHash = core::CRC32C(108);
+  static constexpr core::CRC32C b1_FieldHash = core::CRC32C(109);
+  static constexpr core::CRC32C vs1_FieldHash = core::CRC32C(110);
+  static constexpr core::CRC32C sub1_FieldHash = core::CRC32C(111);
+  static constexpr core::CRC32C f32a_FieldHash = core::CRC32C(112);
+  static constexpr core::CRC32C f64a_FieldHash = core::CRC32C(113);
+
   uint64_t u64a;
   int64_t i64a;
   uint32_t u32a;
@@ -145,7 +165,19 @@ size_t TopLevelM::ComputeStorageSize() const {
 }
 
 void TopLevelM::Encode(::capsule::Encoder* e) const {
-  // Generated.
+  e->Add(u64a_FieldHash, u64a);
+  e->Add(i64a_FieldHash, i64a);
+  e->Add(u32a_FieldHash, u32a);
+  e->Add(i32a_FieldHash, i32a);
+  e->Add(u16a_FieldHash, u16a);
+  e->Add(i16a_FieldHash, i16a);
+  e->Add(u8a_FieldHash, u8a);
+  e->Add(i8a_FieldHash, i8a);
+  e->Add(b1_FieldHash, b1);
+  e->Add(vs1_FieldHash, vs1);
+  e->Add(sub1_FieldHash, sub1);
+  e->Add(f32a_FieldHash, f32a);
+  e->Add(f64a_FieldHash, f64a);
 }
 
 void TopLevelM::Randomize(std::mt19937_64* rng) {

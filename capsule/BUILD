@@ -154,6 +154,7 @@ cc_library(
     hdrs = ["encoder.h"],
     deps = [
         ":codec",
+        ":size_builder",
         "//core",
     ],
 )

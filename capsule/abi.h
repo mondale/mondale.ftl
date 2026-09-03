@@ -27,8 +27,8 @@ static_assert(sizeof(OffsetTableEntry) == 8,
               "Offset table entry needs to be 2 DWORDS.");
 
 struct VectorHeader final {
-  core::CRC32C capsule_hash;
   uint32_t element_count;
+  uint32_t padding;
 };
 static_assert(sizeof(VectorHeader) == 8, "VectorHeader needs to be 2 DWORDS.");
 
