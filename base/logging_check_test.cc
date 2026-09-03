@@ -14,6 +14,21 @@ inline std::ostream& operator<<(std::ostream& os, const TestResult& r) {
   return os << "Code(" << r.code << ")";
 }
 
+TEST(TypeForgiving) {
+  CHECK_EQ(0, 0u);
+  CHECK_GE(0, 0u);
+  CHECK_LE(0, 0u);
+  CHECK_GT(1, 0u);
+  CHECK_LT(-1, 0u);
+  CHECK_NE(-1, 0u);
+  DCHECK_EQ(0, 0u);
+  DCHECK_GE(0, 0u);
+  DCHECK_LE(0, 0u);
+  DCHECK_GT(1, 0u);
+  DCHECK_LT(-1, 0u);
+  DCHECK_NE(-1, 0u);
+}
+
 TEST(CheckMacro) {
   EXPECT_DEATH([] { CHECK(false); }, StderrContains("Check failed: false"));
 }

@@ -5,6 +5,8 @@
 
 #include <sstream>
 #include <string>
+#include <type_traits>
+#include <utility>
 
 #include "base/cpu.h"
 #include "base/log_writer_thread.h"
@@ -67,6 +69,72 @@ inline void SubmitLogEntry(LogSeverity severity, base::SourceLocation loc,
   std::cerr << entry.ToString() << std::endl;
   raise(SIGABRT);
 }
+
+struct OpEq {
+  template <typename T1, typename T2>
+  bool operator()(const T1& v1, const T2& v2) const {
+    if constexpr (std::is_arithmetic_v<T1> && std::is_arithmetic_v<T2>) {
+      return std::cmp_equal(v1, v2);
+    } else {
+      return v1 == v2;
+    }
+  }
+};
+
+struct OpNe {
+  template <typename T1, typename T2>
+  bool operator()(const T1& v1, const T2& v2) const {
+    if constexpr (std::is_arithmetic_v<T1> && std::is_arithmetic_v<T2>) {
+      return std::cmp_not_equal(v1, v2);
+    } else {
+      return v1 != v2;
+    }
+  }
+};
+
+struct OpLt {
+  template <typename T1, typename T2>
+  bool operator()(const T1& v1, const T2& v2) const {
+    if constexpr (std::is_arithmetic_v<T1> && std::is_arithmetic_v<T2>) {
+      return std::cmp_less(v1, v2);
+    } else {
+      return v1 < v2;
+    }
+  }
+};
+
+struct OpLe {
+  template <typename T1, typename T2>
+  bool operator()(const T1& v1, const T2& v2) const {
+    if constexpr (std::is_arithmetic_v<T1> && std::is_arithmetic_v<T2>) {
+      return std::cmp_less_equal(v1, v2);
+    } else {
+      return v1 <= v2;
+    }
+  }
+};
+
+struct OpGt {
+  template <typename T1, typename T2>
+  bool operator()(const T1& v1, const T2& v2) const {
+    if constexpr (std::is_arithmetic_v<T1> && std::is_arithmetic_v<T2>) {
+      return std::cmp_greater(v1, v2);
+    } else {
+      return v1 > v2;
+    }
+  }
+};
+
+struct OpGe {
+  template <typename T1, typename T2>
+  bool operator()(const T1& v1, const T2& v2) const {
+    if constexpr (std::is_arithmetic_v<T1> && std::is_arithmetic_v<T2>) {
+      return std::cmp_greater_equal(v1, v2);
+    } else {
+      return v1 >= v2;
+    }
+  }
+};
 
 }  // namespace base::internal
 
@@ -196,24 +264,24 @@ void SetVmodules(std::string_view vmodules);
 #define DVLOG(n) VLOG(n)
 #endif
 
+#define CHECK_OP(name, op_struct, v1, v2)                                      \
+  if (auto val1 = (v1); true)                                                  \
+    if (auto val2 = (v2); !::base::internal::op_struct{}(val1, val2))          \
+  ::base::LogMessageProxy(FATAL, ::base::SourceLocation::Current())            \
+      << "Check failed: " << #v1 << " " << #name << " " << #v2 << " (" << val1 \
+      << " vs " << val2 << ") "
+
+#define CHECK_EQ(v1, v2) CHECK_OP(==, OpEq, v1, v2)
+#define CHECK_NE(v1, v2) CHECK_OP(!=, OpNe, v1, v2)
+#define CHECK_LE(v1, v2) CHECK_OP(<=, OpLe, v1, v2)
+#define CHECK_LT(v1, v2) CHECK_OP(<, OpLt, v1, v2)
+#define CHECK_GE(v1, v2) CHECK_OP(>=, OpGe, v1, v2)
+#define CHECK_GT(v1, v2) CHECK_OP(>, OpGt, v1, v2)
+
 #define CHECK(cond)                                                 \
   if (auto v = (cond); !v)                                          \
   ::base::LogMessageProxy(FATAL, ::base::SourceLocation::Current()) \
       << "Check failed: " << #cond << " "
-
-// TODO: This needs to be much more type forgiving.
-#define CHECK_OP(name, op, v1, v2)                                           \
-  if (auto val1 = (v1), val2 = (v2); !(val1 op val2))                        \
-  ::base::LogMessageProxy(FATAL, ::base::SourceLocation::Current())          \
-      << "Check failed: " << #v1 << " " << #op << " " << #v2 << " (" << val1 \
-      << " vs " << val2 << ") "
-
-#define CHECK_EQ(v1, v2) CHECK_OP(_EQ, ==, v1, v2)
-#define CHECK_NE(v1, v2) CHECK_OP(_NE, !=, v1, v2)
-#define CHECK_LE(v1, v2) CHECK_OP(_LE, <=, v1, v2)
-#define CHECK_LT(v1, v2) CHECK_OP(_LT, <, v1, v2)
-#define CHECK_GE(v1, v2) CHECK_OP(_GE, >=, v1, v2)
-#define CHECK_GT(v1, v2) CHECK_OP(_GT, >, v1, v2)
 
 #define CHECK_OK(result)                                            \
   if (const auto& r = (result); !IsOk(r))                           \
@@ -241,18 +309,20 @@ void SetVmodules(std::string_view vmodules);
   ::base::LogMessageProxy(DFATAL, ::base::SourceLocation::Current()) \
       << "Check failed: " << #cond << " "
 
-#define DCHECK_OP(name, op, v1, v2)                                          \
-  if (auto val1 = (v1), val2 = (v2); !(val1 op val2))                        \
-  ::base::LogMessageProxy(DFATAL, ::base::SourceLocation::Current())         \
-      << "Check failed: " << #v1 << " " << #op << " " << #v2 << " (" << val1 \
+#define DCHECK_OP(name, op_struct, v1, v2)                                     \
+  if (auto val1 = (v1); true)                                                  \
+    if (auto val2 = (v2); !::base::internal::op_struct{}(val1, val2))          \
+  ::base::LogMessageProxy(DFATAL, ::base::SourceLocation::Current())           \
+      << "Check failed: " << #v1 << " " << #name << " " << #v2 << " (" << val1 \
       << " vs " << val2 << ") "
 
-#define DCHECK_EQ(v1, v2) DCHECK_OP(_EQ, ==, v1, v2)
-#define DCHECK_NE(v1, v2) DCHECK_OP(_NE, !=, v1, v2)
-#define DCHECK_LE(v1, v2) DCHECK_OP(_LE, <=, v1, v2)
-#define DCHECK_LT(v1, v2) DCHECK_OP(_LT, <, v1, v2)
-#define DCHECK_GE(v1, v2) DCHECK_OP(_GE, >=, v1, v2)
-#define DCHECK_GT(v1, v2) DCHECK_OP(_GT, >, v1, v2)
+#define DCHECK_EQ(v1, v2) DCHECK_OP(==, OpEq, v1, v2)
+#define DCHECK_NE(v1, v2) DCHECK_OP(!=, OpNe, v1, v2)
+#define DCHECK_LE(v1, v2) DCHECK_OP(<=, OpLe, v1, v2)
+#define DCHECK_LT(v1, v2) DCHECK_OP(<, OpLt, v1, v2)
+#define DCHECK_GE(v1, v2) DCHECK_OP(>=, OpGe, v1, v2)
+#define DCHECK_GT(v1, v2) DCHECK_OP(>, OpGt, v1, v2)
+
 #endif
 
 #endif  // BASE_LOGGING_H_

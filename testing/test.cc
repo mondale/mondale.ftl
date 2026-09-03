@@ -150,6 +150,9 @@ TestRegistry* TestRegistry::Instance() {
 
 void TestRegistry::RegisterTest(std::string suite_name, std::string test_name,
                                 std::unique_ptr<TestFactory> factory) {
+  // TODO - Need to move to a model in which the TEST macro decaleras a linked
+  // list statically to avoid heap before main() if ever this will work with
+  // MSAN.
   tests_.emplace_back(suite_name, test_name, std::move(factory));
 }
 
