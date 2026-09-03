@@ -73,7 +73,7 @@ void LogWriterThread::Init(std::vector<std::unique_ptr<LogQueue>> queues,
   g_log_writer_thread =
       new LogWriterThread(std::move(queues), std::move(sinks));
 
-  CreateDetachedThread([]() { g_log_writer_thread->RunLoop(); });
+  CreateDetachedThread("Logger", []() { g_log_writer_thread->RunLoop(); });
 
   atexit([]() { LogWriterThread::Instance()->Stop(); });
 }
