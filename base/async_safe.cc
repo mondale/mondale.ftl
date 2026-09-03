@@ -122,6 +122,7 @@ int ParseFileContentsAsDecimal(const char* filename) {
 
   // Use a fixed stack buffer to avoid dynamic memory allocation.
   char buf[256];
+  for (int i = 0; i < 256; ++i) buf[i] = 0;
   const ssize_t bytes_read = SysRead(fd, buf, sizeof(buf) - 1);
 
   // Always close the file descriptor promptly.

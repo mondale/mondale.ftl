@@ -43,7 +43,7 @@ class TestRegistry {
  public:
   static TestRegistry* Instance();
 
-  void RegisterTest(const std::string& suite_name, const std::string& test_name,
+  void RegisterTest(std::string suite_name, std::string test_name,
                     std::unique_ptr<TestFactory> factory);
 
   int RunAllTests();

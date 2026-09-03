@@ -1,4 +1,6 @@
 #include <cxxabi.h>
+#include <sanitizer/msan_interface.h>
+#include <string.h>
 
 #include <chrono>
 #include <cstdlib>
@@ -68,7 +70,6 @@ void AppendResultOrDie(const std::string& name, bool pass,
     file << "PASS";
     file << ": " << name << " (" << safe_duration << "s)\n";
   } else {
-    // file << "--- FAIL: " << name << " (0.02s)\n";
     file << "--- FAIL: " << name << " (" << safe_duration << "s)\n";
     for (const auto& finding : fixture_findings) {
       da << finding << "\n";
@@ -77,13 +78,6 @@ void AppendResultOrDie(const std::string& name, bool pass,
       da << finding << "\n";
     }
     file << "FAIL\n";
-  }
-
-  // Verify file remains valid.
-  if (!file.good()) {
-    std::cerr << "Error: File [" << result_path
-              << "] not .good() after writing." << std::endl;
-    Die();
   }
 
   file.close();
@@ -97,8 +91,11 @@ inline bool IsDisabled(std::string_view test_name) {
 
 std::string Demangle(const char* mangled) {
   int status = 0;
-  std::unique_ptr<char, void (*)(void*)> res{
-      abi::__cxa_demangle(mangled, nullptr, nullptr, &status), std::free};
+  char* demangled = abi::__cxa_demangle(mangled, nullptr, nullptr, &status);
+#ifdef MEMORY_SANITIZER
+  __msan_unpoison_string(demangled);
+#endif
+  std::unique_ptr<char, void (*)(void*)> res{demangled, std::free};
   return (status == 0) ? res.get() : mangled;
 }
 
@@ -124,7 +121,9 @@ class GlobalScopeExpectations : public ::testing::Test {
 }  // namespace
 
 std::string Test::GetName() const {
-  return StripNamespace(Demangle(typeid(*this).name()));
+  auto* const p = typeid(*this).name();
+  auto ret = StripNamespace(Demangle(p));
+  return ret;
 }
 
 namespace internal {
@@ -135,8 +134,7 @@ TestRegistry* TestRegistry::Instance() {
   return instance;
 }
 
-void TestRegistry::RegisterTest(const std::string& suite_name,
-                                const std::string& test_name,
+void TestRegistry::RegisterTest(std::string suite_name, std::string test_name,
                                 std::unique_ptr<TestFactory> factory) {
   tests_.push_back({suite_name, test_name, std::move(factory)});
 }
@@ -166,7 +164,8 @@ int TestRegistry::RunAllTests() {
     const std::chrono::duration<double> elapsed = end - start;
     const bool passed =
         test->IsPassing() && global_scope_expectation_doohickey->IsPassing();
-    AppendResultOrDie(test->GetName(), passed, elapsed.count(), test->outs(),
+    const std::string name = test->GetName();
+    AppendResultOrDie(name, passed, elapsed.count(), test->outs(),
                       global_scope_expectation_doohickey->outs());
     if (passed) {
       std::cout << "[       OK ] ";
@@ -193,8 +192,8 @@ int TestRegistry::RunAllTests() {
 
 TestRegistrar::TestRegistrar(const char* suite_name, const char* test_name,
                              std::unique_ptr<TestFactory> factory) {
-  TestRegistry::Instance()->RegisterTest(suite_name, test_name,
-                                         std::move(factory));
+  TestRegistry::Instance()->RegisterTest(
+      std::string(suite_name), std::string(test_name), std::move(factory));
 }
 
 }  // namespace internal

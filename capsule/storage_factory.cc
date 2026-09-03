@@ -11,7 +11,7 @@ class HeapStorageSpan final : public StorageSpan {
   ~HeapStorageSpan() { std::free(DataAsPtrTo<void>()); }
 
  private:
-  static size_t RoundUp8(size_t n) { return (n + 7) / 8; }
+  static size_t RoundUp8(size_t n) { return (n + 7) / 8 * 8; }
   static void* New(size_t b) { return std::aligned_alloc(8, RoundUp8(b)); }
 };
 
