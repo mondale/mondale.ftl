@@ -181,13 +181,9 @@ int TestRegistry::RunAllTests() {
     const std::chrono::duration<double> elapsed = end - start;
     const bool passed =
         test->IsPassing() && global_scope_expectation_doohickey->IsPassing();
-    // const std::string name = test->GetName();
-    std::string clean_name;
-    std::list<std::string> clean_outs;
-    AppendResultOrDie(clean_name, true /*passed*/, 0 /*elapsed.count()*/,
-                      clean_outs, clean_outs);
-    // test->outs(),
-    //                    global_scope_expectation_doohickey->outs());
+    const std::string name = test->GetName();
+    AppendResultOrDie(name, passed, elapsed.count(), test->outs(),
+                      global_scope_expectation_doohickey->outs());
     if (passed) {
       std::cout << "[       OK ] ";
       ++passing;
