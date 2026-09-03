@@ -265,6 +265,8 @@ struct TopLevelV final {
 
 constexpr bool kUseRandomSeed = false;
 TEST(MsvTest) {
+  base::SetVmodules("encoder=1");
+  base::SetVlogLevel(1);
   // M->S->V:
   // Materialized -> serialize to Storage
   // Storage -> parse to View

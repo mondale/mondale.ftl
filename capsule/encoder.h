@@ -92,6 +92,7 @@ class Encoder final {
 
   void AddU32(core::CRC32C hash, uint32_t value) {
     if (field_cursor_ >= field_count_) {
+      DVLOG(1) << "Error location";
       ErrorSlotOverflow();
       return;
     }
@@ -132,6 +133,7 @@ class Encoder final {
 
   void AddU64(core::CRC32C hash, uint64_t value) {
     if (payload_bytes_remain_ < 8) {
+      DVLOG(1) << "Error location";
       ErrorSpaceOverflow();
       return;
     }
@@ -160,6 +162,7 @@ class Encoder final {
     const uint32_t with_taxes = (4 + len + 7) / 8 * 8;
     const uint32_t taxes = with_taxes - len;
     if (with_taxes > payload_bytes_remain_) {
+      DVLOG(1) << "Error location";
       ErrorSpaceOverflow();
       return;
     }
@@ -184,6 +187,7 @@ class Encoder final {
 
   Encoder AddCapsule(core::CRC32C hash, uint32_t len, uint32_t field_count) {
     if (len > payload_bytes_remain_) {
+      DVLOG(1) << "Error location";
       ErrorSpaceOverflow();
       return Encoder(base_, len, field_count);
     }
@@ -203,6 +207,7 @@ class Encoder final {
     }
 
     if (payload_bytes_remain_ < payload_size) {
+      DVLOG(1) << "Error location";
       ErrorSpaceOverflow();
       return;
     }
@@ -237,6 +242,7 @@ class Encoder final {
     const uint32_t padding = payload_size - sizeof(uint32_t) - data_bytes;
     const char* const src = reinterpret_cast<const char*>(v.data());
     if (payload_bytes_remain_ < payload_size) {
+      DVLOG(1) << "Error location";
       ErrorSpaceOverflow();
       return;
     }
@@ -326,6 +332,7 @@ class Encoder final {
       payload_size += (4 + s.length() + 7) / 8 * 8;
     }
     if (payload_bytes_remain_ < payload_size) {
+      DVLOG(1) << "Error location";
       ErrorSpaceOverflow();
       return;
     }
