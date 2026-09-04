@@ -169,24 +169,38 @@ cc_test(
 )
 
 cc_library(
-  name = "decoder",
-  hdrs = ["decoder.h"],
-  srcs = ["decoder.cc"],
-  deps = [":abi", ":codec", ":view_mapper", "//core",],
+    name = "decoder",
+    srcs = ["decoder.cc"],
+    hdrs = ["decoder.h"],
+    deps = [
+        ":abi",
+        ":codec",
+        ":view_mapper",
+        "//core",
+    ],
 )
 
 cc_test(
-  name = "decoder_test",
-  srcs = ["decoder_test.cc"],
-  deps = [":decoder",
-          "//testing",
-  ],
+    name = "decoder_test",
+    srcs = ["decoder_test.cc"],
+    deps = [
+        ":decoder",
+        "//testing",
+    ],
 )
 
 cc_test(
-  name = "by_hand_test",
-  srcs = ["by_hand_test.cc"],
-  deps = [":encoder", ":decoder", "//core", ":abi", ":codec", ":size_builder", ":storage", ":storage_factory",
-          "//testing",
-  ],
+    name = "by_hand_test",
+    srcs = ["by_hand_test.cc"],
+    deps = [
+        ":abi",
+        ":codec",
+        ":decoder",
+        ":encoder",
+        ":size_builder",
+        ":storage",
+        ":storage_factory",
+        "//core",
+        "//testing",
+    ],
 )
