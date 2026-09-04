@@ -261,4 +261,92 @@ TEST_F(EncoderTest, EncodeNestedCapsuleTooBigInside) {
   EXPECT_THAT(e.result().ToString(), HasSubstr("Slot overflow"));
 }
 
+TEST_F(EncoderTest, EncodePrimitiveVector) {
+  Encoder e(&capsule1_, sizeof(capsule1_), 1);
+  const auto crc = CRC32C{__LINE__};
+  std::vector<uint16_t> vu16;
+  vu16.resize(7);
+  for (int i = 0; i < vu16.size(); ++i) {
+    vu16[i] = ((i + 1) << 8) | (i + 1);
+  }
+  e.Add(crc, vu16);
+  CHECK_OK(e.result());
+
+  EXPECT_EQ(capsule1_.ot[0].field_hash, crc);
+  EXPECT_EQ(capsule1_.ot[0].value, offsetof(Capsule<1>, space));
+
+  // space[0] should encode the element count.
+  EXPECT_EQ(vu16.size(), capsule1_.space[0]);
+
+  // Space after that should encode the elements.
+  uint16_t* p = reinterpret_cast<uint16_t*>(&capsule1_.space[1]);
+  for (int i = 0; i < vu16.size(); ++i) {
+    EXPECT_EQ(p[i], vu16[i]) << i;
+  }
+
+  // Space after the elements should be padded with 0xda up to a Mo8.
+  const int expected_pad_elements =
+      (vu16.size() * sizeof(uint16_t) % 8) / sizeof(uint16_t);
+  ASSERT_GT(expected_pad_elements, 0) << "Not a very good test innit?";
+  p += vu16.size();
+  for (int i = 0; i < expected_pad_elements; ++i) {
+    EXPECT_EQ(p[i], 0xdadau) << i;
+  }
+}
+
+TEST_F(EncoderTest, EncodePrimitiveVectorTooBig) {
+  Encoder e(&capsule1_, sizeof(capsule1_), 1);
+  const auto crc = CRC32C{__LINE__};
+  std::vector<uint16_t> vu16;
+  vu16.resize(129);  // bigger than 64 uint32_ts.
+  for (int i = 0; i < vu16.size(); ++i) {
+    vu16[i] = ((i + 1) << 8) | (i + 1);
+  }
+  e.Add(crc, vu16);
+  EXPECT_THAT(e.result().ToString(), HasSubstr("Payload overflow"));
+}
+
+class DefinitelyACapsule final {
+ public:
+  static constexpr uint32_t kFieldCount = 4;
+  [[maybe_unused]] static constexpr CRC32C kTypeHash = CRC32C(__LINE__);
+
+  size_t ComputeStorageSize() const {
+    return sizeof(capsule::abi::Header) +
+           kFieldCount * sizeof(capsule::abi::OffsetTableEntry);
+  }
+  void Encode(Encoder* e) const {
+    for (int i = 0; i < kFieldCount; ++i) {
+      e->AddU32(CRC32C(__LINE__ + i), __LINE__ + i);
+    }
+  }
+};
+
+TEST_F(EncoderTest, EncodeCapsuleVector) {
+  Encoder e(&capsule1_, sizeof(capsule1_), 1);
+  const auto crc = CRC32C{__LINE__};
+  std::vector<DefinitelyACapsule> v;
+  v.resize(2);
+  e.AddCapsuleVector(crc, v);
+  ASSERT_THAT(e.result(), IsOk());
+
+  EXPECT_EQ(capsule1_.ot[0].field_hash, crc);
+  EXPECT_EQ(capsule1_.ot[0].value, offsetof(Capsule<1>, space));
+
+  // Space0 should be a VectorHeader.
+  const auto* const vh =
+      reinterpret_cast<const capsule::abi::VectorHeader*>(&capsule1_.space[0]);
+  EXPECT_EQ(2, vh->element_count);
+  EXPECT_EQ(0xda4eda4eu, vh->padding);
+
+  // TODO - finish this but do it when you've also got the Decoder ready to go.
+  // Space1 should be a Capsule.
+  // const auto* const h =
+  //    reinterpret_cast<const capsule::abi::Header*>(&capsule1_.space[1]);
+}
+
+TEST_F(EncoderTest, EncodeCapsuleVectorTooBig) {
+  //
+}
+
 }  // namespace

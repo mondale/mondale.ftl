@@ -10,10 +10,15 @@
 #include "core/vocabulary.h"
 
 namespace capsule {
+
+class Encoder;
+
 namespace internal {
 
 template <typename T>
-concept HasEncode = requires(T t) { t.Encode(nullptr); };
+concept HasEncode = requires(T t, Encoder* e) {
+  { t.Encode(e) };
+};
 
 }  // namespace internal
 
@@ -183,6 +188,10 @@ class Encoder final {
     const uint32_t field_count = T::kFieldCount;
     auto e = AddCapsule(hash, capsule_length, field_count);
     t.Encode(&e);
+    const auto encoded_length = e.Seal();
+    if (encoded_length != capsule_length) {
+      ErrorSubcapsuleLies();
+    }
   }
 
   Encoder AddCapsule(core::CRC32C hash, uint32_t len, uint32_t field_count) {
@@ -217,20 +226,26 @@ class Encoder final {
     // Encode the vector header.
     char* dst = reinterpret_cast<char*>(base_) + payload_cursor_;
     auto* const vh = reinterpret_cast<abi::VectorHeader*>(dst);
+    dst += sizeof(abi::VectorHeader);
     vh->element_count = static_cast<uint32_t>(v.size());
-    vh->padding = 0xda4ada4eu;
+    vh->padding = 0xda4eda4eu;
     payload_cursor_ += sizeof(abi::VectorHeader);
     payload_bytes_remain_ -= sizeof(abi::VectorHeader);
 
     // Encode each subordinate Capsule.
     const uint32_t subcapsule_field_count = T::kFieldCount;
-    const core::CRC32C subcapsule_hash = T::kTypeHash;
     for (const auto& c : v) {
       const uint32_t subcapsule_length = c.ComputeStorageSize();
-
-      auto e = AddCapsule(subcapsule_hash, subcapsule_length,
-                          subcapsule_field_count);
+      Encoder e(dst, subcapsule_length, subcapsule_field_count, this);
       c.Encode(&e);
+      const auto encoded_length = e.Seal();
+      if (encoded_length != subcapsule_length) {
+        ErrorSubcapsuleLies();
+        return;
+      }
+      dst += subcapsule_length;
+      payload_bytes_remain_ -= subcapsule_length;
+      payload_cursor_ += subcapsule_length;
     }
   }
 
@@ -343,7 +358,7 @@ class Encoder final {
     char* dst = reinterpret_cast<char*>(base_) + payload_cursor_;
     auto* const vh = reinterpret_cast<abi::VectorHeader*>(dst);
     vh->element_count = static_cast<uint32_t>(v.size());
-    vh->padding = 0xda4ada4eu;
+    vh->padding = 0xda4eda4eu;
     dst += sizeof(abi::VectorHeader);
 
     // Encode the individual elements.
@@ -368,6 +383,7 @@ class Encoder final {
  private:
   void ErrorSpaceOverflow();
   void ErrorSlotOverflow();
+  void ErrorSubcapsuleLies();
   void SetIfOk(Result r);
 
   Encoder* const parent_;

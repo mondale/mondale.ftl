@@ -21,6 +21,11 @@ void Encoder::ErrorSpaceOverflow() {
       Result(Code::kExhausted, "Payload overflow during capsule encoding."));
 }
 
+void Encoder::ErrorSubcapsuleLies() {
+  SetIfOk(Result(Code::kExhausted,
+                 "Subcapsule encoded a different length than it promised."));
+}
+
 void Encoder::ErrorSlotOverflow() {
   SetIfOk(Result(Code::kExhausted, "Slot overflow during capsule encoding."));
 }

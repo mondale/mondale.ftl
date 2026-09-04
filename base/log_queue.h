@@ -74,7 +74,7 @@ class LogQueue {
   // Per-severity drop metrics aligned to avoid false sharing
   alignas(64) std::array<std::atomic<int64_t>,
                          static_cast<size_t>(internal::LogSeverity::kFatal) +
-                             1> dropped_counts_{};
+                             1> dropped_counts_{0};
 };
 
 }  // namespace base

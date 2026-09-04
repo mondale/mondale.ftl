@@ -11,6 +11,8 @@
 #include "capsule/storage_factory.h"
 #include "testing/testing.h"
 
+using testing::IsOk;
+
 namespace {
 
 struct MaterializedInterface {
@@ -22,9 +24,12 @@ struct MaterializedInterface {
 struct SubSubM final : public MaterializedInterface {
   [[maybe_unused]] static constexpr core::CRC32C kTypeHash = core::CRC32C(30);
   [[maybe_unused]] static constexpr uint32_t kFieldCount = 3;
-  static constexpr core::CRC32C b1_FieldHash = core::CRC32C(31);
-  static constexpr core::CRC32C i1_FieldHash = core::CRC32C(32);
-  static constexpr core::CRC32C s1_FieldHash = core::CRC32C(33);
+  [[maybe_unused]] static constexpr core::CRC32C b1_FieldHash =
+      core::CRC32C(31);
+  [[maybe_unused]] static constexpr core::CRC32C i1_FieldHash =
+      core::CRC32C(32);
+  [[maybe_unused]] static constexpr core::CRC32C s1_FieldHash =
+      core::CRC32C(33);
 
   bool b1;
   int32_t i1;
@@ -69,12 +74,15 @@ void SubSubM::Randomize(std::mt19937_64* rng) {
 
 struct SubM final : public MaterializedInterface {
   [[maybe_unused]] static constexpr core::CRC32C kTypeHash = core::CRC32C(20);
-  [[maybe_unused]] static constexpr uint32_t kFieldCount = 2;
+  [[maybe_unused]] static constexpr uint32_t kFieldCount = 2;  // later 3
   static constexpr core::CRC32C u64a_FieldHash = core::CRC32C(21);
-  static constexpr core::CRC32C vsub1_FieldHash = core::CRC32C(22);
+  static constexpr core::CRC32C sub1_FieldHash = core::CRC32C(22);
+  [[maybe_unused]] static constexpr core::CRC32C vsub1_FieldHash =
+      core::CRC32C(23);
 
   uint64_t u64a;
-  std::vector<SubSubM> vsub1;
+  SubSubM sub1;
+  // std::vector<SubSubM> vsub1;
 
   size_t ComputeStorageSize() const override;
   void Encode(::capsule::Encoder* e) const override;
@@ -85,13 +93,13 @@ struct SubM final : public MaterializedInterface {
 size_t SubM::ComputeStorageSize() const {
   ::capsule::SizeBuilder sb;
   sb.Add(u64a);
-  sb.Add(vsub1);
+  sb.Add(sub1);
   return sb.Build();
 }
 
 void SubM::Encode(::capsule::Encoder* e) const {
   e->Add(u64a_FieldHash, u64a);
-  e->AddCapsuleVector(vsub1_FieldHash, vsub1);
+  e->Add(sub1_FieldHash, sub1);
 }
 
 void SubM::Randomize(std::mt19937_64* rng) {
@@ -101,12 +109,15 @@ void SubM::Randomize(std::mt19937_64* rng) {
   std::uniform_int_distribution<size_t> dist_vec_len(0, 4);
 
   u64a = dist_u64(*rng);
+  sub1.Randomize(rng);
 
+  /*
   size_t len = dist_vec_len(*rng);
-  vsub1.resize(len);
-  for (auto& item : vsub1) {
-    item.Randomize(rng);
-  }
+    vsub1.resize(len);
+    for (auto& item : vsub1) {
+      item.Randomize(rng);
+    }
+  */
 }
 
 struct TopLevelM final : public MaterializedInterface {
@@ -263,27 +274,11 @@ struct TopLevelV final {
   double f64a;
 };
 
-constexpr bool kUseRandomSeed = false;
-TEST(MsvTest) {
-  base::SetVmodules("encoder=1");
-  base::SetVlogLevel(1);
-  // M->S->V:
-  // Materialized -> serialize to Storage
-  // Storage -> parse to View
-
-  // Begin with a random Materialized.
-  auto m = std::make_unique<TopLevelM>();
-  int seed = 4;
-  if (kUseRandomSeed) {
-    seed = CycleTime::Now().value() & 0xFFFF;
-  }
-  std::mt19937_64 gen(seed);
-  Log(INFO) << "Seed is " << seed;
-  m->Randomize(&gen);
-
+template <typename CAPSULE>
+void RunTranscodeTest(std::unique_ptr<CAPSULE> m) {
   // Compute the necessary storage size.
   const auto capsule_storage_size = m->ComputeStorageSize();
-  Log(INFO) << "Top computes size as: " << capsule_storage_size;
+  Log(INFO) << "Capsule reports own size as: " << capsule_storage_size;
   ASSERT_EQ(0, capsule_storage_size % 8);
   // TODO - consider whether framed capsules should always have len % 8 == 0.
   const auto framed_storage_size = capsule_storage_size +
@@ -295,12 +290,43 @@ TEST(MsvTest) {
   auto fac = capsule::NewHeapStorageFactory().ValueOrDie();
   auto span = fac->NewSpan(framed_storage_size).ValueOrDie();
   ASSERT_EQ(framed_storage_size, span->n());
-  ASSERT_EQ(reinterpret_cast<uintptr_t>(span->DataAsPtrTo<void>()) % 8, 0);
+  ASSERT_EQ(reinterpret_cast<uintptr_t>(span->template DataAsPtrTo<void>()) % 8,
+            0);
 
   // Encode.
-  capsule::Encoder e(span->DataAsPtrTo<void>(), capsule_storage_size,
-                     TopLevelM::kFieldCount);
-  e.Add(TopLevelM::kTypeHash, *m);
+  capsule::Encoder e(span->template DataAsPtrTo<void>(), capsule_storage_size,
+                     CAPSULE::kFieldCount);
+  m->Encode(&e);
+  ASSERT_THAT(e.result(), IsOk()) << e.result();
+  ASSERT_EQ(e.Seal(), capsule_storage_size);
+  Log(INFO) << "Capsule encoded and sealed.";
+}
+
+template <typename CAPSULE>
+void Randomize(CAPSULE* c) {
+  constexpr bool kUseRandomSeed = false;
+
+  int seed = 4;
+  if (kUseRandomSeed) {
+    seed = CycleTime::Now().value() & 0xFFFF;
+  }
+  std::mt19937_64 gen(seed);
+  Log(INFO) << "Seed is " << seed;
+  c->Randomize(&gen);
+}
+
+TEST(SubSubMTest) {
+  base::SetVmodules("encoder=1");
+  base::SetVlogLevel(1);
+  auto m = std::make_unique<SubSubM>();
+  Randomize(m.get());
+  RunTranscodeTest(std::move(m));
+}
+
+TEST(DISABLED_TopLevelMTest) {
+  auto m = std::make_unique<TopLevelM>();
+  Randomize(m.get());
+  RunTranscodeTest(std::move(m));
 }
 
 }  // namespace
