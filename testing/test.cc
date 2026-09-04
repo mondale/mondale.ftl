@@ -17,6 +17,7 @@
 #include <string_view>
 #include <typeinfo>
 
+#include "base/process.h"
 #include "testing/test.h"
 
 namespace testing {
@@ -181,6 +182,7 @@ int TestRegistry::RunAllTests() {
     const std::chrono::duration<double> elapsed = end - start;
     const bool passed =
         test->IsPassing() && global_scope_expectation_doohickey->IsPassing();
+    base::FlushLogs();
     const std::string name = test->GetName();
     AppendResultOrDie(name, passed, elapsed.count(), test->outs(),
                       global_scope_expectation_doohickey->outs());

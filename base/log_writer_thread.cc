@@ -75,6 +75,7 @@ void LogWriterThread::Init(std::vector<std::unique_ptr<LogQueue>> queues,
 
   CreateDetachedThread("Logger", []() { g_log_writer_thread->RunLoop(); });
 
+  base::RegisterLogsFlushHook([]() { LogWriterThread::Instance()->Flush(); });
   atexit([]() { LogWriterThread::Instance()->Stop(); });
 }
 
@@ -95,18 +96,8 @@ void LogWriterThread::Stop() {
 }
 
 void LogWriterThread::Flush() {
-  LogEntry e;
-  std::atomic<int64_t> countdown{static_cast<int64_t>(queues_.size())};
-  e.file = reinterpret_cast<char*>(&countdown);
-  for (auto& q : queues_) {
-    bool pushed = false;
-    do {
-      pushed = q->Push(e);
-      if (!pushed) base::SleepFor(base::Milliseconds(1));
-    } while (!pushed);
-  }
-
-  while (countdown.load(std::memory_order_acquire) > 0) {
+  const auto now = WallTime::Now();
+  while (last_flush_.load(std::memory_order_acquire) < now) {
     base::SleepFor(base::Milliseconds(1));
   }
 }
@@ -175,19 +166,7 @@ void LogWriterThread::AppendToSink(SinkState& sink,
   sink.total_buffered_bytes += formatted.size();
 }
 
-void LogWriterThread::HandleFlush(const LogEntry& entry) {
-  auto* const a = const_cast<std::atomic<int64_t>*>(
-      reinterpret_cast<const std::atomic<int64_t>*>(entry.file));
-  a->store(a->load(std::memory_order_acquire) - 1, std::memory_order_release);
-}
-
 void LogWriterThread::ProcessAndRouteEntry(const LogEntry& entry) {
-  if (entry.tid == 0 && entry.line == 0) {
-    // This is a flush.
-    HandleFlush(entry);
-    return;
-  }
-
   std::string formatted = entry.ToString();
   for (auto& sink : sinks_) {
     if (AcceptsSeverity(sink, entry.severity)) {
@@ -291,14 +270,24 @@ void LogWriterThread::RunLoop() {
 
   while (!stop_notification_.HasBeenNotified()) {
     CheckAndReportDrops();
-    bool more_queues = DrainQueues();
-    bool more_sinks = FlushBuffers();
+    const bool more_queues = DrainQueues();
+    const bool more_sinks = FlushBuffers();
+    const bool did_work = more_queues || more_sinks;
+    const bool flushed = !more_queues && !more_sinks;
 
-    bool did_work = more_queues || more_sinks;
+    if (flushed) {
+      const auto now = WallTime::Now();
+      last_flush_.store(now, std::memory_order_release);
+    }
 
     if (did_work) {
-      // Reset backoff and immediately re-run loop without sleeping
+      // Reset backoff.
       current_sleep_ms = kMinSleepMs;
+
+      // Sleep if a sink has backed up and yet queues are drained.
+      if (more_sinks && !more_queues) {
+        base::Milliseconds(current_sleep_ms);
+      }
     } else {
       const int64_t expected_gen =
           poke_generation_.load(std::memory_order_relaxed);
@@ -374,7 +363,9 @@ std::string GetLogPath() { return GetProcessSpecificLogPath(); }
 namespace {
 
 void InitializeLoggingThread() {
-  const int num_queues = std::min<int>(16, NumCpus());
+  // TODO - improve logging so that logs always appear in timestamp order
+  // increase 1 to 16.
+  const int num_queues = std::min<int>(1, NumCpus());
   std::vector<std::unique_ptr<LogQueue>> qs;
   qs.reserve(num_queues);
   for (int i = 0; i < num_queues; ++i) {

@@ -205,11 +205,31 @@ void RegisterMainThread() {
   registry->Add(tid, "Main");
 }
 
+struct FlushHook {
+  std::function<void()> fn = []() {};
+};
+FlushHook* global_flush_hook = nullptr;
+
 }  // namespace
 
 bool RegisterStartupHook(std::function<void()> fn) {
   GetStartupHooks()->push_back(std::move(fn));
   return true;
+}
+
+void RegisterLogsFlushHook(std::function<void()> fn) {
+  if (global_flush_hook != nullptr) {
+    std::cerr << "Multiple registration of logs flush hook. Ingoring."
+              << std::endl;
+  }
+  global_flush_hook = new FlushHook();
+  global_flush_hook->fn = std::move(fn);
+}
+
+void FlushLogs() {
+  if (nullptr != global_flush_hook) {
+    global_flush_hook->fn();
+  }
 }
 
 void Initialize(int argc, char* argv[]) {

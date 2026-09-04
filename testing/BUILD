@@ -107,7 +107,8 @@ cc_library(
     name = "test",
     srcs = ["test.cc"],
     hdrs = ["test.h"],
-    deps = [":expect_helper"],
+    deps = [":expect_helper",
+        "//base:process", ],
 )
 
 cc_test(

@@ -51,7 +51,7 @@ class LogWriterThread final {
   LogQueue* QueueForCpu(int cpu) const { return lqm_.QueueForCpu(cpu); }
 
   // Returns when all previously-enqueued elements have been pulled from
-  // LogQueues. Not a firm guarantee that logging is on disk.
+  // LogQueues and written to disk.
   void Flush();
 
  private:
@@ -82,6 +82,7 @@ class LogWriterThread final {
   base::Notification stop_notification_;
   std::atomic<int64_t> poke_generation_{0};
   Mutex poke_mu_;  // guards writing to poke_generation_;
+  std::atomic<WallTime> last_flush_{WallTime::Now()};
 };
 
 std::string GetLogPath();
