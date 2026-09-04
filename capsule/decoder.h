@@ -3,7 +3,7 @@
 
 #include <bit>
 #include <string_view>
-#include <unordered_set>
+#include <vector>
 
 #include "capsule/codec.h"
 #include "capsule/view_mapper.h"
@@ -14,18 +14,17 @@ namespace capsule {
 // Helper to decode a Storage to a View or a Materialized.
 class Decoder final {
  public:
-  using NopeSet = std::unordered_set<core::CRC32C>;
-
   Decoder(void* base);
 
   static ResultOr<Decoder> Build(void* base, size_t memory_length);
 
   // If this type is called, you need to define a specialization below.
   template <typename T>
-  Code Find(core::CRC32C h, T* out, const T& def, NopeSet* n) = delete;
+  Code Find(core::CRC32C h, T* out, const T& def,
+            std::vector<bool>::reference present) = delete;
 
   Code FindBoolean(core::CRC32C h, bool* out, const bool& def,
-                   NopeSet* n) const {
+                   std::vector<bool>::reference present) const {
     uint32_t v = 0;
     const auto code = vm_.Lookup(h, &v);
     if (Code::kOk == code) {
@@ -33,31 +32,34 @@ class Decoder final {
         return Code::kError;  // TODO capsule fatal
       }
       *out = ((v & 0x01u) == 0x01);
+      present = true;
       return Code::kOk;
     } else if (Code::kNotFound == code) {
-      n->insert(h);
       *out = def;
+      present = false;
       return Code::kOk;
     }
     return code;
   }
 
   template <>
-  Code Find<bool>(core::CRC32C h, bool* out, const bool& def, NopeSet* n) {
-    return FindBoolean(h, out, def, n);
+  Code Find<bool>(core::CRC32C h, bool* out, const bool& def,
+                  std::vector<bool>::reference present) {
+    return FindBoolean(h, out, def, present);
   }
 
   template <typename A32>
   Code Find32bPrimitive(core::CRC32C h, A32* out, const A32& def,
-                        NopeSet* n) const {
+                        std::vector<bool>::reference present) const {
     uint32_t v = 0;
     const auto code = vm_.Lookup(h, &v);
     if (Code::kOk == code) {
       *out = std::bit_cast<A32>(v);
+      present = true;
       return Code::kOk;
     } else if (Code::kNotFound == code) {
-      n->insert(h);
       *out = def;
+      present = false;
       return Code::kOk;
     }
     return code;
@@ -65,12 +67,13 @@ class Decoder final {
 
   template <>
   Code Find<int32_t>(core::CRC32C h, int32_t* out, const int32_t& def,
-                     NopeSet* n) {
-    return Find32bPrimitive(h, out, def, n);
+                     std::vector<bool>::reference present) {
+    return Find32bPrimitive(h, out, def, present);
   }
 
   template <typename S>
-  Code FindString(core::CRC32C h, S* out, const S& def, NopeSet* n) {
+  Code FindString(core::CRC32C h, S* out, const S& def,
+                  std::vector<bool>::reference present) {
     uint32_t ptr = 0;
     const auto code = vm_.Lookup(h, &ptr);
     if (Code::kOk == code) {
@@ -80,10 +83,11 @@ class Decoder final {
       const char* const s =
           reinterpret_cast<const char*>(Codec::U32AtOffset(base_, ptr + 4));
       *out = std::string_view(s, str_len);
+      present = true;
       return Code::kOk;
     } else if (Code::kNotFound == code) {
-      n->insert(h);
       *out = def;
+      present = false;
       return Code::kOk;
     }
     return code;
@@ -91,8 +95,9 @@ class Decoder final {
 
   template <>
   Code Find<std::string>(core::CRC32C h, std::string* out,
-                         const std::string& def, NopeSet* n) {
-    return FindString(h, out, def, n);
+                         const std::string& def,
+                         std::vector<bool>::reference present) {
+    return FindString(h, out, def, present);
   }
 
   /*

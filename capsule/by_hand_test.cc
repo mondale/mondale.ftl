@@ -1,4 +1,5 @@
 #include <random>
+#include <vector>
 // TODO - need randomness support in runtime
 
 #include "base/logging.h"
@@ -33,6 +34,9 @@ struct SubSubM final : public MaterializedInterface {
   static constexpr bool b1_Default = false;
   static constexpr int32_t i1_Default = 77;
   static constexpr std::string s1_Default = "Oooh";
+  static constexpr int b1_Index = 0;
+  static constexpr int i1_Index = 1;
+  static constexpr int s1_Index = 2;
 
   bool b1;
   int32_t i1;
@@ -42,13 +46,18 @@ struct SubSubM final : public MaterializedInterface {
   void Encode(::capsule::Encoder* e) const override;
   Result Decode(::capsule::Decoder* d) override;
 
+  std::vector<bool> has_;
+
   void Randomize(std::mt19937_64* rng);
 };
 
 void Compare(const SubSubM* l, const SubSubM* r) {
   EXPECT_EQ(l->b1, r->b1);
+  EXPECT_TRUE(r->has_[0]);
   EXPECT_EQ(l->i1, r->i1);
+  EXPECT_TRUE(r->has_[1]);
   EXPECT_EQ(l->s1, r->s1);
+  EXPECT_TRUE(r->has_[2]);
 }
 
 size_t SubSubM::ComputeStorageSize() const {
@@ -66,11 +75,11 @@ void SubSubM::Encode(::capsule::Encoder* e) const {
 }
 
 Result SubSubM::Decode(::capsule::Decoder* d) {
-  ::capsule::Decoder::NopeSet n;
+  has_.resize(kFieldCount, false);
   Code ret = Code::kOk;
-  ret.Incorporate(d->Find(b1_FieldHash, &b1, b1_Default, &n));
-  ret.Incorporate(d->Find(i1_FieldHash, &i1, i1_Default, &n));
-  ret.Incorporate(d->Find(s1_FieldHash, &s1, s1_Default, &n));
+  ret.Incorporate(d->Find(b1_FieldHash, &b1, b1_Default, has_[b1_Index]));
+  ret.Incorporate(d->Find(i1_FieldHash, &i1, i1_Default, has_[i1_Index]));
+  ret.Incorporate(d->Find(s1_FieldHash, &s1, s1_Default, has_[s1_Index]));
   return ret;
 }
 
