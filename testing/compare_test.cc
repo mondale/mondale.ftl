@@ -8,6 +8,7 @@ using testing::internal::Compare;
 namespace {
 
 TEST(EqSameTypes) {
+  EXPECT_TRUE(Compare::Eq(true, true));
   EXPECT_TRUE(Compare::Eq(7, 7));
   EXPECT_TRUE(Compare::Eq(7u, 7u));
   EXPECT_TRUE(Compare::Eq(7.7, 7.7));

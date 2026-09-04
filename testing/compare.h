@@ -47,6 +47,12 @@ struct Compare {
     }
   }
 
+  // Needed for comparing bool and bool. Honestly, wtf C++.
+  template <>
+  constexpr bool Eq(const bool& lhs, const bool& rhs) {
+    return lhs == rhs;
+  }
+
   template <typename T, typename U>
   static constexpr bool Ne(const T& lhs, const U& rhs) {
     return !Eq(lhs, rhs);

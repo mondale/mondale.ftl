@@ -14,17 +14,20 @@ class ViewMapper final {
  public:
   ViewMapper() = default;
 
-  ResultOr<uint32_t> Lookup(core::CRC32C h) const {
+  Code Lookup(core::CRC32C h, uint32_t* out) const {
     const auto i = map_.find(h);
-    if (i != map_.end()) return i->second;
-    return Code::kNotFound;
+    if (i == map_.end()) {
+      return Code::kNotFound;
+    }
+    *out = i->second;
+    return Code::kOk;
   }
 
-  Result Insert(core::CRC32C h, uint32_t value) {
+  Code Insert(core::CRC32C h, uint32_t value) {
     const auto i = map_.find(h);
     if (i == map_.end()) {
       map_.insert(std::make_pair(h, value));
-      return Result::Ok();
+      return Code::kOk;
     }
     return Code::kPrecondition;
   }

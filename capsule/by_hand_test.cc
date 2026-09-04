@@ -19,17 +19,20 @@ struct MaterializedInterface {
  public:
   virtual size_t ComputeStorageSize() const = 0;
   virtual void Encode(::capsule::Encoder* e) const = 0;
+  virtual Result Decode(::capsule::Decoder* d) = 0;
 };
 
 struct SubSubM final : public MaterializedInterface {
   [[maybe_unused]] static constexpr core::CRC32C kTypeHash = core::CRC32C(30);
   [[maybe_unused]] static constexpr uint32_t kFieldCount = 3;
-  [[maybe_unused]] static constexpr core::CRC32C b1_FieldHash =
-      core::CRC32C(31);
+  static constexpr core::CRC32C b1_FieldHash = core::CRC32C(31);
   [[maybe_unused]] static constexpr core::CRC32C i1_FieldHash =
       core::CRC32C(32);
   [[maybe_unused]] static constexpr core::CRC32C s1_FieldHash =
       core::CRC32C(33);
+  static constexpr bool b1_Default = false;
+  static constexpr int32_t i1_Default = 77;
+  static constexpr std::string s1_Default = "Oooh";
 
   bool b1;
   int32_t i1;
@@ -37,9 +40,16 @@ struct SubSubM final : public MaterializedInterface {
 
   size_t ComputeStorageSize() const override;
   void Encode(::capsule::Encoder* e) const override;
+  Result Decode(::capsule::Decoder* d) override;
 
   void Randomize(std::mt19937_64* rng);
 };
+
+void Compare(const SubSubM* l, const SubSubM* r) {
+  EXPECT_EQ(l->b1, r->b1);
+  EXPECT_EQ(l->i1, r->i1);
+  EXPECT_EQ(l->s1, r->s1);
+}
 
 size_t SubSubM::ComputeStorageSize() const {
   ::capsule::SizeBuilder sb;
@@ -53,6 +63,15 @@ void SubSubM::Encode(::capsule::Encoder* e) const {
   e->Add(b1_FieldHash, b1);
   e->Add(i1_FieldHash, i1);
   e->Add(s1_FieldHash, s1);
+}
+
+Result SubSubM::Decode(::capsule::Decoder* d) {
+  ::capsule::Decoder::NopeSet n;
+  Code ret = Code::kOk;
+  ret.Incorporate(d->Find(b1_FieldHash, &b1, b1_Default, &n));
+  ret.Incorporate(d->Find(i1_FieldHash, &i1, i1_Default, &n));
+  ret.Incorporate(d->Find(s1_FieldHash, &s1, s1_Default, &n));
+  return ret;
 }
 
 void SubSubM::Randomize(std::mt19937_64* rng) {
@@ -86,6 +105,7 @@ struct SubM final : public MaterializedInterface {
 
   size_t ComputeStorageSize() const override;
   void Encode(::capsule::Encoder* e) const override;
+  Result Decode(::capsule::Decoder* d) override;
 
   void Randomize(std::mt19937_64* rng);
 };
@@ -100,6 +120,11 @@ size_t SubM::ComputeStorageSize() const {
 void SubM::Encode(::capsule::Encoder* e) const {
   e->Add(u64a_FieldHash, u64a);
   e->Add(sub1_FieldHash, sub1);
+}
+
+Result SubM::Decode(::capsule::Decoder* d) {
+  // Generated.
+  return Result::Ok();
 }
 
 void SubM::Randomize(std::mt19937_64* rng) {
@@ -153,6 +178,7 @@ struct TopLevelM final : public MaterializedInterface {
 
   size_t ComputeStorageSize() const override;
   void Encode(::capsule::Encoder* e) const override;
+  Result Decode(::capsule::Decoder* d) override;
 
   void Randomize(std::mt19937_64* rng);
 };
@@ -189,6 +215,11 @@ void TopLevelM::Encode(::capsule::Encoder* e) const {
   e->Add(sub1_FieldHash, sub1);
   e->Add(f32a_FieldHash, f32a);
   e->Add(f64a_FieldHash, f64a);
+}
+
+Result TopLevelM::Decode(::capsule::Decoder* d) {
+  // Generated.
+  return Result::Ok();
 }
 
 void TopLevelM::Randomize(std::mt19937_64* rng) {
@@ -290,16 +321,24 @@ void RunTranscodeTest(std::unique_ptr<CAPSULE> m) {
   auto fac = capsule::NewHeapStorageFactory().ValueOrDie();
   auto span = fac->NewSpan(framed_storage_size).ValueOrDie();
   ASSERT_EQ(framed_storage_size, span->n());
-  ASSERT_EQ(reinterpret_cast<uintptr_t>(span->template DataAsPtrTo<void>()) % 8,
-            0);
+  auto* const base = span->template DataAsPtrTo<void>();
+  ASSERT_EQ(reinterpret_cast<uintptr_t>(base) % 8, 0);
 
   // Encode.
-  capsule::Encoder e(span->template DataAsPtrTo<void>(), capsule_storage_size,
-                     CAPSULE::kFieldCount);
+  capsule::Encoder e(base, capsule_storage_size, CAPSULE::kFieldCount);
   m->Encode(&e);
   ASSERT_THAT(e.result(), IsOk()) << e.result();
   ASSERT_EQ(e.Seal(), capsule_storage_size);
   Log(INFO) << "Capsule encoded and sealed.";
+
+  // Decode.
+  auto d = capsule::Decoder::Build(base, capsule_storage_size).ValueOrDie();
+  Log(INFO) << "Decoder built.";
+
+  auto m2 = std::make_unique<CAPSULE>();
+  EXPECT_THAT(m2->Decode(&d), IsOk());
+
+  Compare(m.get(), m2.get());
 }
 
 template <typename CAPSULE>
@@ -323,10 +362,12 @@ TEST(SubSubMTest) {
   RunTranscodeTest(std::move(m));
 }
 
+/*
 TEST(DISABLED_TopLevelMTest) {
   auto m = std::make_unique<TopLevelM>();
   Randomize(m.get());
   RunTranscodeTest(std::move(m));
 }
+*/
 
 }  // namespace

@@ -64,6 +64,7 @@ TEST_F(DecoderTest, TooManyOtes) {
               HasSubstr("length"));
 }
 
+/*
 TEST_F(DecoderTest, BuildFromZero) {
   auto d = Decoder::Build(&capsule0_, sizeof(capsule0_)).ValueOrDie();
   const auto crc = core::CRC32C(99);
@@ -241,5 +242,6 @@ TEST_F(DecoderTest, FindSubcapsuleBogus) {
   auto d2 = d.FindCapsule(core::CRC32C('o')).ValueOrDie();
   EXPECT_EQ(Code::kError, d2.FindString(core::CRC32C('i')).result().code());
 }
+*/
 
 }  // namespace

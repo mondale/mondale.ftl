@@ -86,6 +86,12 @@ struct Code final {
   bool IsOk() const { return ::core::IsOk(base_code()); }
   bool Is(BaseCode bc) const { return base_code() == bc; }
 
+  void Incorporate(Code other) {
+    if (IsOk()) {
+      code = other.code;
+    }
+  }
+
  private:
   friend class Result;
   static constexpr size_t kBytesPerCode = 2;

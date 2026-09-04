@@ -16,12 +16,16 @@ TEST(ItsAnInsertOnlyMap) {
   ASSERT_THAT(v.Insert(CRC32C(0), 0), IsOk());
   ASSERT_THAT(v.Insert(CRC32C(1), 1), IsOk());
   ASSERT_THAT(v.Insert(CRC32C(2), 2), IsOk());
-  EXPECT_EQ(0, v.Lookup(CRC32C(0)).ValueOrDie());
-  EXPECT_EQ(1, v.Lookup(CRC32C(1)).ValueOrDie());
-  EXPECT_EQ(2, v.Lookup(CRC32C(2)).ValueOrDie());
+  uint32_t val = 555;
+  ASSERT_EQ(Code::kOk, v.Lookup(CRC32C(0), &val));
+  EXPECT_EQ(0, val);
+  ASSERT_EQ(Code::kOk, v.Lookup(CRC32C(1), &val));
+  EXPECT_EQ(1, val);
+  ASSERT_EQ(Code::kOk, v.Lookup(CRC32C(2), &val));
+  EXPECT_EQ(2, val);
 
-  ASSERT_THAT(v.Insert(CRC32C(2), 44), Not(IsOk())) << "No redundant keys.";
-  EXPECT_THAT(v.Lookup(CRC32C(4)).result(), Not(IsOk()));
+  ASSERT_EQ(Code::kPrecondition, v.Insert(CRC32C(2), 44));
+  EXPECT_EQ(Code::kNotFound, v.Lookup(CRC32C(4), &val));
 }
 
 TEST(BuildFromOt) {
@@ -31,9 +35,13 @@ TEST(BuildFromOt) {
     ot[i].value = i * 100 + 30;
   }
   auto v = ViewMapper::Build(ot, 3).ValueOrDie();
-  EXPECT_EQ(v.Lookup(CRC32C(0)).ValueOrDie(), 0 * 100 + 30);
-  EXPECT_EQ(v.Lookup(CRC32C(1)).ValueOrDie(), 1 * 100 + 30);
-  EXPECT_EQ(v.Lookup(CRC32C(2)).ValueOrDie(), 2 * 100 + 30);
+  uint32_t val = 555;
+  EXPECT_EQ(Code::kOk, v.Lookup(CRC32C(0), &val));
+  EXPECT_EQ(val, 0 * 100 + 30);
+  EXPECT_EQ(Code::kOk, v.Lookup(CRC32C(1), &val));
+  EXPECT_EQ(val, 1 * 100 + 30);
+  EXPECT_EQ(Code::kOk, v.Lookup(CRC32C(2), &val));
+  EXPECT_EQ(val, 2 * 100 + 30);
 }
 
 TEST(BuildFromBadOt) {
