@@ -51,7 +51,7 @@ class LogWriterThread final {
   LogQueue* QueueForCpu(int cpu) const { return lqm_.QueueForCpu(cpu); }
 
   // Returns when all previously-enqueued elements have been pulled from
-  // LogQueues. Not a firm guarantee that logging is on disc.
+  // LogQueues. Not a firm guarantee that logging is on disk.
   void Flush();
 
  private:
