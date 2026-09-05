@@ -64,35 +64,119 @@ TEST_F(DecoderTest, TooManyOtes) {
               HasSubstr("length"));
 }
 
-/*
-TEST_F(DecoderTest, BuildFromZero) {
-  auto d = Decoder::Build(&capsule0_, sizeof(capsule0_)).ValueOrDie();
+template <typename T>
+void PrimitiveNotFoundTest(Decoder* d, T* t, const T& def) {
   const auto crc = core::CRC32C(99);
-  EXPECT_EQ(Code::kNotFound, d.FindBoolean(crc).result().code());
-  EXPECT_EQ(Code::kNotFound, d.FindU8(crc).result().code());
-  EXPECT_EQ(Code::kNotFound, d.FindI8(crc).result().code());
-  EXPECT_EQ(Code::kNotFound, d.FindU16(crc).result().code());
-  EXPECT_EQ(Code::kNotFound, d.FindI16(crc).result().code());
-  EXPECT_EQ(Code::kNotFound, d.FindU32(crc).result().code());
-  EXPECT_EQ(Code::kNotFound, d.FindI32(crc).result().code());
-  EXPECT_EQ(Code::kNotFound, d.FindU64(crc).result().code());
-  EXPECT_EQ(Code::kNotFound, d.FindI64(crc).result().code());
-  EXPECT_EQ(Code::kNotFound, d.FindF32(crc).result().code());
-  EXPECT_EQ(Code::kNotFound, d.FindF64(crc).result().code());
-  EXPECT_EQ(Code::kNotFound, d.FindString(crc).result().code());
-  EXPECT_EQ(Code::kNotFound, d.FindCapsule(crc).result().code());
+  std::vector<bool> presence(1, true);
+  ASSERT_NE(*t, def);
+  EXPECT_EQ(Code::kOk, d->Find(crc, t, def, presence[0]));
+  EXPECT_EQ(*t, def);
+  EXPECT_FALSE(presence[0]);
 }
 
-TEST_F(DecoderTest, FindBooleanClean) {
-  capsule1_.ot[0].field_hash = core::CRC32C(__LINE__);
+TEST_F(DecoderTest, BooleanNotFoundDefault) {
+  auto d = Decoder::Build(&capsule0_, sizeof(capsule0_)).ValueOrDie();
+  bool b = false;
+  PrimitiveNotFoundTest(&d, &b, true);
+}
+
+TEST_F(DecoderTest, U8NotFoundDefault) {
+  auto d = Decoder::Build(&capsule0_, sizeof(capsule0_)).ValueOrDie();
+  uint8_t v = 0;
+  const uint8_t def = __LINE__;
+  PrimitiveNotFoundTest(&d, &v, def);
+}
+
+TEST_F(DecoderTest, I8NotFoundDefault) {
+  auto d = Decoder::Build(&capsule0_, sizeof(capsule0_)).ValueOrDie();
+  int8_t v = 0;
+  const int8_t def = __LINE__;
+  PrimitiveNotFoundTest(&d, &v, def);
+}
+
+TEST_F(DecoderTest, U16NotFoundDefault) {
+  auto d = Decoder::Build(&capsule0_, sizeof(capsule0_)).ValueOrDie();
+  uint16_t v = 0;
+  const uint16_t def = __LINE__;
+  PrimitiveNotFoundTest(&d, &v, def);
+}
+
+TEST_F(DecoderTest, I16NotFoundDefault) {
+  auto d = Decoder::Build(&capsule0_, sizeof(capsule0_)).ValueOrDie();
+  int16_t v = 0;
+  const int16_t def = __LINE__;
+  PrimitiveNotFoundTest(&d, &v, def);
+}
+
+TEST_F(DecoderTest, U32NotFoundDefault) {
+  auto d = Decoder::Build(&capsule0_, sizeof(capsule0_)).ValueOrDie();
+  uint32_t v = 0;
+  const uint32_t def = __LINE__;
+  PrimitiveNotFoundTest(&d, &v, def);
+}
+
+TEST_F(DecoderTest, I32NotFoundDefault) {
+  auto d = Decoder::Build(&capsule0_, sizeof(capsule0_)).ValueOrDie();
+  int32_t v = 0;
+  const int32_t def = __LINE__;
+  PrimitiveNotFoundTest(&d, &v, def);
+}
+
+TEST_F(DecoderTest, F32NotFoundDefault) {
+  auto d = Decoder::Build(&capsule0_, sizeof(capsule0_)).ValueOrDie();
+  float v = 0;
+  const float def = __LINE__;
+  PrimitiveNotFoundTest(&d, &v, def);
+}
+
+TEST_F(DecoderTest, U64NotFoundDefault) {
+  auto d = Decoder::Build(&capsule0_, sizeof(capsule0_)).ValueOrDie();
+  uint64_t v = 0;
+  const uint64_t def = __LINE__;
+  PrimitiveNotFoundTest(&d, &v, def);
+}
+
+TEST_F(DecoderTest, I64NotFoundDefault) {
+  auto d = Decoder::Build(&capsule0_, sizeof(capsule0_)).ValueOrDie();
+  int64_t v = 0;
+  const int64_t def = __LINE__;
+  PrimitiveNotFoundTest(&d, &v, def);
+}
+
+TEST_F(DecoderTest, F64NotFoundDefault) {
+  auto d = Decoder::Build(&capsule0_, sizeof(capsule0_)).ValueOrDie();
+  double v = 0;
+  const double def = __LINE__;
+  PrimitiveNotFoundTest(&d, &v, def);
+}
+
+TEST_F(DecoderTest, FindBooleanTrueClean) {
+  std::vector<bool> presence(1, false);
+  const auto crc = core::CRC32C(__LINE__);
+  capsule1_.ot[0].field_hash = crc;
   capsule1_.ot[0].value = 0xBBBBBBB1u;
   auto d = Decoder::Build(&capsule1_, sizeof(capsule1_)).ValueOrDie();
-  EXPECT_TRUE(d.FindBoolean(capsule1_.ot[0].field_hash).ValueOrDie());
-  capsule1_.ot[0].value = 0xBBBBBBB0u;
-  auto d2 = Decoder::Build(&capsule1_, sizeof(capsule1_)).ValueOrDie();
-  EXPECT_FALSE(d2.FindBoolean(capsule1_.ot[0].field_hash).ValueOrDie());
+  bool b = false;
+  bool def = false;
+  EXPECT_EQ(Code::kOk, d.Find(crc, &b, def, presence[0]));
+  EXPECT_TRUE(b);
+  EXPECT_TRUE(presence[0]);
 }
 
+TEST_F(DecoderTest, FindBooleanFalseClean) {
+  std::vector<bool> presence(1, false);
+  const auto crc = core::CRC32C(__LINE__);
+  capsule1_.ot[0].field_hash = crc;
+  capsule1_.ot[0].value = 0xBBBBBBB0u;
+  auto d = Decoder::Build(&capsule1_, sizeof(capsule1_)).ValueOrDie();
+  bool b = true;
+  bool def = true;
+  EXPECT_EQ(Code::kOk, d.Find(crc, &b, def, presence[0]));
+  EXPECT_FALSE(b);
+  EXPECT_TRUE(presence[0]);
+}
+
+/*
 TEST_F(DecoderTest, FindBooleanDirty) {
   capsule1_.ot[0].field_hash = core::CRC32C(__LINE__);
   capsule1_.ot[0].value = 0xBBBB7BB1u;
