@@ -176,109 +176,207 @@ TEST_F(DecoderTest, FindBooleanFalseClean) {
   EXPECT_TRUE(presence[0]);
 }
 
-/*
 TEST_F(DecoderTest, FindBooleanDirty) {
-  capsule1_.ot[0].field_hash = core::CRC32C(__LINE__);
+  std::vector<bool> presence(1, false);
+  const auto crc = core::CRC32C(__LINE__);
+  capsule1_.ot[0].field_hash = crc;
   capsule1_.ot[0].value = 0xBBBB7BB1u;
   auto d = Decoder::Build(&capsule1_, sizeof(capsule1_)).ValueOrDie();
-  EXPECT_EQ(Code::kError,
-            d.FindBoolean(capsule1_.ot[0].field_hash).result().code());
+  bool b = true;
+  bool def = true;
+  EXPECT_EQ(Code::kCapsuleFatal, d.Find(crc, &b, def, presence[0]));
 }
 
 TEST_F(DecoderTest, FindU8Clean) {
-  capsule1_.ot[0].field_hash = core::CRC32C(__LINE__);
-  capsule1_.ot[0].value = 0x88888803u;
+  std::vector presence(1, false);
+  const auto crc = core::CRC32C(__LINE__);
+  capsule1_.ot[0].field_hash = crc;
+  capsule1_.ot[0].value = 0x88888842u;
   auto d = Decoder::Build(&capsule1_, sizeof(capsule1_)).ValueOrDie();
-  EXPECT_EQ(0x03u, d.FindU8(capsule1_.ot[0].field_hash).ValueOrDie());
+  uint8_t v = 0;
+  uint8_t def = 0;
+  EXPECT_EQ(Code::kOk, d.Find(crc, &v, def, presence[0]));
+  EXPECT_EQ(v, 66);
+  EXPECT_TRUE(presence[0]);
+}
+
+TEST_F(DecoderTest, FindU8Dirty) {
+  std::vector presence(1, false);
+  const auto crc = core::CRC32C(__LINE__);
+  capsule1_.ot[0].field_hash = crc;
+  capsule1_.ot[0].value = 0x88878842u;
+  auto d = Decoder::Build(&capsule1_, sizeof(capsule1_)).ValueOrDie();
+  uint8_t v = 0;
+  uint8_t def = 0;
+  EXPECT_EQ(Code::kCapsuleFatal, d.Find(crc, &v, def, presence[0]));
 }
 
 TEST_F(DecoderTest, FindI8Clean) {
-  capsule1_.ot[0].field_hash = core::CRC32C(__LINE__);
-  capsule1_.ot[0].value = 0x888888FFu;
+  std::vector presence(1, false);
+  const auto crc = core::CRC32C(__LINE__);
+  capsule1_.ot[0].field_hash = crc;
+  capsule1_.ot[0].value = 0x8888887Fu;
   auto d = Decoder::Build(&capsule1_, sizeof(capsule1_)).ValueOrDie();
-  EXPECT_EQ(-1, d.FindI8(capsule1_.ot[0].field_hash).ValueOrDie());
+  int8_t v = 0;
+  int8_t def = 0;
+  EXPECT_EQ(Code::kOk, d.Find(crc, &v, def, presence[0]));
+  EXPECT_EQ(v, 127);
+  EXPECT_TRUE(presence[0]);
 }
 
 TEST_F(DecoderTest, FindI8Dirty) {
-  capsule1_.ot[0].field_hash = core::CRC32C(__LINE__);
-  capsule1_.ot[0].value = 0x882888FFu;
+  std::vector presence(1, false);
+  const auto crc = core::CRC32C(__LINE__);
+  capsule1_.ot[0].field_hash = crc;
+  capsule1_.ot[0].value = 0x8800887Fu;
   auto d = Decoder::Build(&capsule1_, sizeof(capsule1_)).ValueOrDie();
-  EXPECT_EQ(Code::kError, d.FindI8(capsule1_.ot[0].field_hash).result().code());
+  int8_t v = 0;
+  int8_t def = 0;
+  EXPECT_EQ(Code::kCapsuleFatal, d.Find(crc, &v, def, presence[0]));
 }
 
 TEST_F(DecoderTest, FindU16Clean) {
-  capsule1_.ot[0].field_hash = core::CRC32C(__LINE__);
-  capsule1_.ot[0].value = 0x16160803u;
+  std::vector presence(1, false);
+  const auto crc = core::CRC32C(__LINE__);
+  capsule1_.ot[0].field_hash = crc;
+  capsule1_.ot[0].value = 0x16161234u;
   auto d = Decoder::Build(&capsule1_, sizeof(capsule1_)).ValueOrDie();
-  EXPECT_EQ(0x0803u, d.FindU16(capsule1_.ot[0].field_hash).ValueOrDie());
+  uint16_t v = 0;
+  uint16_t def = 0;
+  EXPECT_EQ(Code::kOk, d.Find(crc, &v, def, presence[0]));
+  EXPECT_EQ(v, 0x1234);
+  EXPECT_TRUE(presence[0]);
+}
+
+TEST_F(DecoderTest, FindU16Dirty) {
+  std::vector presence(1, false);
+  const auto crc = core::CRC32C(__LINE__);
+  capsule1_.ot[0].field_hash = crc;
+  capsule1_.ot[0].value = 0x16171234u;
+  auto d = Decoder::Build(&capsule1_, sizeof(capsule1_)).ValueOrDie();
+  uint16_t v = 0;
+  uint16_t def = 0;
+  EXPECT_EQ(Code::kCapsuleFatal, d.Find(crc, &v, def, presence[0]));
 }
 
 TEST_F(DecoderTest, FindI16Clean) {
-  capsule1_.ot[0].field_hash = core::CRC32C(__LINE__);
-  capsule1_.ot[0].value = 0x1616FFFEu;
+  std::vector presence(1, false);
+  const auto crc = core::CRC32C(__LINE__);
+  capsule1_.ot[0].field_hash = crc;
+  capsule1_.ot[0].value = 0x16165678u;
   auto d = Decoder::Build(&capsule1_, sizeof(capsule1_)).ValueOrDie();
-  EXPECT_EQ(-2, d.FindI16(capsule1_.ot[0].field_hash).ValueOrDie());
+  int16_t v = 0;
+  int16_t def = 0;
+  EXPECT_EQ(Code::kOk, d.Find(crc, &v, def, presence[0]));
+  EXPECT_EQ(v, 0x5678);
+  EXPECT_TRUE(presence[0]);
 }
 
 TEST_F(DecoderTest, FindI16Dirty) {
-  capsule1_.ot[0].field_hash = core::CRC32C(__LINE__);
-  capsule1_.ot[0].value = 0x161788FFu;
+  std::vector presence(1, false);
+  const auto crc = core::CRC32C(__LINE__);
+  capsule1_.ot[0].field_hash = crc;
+  capsule1_.ot[0].value = 0x11165678u;
   auto d = Decoder::Build(&capsule1_, sizeof(capsule1_)).ValueOrDie();
-  EXPECT_EQ(Code::kError,
-            d.FindI16(capsule1_.ot[0].field_hash).result().code());
+  int16_t v = 0;
+  int16_t def = 0;
+  EXPECT_EQ(Code::kCapsuleFatal, d.Find(crc, &v, def, presence[0]));
 }
 
-TEST_F(DecoderTest, FindU32) {
-  capsule1_.ot[0].field_hash = core::CRC32C(__LINE__);
-  capsule1_.ot[0].value = 0x1616FFFEu;
+TEST_F(DecoderTest, FindU32Clean) {
+  std::vector presence(1, false);
+  const auto crc = core::CRC32C(__LINE__);
+  capsule1_.ot[0].field_hash = crc;
+  capsule1_.ot[0].value = 123456789u;
   auto d = Decoder::Build(&capsule1_, sizeof(capsule1_)).ValueOrDie();
-  EXPECT_EQ(0x1616FFFEu, d.FindU32(capsule1_.ot[0].field_hash).ValueOrDie());
+  uint32_t v = 0;
+  uint32_t def = 0;
+  EXPECT_EQ(Code::kOk, d.Find(crc, &v, def, presence[0]));
+  EXPECT_EQ(v, 123456789u);
+  EXPECT_TRUE(presence[0]);
 }
 
-TEST_F(DecoderTest, FindI32) {
-  capsule1_.ot[0].field_hash = core::CRC32C(__LINE__);
-  capsule1_.ot[0].value = 0x1616FFFE;
+TEST_F(DecoderTest, FindI32Clean) {
+  std::vector presence(1, false);
+  const auto crc = core::CRC32C(__LINE__);
+  capsule1_.ot[0].field_hash = crc;
+  capsule1_.ot[0].value = static_cast<uint32_t>(-42);
   auto d = Decoder::Build(&capsule1_, sizeof(capsule1_)).ValueOrDie();
-  EXPECT_EQ(0x1616FFFE, d.FindI32(capsule1_.ot[0].field_hash).ValueOrDie());
+  int32_t v = 0;
+  int32_t def = 0;
+  EXPECT_EQ(Code::kOk, d.Find(crc, &v, def, presence[0]));
+  EXPECT_EQ(v, -42);
+  EXPECT_TRUE(presence[0]);
 }
 
-TEST_F(DecoderTest, FindF32) {
-  capsule1_.ot[0].field_hash = core::CRC32C(__LINE__);
-  const auto f = 3.000333f;
-  capsule1_.ot[0].value = std::bit_cast<uint32_t>(f);
+TEST_F(DecoderTest, FindF32Clean) {
+  std::vector presence(1, false);
+  const auto crc = core::CRC32C(__LINE__);
+  capsule1_.ot[0].field_hash = crc;
+  float expected = 3.14159f;
+  uint32_t raw_val;
+  memcpy(&raw_val, &expected, sizeof(float));
+  capsule1_.ot[0].value = raw_val;
   auto d = Decoder::Build(&capsule1_, sizeof(capsule1_)).ValueOrDie();
-  EXPECT_EQ(f, d.FindF32(capsule1_.ot[0].field_hash).ValueOrDie());
+  float v = 0.0f;
+  float def = 0.0f;
+  EXPECT_EQ(Code::kOk, d.Find(crc, &v, def, presence[0]));
+  EXPECT_NEAR_ABS(v, 3.14159f, 1e-5f);
+  EXPECT_TRUE(presence[0]);
 }
 
-TEST_F(DecoderTest, FindU64) {
-  capsule1_.ot[0].field_hash = core::CRC32C(__LINE__);
-  capsule1_.ot[0].value =
-      sizeof(capsule::abi::Header) + sizeof(capsule::abi::OffsetTableEntry);
-  *reinterpret_cast<uint64_t*>(&capsule1_.space[0]) = 0xda4eda4eda4eda4eull;
+TEST_F(DecoderTest, FindU64Clean) {
+  std::vector presence(1, false);
+  const auto crc = core::CRC32C(__LINE__);
+  capsule1_.ot[0].field_hash = crc;
+  capsule1_.ot[0].value = 16;
+  auto* space_u64 =
+      reinterpret_cast<uint64_t*>(reinterpret_cast<char*>(&capsule1_) + 16);
+  *space_u64 = 0x123456789ABCDEF0ULL;
+
   auto d = Decoder::Build(&capsule1_, sizeof(capsule1_)).ValueOrDie();
-  EXPECT_EQ(0xda4eda4eda4eda4eull,
-            d.FindU64(capsule1_.ot[0].field_hash).ValueOrDie());
+  uint64_t v = 0;
+  uint64_t def = 0;
+  EXPECT_EQ(Code::kOk, d.Find(crc, &v, def, presence[0]));
+  EXPECT_EQ(v, 0x123456789ABCDEF0ULL);
+  EXPECT_TRUE(presence[0]);
 }
 
-TEST_F(DecoderTest, FindI64) {
-  capsule1_.ot[0].field_hash = core::CRC32C(__LINE__);
-  capsule1_.ot[0].value =
-      sizeof(capsule::abi::Header) + sizeof(capsule::abi::OffsetTableEntry);
-  *reinterpret_cast<int64_t*>(&capsule1_.space[0]) = -2715993493052925362;
+TEST_F(DecoderTest, FindI64Clean) {
+  std::vector presence(1, false);
+  const auto crc = core::CRC32C(__LINE__);
+  capsule1_.ot[0].field_hash = crc;
+  capsule1_.ot[0].value = 16;
+  auto* space_i64 =
+      reinterpret_cast<int64_t*>(reinterpret_cast<char*>(&capsule1_) + 16);
+  *space_i64 = -987654321LL;
+
   auto d = Decoder::Build(&capsule1_, sizeof(capsule1_)).ValueOrDie();
-  EXPECT_EQ(-2715993493052925362,
-            d.FindI64(capsule1_.ot[0].field_hash).ValueOrDie());
+  int64_t v = 0;
+  int64_t def = 0;
+  EXPECT_EQ(Code::kOk, d.Find(crc, &v, def, presence[0]));
+  EXPECT_EQ(v, -987654321LL);
+  EXPECT_TRUE(presence[0]);
 }
 
-TEST_F(DecoderTest, FindF64) {
-  capsule1_.ot[0].field_hash = core::CRC32C(__LINE__);
-  capsule1_.ot[0].value =
-      sizeof(capsule::abi::Header) + sizeof(capsule::abi::OffsetTableEntry);
-  *reinterpret_cast<double*>(&capsule1_.space[0]) = 312.459;
+TEST_F(DecoderTest, FindF64Clean) {
+  std::vector presence(1, false);
+  const auto crc = core::CRC32C(__LINE__);
+  capsule1_.ot[0].field_hash = crc;
+  capsule1_.ot[0].value = 16;
+  auto* space_f64 =
+      reinterpret_cast<double*>(reinterpret_cast<char*>(&capsule1_) + 16);
+  *space_f64 = 2.718281828459045;
+
   auto d = Decoder::Build(&capsule1_, sizeof(capsule1_)).ValueOrDie();
-  EXPECT_EQ(312.459, d.FindF64(capsule1_.ot[0].field_hash).ValueOrDie());
+  double v = 0.0;
+  double def = 0.0;
+  EXPECT_EQ(Code::kOk, d.Find(crc, &v, def, presence[0]));
+  EXPECT_NEAR_ABS(v, 2.718281828459045, 1e-9);
+  EXPECT_TRUE(presence[0]);
 }
 
+/*
 TEST_F(DecoderTest, FindString) {
   capsule1_.ot[0].field_hash = core::CRC32C(__LINE__);
   capsule1_.ot[0].value =

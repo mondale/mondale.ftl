@@ -115,12 +115,22 @@ class Decoder final {
   }
 
   template <typename A32>
+    requires(std::integral<A32> || std::same_as<A32, float>)
+  A32 ProperCast32(uint32_t val) const {
+    if constexpr (std::integral<A32>) {
+      return static_cast<A32>(val);
+    } else {
+      return std::bit_cast<A32>(val);
+    }
+  }
+
+  template <typename A32>
   Code Find32bPrimitive(core::CRC32C h, A32* out, const A32& def,
                         std::vector<bool>::reference present) const {
     uint32_t v = 0;
     const auto code = vm_.Lookup(h, &v);
     if (Code::kOk == code) {
-      *out = static_cast<A32>(v);
+      *out = ProperCast32<A32>(v);
       present = true;
       return Code::kOk;
     } else if (Code::kNotFound == code) {
@@ -150,6 +160,16 @@ class Decoder final {
   }
 
   template <typename A64>
+    requires(std::integral<A64> || std::same_as<A64, double>)
+  A64 ProperCast64(uint64_t val) const {
+    if constexpr (std::integral<A64>) {
+      return static_cast<A64>(val);
+    } else {
+      return std::bit_cast<A64>(val);
+    }
+  }
+
+  template <typename A64>
   Code Find64bPrimitive(core::CRC32C h, A64* out, const A64& def,
                         std::vector<bool>::reference present) const {
     uint32_t ptr = 0;
@@ -164,7 +184,7 @@ class Decoder final {
     // Code is OK, indirect to get the 64b primitive.
     if (ptr > (length_ - 8)) return Code::kCapsuleFatal;
     if ((ptr % 8) != 0) return Code::kCapsuleFatal;
-    *out = *Codec::AtPtr<const uint64_t>(base_, ptr);
+    *out = ProperCast64<A64>(*Codec::AtPtr<const uint64_t>(base_, ptr));
     present = true;
     return Code::kOk;
   }
