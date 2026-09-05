@@ -49,7 +49,7 @@ Result ValidateFrameHeader(const abi::FrameHeader* fh, const abi::Header* ih,
       ih->capsule_length + sizeof(abi::FrameHeader) + sizeof(core::CRC32C);
   if (fh->frame_length != recovered_frame_length) {
     return Result(
-        Code::kInvalidArgument,  // TODO becomes stream-fatal
+        Code::kStreamFatal,
         strings::Format(
             "Encoded frame length [{}] inconsistent with inner "
             "capsule length [{}] which implies a frame of length [{}].",
@@ -59,7 +59,7 @@ Result ValidateFrameHeader(const abi::FrameHeader* fh, const abi::Header* ih,
   // The frame's stated length must exactly match the framing.
   if (fh->frame_length != n) {
     return Result(
-        Code::kInvalidArgument,  // TODO becomes stream-fatal
+        Code::kStreamFatal,
         strings::Format(
             "Encoded frame length [{}] differs from memory length [{}].",
             fh->frame_length, n));
@@ -70,15 +70,14 @@ Result ValidateFrameHeader(const abi::FrameHeader* fh, const abi::Header* ih,
   const size_t max_offset_table_entries = (ih->capsule_length) / 8;
   if (ih->offset_table_count > max_offset_table_entries) {
     return Result(
-        Code::kInvalidArgument,  // TODO becomes capsule-fatal
+        Code::kCapsuleFatal,
         strings::Format("Capsule encodes offset table count [{}] in excess of "
                         "framing maximum [{}].",
                         ih->offset_table_count, max_offset_table_entries));
   }
 
   if (ih->offset_table_count == 0) {
-    return Result(Code::kInvalidArgument,  // TODO becomes capsule-fatal
-                  "Capsule encodes empty offset table.");
+    return Result(Code::kCapsuleFatal, "Capsule encodes empty offset table.");
   }
 
   return Result::Ok();
@@ -98,7 +97,7 @@ Result ValidateCrc(void* base, size_t n) {
   const auto stored = *BaseToCrcPointer(base, n);
   if (computed == stored) return Result::Ok();
   return Result(
-      Code::kInvalidArgument,  // TODO becomes capsule-fatal
+      Code::kCapsuleFatal,
       strings::Format(
           "Capsule encodes CRC32C of {:08x} but computed CRC32C is {:08x}",
           stored.value(), computed.value()));
@@ -108,7 +107,6 @@ Result ValidateCrc(void* base, size_t n) {
 
 // static
 Result Codec::Validate(void* base, size_t n) {
-  // TODO give useful error codes here.
   TRY(ValidateAlignment(base));
   TRY(ValidateMinLength(n));
   TRY(ValidateLengthMultiple(n));

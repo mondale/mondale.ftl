@@ -13,16 +13,6 @@ class Codec final {
   static Result Sign(void* base, size_t n);
 
   // APIs for a capsule with the OTECNT/LENGTH header only.
-  static uint32_t* HeaderToOteCount(void* base) {
-    // TODO - use abi::Header here.
-    return DwordRelative(base, 0);
-  }
-
-  static uint32_t* HeaderToLength(void* base) {
-    // TODO - use abi::Header here.
-    return DwordRelative(base, 1);
-  }
-
   static uint32_t PayloadAreaSize(uint32_t capsule_length,
                                   uint32_t field_count) {
     return capsule_length - sizeof(abi::Header) -
@@ -33,10 +23,6 @@ class Codec final {
     return reinterpret_cast<abi::OffsetTableEntry*>(DwordRelative(
         base, sizeof(abi::Header) / sizeof(uint32_t) +
                   sizeof(abi::OffsetTableEntry) / sizeof(uint32_t) * which));
-  }
-
-  static uint32_t* U32AtOffset(void* base, uint32_t offset) {
-    return DwordRelative(base, offset / sizeof(uint32_t));
   }
 
   template <typename T>

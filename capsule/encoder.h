@@ -32,7 +32,7 @@ class Encoder final {
 
   // Returns the capsule length.
   uint32_t Seal() {
-    *Codec::HeaderToLength(base_) = payload_cursor_;
+    reinterpret_cast<abi::Header*>(base_)->capsule_length = payload_cursor_;
     return payload_cursor_;
   }
 

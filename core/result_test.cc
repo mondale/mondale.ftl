@@ -73,6 +73,13 @@ TEST(BaseCode_kExhausted) {
   EXPECT_FALSE(IsOk(kExhausted));
 }
 
+TEST(BaseCode_CapsuleCodes) {
+  using core::BaseCode::kCapsuleFatal;
+  using core::BaseCode::kStreamFatal;
+  ENUM_EXPECT_STR(kCapsuleFatal);
+  ENUM_EXPECT_STR(kStreamFatal);
+}
+
 TEST(BaseCode_kUnimplemented) {
   using core::BaseCode::kUnimplemented;
   ENUM_EXPECT_STR(kUnimplemented);

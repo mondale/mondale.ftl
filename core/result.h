@@ -16,39 +16,45 @@ enum class BaseCode : uint8_t {
   kOk = 0,
 
   // Generic error condition.
-  kError,
+  kError = 1,
 
   // Invalid argument.
-  kInvalidArgument,
+  kInvalidArgument = 2,
 
   // Permission denied or authentication failure.
-  kPermission,
+  kPermission = 3,
 
   // Operation canceled by caller.
-  kCanceled,
+  kCanceled = 4,
 
   // Specified deadline has elapsed.
-  kDeadline,
+  kDeadline = 5,
 
   // Requested object not found.
-  kNotFound,
+  kNotFound = 6,
 
   // System is not in a state to fulfill the request.
-  kPrecondition,
+  kPrecondition = 7,
 
   // Not enough of something.
-  kExhausted,
+  kExhausted = 8,
 
   // Temporary, retryable error.
-  kUnavailable,
+  kUnavailable = 9,
+
+  // Capsule is not recoverable.
+  kCapsuleFatal = 10,
+
+  // Stream is not recoverable.
+  kStreamFatal = 11,
 
   // Posix error codes.
-  kEintr,
-  kEnoent,
-  kEinval,
+  kEintr = 100,
+  kEnoent = 101,
+  kEinval = 102,
 
   // Unimplemented code path reached.
-  kUnimplemented,
+  kUnimplemented = 255,
 };
 
 inline bool IsOk(BaseCode code) { return BaseCode::kOk == code; }
@@ -67,6 +73,8 @@ struct Code final {
   static constexpr BaseCode kNotFound = BaseCode::kNotFound;
   static constexpr BaseCode kPrecondition = BaseCode::kPrecondition;
   static constexpr BaseCode kExhausted = BaseCode::kExhausted;
+  static constexpr BaseCode kCapsuleFatal = BaseCode::kCapsuleFatal;
+  static constexpr BaseCode kStreamFatal = BaseCode::kStreamFatal;
   static constexpr BaseCode kUnimplemented = BaseCode::kUnimplemented;
 
   Code() = default;

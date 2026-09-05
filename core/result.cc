@@ -29,6 +29,8 @@ std::string_view ToString(BaseCode bc) {
     ENUM_SWITCH_TOSTRING(BaseCode, kPrecondition);
     ENUM_SWITCH_TOSTRING(BaseCode, kExhausted);
     ENUM_SWITCH_TOSTRING(BaseCode, kUnavailable);
+    ENUM_SWITCH_TOSTRING(BaseCode, kCapsuleFatal);
+    ENUM_SWITCH_TOSTRING(BaseCode, kStreamFatal);
     ENUM_SWITCH_TOSTRING(BaseCode, kEintr);
     ENUM_SWITCH_TOSTRING(BaseCode, kEnoent);
     ENUM_SWITCH_TOSTRING(BaseCode, kEinval);

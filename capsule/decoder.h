@@ -31,7 +31,7 @@ class Decoder final {
     const auto code = vm_.Lookup(h, &v);
     if (Code::kOk == code) {
       if ((v & 0xFFFFFFFEu) != 0xBBBBBBB0u) {
-        return Code::kError;  // TODO capsule fatal
+        return Code::kCapsuleFatal;
       }
       *out = ((v & 0x01u) == 0x01);
       present = true;
@@ -57,7 +57,7 @@ class Decoder final {
     const auto code = vm_.Lookup(h, &v);
     if (Code::kOk == code) {
       if ((v & 0xFFFFFF00u) != 0x88888800u) {
-        return Code::kError;  // TODO capsule fatal
+        return Code::kCapsuleFatal;
       }
       *out = static_cast<A8>(v & 0x0FFu);
       present = true;
@@ -89,7 +89,7 @@ class Decoder final {
     const auto code = vm_.Lookup(h, &v);
     if (Code::kOk == code) {
       if ((v & 0xFFFF0000u) != 0x16160000u) {
-        return Code::kError;  // TODO capsule fatal
+        return Code::kCapsuleFatal;
       }
       *out = static_cast<A16>(v & 0x0FFFFu);
       present = true;
@@ -162,8 +162,8 @@ class Decoder final {
       return code;
     }
     // Code is OK, indirect to get the 64b primitive.
-    if (ptr > (length_ - 8)) return Code::kError;  // TODO capsule fatal
-    if ((ptr % 8) != 0) return Code::kError;       // TODO capsule fatal
+    if (ptr > (length_ - 8)) return Code::kCapsuleFatal;
+    if ((ptr % 8) != 0) return Code::kCapsuleFatal;
     *out = *Codec::AtPtr<const uint64_t>(base_, ptr);
     present = true;
     return Code::kOk;
@@ -193,9 +193,9 @@ class Decoder final {
     uint32_t ptr = 0;
     const auto code = vm_.Lookup(h, &ptr);
     if (Code::kOk == code) {
-      if (ptr > (length_ - 4)) return Code::kError;  // TODO capsule fatal
+      if (ptr > (length_ - 4)) return Code::kCapsuleFatal;
       const uint32_t str_len = *Codec::AtPtr<const uint32_t>(base_, ptr);
-      if ((ptr + 4 + str_len) > length_) return Code::kError;
+      if ((ptr + 4 + str_len) > length_) return Code::kCapsuleFatal;
       const char* const s = Codec::AtPtr<const char>(base_, ptr + 4);
       *out = std::string_view(s, str_len);
       present = true;
@@ -228,11 +228,10 @@ class Decoder final {
       return code;
     }
 
-    if (ptr > (length_ - sizeof(abi::VectorHeader)))
-      return Code::kError;                    // TODO capsule fatal
-    if ((ptr % 8) != 0) return Code::kError;  // TODO capsule fatal
+    if (ptr > (length_ - sizeof(abi::VectorHeader))) return Code::kCapsuleFatal;
+    if ((ptr % 8) != 0) return Code::kCapsuleFatal;
     const auto* const vh = Codec::AtPtr<const abi::VectorHeader>(base_, ptr);
-    if (vh->padding != 0xda4eda4eu) return Code::kError;  // TODO capsule fatal
+    if (vh->padding != 0xda4eda4eu) return Code::kCapsuleFatal;
     const uint32_t element_count = vh->element_count;
     out->resize(element_count);
     ptr += sizeof(abi::VectorHeader);
@@ -241,9 +240,8 @@ class Decoder final {
     for (uint32_t i = 0; i < element_count; ++i) {
       const uint32_t string_length = *Codec::AtPtr<const uint32_t>(base_, ptr);
       uint32_t str_ptr = ptr + sizeof(uint32_t);
-      if (string_length > length_) return Code::kError;  // TODO capsule fatal
-      if (str_ptr > (length_ - string_length))
-        return Code::kError;  // TODO capsule fatal
+      if (string_length > length_) return Code::kCapsuleFatal;
+      if (str_ptr > (length_ - string_length)) return Code::kCapsuleFatal;
       std::string& s = out->at(i);
       s.resize(0);
       s.append(Codec::AtPtr<const char>(base_, str_ptr), string_length);
@@ -264,9 +262,8 @@ class Decoder final {
     } else if (Code::kOk != code) {
       return code;
     }
-    if (ptr > (length_ - sizeof(abi::Header)))
-      return Code::kError;                    // TODO capsule fatal
-    if ((ptr % 8) != 0) return Code::kError;  // TODO capsule fatal
+    if (ptr > (length_ - sizeof(abi::Header))) return Code::kCapsuleFatal;
+    if ((ptr % 8) != 0) return Code::kCapsuleFatal;
     const void* const capsule_base = reinterpret_cast<const void*>(
         reinterpret_cast<const char*>(base_) + ptr);
     const uint32_t capsule_length =
@@ -292,11 +289,10 @@ class Decoder final {
     } else if (Code::kOk != code) {
       return code;
     }
-    if (ptr > (length_ - sizeof(abi::VectorHeader)))
-      return Code::kError;                    // TODO capsule fatal
-    if ((ptr % 8) != 0) return Code::kError;  // TODO capsule fatal
+    if (ptr > (length_ - sizeof(abi::VectorHeader))) return Code::kCapsuleFatal;
+    if ((ptr % 8) != 0) return Code::kCapsuleFatal;
     const auto* const vh = Codec::AtPtr<const abi::VectorHeader>(base_, ptr);
-    if (vh->padding != 0xda4eda4eu) return Code::kError;  // TODO capsule fatal
+    if (vh->padding != 0xda4eda4eu) return Code::kCapsuleFatal;
     const uint32_t element_count = vh->element_count;
     out->resize(element_count);
     ptr += sizeof(abi::VectorHeader);
@@ -305,10 +301,8 @@ class Decoder final {
     for (uint32_t i = 0; i < element_count; ++i) {
       const auto* const h = Codec::AtPtr<const abi::Header>(base_, ptr);
       const uint32_t subcapsule_length = h->capsule_length;
-      if (subcapsule_length > length_)
-        return Code::kError;  // TODO capsule fatal
-      if (ptr > (length_ - subcapsule_length))
-        return Code::kError;  // TODO capsule fatal
+      if (subcapsule_length > length_) return Code::kCapsuleFatal;
+      if (ptr > (length_ - subcapsule_length)) return Code::kCapsuleFatal;
       auto mb = Build(h, subcapsule_length);
       if (!mb.ok()) {
         return mb.result().code();

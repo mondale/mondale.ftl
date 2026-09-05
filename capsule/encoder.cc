@@ -12,8 +12,9 @@ Encoder::Encoder(void* base, size_t length, uint32_t field_count, Encoder* p)
       field_cursor_(0),
       field_count_(field_count),
       encoding_result_() {
-  *Codec::HeaderToOteCount(base) = field_count;
-  *Codec::HeaderToLength(base) = length;
+  auto* const h = reinterpret_cast<abi::Header*>(base);
+  h->offset_table_count = field_count;
+  h->capsule_length = length;
 }
 
 void Encoder::ErrorSpaceOverflow() {
