@@ -14,14 +14,14 @@ namespace capsule {
 // Helper to decode a Storage to a View or a Materialized.
 class Decoder final {
  public:
-  Decoder(void* base);
+  Decoder(const void* base);
 
-  static ResultOr<Decoder> Build(void* base, size_t memory_length);
+  static ResultOr<Decoder> Build(const void* base, size_t memory_length);
 
   // If this type is called, you need to define a specialization below.
   template <typename T>
   Code Find(core::CRC32C h, T* out, const T& def,
-            std::vector<bool>::reference present) = delete;
+            std::vector<bool>::reference present) const = delete;
 
   Code FindBoolean(core::CRC32C h, bool* out, const bool& def,
                    std::vector<bool>::reference present) const {
@@ -44,7 +44,7 @@ class Decoder final {
 
   template <>
   Code Find<bool>(core::CRC32C h, bool* out, const bool& def,
-                  std::vector<bool>::reference present) {
+                  std::vector<bool>::reference present) const {
     return FindBoolean(h, out, def, present);
   }
 
@@ -67,21 +67,46 @@ class Decoder final {
 
   template <>
   Code Find<int32_t>(core::CRC32C h, int32_t* out, const int32_t& def,
-                     std::vector<bool>::reference present) {
+                     std::vector<bool>::reference present) const {
     return Find32bPrimitive(h, out, def, present);
+  }
+
+  template <typename A64>
+  Code Find64bPrimitive(core::CRC32C h, A64* out, const A64& def,
+                        std::vector<bool>::reference present) const {
+    uint32_t ptr = 0;
+    const auto code = vm_.Lookup(h, &ptr);
+    if (Code::kNotFound == code) {
+      *out = def;
+      present = false;
+      return Code::kOk;
+    } else if (Code::kOk != code) {
+      return code;
+    }
+    // Code is OK, indirect to get the 64b primitive.
+    if (ptr > (length_ - 8)) return Code::kError;  // TODO capsule fatal
+    if ((ptr % 8) != 0) return Code::kError;       // TODO capsule fatal
+    *out = *Codec::AtPtr<const uint64_t>(base_, ptr);
+    present = true;
+    return Code::kOk;
+  }
+
+  template <>
+  Code Find<uint64_t>(core::CRC32C h, uint64_t* out, const uint64_t& def,
+                      std::vector<bool>::reference present) const {
+    return Find64bPrimitive(h, out, def, present);
   }
 
   template <typename S>
   Code FindString(core::CRC32C h, S* out, const S& def,
-                  std::vector<bool>::reference present) {
+                  std::vector<bool>::reference present) const {
     uint32_t ptr = 0;
     const auto code = vm_.Lookup(h, &ptr);
     if (Code::kOk == code) {
       if (ptr > (length_ - 4)) return Code::kError;  // TODO capsule fatal
-      const uint32_t str_len = *Codec::U32AtOffset(base_, ptr);
+      const uint32_t str_len = *Codec::AtPtr<const uint32_t>(base_, ptr);
       if ((ptr + 4 + str_len) > length_) return Code::kError;
-      const char* const s =
-          reinterpret_cast<const char*>(Codec::U32AtOffset(base_, ptr + 4));
+      const char* const s = Codec::AtPtr<const char>(base_, ptr + 4);
       *out = std::string_view(s, str_len);
       present = true;
       return Code::kOk;
@@ -96,8 +121,34 @@ class Decoder final {
   template <>
   Code Find<std::string>(core::CRC32C h, std::string* out,
                          const std::string& def,
-                         std::vector<bool>::reference present) {
+                         std::vector<bool>::reference present) const {
     return FindString(h, out, def, present);
+  }
+
+  template <typename C>
+  Code FindCapsule(core::CRC32C h, C* out, const C& def,
+                   std::vector<bool>::reference present) const {
+    uint32_t ptr = 0;
+    const auto code = vm_.Lookup(h, &ptr);
+    if (Code::kNotFound == code) {
+      *out = def;
+      present = false;
+      return Code::kOk;
+    } else if (Code::kOk != code) {
+      return code;
+    }
+    if (ptr > (length_ - sizeof(abi::Header)))
+      return Code::kError;                    // TODO capsule fatal
+    if ((ptr % 8) != 0) return Code::kError;  // TODO capsule fatal
+    const void* const capsule_base = reinterpret_cast<const void*>(
+        reinterpret_cast<const char*>(base_) + ptr);
+    const uint32_t capsule_length =
+        reinterpret_cast<const abi::Header*>(capsule_base)->capsule_length;
+    auto mb = Build(capsule_base, capsule_length);
+    if (!mb.ok()) {
+      return mb.result().code();
+    }
+    return out->Decode(&mb.ValueOrDie()).code();
   }
 
   /*
@@ -175,7 +226,7 @@ class Decoder final {
 
   */
  private:
-  [[maybe_unused]] void* const base_;
+  const void* const base_;
   size_t length_;
   ViewMapper vm_;
 };

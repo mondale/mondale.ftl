@@ -25,12 +25,10 @@ struct MaterializedInterface {
 
 struct SubSubM final : public MaterializedInterface {
   [[maybe_unused]] static constexpr core::CRC32C kTypeHash = core::CRC32C(30);
-  [[maybe_unused]] static constexpr uint32_t kFieldCount = 3;
+  static constexpr uint32_t kFieldCount = 3;
   static constexpr core::CRC32C b1_FieldHash = core::CRC32C(31);
-  [[maybe_unused]] static constexpr core::CRC32C i1_FieldHash =
-      core::CRC32C(32);
-  [[maybe_unused]] static constexpr core::CRC32C s1_FieldHash =
-      core::CRC32C(33);
+  static constexpr core::CRC32C i1_FieldHash = core::CRC32C(32);
+  static constexpr core::CRC32C s1_FieldHash = core::CRC32C(33);
   static constexpr bool b1_Default = false;
   static constexpr int32_t i1_Default = 77;
   static constexpr std::string s1_Default = "Oooh";
@@ -42,22 +40,27 @@ struct SubSubM final : public MaterializedInterface {
   int32_t i1;
   std::string s1;
 
+  bool has_b1() const { return has_[b1_Index]; }
+  bool has_i1() const { return has_[i1_Index]; }
+  bool has_s1() const { return has_[s1_Index]; }
+
   size_t ComputeStorageSize() const override;
   void Encode(::capsule::Encoder* e) const override;
   Result Decode(::capsule::Decoder* d) override;
 
   std::vector<bool> has_;
 
+  // not part of generated code...
   void Randomize(std::mt19937_64* rng);
 };
 
 void Compare(const SubSubM* l, const SubSubM* r) {
   EXPECT_EQ(l->b1, r->b1);
-  EXPECT_TRUE(r->has_[0]);
+  EXPECT_TRUE(r->has_b1());
   EXPECT_EQ(l->i1, r->i1);
-  EXPECT_TRUE(r->has_[1]);
+  EXPECT_TRUE(r->has_i1());
   EXPECT_EQ(l->s1, r->s1);
-  EXPECT_TRUE(r->has_[2]);
+  EXPECT_TRUE(r->has_s1());
 }
 
 size_t SubSubM::ComputeStorageSize() const {
@@ -107,17 +110,34 @@ struct SubM final : public MaterializedInterface {
   static constexpr core::CRC32C sub1_FieldHash = core::CRC32C(22);
   [[maybe_unused]] static constexpr core::CRC32C vsub1_FieldHash =
       core::CRC32C(23);
+  [[maybe_unused]] static constexpr uint64_t u64a_Default = 9;
+  static constexpr int u64a_Index = 0;
+  static constexpr int sub1_Index = 1;
+  static constexpr int vsub1_Index = 2;
 
   uint64_t u64a;
   SubSubM sub1;
   // std::vector<SubSubM> vsub1;
 
+  bool has_u64a() const { return has_[u64a_Index]; }
+  bool has_sub1() const { return has_[sub1_Index]; }
+  bool has_vsub1() const { return has_[vsub1_Index]; }
+
   size_t ComputeStorageSize() const override;
   void Encode(::capsule::Encoder* e) const override;
   Result Decode(::capsule::Decoder* d) override;
 
+  std::vector<bool> has_;
+
+  // Not part of generated code.
   void Randomize(std::mt19937_64* rng);
 };
+
+void Compare(const SubM* l, const SubM* r) {
+  EXPECT_EQ(l->u64a, r->u64a);
+  EXPECT_TRUE(r->has_u64a());
+  Compare(&l->sub1, &r->sub1);
+}
 
 size_t SubM::ComputeStorageSize() const {
   ::capsule::SizeBuilder sb;
@@ -132,8 +152,13 @@ void SubM::Encode(::capsule::Encoder* e) const {
 }
 
 Result SubM::Decode(::capsule::Decoder* d) {
-  // Generated.
-  return Result::Ok();
+  has_.resize(kFieldCount, false);
+  Code ret = Code::kOk;
+  ret.Incorporate(
+      d->Find(u64a_FieldHash, &u64a, u64a_Default, has_[u64a_Index]));
+  ret.Incorporate(
+      d->FindCapsule(sub1_FieldHash, &sub1, sub1, has_[sub1_Index]));
+  return ret;
 }
 
 void SubM::Randomize(std::mt19937_64* rng) {
@@ -189,6 +214,9 @@ struct TopLevelM final : public MaterializedInterface {
   void Encode(::capsule::Encoder* e) const override;
   Result Decode(::capsule::Decoder* d) override;
 
+  std::vector<bool> has_;
+
+  // Not part of generated code.
   void Randomize(std::mt19937_64* rng);
 };
 
@@ -367,6 +395,12 @@ TEST(SubSubMTest) {
   base::SetVmodules("encoder=1");
   base::SetVlogLevel(1);
   auto m = std::make_unique<SubSubM>();
+  Randomize(m.get());
+  RunTranscodeTest(std::move(m));
+}
+
+TEST(SubMTest) {
+  auto m = std::make_unique<SubM>();
   Randomize(m.get());
   RunTranscodeTest(std::move(m));
 }

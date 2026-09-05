@@ -39,6 +39,11 @@ class Codec final {
     return DwordRelative(base, offset / sizeof(uint32_t));
   }
 
+  template <typename T>
+  static T* AtPtr(const void* base, uint32_t ptr) {
+    return reinterpret_cast<T*>(reinterpret_cast<const char*>(base) + ptr);
+  }
+
  private:
   static uint32_t* DwordRelative(void* base, uint32_t count) {
     return reinterpret_cast<uint32_t*>(base) + count;

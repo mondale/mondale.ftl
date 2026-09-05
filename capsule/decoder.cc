@@ -27,15 +27,16 @@ Result ErrorInsufficientMemoryLength(size_t memory_length) {
 
 }  // namespace
 
-Decoder::Decoder(void* base) : base_(base), length_(0), vm_() {}
+Decoder::Decoder(const void* base) : base_(base), length_(0), vm_() {}
 
 // static
-ResultOr<Decoder> Decoder::Build(void* base, size_t memory_length) {
+ResultOr<Decoder> Decoder::Build(const void* base, size_t memory_length) {
   if (memory_length < sizeof(abi::Header)) {
     return ErrorInsufficientMemoryLength(memory_length);
   }
-  const uint32_t otes = *Codec::HeaderToOteCount(base);
-  const uint32_t length = *Codec::HeaderToLength(base);
+  const auto* const header = Codec::AtPtr<const abi::Header>(base, 0);
+  const uint32_t otes = header->offset_table_count;
+  const uint32_t length = header->capsule_length;
   if (length > memory_length) {
     return ErrorLengthDecoding(memory_length, length);
   }
@@ -48,7 +49,9 @@ ResultOr<Decoder> Decoder::Build(void* base, size_t memory_length) {
 
   Decoder d(base);
   d.length_ = length;
-  TRY_ASSIGN(d.vm_, ViewMapper::Build(Codec::OteEntryNumber(base, 0), otes));
+  TRY_ASSIGN(d.vm_, ViewMapper::Build(Codec::AtPtr<const abi::OffsetTableEntry>(
+                                          base, sizeof(abi::Header)),
+                                      otes));
   return d;
 }
 
