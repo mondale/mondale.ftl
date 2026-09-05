@@ -31,8 +31,7 @@ TEST(GeneratorFullFeatureTest) {
   auto parse_result = parser.Parse();
   ASSERT_TRUE(parse_result.ok());
 
-  auto gen_result =
-      capsule::GenerateMaterializedHeader(parse_result.ValueOrDie());
+  auto gen_result = capsule::GenerateHeader(parse_result.ValueOrDie());
   ASSERT_TRUE(gen_result.ok());
 
   std::string expected =
@@ -41,6 +40,10 @@ TEST(GeneratorFullFeatureTest) {
       "#include <cstdint>\n"
       "#include <string>\n"
       "#include <vector>\n"
+      "#include \"capsule/decoder.h\"\n"
+      "#include \"capsule/encoder.h\"\n"
+      "#include \"capsule/size_builder.h\"\n"
+      "#include \"capsule/storage.h\"\n"
       "#include \"core/vocabulary.h\"\n\n"
       "namespace test_ns {\n\n"
       "struct SubCapsule {\n"

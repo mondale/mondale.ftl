@@ -9,7 +9,7 @@
 
 namespace capsule {
 
-ResultOr<std::string> GenerateMaterializedHeader(const CapsuleFile& file);
+ResultOr<std::string> GenerateHeader(const CapsuleFile& file);
 
 }  // namespace capsule
 

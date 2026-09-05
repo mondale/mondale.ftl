@@ -3,7 +3,6 @@
 // TODO - need randomness support in runtime
 
 #include "base/logging.h"
-#include "capsule/abi.h"
 #include "capsule/codec.h"
 #include "capsule/decoder.h"
 #include "capsule/encoder.h"
