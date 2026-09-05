@@ -344,7 +344,7 @@ class Encoder final {
     // is rounded up to a multiple of 8.
     size_t payload_size = sizeof(abi::VectorHeader);
     for (const auto& s : v) {
-      payload_size += (4 + s.length() + 7) / 8 * 8;
+      payload_size += (sizeof(uint32_t) + s.length() + 7) / 8 * 8;
     }
     if (payload_bytes_remain_ < payload_size) {
       DVLOG(1) << "Error location";
@@ -373,7 +373,9 @@ class Encoder final {
       dst += length;
 
       // Encode padding.
-      memset(dst, 0xda, (length + 4) % 8);
+      const uint32_t padding = (8 - ((length + sizeof(uint32_t)) % 8)) % 8;
+      memset(dst, 0xda, padding);
+      dst += padding;
     }
 
     payload_cursor_ += payload_size;
