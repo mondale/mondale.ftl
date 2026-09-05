@@ -376,6 +376,49 @@ TEST_F(DecoderTest, FindF64Clean) {
   EXPECT_TRUE(presence[0]);
 }
 
+TEST_F(DecoderTest, FindStringNotFoundDefault) {
+  auto d = Decoder::Build(&capsule0_, sizeof(capsule0_)).ValueOrDie();
+  std::string s = "initial";
+  std::vector<bool> presence(1, true);
+  const auto crc = core::CRC32C(__LINE__);
+  EXPECT_EQ(Code::kOk, d.Find(crc, &s, "default_val", presence[0]));
+  EXPECT_EQ(s, "default_val");
+  EXPECT_FALSE(presence[0]);
+}
+
+TEST_F(DecoderTest, FindStringFoundClean) {
+  std::vector<bool> presence(1, false);
+  const auto crc = core::CRC32C(__LINE__);
+  capsule1_.ot[0].field_hash = crc;
+  capsule1_.ot[0].value = 16;
+
+  char* space_ptr = reinterpret_cast<char*>(&capsule1_) + 16;
+  uint32_t str_len = 5;
+  memcpy(space_ptr, &str_len, sizeof(str_len));
+  memcpy(space_ptr + 4, "Hello", 5);
+
+  auto d = Decoder::Build(&capsule1_, sizeof(capsule1_)).ValueOrDie();
+  std::string s = "";
+  EXPECT_EQ(Code::kOk, d.Find(crc, &s, "def", presence[0]));
+  EXPECT_EQ(s, "Hello");
+  EXPECT_TRUE(presence[0]);
+}
+
+TEST_F(DecoderTest, FindStringOverlongError) {
+  std::vector<bool> presence(1, false);
+  const auto crc = core::CRC32C(__LINE__);
+  capsule1_.ot[0].field_hash = crc;
+  capsule1_.ot[0].value = 16;
+
+  char* space_ptr = reinterpret_cast<char*>(&capsule1_) + 16;
+  uint32_t str_len = 0xFFFFFFF0u;
+  memcpy(space_ptr, &str_len, sizeof(str_len));
+
+  auto d = Decoder::Build(&capsule1_, sizeof(capsule1_)).ValueOrDie();
+  std::string s = "";
+  EXPECT_EQ(Code::kCapsuleFatal, d.Find(crc, &s, "def", presence[0]));
+}
+
 /*
 TEST_F(DecoderTest, FindString) {
   capsule1_.ot[0].field_hash = core::CRC32C(__LINE__);
