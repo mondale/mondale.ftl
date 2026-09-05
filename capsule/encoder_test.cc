@@ -339,14 +339,50 @@ TEST_F(EncoderTest, EncodeCapsuleVector) {
   EXPECT_EQ(2, vh->element_count);
   EXPECT_EQ(0xda4eda4eu, vh->padding);
 
-  // TODO - finish this but do it when you've also got the Decoder ready to go.
-  // Space1 should be a Capsule.
-  // const auto* const h =
-  //    reinterpret_cast<const capsule::abi::Header*>(&capsule1_.space[1]);
+  // Space2 should be a Capsule.
+  {
+    const auto* const h =
+        reinterpret_cast<const capsule::abi::Header*>(&capsule1_.space[2]);
+    EXPECT_EQ(DefinitelyACapsule::kFieldCount, h->offset_table_count);
+    EXPECT_EQ(DefinitelyACapsule().ComputeStorageSize(), h->capsule_length);
+
+    // Space4 - Space10 inclusive should be OTEs.
+    for (int i = 4; i <= 10; i += 2) {
+      const auto* const ote =
+          reinterpret_cast<const capsule::abi::OffsetTableEntry*>(
+              &capsule1_.space[i]);
+      // Per how DefinitelyACapsule encodes itself, the field hash and value are
+      // the same value.
+      EXPECT_EQ(ote->field_hash.value(), ote->value);
+    }
+  }
+
+  // Space 12 should be the second Capsule.
+  {
+    const auto* const h =
+        reinterpret_cast<const capsule::abi::Header*>(&capsule1_.space[12]);
+    EXPECT_EQ(DefinitelyACapsule::kFieldCount, h->offset_table_count);
+    EXPECT_EQ(DefinitelyACapsule().ComputeStorageSize(), h->capsule_length);
+
+    // Space14 - Space20 inclusive should be OTEs.
+    for (int i = 14; i <= 20; i += 2) {
+      const auto* const ote =
+          reinterpret_cast<const capsule::abi::OffsetTableEntry*>(
+              &capsule1_.space[i]);
+      // Per how DefinitelyACapsule encodes itself, the field hash and value are
+      // the same value.
+      EXPECT_EQ(ote->field_hash.value(), ote->value);
+    }
+  }
 }
 
 TEST_F(EncoderTest, EncodeCapsuleVectorTooBig) {
-  //
+  Encoder e(&capsule1_, sizeof(capsule1_), 1);
+  const auto crc = CRC32C{__LINE__};
+  std::vector<DefinitelyACapsule> v;
+  v.resize(100);
+  e.AddCapsuleVector(crc, v);
+  ASSERT_THAT(e.result().ToString(), HasSubstr("overflow"));
 }
 
 }  // namespace
