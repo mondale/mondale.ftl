@@ -164,9 +164,9 @@ class Encoder final {
   }
 
   void AddString(core::CRC32C hash, const char* src, uint32_t len) {
-    const uint32_t with_taxes = (4 + len + 7) / 8 * 8;
-    const uint32_t taxes = with_taxes - len;
-    if (with_taxes > payload_bytes_remain_) {
+    const uint32_t total_write = (sizeof(uint32_t) + len + 7) / 8 * 8;
+    const uint32_t padding = total_write - len - sizeof(uint32_t);
+    if (total_write > payload_bytes_remain_) {
       DVLOG(1) << "Error location";
       ErrorSpaceOverflow();
       return;
@@ -175,9 +175,9 @@ class Encoder final {
     char* const dst = reinterpret_cast<char*>(base_) + payload_cursor_;
     *reinterpret_cast<uint32_t*>(dst) = len;
     memcpy(dst + 4, src, len);
-    memset(dst + 4 + len, 0xda, taxes);
-    payload_cursor_ += with_taxes;
-    payload_bytes_remain_ -= with_taxes;
+    memset(dst + 4 + len, 0xda, padding);
+    payload_cursor_ += total_write;
+    payload_bytes_remain_ -= total_write;
   }
 
   // Helper for adding a capsule.

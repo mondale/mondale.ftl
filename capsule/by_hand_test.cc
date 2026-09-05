@@ -600,18 +600,12 @@ void RunTranscodeTest(std::unique_ptr<CAPSULE> m) {
   const auto capsule_storage_size = m->ComputeStorageSize();
   Log(INFO) << "Capsule reports own size as: " << capsule_storage_size;
   ASSERT_EQ(0, capsule_storage_size % 8);
-  // TODO - drop framing a and test that elsewhere.
-  // TODO - consider whether framed capsules should always have len % 8 == 0.
-  const auto framed_storage_size = capsule_storage_size +
-                                   sizeof(capsule::abi::FrameHeader) +
-                                   sizeof(core::CRC32C);
-  Log(INFO) << "Framed storage size is: " << framed_storage_size;
 
   // Allocate the necessary storage size.
   auto fac = capsule::NewHeapStorageFactory().ValueOrDie();
   auto storage =
-      capsule::Storage::Allocate(fac.get(), framed_storage_size).ValueOrDie();
-  ASSERT_EQ(framed_storage_size, storage->n());
+      capsule::Storage::Allocate(fac.get(), capsule_storage_size).ValueOrDie();
+  ASSERT_EQ(capsule_storage_size, storage->n());
   auto* const base = storage->template DataAsPtrTo<void>();
   ASSERT_EQ(reinterpret_cast<uintptr_t>(base) % 8, 0);
 
