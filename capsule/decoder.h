@@ -236,7 +236,31 @@ class Decoder final {
     return FindString(h, out, def, present);
   }
 
-  Code FindStringVector(core::CRC32C h, std::vector<std::string>* out,
+  template <>
+  Code Find<std::string_view>(core::CRC32C h, std::string_view* out,
+                              const std::string_view& def,
+                              std::vector<bool>::reference present) const {
+    return FindString(h, out, def, present);
+  }
+
+  template <typename S>
+  void SetStringValueHelper(S* s, const char* c, uint32_t n) const = delete;
+
+  template <>
+  void SetStringValueHelper<std::string>(std::string* s, const char* c,
+                                         uint32_t n) const {
+    s->resize(0);
+    s->append(c, n);
+  }
+
+  template <>
+  void SetStringValueHelper<std::string_view>(std::string_view* s,
+                                              const char* c, uint32_t n) const {
+    *s = std::string_view(c, n);
+  }
+
+  template <typename S>
+  Code FindStringVector(core::CRC32C h, std::vector<S>* out,
                         std::vector<bool>::reference present) const {
     uint32_t ptr = 0;
     const auto code = vm_.Lookup(h, &ptr);
@@ -263,9 +287,8 @@ class Decoder final {
       uint32_t str_ptr = ptr + sizeof(uint32_t);
       if (string_length > length_) return Code::kCapsuleFatal;
       if (str_ptr > (length_ - string_length)) return Code::kCapsuleFatal;
-      std::string& s = out->at(i);
-      s.resize(0);
-      s.append(Codec::AtPtr<const char>(base_, str_ptr), string_length);
+      SetStringValueHelper(
+          &out->at(i), Codec::AtPtr<const char>(base_, str_ptr), string_length);
       ptr += (string_length + sizeof(uint32_t) + 7) / 8 * 8;
     }
     return Code::kOk;

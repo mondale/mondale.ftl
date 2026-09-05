@@ -23,8 +23,19 @@ struct MaterializedInterface {
   virtual Result Decode(::capsule::Decoder* d) = 0;
 };
 
-struct SubSubM final : public MaterializedInterface {
-  [[maybe_unused]] static constexpr core::CRC32C kTypeHash = core::CRC32C(30);
+struct ViewInterface {
+ public:
+  virtual Result Decode(::capsule::Decoder* d) = 0;
+  virtual void RefIfNeeded(std::shared_ptr<::capsule::Storage> s) = 0;
+};
+
+struct SubSubM;
+struct SubSubV;
+
+struct SubSubBase {
+  using MaterializedType = SubSubM;
+  using ViewType = SubSubV;
+
   static constexpr uint32_t kFieldCount = 3;
   static constexpr core::CRC32C b1_FieldHash = core::CRC32C(31);
   static constexpr core::CRC32C i1_FieldHash = core::CRC32C(32);
@@ -36,19 +47,21 @@ struct SubSubM final : public MaterializedInterface {
   static constexpr int i1_Index = 1;
   static constexpr int s1_Index = 2;
 
-  bool b1;
-  int32_t i1;
-  std::string s1;
-
   bool has_b1() const { return has_[b1_Index]; }
   bool has_i1() const { return has_[i1_Index]; }
   bool has_s1() const { return has_[s1_Index]; }
 
+  std::vector<bool> has_;
+};
+
+struct SubSubM final : public SubSubBase, public MaterializedInterface {
+  bool b1;
+  int32_t i1;
+  std::string s1;
+
   size_t ComputeStorageSize() const override;
   void Encode(::capsule::Encoder* e) const override;
   Result Decode(::capsule::Decoder* d) override;
-
-  std::vector<bool> has_;
 
   // not part of generated code...
   void Randomize(std::mt19937_64* rng);
@@ -104,8 +117,13 @@ void SubSubM::Randomize(std::mt19937_64* rng) {
   }
 };
 
-struct SubM final : public MaterializedInterface {
-  [[maybe_unused]] static constexpr core::CRC32C kTypeHash = core::CRC32C(20);
+struct SubM;
+struct SubV;
+
+struct SubBase {
+  using MaterializedType = SubM;
+  using ViewType = SubV;
+
   static constexpr uint32_t kFieldCount = 3;
   static constexpr core::CRC32C u64a_FieldHash = core::CRC32C(21);
   static constexpr core::CRC32C sub1_FieldHash = core::CRC32C(22);
@@ -115,19 +133,21 @@ struct SubM final : public MaterializedInterface {
   static constexpr int sub1_Index = 1;
   static constexpr int vsub1_Index = 2;
 
-  uint64_t u64a;
-  SubSubM sub1;
-  std::vector<SubSubM> vsub1;
-
   bool has_u64a() const { return has_[u64a_Index]; }
   bool has_sub1() const { return has_[sub1_Index]; }
   bool has_vsub1() const { return has_[vsub1_Index]; }
 
+  std::vector<bool> has_;
+};
+
+struct SubM final : public SubBase, public MaterializedInterface {
+  uint64_t u64a;
+  SubSubM sub1;
+  std::vector<SubSubM> vsub1;
+
   size_t ComputeStorageSize() const override;
   void Encode(::capsule::Encoder* e) const override;
   Result Decode(::capsule::Decoder* d) override;
-
-  std::vector<bool> has_;
 
   // Not part of generated code.
   void Randomize(std::mt19937_64* rng);
@@ -186,9 +206,14 @@ void SubM::Randomize(std::mt19937_64* rng) {
   }
 }
 
-struct TopLevelM final : public MaterializedInterface {
-  [[maybe_unused]] static constexpr core::CRC32C kTypeHash = core::CRC32C(100);
-  [[maybe_unused]] static constexpr uint32_t kFieldCount = 13;
+struct TopLevelM;
+struct TopLevelV;
+
+struct TopLevelBase {
+  using MaterializedType = TopLevelM;
+  using ViewType = TopLevelV;
+
+  static constexpr uint32_t kFieldCount = 13;
   static constexpr core::CRC32C u64a_FieldHash = core::CRC32C(101);
   static constexpr core::CRC32C i64a_FieldHash = core::CRC32C(102);
   static constexpr core::CRC32C u32a_FieldHash = core::CRC32C(103);
@@ -227,20 +252,6 @@ struct TopLevelM final : public MaterializedInterface {
   static constexpr int f32a_Index = 11;
   static constexpr int f64a_Index = 12;
 
-  uint64_t u64a;
-  int64_t i64a;
-  uint32_t u32a;
-  int32_t i32a;
-  uint16_t u16a;
-  int16_t i16a;
-  uint8_t u8a;
-  int8_t i8a;
-  bool b1;
-  std::vector<std::string> vs1;
-  SubM sub1;
-  float f32a;
-  double f64a;
-
   bool has_u64a() const { return has_[u64a_Index]; }
   bool has_i64a() const { return has_[i64a_Index]; }
   bool has_u32a() const { return has_[u32a_Index]; }
@@ -255,11 +266,27 @@ struct TopLevelM final : public MaterializedInterface {
   bool has_f32a() const { return has_[f32a_Index]; }
   bool has_f64a() const { return has_[f64a_Index]; }
 
+  std::vector<bool> has_;
+};
+
+struct TopLevelM final : public TopLevelBase, public MaterializedInterface {
+  uint64_t u64a;
+  int64_t i64a;
+  uint32_t u32a;
+  int32_t i32a;
+  uint16_t u16a;
+  int16_t i16a;
+  uint8_t u8a;
+  int8_t i8a;
+  bool b1;
+  std::vector<std::string> vs1;
+  SubM sub1;
+  float f32a;
+  double f64a;
+
   size_t ComputeStorageSize() const override;
   void Encode(::capsule::Encoder* e) const override;
   Result Decode(::capsule::Decoder* d) override;
-
-  std::vector<bool> has_;
 
   // Not part of generated code.
   void Randomize(std::mt19937_64* rng);
@@ -415,18 +442,76 @@ void TopLevelM::Randomize(std::mt19937_64* rng) {
   f64a = dist_f64(*rng);
 }
 
-struct SubSubV final {
+struct SubSubV final : public SubSubBase, public ViewInterface {
   bool b1;
   int32_t i1;
   std::string_view s1;
+
+  std::shared_ptr<::capsule::Storage> ref_;
+
+  Result Decode(::capsule::Decoder* d) override;
+  void RefIfNeeded(std::shared_ptr<::capsule::Storage> s) override;
 };
 
-struct SubV final {
+Result SubSubV::Decode(::capsule::Decoder* d) {
+  has_.resize(kFieldCount, false);
+  Code ret = Code::kOk;
+  ret.Incorporate(
+      d->Find<decltype(b1)>(b1_FieldHash, &b1, b1_Default, has_[b1_Index]));
+  ret.Incorporate(
+      d->Find<decltype(i1)>(i1_FieldHash, &i1, i1_Default, has_[i1_Index]));
+  ret.Incorporate(
+      d->Find<decltype(s1)>(s1_FieldHash, &s1, s1_Default, has_[s1_Index]));
+  return ret;
+}
+
+void SubSubV::RefIfNeeded(std::shared_ptr<::capsule::Storage> s) { ref_ = s; }
+
+void Compare(const SubSubM* l, const SubSubV* r) {
+  ASSERT_EQ(SubSubV::kFieldCount, r->has_.size());
+  EXPECT_EQ(l->b1, r->b1);
+  EXPECT_TRUE(r->has_b1());
+  EXPECT_EQ(l->i1, r->i1);
+  EXPECT_TRUE(r->has_i1());
+  EXPECT_EQ(l->s1, r->s1);
+  EXPECT_TRUE(r->has_s1());
+}
+
+struct SubV final : public SubBase, public ViewInterface {
   uint64_t u64a;
+  SubSubM sub1;
   std::vector<SubSubV> vsub1;
+
+  Result Decode(::capsule::Decoder* d) override;
+  void RefIfNeeded(std::shared_ptr<::capsule::Storage> s) override;
 };
 
-struct TopLevelV final {
+void Compare(const SubM* l, const SubV* r) {
+  EXPECT_EQ(l->u64a, r->u64a);
+  EXPECT_TRUE(r->has_u64a());
+  Compare(&l->sub1, &r->sub1);
+  EXPECT_TRUE(r->has_vsub1());
+  ASSERT_EQ(l->vsub1.size(), r->vsub1.size());
+  for (int i = 0; i < l->vsub1.size(); ++i) {
+    Compare(&l->vsub1[i], &r->vsub1[i]);
+  }
+}
+
+Result SubV::Decode(::capsule::Decoder* d) {
+  has_.resize(kFieldCount, false);
+  Code ret = Code::kOk;
+  ret.Incorporate(d->Find<decltype(u64a)>(u64a_FieldHash, &u64a, u64a_Default,
+                                          has_[u64a_Index]));
+  ret.Incorporate(
+      d->FindCapsule(sub1_FieldHash, &sub1, sub1, has_[sub1_Index]));
+  ret.Incorporate(
+      d->FindCapsuleVector(vsub1_FieldHash, &vsub1, has_[vsub1_Index]));
+  return ret;
+}
+
+void SubV::RefIfNeeded(std::shared_ptr<::capsule::Storage> s) {}
+
+struct TopLevelV final : public TopLevelBase, public ViewInterface {
   uint64_t u64a;
   int64_t i64a;
   uint32_t u32a;
@@ -440,7 +525,74 @@ struct TopLevelV final {
   SubV sub1;
   float f32a;
   double f64a;
+
+  Result Decode(::capsule::Decoder* d) override;
+  void RefIfNeeded(std::shared_ptr<::capsule::Storage> s) override;
+
+  std::shared_ptr<::capsule::Storage> ref_;
 };
+
+void Compare(const TopLevelM* l, const TopLevelV* r) {
+  EXPECT_TRUE(r->has_u64a());
+  EXPECT_TRUE(r->has_i64a());
+  EXPECT_TRUE(r->has_u32a());
+  EXPECT_TRUE(r->has_i32a());
+  EXPECT_TRUE(r->has_u16a());
+  EXPECT_TRUE(r->has_i16a());
+  EXPECT_TRUE(r->has_u8a());
+  EXPECT_TRUE(r->has_i8a());
+  EXPECT_TRUE(r->has_b1());
+  EXPECT_TRUE(r->has_vs1());
+  EXPECT_TRUE(r->has_sub1());
+  EXPECT_TRUE(r->has_f32a());
+  EXPECT_TRUE(r->has_f64a());
+  EXPECT_EQ(l->u64a, r->u64a);
+  EXPECT_EQ(l->i64a, r->i64a);
+  EXPECT_EQ(l->u32a, r->u32a);
+  EXPECT_EQ(l->i32a, r->i32a);
+  EXPECT_EQ(l->u16a, r->u16a);
+  EXPECT_EQ(l->i16a, r->i16a);
+  EXPECT_EQ(l->u8a, r->u8a);
+  EXPECT_EQ(l->i8a, r->i8a);
+  EXPECT_EQ(l->b1, r->b1);
+  EXPECT_EQ(l->f32a, r->f32a);
+  EXPECT_EQ(l->f64a, r->f64a);
+  Compare(&l->sub1, &r->sub1);
+  ASSERT_EQ(l->vs1.size(), r->vs1.size());
+  for (int i = 0; i < l->vs1.size(); ++i) {
+    EXPECT_EQ(l->vs1[i], r->vs1[i]);
+  }
+}
+
+Result TopLevelV::Decode(::capsule::Decoder* d) {
+  has_.resize(kFieldCount, false);
+  Code ret = Code::kOk;
+  ret.Incorporate(
+      d->Find(u64a_FieldHash, &u64a, u64a_Default, has_[u64a_Index]));
+  ret.Incorporate(
+      d->Find(i64a_FieldHash, &i64a, i64a_Default, has_[i64a_Index]));
+  ret.Incorporate(
+      d->Find(u32a_FieldHash, &u32a, u32a_Default, has_[u32a_Index]));
+  ret.Incorporate(
+      d->Find(i32a_FieldHash, &i32a, i32a_Default, has_[i32a_Index]));
+  ret.Incorporate(
+      d->Find(u16a_FieldHash, &u16a, u16a_Default, has_[u16a_Index]));
+  ret.Incorporate(
+      d->Find(i16a_FieldHash, &i16a, i16a_Default, has_[i16a_Index]));
+  ret.Incorporate(d->Find(u8a_FieldHash, &u8a, u8a_Default, has_[u8a_Index]));
+  ret.Incorporate(d->Find(i8a_FieldHash, &i8a, i8a_Default, has_[i8a_Index]));
+  ret.Incorporate(d->Find(b1_FieldHash, &b1, b1_Default, has_[b1_Index]));
+  ret.Incorporate(d->FindStringVector(vs1_FieldHash, &vs1, has_[vs1_Index]));
+  ret.Incorporate(
+      d->FindCapsule(sub1_FieldHash, &sub1, sub1, has_[sub1_Index]));
+  ret.Incorporate(
+      d->Find(f32a_FieldHash, &f32a, f32a_Default, has_[f32a_Index]));
+  ret.Incorporate(
+      d->Find(f64a_FieldHash, &f64a, f64a_Default, has_[f64a_Index]));
+  return ret;
+}
+
+void TopLevelV::RefIfNeeded(std::shared_ptr<::capsule::Storage> s) { ref_ = s; }
 
 template <typename CAPSULE>
 void RunTranscodeTest(std::unique_ptr<CAPSULE> m) {
@@ -448,6 +600,7 @@ void RunTranscodeTest(std::unique_ptr<CAPSULE> m) {
   const auto capsule_storage_size = m->ComputeStorageSize();
   Log(INFO) << "Capsule reports own size as: " << capsule_storage_size;
   ASSERT_EQ(0, capsule_storage_size % 8);
+  // TODO - drop framing a and test that elsewhere.
   // TODO - consider whether framed capsules should always have len % 8 == 0.
   const auto framed_storage_size = capsule_storage_size +
                                    sizeof(capsule::abi::FrameHeader) +
@@ -456,9 +609,10 @@ void RunTranscodeTest(std::unique_ptr<CAPSULE> m) {
 
   // Allocate the necessary storage size.
   auto fac = capsule::NewHeapStorageFactory().ValueOrDie();
-  auto span = fac->NewSpan(framed_storage_size).ValueOrDie();
-  ASSERT_EQ(framed_storage_size, span->n());
-  auto* const base = span->template DataAsPtrTo<void>();
+  auto storage =
+      capsule::Storage::Allocate(fac.get(), framed_storage_size).ValueOrDie();
+  ASSERT_EQ(framed_storage_size, storage->n());
+  auto* const base = storage->template DataAsPtrTo<void>();
   ASSERT_EQ(reinterpret_cast<uintptr_t>(base) % 8, 0);
 
   // Encode.
@@ -476,6 +630,12 @@ void RunTranscodeTest(std::unique_ptr<CAPSULE> m) {
   EXPECT_THAT(m2->Decode(&d), IsOk());
 
   Compare(m.get(), m2.get());
+
+  // Build a view instead of a materialized.
+  auto v = std::make_unique<typename CAPSULE::ViewType>();
+  v->RefIfNeeded(storage);
+  EXPECT_THAT(v->Decode(&d), IsOk());
+  Compare(m.get(), v.get());
 }
 
 template <typename CAPSULE>

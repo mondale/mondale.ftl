@@ -7,7 +7,7 @@
 
 namespace capsule {
 
-// Holder for Storage memory. Exists to an overridden dtor.
+// Holder for Storage memory. Exists to provide a dtor override.
 class StorageSpan {
  public:
   StorageSpan(void* d, size_t n) : data_(d), n_(n) {}
