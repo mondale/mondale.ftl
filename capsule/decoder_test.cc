@@ -423,30 +423,6 @@ TEST_F(DecoderTest, FindStringOverlongError) {
 }
 
 /*
-TEST_F(DecoderTest, FindString) {
-  capsule1_.ot[0].field_hash = core::CRC32C(__LINE__);
-  capsule1_.ot[0].value =
-      sizeof(capsule::abi::Header) + sizeof(capsule::abi::OffsetTableEntry);
-  const char* const kMessage = "Nope!";
-  *reinterpret_cast<uint32_t*>(&capsule1_.space[0]) = 5;
-  memcpy(&capsule1_.space[1], kMessage, 5);
-  auto d = Decoder::Build(&capsule1_, sizeof(capsule1_)).ValueOrDie();
-  EXPECT_THAT(d.FindString(capsule1_.ot[0].field_hash).ValueOrDie(),
-              StrEq(kMessage));
-}
-
-TEST_F(DecoderTest, FindStringTooBig) {
-  capsule1_.ot[0].field_hash = core::CRC32C(__LINE__);
-  capsule1_.ot[0].value =
-      sizeof(capsule::abi::Header) + sizeof(capsule::abi::OffsetTableEntry);
-  const char* const kMessage = "Nope!";
-  *reinterpret_cast<uint32_t*>(&capsule1_.space[0]) = 555;
-  memcpy(&capsule1_.space[1], kMessage, 5);
-  auto d = Decoder::Build(&capsule1_, sizeof(capsule1_)).ValueOrDie();
-  EXPECT_EQ(Code::kError,
-            d.FindString(capsule1_.ot[0].field_hash).result().code());
-}
-
 TEST_F(DecoderTest, FindSubcapsule) {
   nested_.outer_ot.field_hash = core::CRC32C('o');
   nested_.inner_ot.field_hash = core::CRC32C('i');
