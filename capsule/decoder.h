@@ -289,6 +289,7 @@ class Decoder final {
         reinterpret_cast<const char*>(base_) + ptr);
     const uint32_t capsule_length =
         reinterpret_cast<const abi::Header*>(capsule_base)->capsule_length;
+    if (capsule_length > (length_ - ptr)) return Code::kCapsuleFatal;
     auto mb = Build(capsule_base, capsule_length);
     if (!mb.ok()) {
       return mb.result().code();

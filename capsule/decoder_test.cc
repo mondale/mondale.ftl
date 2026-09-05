@@ -422,7 +422,19 @@ TEST_F(DecoderTest, FindStringOverlongError) {
   EXPECT_EQ(Code::kCapsuleFatal, d.Find(crc, &s, default_val, presence[0]));
 }
 
-/*
+class TinyCapsule final {
+ public:
+  Result Decode(Decoder* d) {
+    std::vector<bool> presence(1, false);
+    const uint32_t def = 7;
+    EXPECT_EQ(Code::kOk, d->Find(core::CRC32C('i'), &val_, def, presence[0]));
+    EXPECT_EQ(val_, 9);
+    EXPECT_TRUE(presence[0]);
+    return Result::Ok();
+  }
+  uint32_t val_ = 0;
+};
+
 TEST_F(DecoderTest, FindSubcapsule) {
   nested_.outer_ot.field_hash = core::CRC32C('o');
   nested_.inner_ot.field_hash = core::CRC32C('i');
@@ -431,8 +443,10 @@ TEST_F(DecoderTest, FindSubcapsule) {
   ASSERT_EQ(16, nested_.outer_ot.value);
   nested_.inner_ot.value = 9u;
   auto d = Decoder::Build(&nested_, sizeof(nested_)).ValueOrDie();
-  auto d2 = d.FindCapsule(core::CRC32C('o')).ValueOrDie();
-  EXPECT_EQ(9u, d2.FindU32(core::CRC32C('i')).ValueOrDie());
+  std::vector<bool> presence(1, false);
+  TinyCapsule tc;
+  EXPECT_EQ(Code::kOk, d.FindCapsule(core::CRC32C('o'), &tc, tc, presence[0]));
+  EXPECT_EQ(tc.val_, 9);
 }
 
 TEST_F(DecoderTest, FindSubcapsuleBogus) {
@@ -441,11 +455,172 @@ TEST_F(DecoderTest, FindSubcapsuleBogus) {
 
   nested_.outer_ot.value = offsetof(NestedCapsule, inner_ih);
   ASSERT_EQ(16, nested_.outer_ot.value);
-  nested_.inner_ot.value = 999u;
+  nested_.inner_ih.capsule_length = 999;
+  nested_.inner_ot.value = 9u;
   auto d = Decoder::Build(&nested_, sizeof(nested_)).ValueOrDie();
-  auto d2 = d.FindCapsule(core::CRC32C('o')).ValueOrDie();
-  EXPECT_EQ(Code::kError, d2.FindString(core::CRC32C('i')).result().code());
+  std::vector<bool> presence(1, false);
+  TinyCapsule tc;
+  EXPECT_NE(Code::kOk, d.FindCapsule(core::CRC32C('o'), &tc, tc, presence[0]));
 }
-*/
+
+class VectorTinyCapsule final {
+ public:
+  Result Decode(Decoder* d) {
+    std::vector<bool> presence(1, false);
+    const uint32_t def = 5;
+    EXPECT_EQ(Code::kOk, d->Find(core::CRC32C(1), &val_, def, presence[0]));
+    EXPECT_EQ(val_, 42);
+    EXPECT_TRUE(presence[0]);
+    return Result::Ok();
+  }
+  uint32_t val_ = 0;
+};
+
+struct VectorCapsuleLayout {
+  capsule::abi::Header header;
+  capsule::abi::OffsetTableEntry ot;
+  uint64_t space[16];
+};
+
+TEST_F(DecoderTest, FindCapsuleVectorClean) {
+  VectorCapsuleLayout layout;
+  memset(&layout, 0, sizeof(layout));
+  layout.header.offset_table_count = 1;
+  layout.header.capsule_length = sizeof(layout);
+
+  const auto crc = core::CRC32C(100);
+  layout.ot.field_hash = crc;
+  layout.ot.value = 16;
+
+  char* ptr = reinterpret_cast<char*>(&layout) + 16;
+
+  auto* vh = reinterpret_cast<capsule::abi::VectorHeader*>(ptr);
+  vh->element_count = 1;
+  vh->padding = 0xda4eda4eu;
+  ptr += sizeof(capsule::abi::VectorHeader);
+
+  auto* sub_h = reinterpret_cast<capsule::abi::Header*>(ptr);
+  sub_h->offset_table_count = 1;
+  sub_h->capsule_length = 24;
+
+  auto* sub_ot = reinterpret_cast<capsule::abi::OffsetTableEntry*>(
+      ptr + sizeof(capsule::abi::Header));
+  sub_ot->field_hash = core::CRC32C(1);
+  sub_ot->value = 42;
+
+  auto d = Decoder::Build(&layout, sizeof(layout)).ValueOrDie();
+  std::vector<bool> presence(1, false);
+  std::vector<VectorTinyCapsule> vtc_vec;
+  EXPECT_EQ(Code::kOk, d.FindCapsuleVector(crc, &vtc_vec, presence[0]));
+  EXPECT_EQ(vtc_vec.size(), 1);
+  EXPECT_EQ(vtc_vec[0].val_, 42);
+  EXPECT_TRUE(presence[0]);
+}
+
+TEST_F(DecoderTest, FindCapsuleVectorNotFound) {
+  auto d = Decoder::Build(&capsule0_, sizeof(capsule0_)).ValueOrDie();
+  std::vector<bool> presence(1, true);
+  std::vector<VectorTinyCapsule> vtc_vec;
+  vtc_vec.push_back(VectorTinyCapsule{});
+  EXPECT_EQ(Code::kOk,
+            d.FindCapsuleVector(core::CRC32C(100), &vtc_vec, presence[0]));
+  EXPECT_TRUE(vtc_vec.empty());
+  EXPECT_FALSE(presence[0]);
+}
+
+TEST_F(DecoderTest, FindCapsuleVectorBogusPadding) {
+  VectorCapsuleLayout layout;
+  memset(&layout, 0, sizeof(layout));
+  layout.header.offset_table_count = 1;
+  layout.header.capsule_length = sizeof(layout);
+
+  const auto crc = core::CRC32C(100);
+  layout.ot.field_hash = crc;
+  layout.ot.value = 16;
+
+  char* ptr = reinterpret_cast<char*>(&layout) + 16;
+  auto* vh = reinterpret_cast<capsule::abi::VectorHeader*>(ptr);
+  vh->element_count = 1;
+  vh->padding = 0xBADF00Du;
+
+  auto d = Decoder::Build(&layout, sizeof(layout)).ValueOrDie();
+  std::vector<bool> presence(1, false);
+  std::vector<VectorTinyCapsule> vtc_vec;
+  EXPECT_EQ(Code::kCapsuleFatal,
+            d.FindCapsuleVector(crc, &vtc_vec, presence[0]));
+}
+
+TEST_F(DecoderTest, FindStringVectorClean) {
+  struct StringVectorCapsuleLayout {
+    capsule::abi::Header header;
+    capsule::abi::OffsetTableEntry ot;
+    uint64_t space[32];
+  };
+
+  StringVectorCapsuleLayout layout;
+  memset(&layout, 0, sizeof(layout));
+  layout.header.offset_table_count = 1;
+  layout.header.capsule_length = sizeof(layout);
+
+  const auto crc = core::CRC32C(200);
+  layout.ot.field_hash = crc;
+  layout.ot.value = 16;
+
+  char* ptr = reinterpret_cast<char*>(&layout) + 16;
+  auto* vh = reinterpret_cast<capsule::abi::VectorHeader*>(ptr);
+  vh->element_count = 1;
+  vh->padding = 0xda4eda4eu;
+  ptr += sizeof(capsule::abi::VectorHeader);
+
+  uint32_t str_len = 5;
+  memcpy(ptr, &str_len, sizeof(str_len));
+  memcpy(ptr + 4, "Hello", 5);
+
+  auto d = Decoder::Build(&layout, sizeof(layout)).ValueOrDie();
+  std::vector<bool> presence(1, false);
+  std::vector<std::string> out_vec;
+  EXPECT_EQ(Code::kOk, d.FindStringVector(crc, &out_vec, presence[0]));
+  EXPECT_EQ(out_vec.size(), 1);
+  EXPECT_EQ(out_vec[0], "Hello");
+  EXPECT_TRUE(presence[0]);
+}
+
+TEST_F(DecoderTest, FindStringVectorNotFound) {
+  auto d = Decoder::Build(&capsule0_, sizeof(capsule0_)).ValueOrDie();
+  std::vector<bool> presence(1, true);
+  std::vector<std::string> out_vec = {"initial"};
+  EXPECT_EQ(Code::kOk,
+            d.FindStringVector(core::CRC32C(200), &out_vec, presence[0]));
+  EXPECT_TRUE(out_vec.empty());
+  EXPECT_FALSE(presence[0]);
+}
+
+TEST_F(DecoderTest, FindStringVectorBogusPadding) {
+  struct StringVectorCapsuleLayout {
+    capsule::abi::Header header;
+    capsule::abi::OffsetTableEntry ot;
+    uint64_t space[16];
+  };
+
+  StringVectorCapsuleLayout layout;
+  memset(&layout, 0, sizeof(layout));
+  layout.header.offset_table_count = 1;
+  layout.header.capsule_length = sizeof(layout);
+
+  const auto crc = core::CRC32C(200);
+  layout.ot.field_hash = crc;
+  layout.ot.value = 16;
+
+  char* ptr = reinterpret_cast<char*>(&layout) + 16;
+  auto* vh = reinterpret_cast<capsule::abi::VectorHeader*>(ptr);
+  vh->element_count = 1;
+  vh->padding = 0xBADF00Du;
+
+  auto d = Decoder::Build(&layout, sizeof(layout)).ValueOrDie();
+  std::vector<bool> presence(1, false);
+  std::vector<std::string> out_vec;
+  EXPECT_EQ(Code::kCapsuleFatal,
+            d.FindStringVector(crc, &out_vec, presence[0]));
+}
 
 }  // namespace
