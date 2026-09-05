@@ -2,7 +2,7 @@
 
 ## 1. Overview
 
-Capsule is a minimalist binary serialization and configuration IDL for systems targeting low-latency environments like WebAssembly (Wasm) and Linux services. It enforces a strict separation between unmanaged raw memory containers, generated zero-copy accessors, builders, and heap-allocated materialized representations.
+Capsule is a minimalist binary serialization and configuration IDL for systems targeting low-latency environments like WebAssembly (Wasm) and Linux services. It enforces a strict separation between unmanaged raw memory containers, generated zero-copy accessors, and heap-allocated materialized representations.
 
 ---
 
@@ -26,7 +26,7 @@ Files are suffixed with `.capsule` and parsed via `capsule::Parser`.
   specified default value are default-constructed if accessed. Default strings
   are zero length. Default cosntruction rules apply transitively to nested
   capsules.
-* **`@retired`:** Marks a field as deprecated; stops builder generation while
+* **`@retired`:** Marks a field as deprecated; stops generation while
   retaining its hash slot. The programmer bears the burden of not renaming
   fields and otherwise properly maintaining retired fields.
 * **Hash Collision Checking:** The compiler performs static uniqueness checks on all 4-byte CRC32C symbol hashes across scopes, halting compilation if a collision occurs.
@@ -56,49 +56,11 @@ Files are suffixed with `.capsule` and parsed via `capsule::Parser`.
 * `std::string ToString() const`: Returns the `.capsule` text in canonical format. 
 
 
-* **`Builder Classes` (Generated):** Sequential serialization engine. Accepts a `capsule::StorageFactory` and returns a `std::shared_ptr<Storage>` and `View` pair.
 * **`Materialized Classes` (Generated):** Standard C++ heap-allocated struct representation mirroring the capsule schema for heavy mutations, inheriting from `capsule::Materialized`.
 * `static ResultOr<MaterializedType> FromView(const ViewType& view)`: Factory method.
 * `ResultOr<std::pair<std::shared_ptr<Storage>, ViewType>> Serialize(StorageFactory& factory) const`: Serializes structure into storage.
 * `std::string ToString() const override`: Returns canonical format.
 * Constructor from a `View` is private.
-
-### Generated Builder API
-
-Every capsule schema generates a strongly typed `Builder` class (inheriting from `capsule::BuilderBase`) designed for sequential, allocation-aware construction of binary payloads.
-
-```cpp
-class PlayerConfigBuilder : public capsule::BuilderBase {
-public:
-    // Lifecycle & Initialization
-    explicit PlayerConfigBuilder(capsule::StorageFactory& factory);
-
-    // Fluent Setters (order-independent)
-    PlayerConfigBuilder& set_id(uint64_t val);
-    PlayerConfigBuilder& set_name(std::string_view val);
-    PlayerConfigBuilder& set_tags(std::span<const std::string_view> val);
-    PlayerConfigBuilder& set_position(const Vector3& val);
-    PlayerConfigBuilder& set_health(uint32_t val);
-
-    // Explicit Acknowledgment 
-    // Marks a field as intentionally omitted without setting a value
-    PlayerConfigBuilder& ack_old_metric();
-
-    // Finalization
-    capsule::ResultOr<std::pair<std::shared_ptr<capsule::Storage>, PlayerConfigView>> Build();
-};
-
-```
-
-#### Builder Design & Constraints
-
-* **Storage Factory Injection:** The constructor accepts a reference to a `capsule::StorageFactory`, delegating buffer allocation to custom memory strategies without coupling generated code to concrete allocators.
-* **Fluent Interface:** All setter (`set_...`) and acknowledgment (`ack_...`) methods return `*this`, allowing chained initialization in any field order.
-* **Exhaustive Field Verification:** To prevent accidental omissions during
-* object construction, calling `Build()` validates that **every** non-retired
-  field declared in the capsule has either been passed to a `set_...` method or
-  explicitly acknowledged via `ack_...`. If any non-retired field is missed, `Build()` fails and returns an error `Result`.
-* **Underlying Assembly:** When `Build()` is executed, the builder computes natural alignment for fixed-width data, serializes the variable-length heap region, writes the compact hash-to-offset index table, computes the CRC32C trailer, and returns the finished `Storage` and its zero-copy `View` pair.
 
 ---
 
@@ -156,8 +118,11 @@ are relative to their own internal start-of-capsule.
 
 1. **Header:** Contains the 4-byte CRC32C Capsule ID hash, total payload length, entry count, and pointer to the offset table.
 2. **Offset Table:** An array of hash-to-offset mappings used at `View` construction time to bind member raw pointers to their memory addresses within the `Storage` buffer in a single pass.
-3. **Natural Alignment:** Assuming the `Storage` buffer is 64-byte aligned, the builder automatically reorders and pads the fixed-width data section by natural alignment requirements (descending order of size: 8-byte, 4-byte, 1-byte).
-4. **Data Regions:** Aligned fixed-width scalar slots followed by variable-length heap payloads.
+3. **Natural Alignment:** Assuming the `Storage` buffer is 64-byte aligned, the
+encoder automatically reorders and pads the fixed-width data section by natural
+alignment requirements (descending order of size: 8-byte, 4-byte, 1-byte).  4.
+**Data Regions:** Aligned fixed-width scalar slots followed by variable-length
+heap payloads.
 5. **Trailer:** A 4-byte little-endian CRC32C checksum evaluated over all preceding bytes in the `Storage` buffer.
 
 ---
