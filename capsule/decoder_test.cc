@@ -381,7 +381,8 @@ TEST_F(DecoderTest, FindStringNotFoundDefault) {
   std::string s = "initial";
   std::vector<bool> presence(1, true);
   const auto crc = core::CRC32C(__LINE__);
-  EXPECT_EQ(Code::kOk, d.Find(crc, &s, "default_val", presence[0]));
+  const std::string default_val = "default_val";
+  EXPECT_EQ(Code::kOk, d.Find(crc, &s, default_val, presence[0]));
   EXPECT_EQ(s, "default_val");
   EXPECT_FALSE(presence[0]);
 }
@@ -399,7 +400,8 @@ TEST_F(DecoderTest, FindStringFoundClean) {
 
   auto d = Decoder::Build(&capsule1_, sizeof(capsule1_)).ValueOrDie();
   std::string s = "";
-  EXPECT_EQ(Code::kOk, d.Find(crc, &s, "def", presence[0]));
+  const std::string default_val = "def";
+  EXPECT_EQ(Code::kOk, d.Find(crc, &s, default_val, presence[0]));
   EXPECT_EQ(s, "Hello");
   EXPECT_TRUE(presence[0]);
 }
@@ -416,7 +418,8 @@ TEST_F(DecoderTest, FindStringOverlongError) {
 
   auto d = Decoder::Build(&capsule1_, sizeof(capsule1_)).ValueOrDie();
   std::string s = "";
-  EXPECT_EQ(Code::kCapsuleFatal, d.Find(crc, &s, "def", presence[0]));
+  const std::string default_val = "def";
+  EXPECT_EQ(Code::kCapsuleFatal, d.Find(crc, &s, default_val, presence[0]));
 }
 
 /*

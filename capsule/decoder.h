@@ -215,6 +215,7 @@ class Decoder final {
     if (Code::kOk == code) {
       if (ptr > (length_ - 4)) return Code::kCapsuleFatal;
       const uint32_t str_len = *Codec::AtPtr<const uint32_t>(base_, ptr);
+      if (str_len > length_) return Code::kCapsuleFatal;
       if ((ptr + 4 + str_len) > length_) return Code::kCapsuleFatal;
       const char* const s = Codec::AtPtr<const char>(base_, ptr + 4);
       *out = std::string_view(s, str_len);
