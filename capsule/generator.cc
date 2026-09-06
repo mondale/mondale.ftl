@@ -25,6 +25,35 @@ std::string MapType(const std::string& tp) {
   return tp;
 }
 
+std::string CppDefaultForType(const std::string& tp) {
+  if (tp == "bool") return "false";
+  if (tp == "string") return "";
+  if (tp == "f64") return "0.0";
+  if (tp == "f32") return "0.0";
+  return "0";
+}
+
+std::string CppDefaultValue(const Field& f) {
+  std::string d;
+  for (const auto& a : f.attributes) {
+    // TODO - validate that attributes are uniquely specified
+    if (a.name != "default") continue;
+    d = a.value;
+  }
+  if (d.empty()) d = CppDefaultForType(f.type);
+  if (f.type == "string") {
+    d = "\"" + d + "\"";
+  }
+  return d;
+}
+
+bool IsVectorType(const std::string& tp) { return tp.rfind("vector<", 0) == 0; }
+bool IsCapsuleType(const std::string& tp) { return MapType(tp) == tp; }
+
+bool HasDefaultValue(const Field& f) {
+  return !IsVectorType(f.type) && !IsCapsuleType(f.type);
+}
+
 }  // namespace
 
 ResultOr<std::string> GenerateHeader(const CapsuleFile& file) {
@@ -40,6 +69,70 @@ ResultOr<std::string> GenerateHeader(const CapsuleFile& file) {
   oss << "#include \"capsule/storage.h\"\n";
   oss << "#include \"core/vocabulary.h\"\n\n";
   oss << "namespace " << file.namespace_name << " {\n\n";
+
+  // Struct forward declarations.
+  // TODO -- validate name uniqueness, including after appending M and V and
+  // Base.
+  for (const auto& cp : file.capsules) {
+    oss << "struct " << cp.name << "M;\n";
+    oss << "struct " << cp.name << "V;\n";
+  }
+  oss << "\n";
+
+  // Struct base classes.
+  for (const auto& cp : file.capsules) {
+    oss << "struct " << cp.name << "Base {\n";
+    oss << "  using MaterializedType = " << cp.name << "M;\n";
+    oss << "  using ViewType = " << cp.name << "V;\n";
+    oss << "\n";
+    // TODO - validate fields > 0
+    oss << "  static constexpr uint32_t kFieldCount = " << cp.fields.size()
+        << ";\n";
+
+    // Field hashes.
+    // TODO - validate that fields will not have name collisios when names
+    //        have _FieldHash, _Default, and _Index appended.
+    for (int i = 0; i < cp.fields.size(); ++i) {
+      const auto& f = cp.fields[i];
+      if (cp.fields[i].hashes.empty()) {
+        return Result(Code::kInvalidArgument,
+                      strings::Format("Field {} missing hashes.", f.name));
+      }
+      // TODO - support hashes from former name attributes.
+      oss << "  static constexpr ::core::CRC32C " << f.name
+          << "_FieldHash = ::core::CRC32C(0x" << std::hex << f.hashes[0].value()
+          << "u);\n";
+    }
+
+    // Field defaults.
+    for (int i = 0; i < cp.fields.size(); ++i) {
+      const auto& f = cp.fields[i];
+      if (!HasDefaultValue(f)) continue;
+      oss << "  static constexpr " << MapType(f.type) << " " << f.name
+          << "_Default = " << CppDefaultValue(f) << ";\n";
+    }
+
+    // Field indexes.
+    for (int i = 0; i < cp.fields.size(); ++i) {
+      const auto& f = cp.fields[i];
+      oss << "  static constexpr int " << f.name << "_Index = " << i << ";\n";
+    }
+
+    oss << "\n";
+
+    // The ever-lovely has_ family of accessors.
+    for (int i = 0; i < cp.fields.size(); ++i) {
+      const auto& f = cp.fields[i];
+      oss << "  bool has_" << f.name << "() const { return has_[" << f.name
+          << "_Index]; }\n";
+    }
+
+    oss << "\n";
+    oss << "  std::vector<bool> has_;\n";
+
+    oss << "};\n";
+    oss << "\n";
+  }
 
   for (const auto& cp : file.capsules) {
     oss << "struct " << cp.name << " {\n";

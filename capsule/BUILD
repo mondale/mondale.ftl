@@ -20,6 +20,7 @@ cc_test(
     srcs = ["generator_smoke_test.cc"],
     deps = [
         ":generator",
+        ":hashing",
         ":parser",
         "//testing",
     ],
