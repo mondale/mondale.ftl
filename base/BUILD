@@ -35,6 +35,7 @@ cc_library(
     srcs = ["flags.cc"],
     hdrs = ["flags.h"],
     deps = [],
+    visibility = ["//..."],
 )
 
 cc_test(

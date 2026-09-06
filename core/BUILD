@@ -9,6 +9,7 @@ cc_library(
         ":result",
         ":strings",
         ":util",
+        "//base:flags",
         "//base:logging",
         "//base:mutex",
         "//base:notification",

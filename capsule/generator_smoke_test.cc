@@ -6,6 +6,10 @@
 
 using ::testing::IsOk;
 
+FLAG_COHORT(generator_smoke_test);
+// TODO - bruh you need a boolean flag
+FLAG(int, write_golden, 0);
+
 namespace {
 
 TEST(GeneratorFullFeatureTest) {
@@ -22,6 +26,12 @@ TEST(GeneratorFullFeatureTest) {
 
   auto gen_result = capsule::GenerateHeader(cf);
   ASSERT_THAT(gen_result.result(), IsOk());
+
+  if (FLAG_LOOKUP(write_golden)) {
+    CHECK_OK(core::WriteContentsToFile(
+        "capsule/testdata/generator_smoke_test.golden.h",
+        gen_result.ValueOrDie()));
+  }
 
   std::string expected = core::ReadContentsFromFile(
                              "capsule/testdata/generator_smoke_test.golden.h")
