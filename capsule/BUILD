@@ -5,6 +5,14 @@ cc_library(
     deps = ["//core:crc32c"],
 )
 
+cc_binary(
+    name = "compiler",
+    srcs = ["compiler.cc"],
+    deps = [":generator", ":ast",
+            "//core",
+    ],
+)
+
 cc_library(
     name = "generator",
     srcs = ["generator.cc"],
