@@ -7,12 +7,12 @@ using testing::IsOk;
 
 namespace {
 
-class UhhFixture : public ::testing::Test {
+class HashingTestFixture : public ::testing::Test {
  protected:
   static constexpr int kCapsules = 3;
   static constexpr int kFields = 3;
 
-  UhhFixture() {
+  HashingTestFixture() {
     cf_.capsules.resize(kCapsules);
     for (int i = 0; i < kCapsules; ++i) {
       cf_.capsules[i].fields.resize(kFields);
@@ -38,24 +38,24 @@ class UhhFixture : public ::testing::Test {
   capsule::CapsuleFile cf_;
 };
 
-TEST_F(UhhFixture, NoShennanigansIsOk) {
+TEST_F(HashingTestFixture, NoShennanigansIsOk) {
   EXPECT_THAT(ComputeAndValidateHashes(&cf_), IsOk());
   AssertAllFieldsHaveHashes();
 }
 
-TEST_F(UhhFixture, SameNameInTwoDifferentCapsules) {
+TEST_F(HashingTestFixture, SameNameInTwoDifferentCapsules) {
   cf_.capsules[0].fields[0].name = cf_.capsules[1].fields[0].name;
   EXPECT_THAT(ComputeAndValidateHashes(&cf_), IsOk());
   AssertAllFieldsHaveHashes();
 }
 
-TEST_F(UhhFixture, SameNameInSameCapsules) {
+TEST_F(HashingTestFixture, SameNameInSameCapsules) {
   cf_.capsules[0].fields[0].name = cf_.capsules[0].fields[1].name;
   EXPECT_THAT(ComputeAndValidateHashes(&cf_).ToString(),
               HasSubstr(cf_.capsules[0].fields[0].name));
 }
 
-TEST_F(UhhFixture, NonCollidingAliases) {
+TEST_F(HashingTestFixture, NonCollidingAliases) {
   cf_.capsules[0].fields[0].attributes.push_back({"former_name", "donkey"});
   cf_.capsules[0].fields[0].attributes.push_back({"former_name", "ape"});
   cf_.capsules[0].fields[0].attributes.push_back({"default", "ape"});
@@ -64,7 +64,7 @@ TEST_F(UhhFixture, NonCollidingAliases) {
   EXPECT_EQ(cf_.capsules[0].fields[0].hashes.size(), 3);
 }
 
-TEST_F(UhhFixture, CollidingAliases) {
+TEST_F(HashingTestFixture, CollidingAliases) {
   cf_.capsules[0].fields[0].attributes.push_back({"former_name", "donkey"});
   cf_.capsules[0].fields[0].attributes.push_back({"former_name", "ape"});
   cf_.capsules[0].fields[1].attributes.push_back({"former_name", "giraffe"});
