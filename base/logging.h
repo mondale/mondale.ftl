@@ -15,6 +15,7 @@
 #include "base/thread.h"
 #include "base/time.h"
 
+// TODO - need a severity DEBUG that frames stuff for bugging. Or a macro.
 inline constexpr base::internal::LogSeverity INFO =
     base::internal::LogSeverity::kInfo;
 inline constexpr base::internal::LogSeverity WARNING =

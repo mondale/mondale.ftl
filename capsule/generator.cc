@@ -71,9 +71,15 @@ std::string CppDefaultValue(const Field& f) {
 }
 
 bool IsVectorType(const std::string& tp) { return tp.rfind("vector<", 0) == 0; }
+bool IsStringVectorType(const std::string& tp) {
+  return tp.rfind("vector<string>", 0) == 0;
+}
+bool IsCapsuleVectorType(const std::string& tp) {
+  return IsVectorType(tp) && !IsStringVectorType(tp);
+}
 bool IsCapsuleType(const std::string& tp) { return MapType(tp) == tp; }
 
-bool HasDefaultValue(const Field& f) {
+bool DefaultValueSupported(const Field& f) {
   return !IsVectorType(f.type) && !IsCapsuleType(f.type);
 }
 
@@ -94,6 +100,8 @@ ResultOr<std::string> GenerateHeader(const CapsuleFile& file) {
   oss << "#include <memory>\n";
   oss << "#include <string>\n";
   oss << "#include <vector>\n";
+
+  // TODO - move includes to source where possible
   oss << "#include \"capsule/decoder.h\"\n";
   oss << "#include \"capsule/encoder.h\"\n";
   oss << "#include \"capsule/size_builder.h\"\n";
@@ -138,7 +146,7 @@ ResultOr<std::string> GenerateHeader(const CapsuleFile& file) {
     // Field defaults.
     for (int i = 0; i < cp.fields.size(); ++i) {
       const auto& f = cp.fields[i];
-      if (!HasDefaultValue(f)) continue;
+      if (!DefaultValueSupported(f)) continue;
       oss << "  static constexpr " << MapType(f.type) << " " << f.name
           << "_Default = " << CppDefaultValue(f) << ";\n";
     }
@@ -197,6 +205,45 @@ ResultOr<std::string> GenerateHeader(const CapsuleFile& file) {
   return oss.str();
 }
 
+Result EmitDecodeImpl(std::ostringstream& oss, std::string_view class_postfix,
+                      const capsule::Capsule& cp) {
+  oss << "::core::Result " << cp.name << class_postfix
+      << "::Decode(::capsule::Decoder* d) const {\n";
+  oss << "  has_.resize(kFieldCount, false);\n";
+  oss << "  ::core::Code ret = ::core::Code::kOk;\n";
+  for (int i = 0; i < cp.fields.size(); ++i) {
+    const auto& f = cp.fields[i];
+    const auto& n = f.name;
+    const auto& t = f.type;
+    // Find, FindCapsule, FindCapsuleVector, FindStringVector are distinct
+    // APIs on Decode b/c I am bad at templates.
+    if (IsCapsuleVectorType(t)) {
+      oss << "  ret.Incorporate(d->FindCapsuleVector(" << n << "_FieldHash, &"
+          << n << ", has_[" << n << "_Index]));\n";
+    } else if (IsStringVectorType(t)) {
+      oss << "  ret.Incorporate(d->FindStringVector(" << n << "_FieldHash, &"
+          << n << ", has_[" << n << "_Index]));\n";
+    } else if (IsCapsuleType(t)) {
+      oss << "  ret.Incorporate(d->FindCapsule(" << n << "_FieldHash, &" << n
+          << ", " << n << "_Default, has_[" << n << "_Index]));\n";
+    } else {  // primitive type
+      if (!DefaultValueSupported(f)) {
+        return Result(
+            Code::kUnimplemented,
+            strings::Format("Type [{}] does not support a default type and "
+                            "yet has no recognized Decode API.",
+                            t));
+      }
+      oss << "  ret.Incorporate(d->Find<decltype(" << n << ")>(" << n
+          << "_FieldHash, &" << n << ", " << n << "_Default, has_[" << n
+          << "_Index]));\n";
+    }
+  }
+  oss << "  return ret;\n";
+  oss << "}\n\n";
+  return Result::Ok();
+}
+
 ResultOr<std::string> GenerateSource(const CapsuleFile& file,
                                      std::string_view header_location) {
   std::ostringstream oss;
@@ -204,6 +251,42 @@ ResultOr<std::string> GenerateSource(const CapsuleFile& file,
   oss << "#include \"" << header_location << "\"\n";
   oss << "\n";
   oss << "namespace " << file.namespace_name << " {\n\n";
+
+  // ComputeStorageSize() impls (Materialized types only).
+  for (const auto& cp : file.capsules) {
+    oss << "size_t " << cp.name << "M::ComputeStorageSize() const {\n";
+    oss << "  ::capsule::SizeBuilder sb;\n";
+    for (int i = 0; i < cp.fields.size(); ++i) {
+      const auto& f = cp.fields[i];
+      oss << "  sb.Add(" << f.name << ");\n";
+    }
+    oss << "  return sb.Build();\n";
+    oss << "}\n\n";
+  }
+
+  // Encode() impls (Materialized types only).
+  for (const auto& cp : file.capsules) {
+    oss << "size_t " << cp.name << "M::Encode(::capsule::Encoder* e) const {\n";
+    for (int i = 0; i < cp.fields.size(); ++i) {
+      const auto& f = cp.fields[i];
+      // AddCapsuleVector is a distinct API in Encoder, probably because I'm bad
+      // at templates.
+      // TODO - add a capsule vector to the input schema for the smoke test.
+      if (IsCapsuleVectorType(f.type)) {
+        oss << "  e->AddCapsuleVector(";
+      } else {
+        oss << "  e->Add(";
+      }
+      oss << f.name << "_FieldHash, " << f.name << ");\n";
+    }
+    oss << "}\n\n";
+  }
+
+  // Decode() impls (Materialized and View types).
+  for (const auto& cp : file.capsules) {
+    TRY(EmitDecodeImpl(oss, "M", cp));
+    TRY(EmitDecodeImpl(oss, "V", cp));
+  }
 
   oss << "}  // namespace " << file.namespace_name << "\n";
   return oss.str();

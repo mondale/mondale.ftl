@@ -158,6 +158,7 @@ void TestRegistry::RegisterTest(std::string suite_name, std::string test_name,
 }
 
 int TestRegistry::RunAllTests() {
+  // TODO - colorize output when on a console!
   int passing = 0;
   int failures = 0;
   int disabled = 0;

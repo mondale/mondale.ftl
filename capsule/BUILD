@@ -21,6 +21,7 @@ cc_test(
     data = [
         "testdata/generator_smoke_test.capsule",
         "testdata/generator_smoke_test.golden.h",
+        "testdata/generator_smoke_test.golden.cc",
     ],
     deps = [
         ":generator",
