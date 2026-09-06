@@ -2,7 +2,7 @@ cc_library(
     name = "ast",
     srcs = [],
     hdrs = ["ast.h"],
-        deps = ["//core:crc32c",],
+    deps = ["//core:crc32c"],
 )
 
 cc_library(
@@ -207,16 +207,22 @@ cc_test(
 )
 
 cc_library(
-  name = "hashing",
-  hdrs = ["hashing.h"],
-  srcs = ["hashing.cc"],
-  deps = [":ast", "//core", "//core:crc32c", ],
+    name = "hashing",
+    srcs = ["hashing.cc"],
+    hdrs = ["hashing.h"],
+    deps = [
+        ":ast",
+        "//core",
+        "//core:crc32c",
+    ],
 )
 
 cc_test(
-  name = "hashing_test",
-  srcs = ["hashing_test.cc"],
-  deps = [":hashing", ":ast",
-          "//testing",
-  ],
+    name = "hashing_test",
+    srcs = ["hashing_test.cc"],
+    deps = [
+        ":ast",
+        ":hashing",
+        "//testing",
+    ],
 )
