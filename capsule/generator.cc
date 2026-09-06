@@ -288,6 +288,16 @@ ResultOr<std::string> GenerateSource(const CapsuleFile& file,
     TRY(EmitDecodeImpl(oss, "V", cp));
   }
 
+  // RefIfNeeded impls (View types only).
+  for (const auto& cp : file.capsules) {
+    oss << "void " << cp.name
+        << "V::RefIfNeeded(std::shared_ptr<::capsule::Storage> s) {\n";
+    if (RefsStorage(cp)) {
+      oss << "  ref_ = s;\n";
+    }
+    oss << "}\n\n";
+  }
+
   oss << "}  // namespace " << file.namespace_name << "\n";
   return oss.str();
 }

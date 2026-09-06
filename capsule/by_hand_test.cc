@@ -48,9 +48,6 @@ struct SubSubM final : public SubSubBase {
   size_t ComputeStorageSize() const;
   void Encode(::capsule::Encoder* e) const;
   Result Decode(::capsule::Decoder* d);
-
-  // not part of generated code...
-  void Randomize(std::mt19937_64* rng);
 };
 
 void Compare(const SubSubM* l, const SubSubM* r) {
@@ -86,20 +83,20 @@ Result SubSubM::Decode(::capsule::Decoder* d) {
   return ret;
 }
 
-void SubSubM::Randomize(std::mt19937_64* rng) {
+void Randomize(SubSubM* c, std::mt19937_64* rng) {
   std::uniform_int_distribution<int> dist_bool(0, 1);
   std::uniform_int_distribution<int32_t> dist_i32(
       std::numeric_limits<int32_t>::min(), std::numeric_limits<int32_t>::max());
   std::uniform_int_distribution<size_t> dist_len(0, 33);
   std::uniform_int_distribution<int> dist_char(32, 126);
 
-  b1 = dist_bool(*rng) != 0;
-  i1 = dist_i32(*rng);
+  c->b1 = dist_bool(*rng) != 0;
+  c->i1 = dist_i32(*rng);
 
   size_t len = dist_len(*rng);
-  s1.resize(len);
+  c->s1.resize(len);
   for (size_t i = 0; i < len; ++i) {
-    s1[i] = static_cast<char>(dist_char(*rng));
+    c->s1[i] = static_cast<char>(dist_char(*rng));
   }
 };
 
@@ -135,9 +132,6 @@ struct SubM final : public SubBase {
   size_t ComputeStorageSize() const;
   void Encode(::capsule::Encoder* e) const;
   Result Decode(::capsule::Decoder* d);
-
-  // Not part of generated code.
-  void Randomize(std::mt19937_64* rng);
 };
 
 void Compare(const SubM* l, const SubM* r) {
@@ -177,19 +171,19 @@ Result SubM::Decode(::capsule::Decoder* d) {
   return ret;
 }
 
-void SubM::Randomize(std::mt19937_64* rng) {
+void Randomize(SubM* c, std::mt19937_64* rng) {
   std::uniform_int_distribution<uint64_t> dist_u64(
       std::numeric_limits<uint64_t>::min(),
       std::numeric_limits<uint64_t>::max());
   std::uniform_int_distribution<size_t> dist_vec_len(0, 4);
 
-  u64a = dist_u64(*rng);
-  sub1.Randomize(rng);
+  c->u64a = dist_u64(*rng);
+  Randomize(&c->sub1, rng);
 
   size_t len = dist_vec_len(*rng);
-  vsub1.resize(len);
-  for (auto& item : vsub1) {
-    item.Randomize(rng);
+  c->vsub1.resize(len);
+  for (auto& item : c->vsub1) {
+    Randomize(&item, rng);
   }
 }
 
@@ -274,9 +268,6 @@ struct TopLevelM final : public TopLevelBase {
   size_t ComputeStorageSize() const;
   void Encode(::capsule::Encoder* e) const;
   Result Decode(::capsule::Decoder* d);
-
-  // Not part of generated code.
-  void Randomize(std::mt19937_64* rng);
 };
 
 void Compare(const TopLevelM* l, const TopLevelM* r) {
@@ -373,7 +364,7 @@ Result TopLevelM::Decode(::capsule::Decoder* d) {
   return ret;
 }
 
-void TopLevelM::Randomize(std::mt19937_64* rng) {
+void Randomize(TopLevelM* c, std::mt19937_64* rng) {
   std::uniform_int_distribution<uint64_t> dist_u64(
       std::numeric_limits<uint64_t>::min(),
       std::numeric_limits<uint64_t>::max());
@@ -403,19 +394,19 @@ void TopLevelM::Randomize(std::mt19937_64* rng) {
       std::numeric_limits<double>::lowest(),
       std::numeric_limits<double>::max());
 
-  u64a = dist_u64(*rng);
-  i64a = dist_i64(*rng);
-  u32a = dist_u32(*rng);
-  i32a = dist_i32(*rng);
-  u16a = dist_u16(*rng);
-  i16a = dist_i16(*rng);
-  u8a = static_cast<uint8_t>(dist_u8(*rng));
-  i8a = static_cast<int8_t>(dist_i8(*rng));
-  b1 = dist_bool(*rng) != 0;
+  c->u64a = dist_u64(*rng);
+  c->i64a = dist_i64(*rng);
+  c->u32a = dist_u32(*rng);
+  c->i32a = dist_i32(*rng);
+  c->u16a = dist_u16(*rng);
+  c->i16a = dist_i16(*rng);
+  c->u8a = static_cast<uint8_t>(dist_u8(*rng));
+  c->i8a = static_cast<int8_t>(dist_i8(*rng));
+  c->b1 = dist_bool(*rng) != 0;
 
   size_t vs1_len = dist_vec_len(*rng);
-  vs1.resize(vs1_len);
-  for (auto& s : vs1) {
+  c->vs1.resize(vs1_len);
+  for (auto& s : c->vs1) {
     size_t slen = dist_str_len(*rng);
     s.resize(slen);
     for (size_t i = 0; i < slen; ++i) {
@@ -423,10 +414,10 @@ void TopLevelM::Randomize(std::mt19937_64* rng) {
     }
   }
 
-  sub1.Randomize(rng);
+  Randomize(&c->sub1, rng);
 
-  f32a = dist_f32(*rng);
-  f64a = dist_f64(*rng);
+  c->f32a = dist_f32(*rng);
+  c->f64a = dist_f64(*rng);
 }
 
 struct SubSubV final : public SubSubBase {
@@ -627,7 +618,7 @@ void Randomize(CAPSULE* c, bool use_random_seed = false) {
   }
   std::mt19937_64 gen(seed);
   Log(INFO) << "Seed is " << seed;
-  c->Randomize(&gen);
+  Randomize(c, &gen);
 }
 
 TEST(SubSubMTest) {
