@@ -18,10 +18,13 @@ cc_library(
 cc_test(
     name = "generator_smoke_test",
     srcs = ["generator_smoke_test.cc"],
+    data = ["testdata/generator_smoke_test.capsule",
+            "testdata/generator_smoke_test.golden.h",],
     deps = [
         ":generator",
         ":hashing",
         ":parser",
+        "//core:file",
         "//testing",
     ],
 )

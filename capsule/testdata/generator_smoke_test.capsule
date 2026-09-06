@@ -1,0 +1,21 @@
+namespace test_ns
+
+capsule SubCapsule {
+  u32 sub_id
+}
+
+capsule FullFeature {
+  u32 id
+  u16 code
+  bool enabled
+  string name
+  vector<string> items
+  SubCapsule nested
+
+  @default(42)
+  @former_name(legacy_count)
+  u32 count
+
+  @retired
+  u32 old_field
+}

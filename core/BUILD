@@ -41,11 +41,7 @@ cc_library(
     srcs = ["file.cc"],
     hdrs = ["file.h"],
     visibility = [
-        "//base:log_writer_thread_test",
-        "//base:logging_basic_test",
-        "//base:logging_modifiers_test",
-        "//base:logging_vlog_test",
-        "//core/...",
+        "//...",
     ],
     deps = [
         ":idioms",
