@@ -8,6 +8,7 @@ using ::testing::IsOk;
 
 FLAG_COHORT(generator_smoke_test);
 // TODO - bruh you need a boolean flag
+// plz run capsule:generator_smoke_test -- --generator_smoke_test.write_golden=1
 FLAG(int, write_golden, 0);
 
 namespace {
@@ -36,7 +37,7 @@ TEST(GeneratorFullFeatureTest) {
   std::string expected = core::ReadContentsFromFile(
                              "capsule/testdata/generator_smoke_test.golden.h")
                              .ValueOrDie();
-  EXPECT_EQ(gen_result.ValueOrDie(), expected);
+  EXPECT_EQ(expected, gen_result.ValueOrDie());
 }
 
 }  // namespace

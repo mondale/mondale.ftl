@@ -2,6 +2,7 @@
 #pragma once
 
 #include <cstdint>
+#include <memory>
 #include <string>
 #include <vector>
 #include "capsule/decoder.h"
@@ -70,11 +71,15 @@ struct FullFeatureBase {
   std::vector<bool> has_;
 };
 
-struct SubCapsule {
+struct SubCapsuleM : public SubCapsuleBase {
   uint32_t sub_id;
+
+  size_t ComputeStorageSize() const;
+  void Encode(::capsule::Encoder* e) const;
+  ::core::Result Decode(::capsule::Decoder* d);
 };
 
-struct FullFeature {
+struct FullFeatureM : public FullFeatureBase {
   uint32_t id;
   uint16_t code;
   bool enabled;
@@ -83,6 +88,33 @@ struct FullFeature {
   SubCapsule nested;
   uint32_t count;
   uint32_t old_field;
+
+  size_t ComputeStorageSize() const;
+  void Encode(::capsule::Encoder* e) const;
+  ::core::Result Decode(::capsule::Decoder* d);
+};
+
+struct SubCapsuleV : public SubCapsuleBase {
+  uint32_t sub_id;
+
+  ::core::Result Decode(::capsule::Decoder* d);
+  void RefIfNeeded(std::shared_ptr<::capsule::Storage> s);
+};
+
+struct FullFeatureV : public FullFeatureBase {
+  uint32_t id;
+  uint16_t code;
+  bool enabled;
+  std::string_view name;
+  std::vector<std::string_view> items;
+  SubCapsule nested;
+  uint32_t count;
+  uint32_t old_field;
+
+  std::shared_ptr<::capsule::Storage> ref_;
+
+  ::core::Result Decode(::capsule::Decoder* d);
+  void RefIfNeeded(std::shared_ptr<::capsule::Storage> s);
 };
 
 }  // namespace test_ns
