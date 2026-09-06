@@ -8,7 +8,7 @@
 #include <utility>
 #include <variant>
 
-#include "base/rawlog.h"
+#include "base/logging.h"
 
 namespace core {
 
@@ -139,11 +139,9 @@ Code CodeFromErrno(int saved_errno);
 class [[nodiscard]] Result final {
  public:
   Result() = default;
-  Result(Code c) : rep(c) {
-    RAW_DCHECK(!ErpEngaged()) << std::hex << rep_bits();
-  }
+  Result(Code c) : rep(c) { DCHECK(!ErpEngaged()) << std::hex << rep_bits(); }
   Result(BaseCode bc) : Result(Code(bc)) {
-    RAW_DCHECK(!ErpEngaged()) << std::hex << rep_bits();
+    DCHECK(!ErpEngaged()) << std::hex << rep_bits();
   }
   Result(Code c, std::string_view m);
   Result(BaseCode bc, std::string_view m) : Result(Code(bc), m) {}
@@ -305,12 +303,12 @@ class [[nodiscard]] ResultOr final {
 
   // Construct from a non-OK Result.
   ResultOr(Result r) : storage_(std::move(r)) {
-    RAW_CHECK(!result().IsOk())
+    CHECK(!result().IsOk())
         << "Cannot construct ResultOr with an OK Result; use a value instead.";
   }
 
   ResultOr& operator=(Result r) {
-    RAW_CHECK(!r.IsOk())
+    CHECK(!r.IsOk())
         << "Cannot assign an OK Result to ResultOr; use a value instead.";
     storage_ = std::move(r);
     return *this;
@@ -409,8 +407,7 @@ class [[nodiscard]] ResultOr final {
 
  private:
   void CheckOk() const {
-    RAW_CHECK(ok()) << "Attempted to access value of non-OK ResultOr "
-                    << result();
+    CHECK(ok()) << "Attempted to access value of non-OK ResultOr " << result();
   }
 
   std::variant<Result, T> storage_;

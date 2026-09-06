@@ -1,6 +1,6 @@
 #include <sstream>
 
-#include "base/rawlog.h"
+#include "base/logging.h"
 #include "core/result.h"
 #include "testing/testing.h"
 
@@ -152,7 +152,7 @@ bool StringsAreEqual(const Result& r) {
 TEST(Result_Unengaged_ToString) {
   EXPECT_TRUE(StringsAreEqual(Result()));
   const Result r(Code::kError);
-  RAW_CHECK(!r.ErpEngaged());
+  CHECK(!r.ErpEngaged());
   EXPECT_TRUE(StringsAreEqual(r));
   EXPECT_EQ(0, r.refs());
 }
@@ -361,7 +361,7 @@ TEST(TryWithBaseCode) {
   auto fn = []() -> BaseCode { return BaseCode::kError; };
   auto uut = [&]() -> Result {
     TRY(fn());
-    RAW_FATAL << "Should not be reached.";
+    Log(FATAL) << "Should not be reached.";
     return Result::Ok();
   };
   EXPECT_EQ(BaseCode::kError, uut().base_code());
@@ -371,7 +371,7 @@ TEST(TryWithCode) {
   auto fn = []() -> Code { return Code(Code::kError); };
   auto uut = [&]() -> Result {
     TRY(fn());
-    RAW_FATAL << "Should not be reached.";
+    Log(FATAL) << "Should not be reached.";
     return Result::Ok();
   };
   EXPECT_EQ(Code(Code::kError), uut().code());
@@ -381,7 +381,7 @@ TEST(TryWithResult) {
   auto fn = []() -> Result { return Result(Code::kError); };
   auto uut = [&]() -> Result {
     TRY(fn());
-    RAW_FATAL << "Should not be reached.";
+    Log(FATAL) << "Should not be reached.";
     return Result::Ok();
   };
   EXPECT_TRUE(uut().Is(Code::kError));
@@ -391,7 +391,7 @@ TEST(TryWithResultOr) {
   auto fn = []() -> Result { return Result(Code::kError); };
   auto uut = [&]() -> ResultOr<int> {
     TRY(fn());
-    RAW_FATAL << "Should not be reached.";
+    Log(FATAL) << "Should not be reached.";
     return 7;
   };
   EXPECT_TRUE(uut().result().Is(Code::kError));
@@ -425,7 +425,7 @@ TEST(TryAssignPropagatesToResult) {
   auto uut = [&]() -> Result {
     TRY_ASSIGN(auto val, fn());
     static_cast<void>(val);
-    RAW_FATAL << "Should not be reached.";
+    Log(FATAL) << "Should not be reached.";
     return Result::Ok();
   };
 
@@ -436,7 +436,7 @@ TEST(TryAssignPropagatesToResultOr) {
   auto fn = []() -> ResultOr<int> { return Result(Code::kInvalidArgument); };
   auto uut = [&]() -> ResultOr<std::string> {
     TRY_ASSIGN(auto val, fn());
-    RAW_FATAL << "Should not be reached.";
+    Log(FATAL) << "Should not be reached.";
     return std::to_string(val);
   };
 
@@ -449,7 +449,7 @@ TEST(TryAssignPropagatesToBaseCode) {
   auto fn = []() -> ResultOr<int> { return Result(BaseCode::kNotFound); };
   auto uut = [&]() -> BaseCode {
     TRY_ASSIGN(auto val, fn());
-    RAW_FATAL << "Should not be reached.";
+    Log(FATAL) << "Should not be reached.";
     static_cast<void>(val);
     return BaseCode::kOk;
   };

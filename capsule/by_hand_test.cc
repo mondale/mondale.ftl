@@ -15,19 +15,6 @@ using testing::IsOk;
 
 namespace {
 
-struct MaterializedInterface {
- public:
-  virtual size_t ComputeStorageSize() const = 0;
-  virtual void Encode(::capsule::Encoder* e) const = 0;
-  virtual Result Decode(::capsule::Decoder* d) = 0;
-};
-
-struct ViewInterface {
- public:
-  virtual Result Decode(::capsule::Decoder* d) = 0;
-  virtual void RefIfNeeded(std::shared_ptr<::capsule::Storage> s) = 0;
-};
-
 struct SubSubM;
 struct SubSubV;
 
@@ -53,14 +40,14 @@ struct SubSubBase {
   std::vector<bool> has_;
 };
 
-struct SubSubM final : public SubSubBase, public MaterializedInterface {
+struct SubSubM final : public SubSubBase {
   bool b1;
   int32_t i1;
   std::string s1;
 
-  size_t ComputeStorageSize() const override;
-  void Encode(::capsule::Encoder* e) const override;
-  Result Decode(::capsule::Decoder* d) override;
+  size_t ComputeStorageSize() const;
+  void Encode(::capsule::Encoder* e) const;
+  Result Decode(::capsule::Decoder* d);
 
   // not part of generated code...
   void Randomize(std::mt19937_64* rng);
@@ -139,14 +126,14 @@ struct SubBase {
   std::vector<bool> has_;
 };
 
-struct SubM final : public SubBase, public MaterializedInterface {
+struct SubM final : public SubBase {
   uint64_t u64a;
   SubSubM sub1;
   std::vector<SubSubM> vsub1;
 
-  size_t ComputeStorageSize() const override;
-  void Encode(::capsule::Encoder* e) const override;
-  Result Decode(::capsule::Decoder* d) override;
+  size_t ComputeStorageSize() const;
+  void Encode(::capsule::Encoder* e) const;
+  Result Decode(::capsule::Decoder* d);
 
   // Not part of generated code.
   void Randomize(std::mt19937_64* rng);
@@ -268,7 +255,7 @@ struct TopLevelBase {
   std::vector<bool> has_;
 };
 
-struct TopLevelM final : public TopLevelBase, public MaterializedInterface {
+struct TopLevelM final : public TopLevelBase {
   uint64_t u64a;
   int64_t i64a;
   uint32_t u32a;
@@ -283,9 +270,9 @@ struct TopLevelM final : public TopLevelBase, public MaterializedInterface {
   float f32a;
   double f64a;
 
-  size_t ComputeStorageSize() const override;
-  void Encode(::capsule::Encoder* e) const override;
-  Result Decode(::capsule::Decoder* d) override;
+  size_t ComputeStorageSize() const;
+  void Encode(::capsule::Encoder* e) const;
+  Result Decode(::capsule::Decoder* d);
 
   // Not part of generated code.
   void Randomize(std::mt19937_64* rng);
@@ -441,15 +428,15 @@ void TopLevelM::Randomize(std::mt19937_64* rng) {
   f64a = dist_f64(*rng);
 }
 
-struct SubSubV final : public SubSubBase, public ViewInterface {
+struct SubSubV final : public SubSubBase {
   bool b1;
   int32_t i1;
   std::string_view s1;
 
   std::shared_ptr<::capsule::Storage> ref_;
 
-  Result Decode(::capsule::Decoder* d) override;
-  void RefIfNeeded(std::shared_ptr<::capsule::Storage> s) override;
+  Result Decode(::capsule::Decoder* d);
+  void RefIfNeeded(std::shared_ptr<::capsule::Storage> s);
 };
 
 Result SubSubV::Decode(::capsule::Decoder* d) {
@@ -476,13 +463,13 @@ void Compare(const SubSubM* l, const SubSubV* r) {
   EXPECT_TRUE(r->has_s1());
 }
 
-struct SubV final : public SubBase, public ViewInterface {
+struct SubV final : public SubBase {
   uint64_t u64a;
   SubSubM sub1;
   std::vector<SubSubV> vsub1;
 
-  Result Decode(::capsule::Decoder* d) override;
-  void RefIfNeeded(std::shared_ptr<::capsule::Storage> s) override;
+  Result Decode(::capsule::Decoder* d);
+  void RefIfNeeded(std::shared_ptr<::capsule::Storage> s);
 };
 
 void Compare(const SubM* l, const SubV* r) {
@@ -510,7 +497,7 @@ Result SubV::Decode(::capsule::Decoder* d) {
 
 void SubV::RefIfNeeded(std::shared_ptr<::capsule::Storage> s) {}
 
-struct TopLevelV final : public TopLevelBase, public ViewInterface {
+struct TopLevelV final : public TopLevelBase {
   uint64_t u64a;
   int64_t i64a;
   uint32_t u32a;
@@ -525,8 +512,8 @@ struct TopLevelV final : public TopLevelBase, public ViewInterface {
   float f32a;
   double f64a;
 
-  Result Decode(::capsule::Decoder* d) override;
-  void RefIfNeeded(std::shared_ptr<::capsule::Storage> s) override;
+  Result Decode(::capsule::Decoder* d);
+  void RefIfNeeded(std::shared_ptr<::capsule::Storage> s);
 
   std::shared_ptr<::capsule::Storage> ref_;
 };

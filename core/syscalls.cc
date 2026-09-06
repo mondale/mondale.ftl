@@ -33,7 +33,9 @@ ResultOr<struct stat> FStat(const FileDescriptor& fd) {
   auto syscall = [&]() -> int { return ::fstat(fd.fd(), &sb); };
   auto accept = [](int ret) -> bool { return ret >= 0; };
   TRY_ASSIGN(const int ret, SyscallRetryEintr(syscall, accept));
-  RAW_CHECK(0 == ret) << ret;
+  if (ret != 0) {
+    return Result(Code::kError, "Successful FStat should not also return 0.");
+  }
   return sb;
 }
 

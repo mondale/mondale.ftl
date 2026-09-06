@@ -15,7 +15,12 @@ Result WriteContentsToFile(std::string_view file_name,
 
 ResultOr<std::string> ReadContentsFromFile(std::string_view file_name) {
   // Open file.
-  TRY_ASSIGN(auto fd, syscalls::Open(file_name, O_RDONLY | O_CLOEXEC, 0));
+  auto fd_or = syscalls::Open(file_name, O_RDONLY | O_CLOEXEC, 0);
+  if (!fd_or.IsOk()) {
+    return Result(fd_or.result().code(),
+                  strings::Format("File [{}] could not be opened.", file_name));
+  }
+  auto fd = std::move(fd_or).ValueOrDie();
 
   // Stat file and size the output buffer.
   constexpr size_t kCowardiceThreshold = 1024 * 1024;
