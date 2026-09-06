@@ -63,3 +63,6 @@ autocmd FileType markdown setlocal wrap linebreak colorcolumn=80 textwidth=80
 
 " Share clipboard between instances.
 set clipboard^=unnamedplus,unnamed
+
+" Affects width of the window.
+set columns=120

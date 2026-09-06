@@ -64,4 +64,8 @@ CORE_CRC32C_TARGET CRC32C ComputeCRC32C(const void* p, size_t l, CRC32C v) {
   return CRC32C(~crc);
 }
 
+CRC32C ComputeCRC32C(const std::string& s) {
+  return ComputeCRC32C(s.data(), s.length());
+}
+
 }  // namespace core

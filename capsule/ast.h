@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "core/crc32c.h"
+
 namespace capsule {
 
 struct Attribute {
@@ -14,7 +16,9 @@ struct Attribute {
 struct Field {
   std::string type;
   std::string name;
+  std::string srcloc;
   std::vector<Attribute> attributes;
+  std::vector<core::CRC32C> hashes;
 };
 
 struct Capsule {

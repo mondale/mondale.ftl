@@ -76,8 +76,10 @@ class Parser::Impl {
       std::string nm = tok_.val;
       tok_ = lex_.NextToken();
 
-      cp.fields.push_back(
-          Field{std::move(tp), std::move(nm), std::move(attrs)});
+      std::string srcloc = strings::Format("{}:{}", filename_, tok_.line);
+      std::vector<core::CRC32C> hashes;
+      cp.fields.push_back(Field{std::move(tp), std::move(nm), std::move(srcloc),
+                                std::move(attrs), std::move(hashes)});
     }
 
     if (tok_.tp != Token::Type::kRBrace) {
@@ -99,7 +101,7 @@ class Parser::Impl {
     std::string val = "";
     if (tok_.tp == Token::Type::kLParen) {
       tok_ = lex_.NextToken();
-      if (tok_.tp == Token::Type::kStringLiteral ||
+      if (tok_.tp == Token::Type::kIdentifier ||
           tok_.tp == Token::Type::kNumberLiteral ||
           tok_.tp == Token::Type::kLBracket) {
         val = tok_.val;
