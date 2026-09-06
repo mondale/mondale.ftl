@@ -1,6 +1,7 @@
 #include <string.h>
 
 #include <memory>
+#include <string>
 
 #include "base/rawlog.h"
 #include "core/result.h"
@@ -12,7 +13,14 @@ namespace core {
     return #Instance
 
 namespace {
+
 int ToInt(BaseCode bc) { return static_cast<int>(bc); }
+
+Result MakeError(Code c, std::string_view msg, base::SourceLocation loc) {
+  return Result(
+      c, std::format("{}:{} // {}", loc.relative_file_name(), loc.line(), msg));
+}
+
 }  // namespace
 
 std::string_view ToString(BaseCode bc) {
@@ -119,6 +127,14 @@ Result ResultFromErrno(int e) {
     return Result(bc, message);
   }
   return Result(bc);
+}
+
+Result NotFoundError(std::string_view msg, base::SourceLocation loc) {
+  return MakeError(Code::kNotFound, msg, loc);
+}
+
+Result PermissionError(std::string_view msg, base::SourceLocation loc) {
+  return MakeError(Code::kPermission, msg, loc);
 }
 
 }  // namespace core

@@ -8,8 +8,9 @@ cc_library(
 cc_binary(
     name = "compiler",
     srcs = ["compiler.cc"],
-    deps = [":generator", ":ast",
+    deps = [":generator", ":ast", ":parser", ":hashing",
             "//core",
+            "//core:file",
     ],
 )
 
