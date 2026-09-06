@@ -25,7 +25,7 @@ class UhhFixture : public ::testing::Test {
     }
   }
 
-  void AssertAllFieldsHaveHashs() {
+  void AssertAllFieldsHaveHashes() {
     cf_.capsules.resize(kCapsules);
     for (int i = 0; i < kCapsules; ++i) {
       cf_.capsules[i].fields.resize(kFields);
@@ -40,13 +40,13 @@ class UhhFixture : public ::testing::Test {
 
 TEST_F(UhhFixture, NoShennanigansIsOk) {
   EXPECT_THAT(ComputeAndValidateHashes(&cf_), IsOk());
-  AssertAllFieldsHaveHashs();
+  AssertAllFieldsHaveHashes();
 }
 
 TEST_F(UhhFixture, SameNameInTwoDifferentCapsules) {
   cf_.capsules[0].fields[0].name = cf_.capsules[1].fields[0].name;
   EXPECT_THAT(ComputeAndValidateHashes(&cf_), IsOk());
-  AssertAllFieldsHaveHashs();
+  AssertAllFieldsHaveHashes();
 }
 
 TEST_F(UhhFixture, SameNameInSameCapsules) {
@@ -60,7 +60,7 @@ TEST_F(UhhFixture, NonCollidingAliases) {
   cf_.capsules[0].fields[0].attributes.push_back({"former_name", "ape"});
   cf_.capsules[0].fields[0].attributes.push_back({"default", "ape"});
   EXPECT_THAT(ComputeAndValidateHashes(&cf_), IsOk());
-  AssertAllFieldsHaveHashs();
+  AssertAllFieldsHaveHashes();
   EXPECT_EQ(cf_.capsules[0].fields[0].hashes.size(), 3);
 }
 
