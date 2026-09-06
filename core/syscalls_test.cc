@@ -2,6 +2,7 @@
 #include "core/syscalls.h"
 #include "testing/testing.h"
 
+using ::testing::HasSubstr;
 using namespace core;
 
 namespace {
@@ -13,10 +14,14 @@ TEST(FStatAndRead) {
   EXPECT_EQ(size_t{0}, syscalls::Read(fd, nullptr, 100).ValueOrDie());  // eof
 }
 
-TEST(Open) {
+TEST(OpenAndStat) {
   auto result =
       syscalls::Open("/does/not/exist/probably", O_RDONLY, 0).result();
   EXPECT_EQ(BaseCode::kEnoent, result.base_code());
+  EXPECT_THAT(syscalls::Stat("/does/not/exist/probably").result().ToString(),
+              HasSubstr("Enoent"));
+  EXPECT_THAT(syscalls::Access("/does/not/exist/probably", R_OK).ToString(),
+              HasSubstr("Enoent"));
 }
 
 }  // namespace

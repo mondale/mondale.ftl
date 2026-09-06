@@ -2,6 +2,7 @@
 
 #include <concepts>
 
+#include "core/strings.h"
 #include "core/syscalls.h"
 
 namespace core::syscalls {
@@ -26,16 +27,40 @@ ResultOr<Ret> SyscallRetryEintr(Syscall&& s, AcceptanceFn&& acc) {
   return ResultFromErrno(saved_errno);
 }
 
+Result NoReturnNonZero(int ret, std::string_view syscall) {
+  if (ret == 0) {
+    return Result::Ok();
+  }
+  return Result(
+      Code::kError,
+      strings::Format("Successful {} should not also return 0.", syscall));
+}
+
 }  // namespace
+
+Result Access(std::string_view path, int mode) {
+  auto syscall = [&]() -> int { return ::access(path.data(), mode); };
+  auto accept = [](int ret) -> bool { return ret == 0; };
+  TRY_ASSIGN(const int ret, SyscallRetryEintr(syscall, accept));
+  TRY(NoReturnNonZero(ret, "Accept"));
+  return Result::Ok();
+}
+
+ResultOr<struct stat> Stat(std::string_view path) {
+  struct stat sb;
+  auto syscall = [&]() -> int { return ::stat(path.data(), &sb); };
+  auto accept = [](int ret) -> bool { return ret >= 0; };
+  TRY_ASSIGN(const int ret, SyscallRetryEintr(syscall, accept));
+  TRY(NoReturnNonZero(ret, "Stat"));
+  return sb;
+}
 
 ResultOr<struct stat> FStat(const FileDescriptor& fd) {
   struct stat sb;
   auto syscall = [&]() -> int { return ::fstat(fd.fd(), &sb); };
   auto accept = [](int ret) -> bool { return ret >= 0; };
   TRY_ASSIGN(const int ret, SyscallRetryEintr(syscall, accept));
-  if (ret != 0) {
-    return Result(Code::kError, "Successful FStat should not also return 0.");
-  }
+  TRY(NoReturnNonZero(ret, "Ftat"));
   return sb;
 }
 

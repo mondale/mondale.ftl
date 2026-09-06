@@ -230,7 +230,7 @@ class [[nodiscard]] Result final {
 
 static_assert(sizeof(Result) == 8, "Result should be precisely 64 bits");
 
-inline bool IsOk(Result r) { return r.IsOk(); }
+inline bool IsOk(const Result& r) { return r.IsOk(); }
 std::string ToString(Result r);
 std::ostream& operator<<(std::ostream& out, const Result& r);
 

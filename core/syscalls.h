@@ -11,9 +11,11 @@
 
 namespace core::syscalls {
 
+Result Access(std::string_view path, int mode);
 ResultOr<struct stat> FStat(const FileDescriptor& fd);
 ResultOr<FileDescriptor> Open(std::string_view path, int flags, mode_t mode);
 ResultOr<size_t> Read(const FileDescriptor& fd, char* buf, size_t count);
+ResultOr<struct stat> Stat(std::string_view path);
 ResultOr<size_t> Write(const FileDescriptor& fd, const char* buf, size_t count);
 
 }  // namespace core::syscalls

@@ -79,4 +79,11 @@ size_t FullFeatureM::Encode(::capsule::Encoder* e) const {
   return ret;
 }
 
+void SubCapsuleV::RefIfNeeded(std::shared_ptr<::capsule::Storage> s) {
+}
+
+void FullFeatureV::RefIfNeeded(std::shared_ptr<::capsule::Storage> s) {
+  ref_ = s;
+}
+
 }  // namespace test_ns

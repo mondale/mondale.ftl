@@ -159,7 +159,7 @@ cc_library(
     deps = [
         ":file_descriptor",
         ":result",
-        "//base:rawlog",
+":strings",
     ],
 )
 

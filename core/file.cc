@@ -5,6 +5,18 @@
 
 namespace core {
 
+bool FileExists(std::string_view file_name) {
+  return syscalls::Stat(file_name).IsOk();
+}
+
+bool FileIsReadable(std::string_view file_name) {
+  return IsOk(syscalls::Access(file_name, R_OK));
+}
+
+bool FileIsWriteable(std::string_view file_name) {
+  return !FileExists(file_name) || IsOk(syscalls::Access(file_name, W_OK));
+}
+
 Result WriteContentsToFile(std::string_view file_name,
                            std::string_view contents) {
   // Open file.

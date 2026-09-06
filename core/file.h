@@ -13,6 +13,12 @@ Result WriteContentsToFile(std::string_view file_name,
 
 ResultOr<std::string> ReadContentsFromFile(std::string_view file_name);
 
+bool FileExists(std::string_view file_name);
+
+bool FileIsReadable(std::string_view file_name);
+
+bool FileIsWriteable(std::string_view file_name);
+
 }  // namespace core
 
 #endif  // #ifndef CORE_FILE_H_
