@@ -129,6 +129,10 @@ Result ResultFromErrno(int e) {
   return Result(bc);
 }
 
+Result InvalidArgumentError(std::string_view msg, base::SourceLocation loc) {
+  return MakeError(Code::kInvalidArgument, msg, loc);
+}
+
 Result NotFoundError(std::string_view msg, base::SourceLocation loc) {
   return MakeError(Code::kNotFound, msg, loc);
 }

@@ -1,0 +1,46 @@
+def capsule_library(name, src, visibility = None):
+    out_h = src + ".h"
+    out_cc = src + ".cc"
+
+    command = "${TOOL}"
+    command += " --compiler.input_file_name=${SRC}"
+    #command += " --compiler.output_header_name=${OUTS_HEADER}"
+    #command += " --compiler.output_source_name=${OUTS_SOURCE}"
+
+    build_rule(
+        name = name + "_genheader",
+        srcs = [src],
+        outs = {
+          "header" : [out_h],
+        },
+        tools = ["//capsule:compiler"],
+        cmd = command + " --compiler.output_header_name=${OUTS_HEADER}",
+        visibility = [":" + name],
+    )
+
+    build_rule(
+        name = name + "_gensource",
+        srcs = [src],
+        outs = {
+          "source" : [out_cc],
+        },
+        tools = ["//capsule:compiler"],
+        cmd = command + " --compiler.output_source_name=${OUTS_SOURCE}",
+        visibility = [":" + name],
+    )
+
+    cc_library(
+        name = name,
+        #srcs = [out_cc],
+        srcs = [":" + name + "_gensource"],
+        hdrs = [":" + name + "_genheader"],
+        deps = [":" + name + "_genheader",
+                ":" + name + "_gensource",
+                "//capsule:decoder",
+                "//capsule:encoder",
+                "//capsule:size_builder",
+                "//capsule:storage",
+                "//core",
+               ],
+        visibility = visibility,
+    )

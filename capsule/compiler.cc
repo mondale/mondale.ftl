@@ -13,7 +13,20 @@ FLAG(std::string, output_source_name, "");
 
 namespace {
 
+std::string ToHeader(const std::string& cc) {
+  if (cc.ends_with(".cc")) {
+    return cc.substr(0, cc.size() - 3) + ".h";
+  }
+  return cc;
+}
+
 Result ValidateInputFile(const std::string& f) {
+  if (f.empty()) {
+    return core::InvalidArgumentError(
+        "No input file specified. Use "
+        "--compiler.input_file_name=/path/to/file.capsule");
+  }
+
   // Validate that the input file exists and is readable.
   if (!core::FileExists(f)) {
     return core::NotFoundError(
@@ -41,13 +54,45 @@ Result ValidateOutputFile(const std::string& f) {
       "Capsule output file [{}] exists and is not writeable.", f));
 }
 
+Result ValidateHeaderFile(const std::string& f) {
+  if (f.empty()) {
+    return core::InvalidArgumentError(
+        "No output header file specified. Use "
+        "--compiler.output_header_name=/path/to/file.h");
+  }
+  return ValidateOutputFile(f);
+}
+
+Result ValidateSourceFile(const std::string& f) {
+  if (f.empty()) {
+    return core::InvalidArgumentError(
+        "No output source file specified. Use "
+        "--compiler.output_source_name=/path/to/file.cc");
+  }
+  return ValidateOutputFile(f);
+}
+
 Result ValidateFlags() {
   const std::string ifn = FLAG_LOOKUP(input_file_name);
   const std::string ohn = FLAG_LOOKUP(output_header_name);
   const std::string osn = FLAG_LOOKUP(output_source_name);
+  Log(INFO) << "Using input file [" << ifn << "]";
+  Log(INFO) << "Using output header file [" << ohn << "]";
+  Log(INFO) << "Using output source file [" << osn << "]";
   TRY(ValidateInputFile(ifn));
-  TRY(ValidateOutputFile(ohn));
-  TRY(ValidateOutputFile(osn));
+
+  if (ohn.empty() && osn.empty()) {
+    return core::InvalidArgumentError(
+        "No output header or source file specified. Use at least one of "
+        "--compiler.output_header_name=/path/to/file.h or "
+        "--compiler.output_soruce_name=/path/to/file.cc");
+  }
+  if (!ohn.empty()) {
+    TRY(ValidateHeaderFile(ohn));
+  }
+  if (!osn.empty()) {
+    TRY(ValidateSourceFile(osn));
+  }
   return Result::Ok();
 }
 
@@ -76,12 +121,14 @@ Result Compile() {
   // name.
   const std::string ohn = FLAG_LOOKUP(output_header_name);
   const std::string osn = FLAG_LOOKUP(output_source_name);
-  TRY_ASSIGN(auto header, capsule::GenerateHeader(capfile));
-  TRY_ASSIGN(auto source, capsule::GenerateSource(capfile, ohn));
-
-  // Write to output files.
-  TRY(core::WriteContentsToFile(ohn, header));
-  TRY(core::WriteContentsToFile(osn, source));
+  if (!ohn.empty()) {
+    TRY_ASSIGN(auto header, capsule::GenerateHeader(capfile));
+    TRY(core::WriteContentsToFile(ohn, header));
+  }
+  if (!osn.empty()) {
+    TRY_ASSIGN(auto source, capsule::GenerateSource(capfile, ToHeader(osn)));
+    TRY(core::WriteContentsToFile(osn, source));
+  }
 
   return Result::Ok();
 }
@@ -90,6 +137,7 @@ void DieElegantlyIfNotOk(Result r) {
   if (IsOk(r)) return;
   Log(ERROR) << r;
   std::cerr << r << std::endl;
+  base::FlushLogs();
   exit(1);
 }
 

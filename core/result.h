@@ -238,6 +238,9 @@ std::ostream& operator<<(std::ostream& out, const Result& r);
 Result ResultFromErrno(int saved_errno);
 
 // Helpers to make errors, populate on demand.
+Result InvalidArgumentError(
+    std::string_view msg,
+    base::SourceLocation loc = base::SourceLocation::Current());
 Result NotFoundError(std::string_view msg, base::SourceLocation loc =
                                                base::SourceLocation::Current());
 Result PermissionError(

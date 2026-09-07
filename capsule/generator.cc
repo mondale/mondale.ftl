@@ -22,7 +22,7 @@ std::string MapType(const std::string& tp) {
     std::string inner = tp.substr(7, tp.size() - 8);
     return "std::vector<" + MapType(inner) + ">";
   }
-  return tp;
+  return tp + "M";
 }
 
 std::string TypeToViewType(const std::string& tp) {
@@ -43,9 +43,9 @@ std::string TypeToViewType(const std::string& tp) {
   }
   if (tp.rfind("vector<", 0) == 0) {
     std::string inner = tp.substr(7, tp.size() - 8);
-    return "std::vector<" + MapType(inner) + ">";
+    return "std::vector<" + TypeToViewType(inner) + ">";
   }
-  return tp;
+  return tp + "V";
 }
 
 std::string CppDefaultForType(const std::string& tp) {
@@ -77,7 +77,7 @@ bool IsStringVectorType(const std::string& tp) {
 bool IsCapsuleVectorType(const std::string& tp) {
   return IsVectorType(tp) && !IsStringVectorType(tp);
 }
-bool IsCapsuleType(const std::string& tp) { return MapType(tp) == tp; }
+bool IsCapsuleType(const std::string& tp) { return MapType(tp) == (tp + "M"); }
 
 bool DefaultValueSupported(const Field& f) {
   return !IsVectorType(f.type) && !IsCapsuleType(f.type);
@@ -208,7 +208,7 @@ ResultOr<std::string> GenerateHeader(const CapsuleFile& file) {
 Result EmitDecodeImpl(std::ostringstream& oss, std::string_view class_postfix,
                       const capsule::Capsule& cp) {
   oss << "::core::Result " << cp.name << class_postfix
-      << "::Decode(::capsule::Decoder* d) const {\n";
+      << "::Decode(::capsule::Decoder* d) {\n";
   oss << "  has_.resize(kFieldCount, false);\n";
   oss << "  ::core::Code ret = ::core::Code::kOk;\n";
   for (int i = 0; i < cp.fields.size(); ++i) {
@@ -225,7 +225,7 @@ Result EmitDecodeImpl(std::ostringstream& oss, std::string_view class_postfix,
           << n << ", has_[" << n << "_Index]));\n";
     } else if (IsCapsuleType(t)) {
       oss << "  ret.Incorporate(d->FindCapsule(" << n << "_FieldHash, &" << n
-          << ", " << n << "_Default, has_[" << n << "_Index]));\n";
+          << ", " << n << ", has_[" << n << "_Index]));\n";
     } else {  // primitive type
       if (!DefaultValueSupported(f)) {
         return Result(
@@ -266,7 +266,7 @@ ResultOr<std::string> GenerateSource(const CapsuleFile& file,
 
   // Encode() impls (Materialized types only).
   for (const auto& cp : file.capsules) {
-    oss << "size_t " << cp.name << "M::Encode(::capsule::Encoder* e) const {\n";
+    oss << "void " << cp.name << "M::Encode(::capsule::Encoder* e) const {\n";
     for (int i = 0; i < cp.fields.size(); ++i) {
       const auto& f = cp.fields[i];
       // AddCapsuleVector is a distinct API in Encoder, probably because I'm bad

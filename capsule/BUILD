@@ -12,6 +12,16 @@ cc_binary(
             "//core",
             "//core:file",
     ],
+    visibility = ["//..."],
+)
+
+cc_test(
+    name = "compiler_smoke_test",
+    srcs = ["compiler_smoke_test.cc"],
+    deps = [
+            "//capsule/testdata:generator_smoke_test_capsule",
+            "//testing",
+           ],
 )
 
 cc_library(
@@ -70,6 +80,7 @@ cc_library(
         ":storage_factory",
         "//core",
     ],
+    visibility = ["//..."],
 )
 
 cc_test(
@@ -154,6 +165,7 @@ cc_library(
     srcs = [],
     hdrs = ["size_builder.h"],
     deps = [":abi"],
+    visibility = ["//..."],
 )
 
 cc_test(
@@ -174,6 +186,7 @@ cc_library(
         ":size_builder",
         "//core",
     ],
+    visibility = ["//..."],
 )
 
 cc_test(
@@ -195,6 +208,7 @@ cc_library(
         ":view_mapper",
         "//core",
     ],
+    visibility = ["//..."],
 )
 
 cc_test(
