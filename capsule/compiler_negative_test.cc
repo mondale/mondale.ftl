@@ -68,4 +68,9 @@ TEST_F(NegativeCompilationFixture, BogusCapsuleNameSameAsPrimitive) {
        "3: Capsules may not use a primitive typename as a name [bool]");
 }
 
+TEST_F(NegativeCompilationFixture, RedundantCapsule) {
+  Nope("redundant_capsule.capsule",  //
+       "7: Capsule names must be unique within a capsule definition [Roo].");
+}
+
 }  // namespace

@@ -1,0 +1,9 @@
+namespace r
+
+capsule Roo {
+  u32 meh
+}
+
+capsule Roo {
+  u64 boo
+}

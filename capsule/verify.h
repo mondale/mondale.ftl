@@ -13,6 +13,7 @@ Result Verify(const CapsuleFile& cf);
 // Other methods exposed for unit testing.
 Result VerifyAtLeastOneCapsule(const CapsuleFile& cf);
 Result VerifyTypeSoundness(const CapsuleFile& cf);
+Result VerifyCapsuleNameUniqueness(const CapsuleFile& cf);
 Result VerifyNamesDistinctFromTypes(const CapsuleFile& cf);
 
 }  // namespace capsule

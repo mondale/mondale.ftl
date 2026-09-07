@@ -52,4 +52,20 @@ TEST(NameCollisionsWithTypes) {
   EXPECT_THAT(str, HasSubstr("OkCapsule"));
 }
 
+TEST(RepeatedCapsuleNames) {
+  CapsuleFile cf;
+  cf.capsules.resize(3);
+  cf.capsules[0].name = "Jazz";
+  cf.capsules[0].srcloc = "001";
+  cf.capsules[1].name = "Jazz";
+  cf.capsules[1].srcloc = "002";
+  cf.capsules[2].name = "Jazz";
+  cf.capsules[2].srcloc = "003";
+  const auto str = VerifyCapsuleNameUniqueness(cf).ToString();
+
+  EXPECT_THAT(str, HasSubstr("Jazz"));
+  EXPECT_THAT(str, HasSubstr("002"));
+  EXPECT_THAT(str, HasSubstr("003"));
+}
+
 }  // namespace capsule

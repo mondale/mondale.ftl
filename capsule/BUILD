@@ -42,6 +42,7 @@ cc_test(
         "testdata/no_capsules.capsule",
         "testdata/no_closing_brace.capsule",
         "testdata/no_namespace.capsule",
+        "testdata/redundant_capsule.capsule",
         "testdata/small_binary.capsule",
         "testdata/two_namespaces.capsule",
         "testdata/type_named_variable.capsule",

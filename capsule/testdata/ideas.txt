@@ -1,8 +1,6 @@
-capsule file with name collisions
+capsule file with name collisions on M, V, _Default, _FieldHash, _TypeHash, has_
 
 capsule file with an extra token somewhere
-
-multiple capsules same name
 
 unrecognized attributes
 

@@ -151,10 +151,27 @@ Result VerifyNamesDistinctFromTypes(const CapsuleFile& cf) {
   return ret;
 }
 
+Result VerifyCapsuleNameUniqueness(const CapsuleFile& cf) {
+  Result ret = Result::Ok();
+
+  std::set<std::string> capsule_types;
+  for (const auto& c : cf.capsules) {
+    if (capsule_types.find(c.name) == capsule_types.end()) {
+      capsule_types.insert(c.name);
+      continue;
+    }
+    Accumulate(&ret, Error(c.srcloc, Format("Capsule names must be unique "
+                                            "within a capsule definition [{}].",
+                                            c.name)));
+  }
+  return ret;
+}
+
 Result Verify(const CapsuleFile& cf) {
   Result ret = Result::Ok();
   Accumulate(&ret, VerifyAtLeastOneCapsule(cf));
   Accumulate(&ret, VerifyTypeSoundness(cf));
+  Accumulate(&ret, VerifyCapsuleNameUniqueness(cf));
   Accumulate(&ret, VerifyNamesDistinctFromTypes(cf));
   return ret;
 }
