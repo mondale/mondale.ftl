@@ -40,8 +40,8 @@ cc_test(
         "testdata/no_capsules.capsule",
         "testdata/no_closing_brace.capsule",
         "testdata/no_namespace.capsule",
-        "testdata/two_namespaces.capsule",
         "testdata/small_binary.capsule",
+        "testdata/two_namespaces.capsule",
     ],
     deps = [
         ":compiler",
@@ -281,16 +281,20 @@ cc_test(
 )
 
 cc_library(
-  name = "verify",
-  hdrs = ["verify.h"],
-  srcs = ["verify.cc"],
-  deps = [":ast", "//core",],
+    name = "verify",
+    srcs = ["verify.cc"],
+    hdrs = ["verify.h"],
+    deps = [
+        ":ast",
+        "//core",
+    ],
 )
 
 cc_test(
-  name = "verify_test",
-  srcs = ["verify_test.cc"],
-  deps = [":verify",
-          "//testing",
-  ],
+    name = "verify_test",
+    srcs = ["verify_test.cc"],
+    deps = [
+        ":verify",
+        "//testing",
+    ],
 )

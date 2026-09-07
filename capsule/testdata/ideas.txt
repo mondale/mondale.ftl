@@ -11,3 +11,5 @@ vector without >
 vector with space before <
 
 vector of vector
+
+retired field is checked for name collision with new field
