@@ -21,9 +21,15 @@ cc_test(
     name = "compiler_smoke_test",
     srcs = ["compiler_smoke_test.cc"],
     deps = [
-            ":generator_smoke_test_capsule",
+            ":compiler_smoke_test_capsule",
             "//testing",
            ],
+)
+
+capsule_library(
+    name = "compiler_smoke_test_capsule",
+    src = "compiler_smoke_test.capsule",
+    visibility = ["//capsule/..."],
 )
 
 cc_library(
@@ -36,11 +42,6 @@ cc_library(
     ],
 )
 
-capsule_library(
-    name = "generator_smoke_test_capsule",
-    src = "generator_smoke_test.capsule",
-    visibility = ["//capsule/..."],
-)
 
 cc_library(
     name = "lexer",
