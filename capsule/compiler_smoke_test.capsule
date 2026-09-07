@@ -1,5 +1,6 @@
 namespace test_ns
 
+// Do comments work?
 capsule LittlePair {
   u32 crc
   string name

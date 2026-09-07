@@ -13,6 +13,9 @@ syn keyword capsuleKeyword namespace capsule
 " Types
 syn keyword capsuleType u32 u64 i32 i64 i16 u16 i8 u8 bool string vector
 
+" Comments
+syn match capsuleComment "//.*$"
+
 " Attributes (Tokens starting with @)
 syn match capsuleAttribute "@\w\+"
 
@@ -20,5 +23,6 @@ syn match capsuleAttribute "@\w\+"
 hi def link capsuleKeyword Statement
 hi def link capsuleType    Type
 hi def link capsuleAttribute PreProc
+hi def link capsuleComment   Comment
 
 let b:current_syntax = "capsule"
