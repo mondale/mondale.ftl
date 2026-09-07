@@ -1,7 +1,19 @@
 namespace test_ns
 
-capsule SubCapsule {
-  u32 sub_id
+capsule LittlePair {
+  u32 crc
+  string name
+}
+
+capsule PileOfPrimitives {
+  u8 u_eight
+  i8 i_eight
+  u16 u_sixteen
+  i16 i_sixteen
+  u32 u_thirtytwo
+  i32 i_thirtytwo
+  u64 u_sixtyfour
+  i64 i_sixtyfour
 }
 
 capsule FullFeature {
@@ -10,7 +22,8 @@ capsule FullFeature {
   bool enabled
   string name
   vector<string> items
-  SubCapsule nested
+  PileOfPrimitives nested
+  vector<LittlePair> littl_stuff
 
   @default(42)
   @former_name(legacy_count)
