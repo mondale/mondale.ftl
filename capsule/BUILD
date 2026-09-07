@@ -8,9 +8,19 @@ cc_library(
 )
 
 cc_binary(
-    name = "compiler",
-    srcs = ["compiler.cc"],
+    name = "capsule_compiler",
+    srcs = ["compiler_main.cc"],
     visibility = ["//..."],
+    deps = [
+        ":compiler",
+        "//core",
+    ],
+)
+
+cc_library(
+    name = "compiler",
+    hdrs = ["compiler.h"],
+    srcs = ["compiler.cc"],
     deps = [
         ":ast",
         ":generator",

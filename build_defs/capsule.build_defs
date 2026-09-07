@@ -3,9 +3,9 @@ def capsule_library(name, src, visibility = None):
     out_cc = src + ".cc"
 
     command = "${TOOL}"
-    command += " --compiler.input_file_name=${SRC}"
-    #command += " --compiler.output_header_name=${OUTS_HEADER}"
-    #command += " --compiler.output_source_name=${OUTS_SOURCE}"
+    command += " --capsule_compiler.input_file_name=${SRC}"
+    #command += " --capsule_compiler.output_header_name=${OUTS_HEADER}"
+    #command += " --capsule_compiler.output_source_name=${OUTS_SOURCE}"
 
     build_rule(
         name = name + "_genheader",
@@ -13,8 +13,8 @@ def capsule_library(name, src, visibility = None):
         outs = {
           "header" : [out_h],
         },
-        tools = ["//capsule:compiler"],
-        cmd = command + " --compiler.output_header_name=${OUTS_HEADER}",
+        tools = ["//capsule:capsule_compiler"],
+        cmd = command + " --capsule_compiler.output_header_name=${OUTS_HEADER}",
         visibility = [":" + name],
     )
 
@@ -24,8 +24,8 @@ def capsule_library(name, src, visibility = None):
         outs = {
           "source" : [out_cc],
         },
-        tools = ["//capsule:compiler"],
-        cmd = command + " --compiler.output_source_name=${OUTS_SOURCE}",
+        tools = ["//capsule:capsule_compiler"],
+        cmd = command + " --capsule_compiler.output_source_name=${OUTS_SOURCE}",
         visibility = [":" + name],
     )
 

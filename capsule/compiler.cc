@@ -6,11 +6,12 @@
 #include "core/file.h"
 #include "core/vocabulary.h"
 
-FLAG_COHORT(compiler);
+FLAG_COHORT(capsule_compiler);
 FLAG(std::string, input_file_name, "");
 FLAG(std::string, output_header_name, "");
 FLAG(std::string, output_source_name, "");
 
+namespace capsule {
 namespace {
 
 std::string ToHeader(const std::string& cc) {
@@ -24,7 +25,7 @@ Result ValidateInputFile(const std::string& f) {
   if (f.empty()) {
     return core::InvalidArgumentError(
         "No input file specified. Use "
-        "--compiler.input_file_name=/path/to/file.capsule");
+        "--capsule_compiler.input_file_name=/path/to/file.capsule");
   }
 
   // Validate that the input file exists and is readable.
@@ -58,7 +59,7 @@ Result ValidateHeaderFile(const std::string& f) {
   if (f.empty()) {
     return core::InvalidArgumentError(
         "No output header file specified. Use "
-        "--compiler.output_header_name=/path/to/file.h");
+        "--capsule_compiler.output_header_name=/path/to/file.h");
   }
   return ValidateOutputFile(f);
 }
@@ -67,9 +68,20 @@ Result ValidateSourceFile(const std::string& f) {
   if (f.empty()) {
     return core::InvalidArgumentError(
         "No output source file specified. Use "
-        "--compiler.output_source_name=/path/to/file.cc");
+        "--capsule_compiler.output_source_name=/path/to/file.cc");
   }
   return ValidateOutputFile(f);
+}
+
+ResultOr<std::string> ReadInputFile() {
+  const std::string ifn = FLAG_LOOKUP(input_file_name);
+  return core::ReadContentsFromFile(ifn);
+}
+
+ResultOr<capsule::CapsuleFile> Parse(std::string_view contents) {
+  const std::string ifn = FLAG_LOOKUP(input_file_name);
+  capsule::Parser p(contents, ifn);
+  return p.Parse();
 }
 
 Result ValidateFlags() {
@@ -84,8 +96,8 @@ Result ValidateFlags() {
   if (ohn.empty() && osn.empty()) {
     return core::InvalidArgumentError(
         "No output header or source file specified. Use at least one of "
-        "--compiler.output_header_name=/path/to/file.h or "
-        "--compiler.output_soruce_name=/path/to/file.cc");
+        "--capsule_compiler.output_header_name=/path/to/file.h or "
+        "--capsule_compiler.output_soruce_name=/path/to/file.cc");
   }
   if (!ohn.empty()) {
     TRY(ValidateHeaderFile(ohn));
@@ -96,18 +108,11 @@ Result ValidateFlags() {
   return Result::Ok();
 }
 
-ResultOr<std::string> ReadInputFile() {
-  const std::string ifn = FLAG_LOOKUP(input_file_name);
-  return core::ReadContentsFromFile(ifn);
-}
-
-ResultOr<capsule::CapsuleFile> Parse(std::string_view contents) {
-  const std::string ifn = FLAG_LOOKUP(input_file_name);
-  capsule::Parser p(contents, ifn);
-  return p.Parse();
-}
+}  // namespace
 
 Result Compile() {
+  TRY(ValidateFlags());
+
   // Read input stream.
   TRY_ASSIGN(auto contents, ReadInputFile());
 
@@ -133,19 +138,4 @@ Result Compile() {
   return Result::Ok();
 }
 
-void DieElegantlyIfNotOk(Result r) {
-  if (IsOk(r)) return;
-  Log(ERROR) << r;
-  std::cerr << r << std::endl;
-  base::FlushLogs();
-  exit(1);
-}
-
-}  // namespace
-
-int main(int argc, char* argv[]) {
-  base::Initialize(argc, argv);
-  DieElegantlyIfNotOk(ValidateFlags());
-  DieElegantlyIfNotOk(Compile());
-  return EXIT_SUCCESS;
-}
+}  // namespace capsule
