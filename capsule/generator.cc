@@ -271,7 +271,6 @@ ResultOr<std::string> GenerateSource(const CapsuleFile& file,
       const auto& f = cp.fields[i];
       // AddCapsuleVector is a distinct API in Encoder, probably because I'm bad
       // at templates.
-      // TODO - add a capsule vector to the input schema for the smoke test.
       if (IsCapsuleVectorType(f.type)) {
         oss << "  e->AddCapsuleVector(";
       } else {
