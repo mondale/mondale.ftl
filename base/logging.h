@@ -244,6 +244,7 @@ void SetVmodules(std::string_view vmodules);
   ::base::LogMessageProxy(sev, ::base::SourceLocation::Current())
 
 #define Log(...) _LOG_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
+#define LogIt(expr) Log(INFO) << #expr << "=[" << (expr) << "]"
 
 #define VLOG(n)                                                         \
   if (::base::internal::VlogIsOn(n, ::base::SourceLocation::Current())) \
