@@ -1,10 +1,15 @@
 #include "capsule/verify.h"
 #include "testing/testing.h"
 
-namespace {
+using testing::HasSubstr;
 
-TEST(EmptyTest) {
-  // TODO
+namespace capsule {
+
+TEST(NoCapsules) {
+  CapsuleFile cf;
+  cf.capsules.clear();
+  EXPECT_THAT(VerifyAtLeastOneCapsule(cf).ToString(),
+              HasSubstr("No capsules defined"));
 }
 
-}  // namespace
+}  // namespace capsule

@@ -11,6 +11,7 @@ namespace capsule {
 Result Verify(const CapsuleFile& cf);
 
 // Other methods exposed for unit testing.
+Result VerifyAtLeastOneCapsule(const CapsuleFile& cf);
 
 }  // namespace capsule
 
