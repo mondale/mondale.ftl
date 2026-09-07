@@ -1,4 +1,4 @@
-#include "capsule/testdata/generator_smoke_test.capsule.h"
+#include "capsule/generator_smoke_test.capsule.h"
 #include "testing/testing.h"
 
 namespace {

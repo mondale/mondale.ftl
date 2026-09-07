@@ -1,3 +1,5 @@
+subinclude("//build_defs:capsule")
+
 cc_library(
     name = "ast",
     srcs = [],
@@ -19,7 +21,7 @@ cc_test(
     name = "compiler_smoke_test",
     srcs = ["compiler_smoke_test.cc"],
     deps = [
-            "//capsule/testdata:generator_smoke_test_capsule",
+            ":generator_smoke_test_capsule",
             "//testing",
            ],
 )
@@ -34,21 +36,10 @@ cc_library(
     ],
 )
 
-cc_test(
-    name = "generator_smoke_test",
-    srcs = ["generator_smoke_test.cc"],
-    data = [
-        "testdata/generator_smoke_test.capsule",
-        "testdata/generator_smoke_test.golden.h",
-        "testdata/generator_smoke_test.golden.cc",
-    ],
-    deps = [
-        ":generator",
-        ":hashing",
-        ":parser",
-        "//core:file",
-        "//testing",
-    ],
+capsule_library(
+    name = "generator_smoke_test_capsule",
+    src = "generator_smoke_test.capsule",
+    visibility = ["//capsule/..."],
 )
 
 cc_library(
