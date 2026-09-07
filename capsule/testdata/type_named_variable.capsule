@@ -1,0 +1,6 @@
+namespace whatever
+
+capsule Whatever {
+  u64 this_is_ok
+  u64 u64  // that's not
+}

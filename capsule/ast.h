@@ -23,6 +23,7 @@ struct Field {
 
 struct Capsule {
   std::string name;
+  std::string srcloc;
   std::vector<Field> fields;
 };
 

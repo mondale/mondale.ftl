@@ -50,6 +50,7 @@ class Parser::Impl {
     }
     Capsule cp;
     cp.name = tok_.val;
+    cp.srcloc = strings::Format("{}:{}", filename_, tok_.line);
     tok_ = lex_.NextToken();
 
     if (tok_.tp != Token::Type::kLBrace) {

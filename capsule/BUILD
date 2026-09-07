@@ -37,11 +37,14 @@ cc_test(
     srcs = ["compiler_negative_test.cc"],
     data = [
         "testdata/bogus_type.capsule",
+        "testdata/capsule_named_like_primitive.capsule",
+        "testdata/field_name_same_as_capsule.capsule",
         "testdata/no_capsules.capsule",
         "testdata/no_closing_brace.capsule",
         "testdata/no_namespace.capsule",
         "testdata/small_binary.capsule",
         "testdata/two_namespaces.capsule",
+        "testdata/type_named_variable.capsule",
     ],
     deps = [
         ":compiler",

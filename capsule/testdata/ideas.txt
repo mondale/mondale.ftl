@@ -2,6 +2,8 @@ capsule file with name collisions
 
 capsule file with an extra token somewhere
 
+multiple capsules same name
+
 unrecognized attributes
 
 attributes on bullshit combiantiosn, e.g., defaults on vectors

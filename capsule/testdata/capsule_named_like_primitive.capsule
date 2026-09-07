@@ -1,0 +1,6 @@
+namespace boring
+
+capsule bool {  // yolo
+  u64 meh
+  u16 also_meh
+}

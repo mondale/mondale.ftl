@@ -52,4 +52,20 @@ TEST_F(NegativeCompilationFixture, BogusType) {
        "5: Unrecognized primitive, vector, or capsule type [u65]");
 }
 
+TEST_F(NegativeCompilationFixture, BogusVariableNameSameAsPrimitiveType) {
+  Nope("type_named_variable.capsule",  //
+       "6: Fields may not use a primitive typename as a name [u64]");
+}
+
+TEST_F(NegativeCompilationFixture, BogusVariableNameSameAsCapsule) {
+  Nope(
+      "field_name_same_as_capsule.capsule",  //
+      "6: Fields may not share a name with a capsule in the same file [Cappy]");
+}
+
+TEST_F(NegativeCompilationFixture, BogusCapsuleNameSameAsPrimitive) {
+  Nope("capsule_named_like_primitive.capsule",  //
+       "3: Capsules may not use a primitive typename as a name [bool]");
+}
+
 }  // namespace

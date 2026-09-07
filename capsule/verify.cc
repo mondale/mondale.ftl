@@ -24,19 +24,27 @@ Result Error(const std::string& srcloc, const std::string& msg) {
   return Result(Code::kStreamFatal, Format("{}: {}", srcloc, msg));
 }
 
+std::list<std::string> AllPrimitiveTypes() {
+  std::list<std::string> ret;
+  ret.push_back("bool");
+  ret.push_back("f32");
+  ret.push_back("f64");
+  ret.push_back("i16");
+  ret.push_back("i32");
+  ret.push_back("i64");
+  ret.push_back("i8");
+  ret.push_back("string");
+  ret.push_back("u16");
+  ret.push_back("u32");
+  ret.push_back("u64");
+  ret.push_back("u8");
+  return ret;
+}
+
 bool IsPrimitiveType(std::string_view t) {
-  if (t == "bool") return true;
-  if (t == "f32") return true;
-  if (t == "f64") return true;
-  if (t == "i16") return true;
-  if (t == "i32") return true;
-  if (t == "i64") return true;
-  if (t == "i8") return true;
-  if (t == "string") return true;
-  if (t == "u16") return true;
-  if (t == "u32") return true;
-  if (t == "u64") return true;
-  if (t == "u8") return true;
+  for (const auto& x : AllPrimitiveTypes()) {
+    if (t == x) return true;
+  }
   return false;
 }
 
@@ -103,10 +111,51 @@ Result VerifyAtLeastOneCapsule(const CapsuleFile& cf) {
   return Result::Ok();
 }
 
+Result VerifyNamesDistinctFromTypes(const CapsuleFile& cf) {
+  Result ret = Result::Ok();
+
+  std::set<std::string> capsule_types;
+  for (const auto& c : cf.capsules) {
+    capsule_types.insert(c.name);
+
+    // While we're here, complain about poorly named capsules.
+    if (IsPrimitiveType(c.name)) {
+      Accumulate(
+          &ret,
+          Error(
+              c.srcloc,
+              Format("Capsules may not use a primitive typename as a name [{}]",
+                     c.name)));
+    }
+  }
+
+  // Field names may be neither primitive values nor capsule types.
+  for (const auto& c : cf.capsules) {
+    for (const auto& f : c.fields) {
+      if (IsPrimitiveType(f.name)) {
+        Accumulate(
+            &ret,
+            Error(
+                f.srcloc,
+                Format("Fields may not use a primitive typename as a name [{}]",
+                       f.name)));
+      }
+      if (capsule_types.find(f.name) != capsule_types.end()) {
+        Accumulate(&ret,
+                   Error(f.srcloc, Format("Fields may not share a name with a "
+                                          "capsule in the same file [{}]",
+                                          f.name)));
+      }
+    }
+  }
+  return ret;
+}
+
 Result Verify(const CapsuleFile& cf) {
   Result ret = Result::Ok();
   Accumulate(&ret, VerifyAtLeastOneCapsule(cf));
   Accumulate(&ret, VerifyTypeSoundness(cf));
+  Accumulate(&ret, VerifyNamesDistinctFromTypes(cf));
   return ret;
 }
 

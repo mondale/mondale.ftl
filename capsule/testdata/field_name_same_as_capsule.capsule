@@ -1,0 +1,6 @@
+namespace yes
+
+capsule Cappy {
+  u32 allowed
+  f64 Cappy  // not ok
+}
