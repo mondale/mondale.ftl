@@ -3,6 +3,7 @@
 #include "capsule/generator.h"
 #include "capsule/hashing.h"
 #include "capsule/parser.h"
+#include "capsule/verify.h"
 #include "core/file.h"
 #include "core/vocabulary.h"
 
@@ -73,8 +74,7 @@ Result ValidateSourceFile(const std::string& f) {
   return ValidateOutputFile(f);
 }
 
-ResultOr<std::string> ReadInputFile() {
-  const std::string ifn = FLAG_LOOKUP(input_file_name);
+ResultOr<std::string> ReadInputFile(std::string_view ifn) {
   return core::ReadContentsFromFile(ifn);
 }
 
@@ -108,13 +108,9 @@ Result ValidateFlags() {
   return Result::Ok();
 }
 
-}  // namespace
-
-Result Compile() {
-  TRY(ValidateFlags());
-
+ResultOr<CapsuleFile> FrontendCompile(std::string_view capsule_file_name) {
   // Read input stream.
-  TRY_ASSIGN(auto contents, ReadInputFile());
+  TRY_ASSIGN(auto contents, ReadInputFile(capsule_file_name));
 
   // Parse.
   TRY_ASSIGN(auto capfile, Parse(contents));
@@ -122,7 +118,26 @@ Result Compile() {
   // Annotate and check for errors.
   TRY(capsule::ComputeAndValidateHashes(&capfile));
 
-  // Generate header and soruce.Note that source needs to know the header's
+  // Verify everything we can think of.
+  TRY(capsule::Verify(capfile));
+  return capfile;
+}
+
+}  // namespace
+
+Result VerifyFrontendCompile(std::string_view capsule_file_name) {
+  TRY_ASSIGN(auto capfile, FrontendCompile(capsule_file_name));
+  return Result::Ok();
+}
+
+Result Compile() {
+  TRY(ValidateFlags());
+
+  // Run compiler frontend.
+  const std::string ifn = FLAG_LOOKUP(input_file_name);
+  TRY_ASSIGN(auto capfile, FrontendCompile(ifn));
+
+  // Generate header and/or source. Note that source needs to know the header's
   // name.
   const std::string ohn = FLAG_LOOKUP(output_header_name);
   const std::string osn = FLAG_LOOKUP(output_source_name);

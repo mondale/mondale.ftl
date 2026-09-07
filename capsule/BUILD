@@ -26,8 +26,22 @@ cc_library(
         ":generator",
         ":hashing",
         ":parser",
+        ":verify",
         "//core",
         "//core:file",
+    ],
+)
+
+cc_test(
+    name = "compiler_negative_test",
+    srcs = ["compiler_negative_test.cc"],
+    data = [
+        "testdata/no_closing_brace.capsule",
+        "testdata/no_capsules.capsule",
+    ],
+    deps = [
+        ":compiler",
+        "//testing",
     ],
 )
 
@@ -260,4 +274,19 @@ cc_test(
         ":hashing",
         "//testing",
     ],
+)
+
+cc_library(
+  name = "verify",
+  hdrs = ["verify.h"],
+  srcs = ["verify.cc"],
+  deps = [":ast", "//core",],
+)
+
+cc_test(
+  name = "verify_test",
+  srcs = ["verify_test.cc"],
+  deps = [":verify",
+          "//testing",
+  ],
 )

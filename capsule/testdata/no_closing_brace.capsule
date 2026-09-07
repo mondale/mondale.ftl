@@ -1,0 +1,5 @@
+namespace lolz
+
+capsule Unterminated {
+  u32 field
+  // Bruh

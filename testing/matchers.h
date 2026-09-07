@@ -73,8 +73,8 @@ class HasSubstrMatcher final {
   std::string substring_;
 };
 
-inline auto HasSubstr(std::string substring) {
-  return HasSubstrMatcher(std::move(substring));
+inline auto HasSubstr(std::string_view substring) {
+  return HasSubstrMatcher(std::string(substring));
 }
 
 // String equality matcher.

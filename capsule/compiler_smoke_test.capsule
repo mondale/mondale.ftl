@@ -24,7 +24,7 @@ capsule FullFeature {
   string name
   vector<string> items
   PileOfPrimitives nested
-  vector<LittlePair> littl_stuff
+  vector<LittlePair> little_stuff
 
   @default(42)
   @former_name(legacy_count)
