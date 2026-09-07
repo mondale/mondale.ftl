@@ -21,6 +21,8 @@ capsule FullFeature {
   u32 id
   u16 code
   bool enabled
+
+  @default("Mr. Darcy")
   string name
   vector<string> items
   PileOfPrimitives nested

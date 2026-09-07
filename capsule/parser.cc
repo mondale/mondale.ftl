@@ -104,6 +104,7 @@ class Parser::Impl {
       tok_ = lex_.NextToken();
       if (tok_.tp == Token::Type::kIdentifier ||
           tok_.tp == Token::Type::kNumberLiteral ||
+          tok_.tp == Token::Type::kStringLiteral ||
           tok_.tp == Token::Type::kLBracket) {
         val = tok_.val;
         tok_ = lex_.NextToken();

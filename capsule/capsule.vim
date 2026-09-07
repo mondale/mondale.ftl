@@ -19,10 +19,14 @@ syn match capsuleComment "//.*$"
 " Attributes (Tokens starting with @)
 syn match capsuleAttribute "@\w\+"
 
+" String Literals
+syn region capsuleString start=+"+ skip=+\\.+ end=+"+
+
 " Highlighting Links
 hi def link capsuleKeyword Statement
 hi def link capsuleType    Type
 hi def link capsuleAttribute PreProc
 hi def link capsuleComment   Comment
+hi def link capsuleString    String
 
 let b:current_syntax = "capsule"
