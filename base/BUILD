@@ -342,8 +342,8 @@ cc_test(
 cc_library(
     name = "source_location",
     hdrs = ["source_location.h"],
-    deps = [],
     visibility = ["//..."],
+    deps = [],
 )
 
 cc_test(

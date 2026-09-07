@@ -10,20 +10,24 @@ cc_library(
 cc_binary(
     name = "compiler",
     srcs = ["compiler.cc"],
-    deps = [":generator", ":ast", ":parser", ":hashing",
-            "//core",
-            "//core:file",
-    ],
     visibility = ["//..."],
+    deps = [
+        ":ast",
+        ":generator",
+        ":hashing",
+        ":parser",
+        "//core",
+        "//core:file",
+    ],
 )
 
 cc_test(
     name = "compiler_smoke_test",
     srcs = ["compiler_smoke_test.cc"],
     deps = [
-            ":compiler_smoke_test_capsule",
-            "//testing",
-           ],
+        ":compiler_smoke_test_capsule",
+        "//testing",
+    ],
 )
 
 capsule_library(
@@ -41,7 +45,6 @@ cc_library(
         "//core",
     ],
 )
-
 
 cc_library(
     name = "lexer",
@@ -68,11 +71,11 @@ cc_library(
     name = "storage",
     srcs = ["storage.cc"],
     hdrs = ["storage.h"],
+    visibility = ["//..."],
     deps = [
         ":storage_factory",
         "//core",
     ],
-    visibility = ["//..."],
 )
 
 cc_test(
@@ -156,8 +159,8 @@ cc_library(
     name = "size_builder",
     srcs = [],
     hdrs = ["size_builder.h"],
-    deps = [":abi"],
     visibility = ["//..."],
+    deps = [":abi"],
 )
 
 cc_test(
@@ -173,12 +176,12 @@ cc_library(
     name = "encoder",
     srcs = ["encoder.cc"],
     hdrs = ["encoder.h"],
+    visibility = ["//..."],
     deps = [
         ":codec",
         ":size_builder",
         "//core",
     ],
-    visibility = ["//..."],
 )
 
 cc_test(
@@ -194,13 +197,13 @@ cc_library(
     name = "decoder",
     srcs = ["decoder.cc"],
     hdrs = ["decoder.h"],
+    visibility = ["//..."],
     deps = [
         ":abi",
         ":codec",
         ":view_mapper",
         "//core",
     ],
-    visibility = ["//..."],
 )
 
 cc_test(

@@ -121,9 +121,10 @@ cc_library(
     name = "result",
     srcs = ["result.cc"],
     hdrs = ["result.h"],
-    deps = ["//base:logging",
-            "//base:source_location",
-],
+    deps = [
+        "//base:logging",
+        "//base:source_location",
+    ],
 )
 
 cc_test(
@@ -161,7 +162,7 @@ cc_library(
     deps = [
         ":file_descriptor",
         ":result",
-":strings",
+        ":strings",
     ],
 )
 
