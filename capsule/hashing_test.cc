@@ -56,8 +56,8 @@ TEST_F(HashingTestFixture, SameNameInSameCapsules) {
 }
 
 TEST_F(HashingTestFixture, NonCollidingAliases) {
-  cf_.capsules[0].fields[0].attributes.push_back({"former_name", "donkey"});
-  cf_.capsules[0].fields[0].attributes.push_back({"former_name", "ape"});
+  cf_.capsules[0].fields[0].attributes.push_back({"formerly", "donkey"});
+  cf_.capsules[0].fields[0].attributes.push_back({"formerly", "ape"});
   cf_.capsules[0].fields[0].attributes.push_back({"default", "ape"});
   EXPECT_THAT(ComputeAndValidateHashes(&cf_), IsOk());
   AssertAllFieldsHaveHashes();
@@ -65,10 +65,10 @@ TEST_F(HashingTestFixture, NonCollidingAliases) {
 }
 
 TEST_F(HashingTestFixture, CollidingAliases) {
-  cf_.capsules[0].fields[0].attributes.push_back({"former_name", "donkey"});
-  cf_.capsules[0].fields[0].attributes.push_back({"former_name", "ape"});
-  cf_.capsules[0].fields[1].attributes.push_back({"former_name", "giraffe"});
-  cf_.capsules[0].fields[1].attributes.push_back({"former_name", "ape"});
+  cf_.capsules[0].fields[0].attributes.push_back({"formerly", "donkey"});
+  cf_.capsules[0].fields[0].attributes.push_back({"formerly", "ape"});
+  cf_.capsules[0].fields[1].attributes.push_back({"formerly", "giraffe"});
+  cf_.capsules[0].fields[1].attributes.push_back({"formerly", "ape"});
   EXPECT_THAT(ComputeAndValidateHashes(&cf_).ToString(), HasSubstr("ape"));
 }
 

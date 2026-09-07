@@ -69,12 +69,38 @@ bool IsPrimitiveType(std::string_view t) {
 
 bool IsVectorType(std::string_view t) { return 0 == (t.rfind("vector<", 0)); }
 
+bool IsCapsuleType(std::string_view t) {
+  return !IsPrimitiveType(t) && !IsVectorType(t);
+}
+
 std::string VectorToInner(std::string_view t) {
   if (t.length() < 7) return "";
   if (t.rfind("vector<", 0) == 0) {
     return std::string(t.substr(7, t.size() - 8));
   }
   return "";
+}
+
+Result Recognize(const std::string& srcloc, const Attribute& a) {
+  if (a.name == "default") {
+    if (a.value.empty()) {
+      return Error(srcloc, Format("Attribute @default requires a value."));
+    }
+    return Result::Ok();
+  }
+  if (a.name == "formerly") {
+    if (a.value.empty()) {
+      return Error(srcloc, Format("Attribute @formerly requires a value."));
+    }
+    return Result::Ok();
+  }
+  if (a.name == "retired") {
+    if (!a.value.empty()) {
+      return Error(srcloc, Format("Attribute @retired does not take a value."));
+    }
+    return Result::Ok();
+  }
+  return Error(srcloc, Format("Unrecognized attribute [{}]", a.name));
 }
 
 }  // namespace
@@ -280,6 +306,49 @@ Result VerifyNoGeneratedNameCollision(const CapsuleFile& cf) {
   return ret;
 }
 
+Result VerifyRecognizedAttributes(const CapsuleFile& cf) {
+  Result ret = Result::Ok();
+  for (const auto& c : cf.capsules) {
+    for (const auto& f : c.fields) {
+      std::set<std::string> as;
+      for (const auto& a : f.attributes) {
+        Accumulate(&ret, Recognize(f.srcloc, a));
+        if (as.find(a.name) != as.end()) {
+          Accumulate(&ret, Error(f.srcloc,
+                                 Format("Attribute [{}] appears redundantly.",
+                                        a.name)));
+        }
+        as.insert(a.name);
+      }
+    }
+  }
+  return ret;
+}
+
+Result VerifyNoDefaultsOnVectorsOrCapsules(const CapsuleFile& cf) {
+  Result ret = Result::Ok();
+  auto has_default = [](const Field& f) -> bool {
+    for (const auto& a : f.attributes) {
+      if (a.name == "default") return true;
+    }
+    return false;
+  };
+
+  for (const auto& c : cf.capsules) {
+    for (const auto& f : c.fields) {
+      if (!has_default(f)) continue;
+      if (IsVectorType(f.type) || IsCapsuleType(f.type)) {
+        Accumulate(
+            &ret, Error(f.srcloc,
+                        Format("@default attributes are nonsense on vector and "
+                               "capsule types, e.g., [{}]",
+                               f.type)));
+      }
+    }
+  }
+  return ret;
+}
+
 Result Verify(const CapsuleFile& cf) {
   Result ret = Result::Ok();
   Accumulate(&ret, VerifyAtLeastOneCapsule(cf));
@@ -288,6 +357,8 @@ Result Verify(const CapsuleFile& cf) {
   Accumulate(&ret, VerifyNamesDistinctFromTypes(cf));
   Accumulate(&ret, VerifyNamesNotVerboten(cf));
   Accumulate(&ret, VerifyNoGeneratedNameCollision(cf));
+  Accumulate(&ret, VerifyRecognizedAttributes(cf));
+  Accumulate(&ret, VerifyNoDefaultsOnVectorsOrCapsules(cf));
   return ret;
 }
 

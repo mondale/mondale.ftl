@@ -41,9 +41,9 @@ Result ComputeHashes(Field* f) {
   v.push_back(core::ComputeCRC32C(f->name));
 
   // Find legacy field names and hash them too.
-  TRY(ForEachAttribute(f->attributes, "former_name",
-                       [&v](const std::string& former_name) {
-                         v.push_back(core::ComputeCRC32C(former_name));
+  TRY(ForEachAttribute(f->attributes, "formerly",
+                       [&v](const std::string& formerly) {
+                         v.push_back(core::ComputeCRC32C(formerly));
                          return Result::Ok();
                        }));
   return Result::Ok();
@@ -67,7 +67,7 @@ std::vector<std::string> FindCollisionsWith(core::CRC32C h, const Field& f) {
   std::vector<std::string> collisions;
   if (core::ComputeCRC32C(f.name) == h) collisions.push_back(f.name);
   for (const auto& a : f.attributes) {
-    if (a.name != "former_name") continue;
+    if (a.name != "formerly") continue;
     if (core::ComputeCRC32C(a.value) == h) collisions.push_back(a.value);
   }
   return collisions;

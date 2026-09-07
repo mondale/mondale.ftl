@@ -2,6 +2,7 @@
 #include "testing/testing.h"
 
 using testing::HasSubstr;
+using testing::IsOk;
 
 namespace capsule {
 
@@ -113,6 +114,80 @@ TEST(CollisionsWithGeneratedFieldVariable) {
   cf.capsules[0].fields[1].name = "blinding_FieldHash";
   EXPECT_THAT(VerifyNoGeneratedNameCollision(cf).ToString(),
               HasSubstr("blinding_FieldHash"));
+}
+
+TEST(RedundantAttr) {
+  CapsuleFile cf;
+  cf.capsules.resize(1);
+  cf.capsules[0].fields.resize(1);
+  cf.capsules[0].fields[0].attributes.resize(2);
+  cf.capsules[0].fields[0].attributes[0].name = "retired";
+  cf.capsules[0].fields[0].attributes[1].name = "retired";
+  EXPECT_THAT(VerifyRecognizedAttributes(cf).ToString(),
+              HasSubstr("Attribute [retired] appears redundantly"));
+}
+
+TEST(UnrecognizedAttr) {
+  CapsuleFile cf;
+  cf.capsules.resize(1);
+  cf.capsules[0].fields.resize(1);
+  cf.capsules[0].fields[0].attributes.resize(1);
+  cf.capsules[0].fields[0].attributes[0].name = "smelly";
+  EXPECT_THAT(VerifyRecognizedAttributes(cf).ToString(),
+              HasSubstr("Unrecognized attribute [smelly]"));
+}
+
+TEST(DefaultNoValue) {
+  CapsuleFile cf;
+  cf.capsules.resize(1);
+  cf.capsules[0].fields.resize(1);
+  cf.capsules[0].fields[0].attributes.resize(1);
+  cf.capsules[0].fields[0].attributes[0].name = "default";
+  EXPECT_THAT(VerifyRecognizedAttributes(cf).ToString(),
+              HasSubstr("Attribute @default requires a value"));
+  cf.capsules[0].fields[0].attributes[0].value = "9";
+  EXPECT_THAT(VerifyRecognizedAttributes(cf), IsOk());
+}
+
+TEST(FormerlyNoValue) {
+  CapsuleFile cf;
+  cf.capsules.resize(1);
+  cf.capsules[0].fields.resize(1);
+  cf.capsules[0].fields[0].attributes.resize(1);
+  cf.capsules[0].fields[0].attributes[0].name = "formerly";
+  EXPECT_THAT(VerifyRecognizedAttributes(cf).ToString(),
+              HasSubstr("Attribute @formerly requires a value"));
+  cf.capsules[0].fields[0].attributes[0].value = "foo";
+  EXPECT_THAT(VerifyRecognizedAttributes(cf), IsOk());
+}
+
+TEST(RetiredAcceptsNoValue) {
+  CapsuleFile cf;
+  cf.capsules.resize(1);
+  cf.capsules[0].fields.resize(1);
+  cf.capsules[0].fields[0].attributes.resize(1);
+  cf.capsules[0].fields[0].attributes[0].name = "retired";
+  cf.capsules[0].fields[0].attributes[0].value = "foo";
+  EXPECT_THAT(VerifyRecognizedAttributes(cf).ToString(),
+              HasSubstr("Attribute @retired does not take a value"));
+  cf.capsules[0].fields[0].attributes[0].value.clear();
+  EXPECT_THAT(VerifyRecognizedAttributes(cf), IsOk());
+}
+
+TEST(NoDefaultOnVectorOrCapsule) {
+  CapsuleFile cf;
+  cf.capsules.resize(1);
+  cf.capsules[0].fields.resize(2);
+  cf.capsules[0].fields[0].type = "vector<u32>";
+  cf.capsules[0].fields[0].attributes.resize(1);
+  cf.capsules[0].fields[0].attributes[0].name = "default";
+  cf.capsules[0].fields[1].type = "Shennanigan";
+  cf.capsules[0].fields[1].attributes.resize(1);
+  cf.capsules[0].fields[1].attributes[0].name = "default";
+  EXPECT_THAT(VerifyNoDefaultsOnVectorsOrCapsules(cf).ToString(),
+              HasSubstr("vector<u32>"));
+  EXPECT_THAT(VerifyNoDefaultsOnVectorsOrCapsules(cf).ToString(),
+              HasSubstr("Shennanigan"));
 }
 
 }  // namespace capsule

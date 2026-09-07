@@ -17,6 +17,8 @@ Result VerifyCapsuleNameUniqueness(const CapsuleFile& cf);
 Result VerifyNamesDistinctFromTypes(const CapsuleFile& cf);
 Result VerifyNamesNotVerboten(const CapsuleFile& cf);
 Result VerifyNoGeneratedNameCollision(const CapsuleFile& cf);
+Result VerifyRecognizedAttributes(const CapsuleFile& cf);
+Result VerifyNoDefaultsOnVectorsOrCapsules(const CapsuleFile& cf);
 
 }  // namespace capsule
 

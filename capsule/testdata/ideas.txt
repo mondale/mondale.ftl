@@ -1,5 +1,0 @@
-unrecognized attributes
-
-attributes on bullshit combiantiosn, e.g., defaults on vectors
-
-retired field is checked for name collision with new field

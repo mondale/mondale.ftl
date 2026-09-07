@@ -27,7 +27,7 @@ capsule FullFeature {
   vector<LittlePair> little_stuff
 
   @default(42)
-  @former_name(legacy_count)
+  @formerly(legacy_count)
   u32 count
 
   @retired
