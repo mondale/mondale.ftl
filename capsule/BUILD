@@ -19,8 +19,8 @@ cc_binary(
 
 cc_library(
     name = "compiler",
-    hdrs = ["compiler.h"],
     srcs = ["compiler.cc"],
+    hdrs = ["compiler.h"],
     deps = [
         ":ast",
         ":generator",

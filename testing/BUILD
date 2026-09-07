@@ -91,7 +91,10 @@ cc_library(
     name = "scoped_temp_file",
     srcs = ["scoped_temp_file.cc"],
     hdrs = ["scoped_temp_file.h"],
-    deps = [],
+    deps = [
+        "//core",
+        "//core:file",
+    ],
 )
 
 cc_test(
@@ -100,6 +103,7 @@ cc_test(
     deps = [
         ":scoped_temp_file",
         ":testing",
+        "//core:file",
     ],
 )
 

@@ -4,6 +4,7 @@
 
 #include <string>
 
+#include "core/file.h"
 #include "testing/scoped_temp_file.h"
 #include "testing/testing.h"
 
@@ -37,10 +38,18 @@ TEST(ScopedTempFileDestruction) {
   {
     testing::ScopedTempFile temp_file;
     filename = temp_file.filename();
-    struct stat st;
-    EXPECT_EQ(stat(filename.c_str(), &st), 0);
+    EXPECT_TRUE(core::FileIsReadable(filename));
   }
+  EXPECT_FALSE(core::FileExists(filename));
+}
 
-  struct stat st;
-  EXPECT_NE(stat(filename.c_str(), &st), 0);
+TEST(ScopedTempFileWithContents) {
+  std::string filename;
+  {
+    testing::ScopedTempFile temp_file("Boxcars");
+    filename = temp_file.filename();
+    EXPECT_TRUE(core::FileIsReadable(filename));
+    EXPECT_EQ("Boxcars", core::ReadContentsFromFile(filename).ValueOrDie());
+  }
+  EXPECT_FALSE(core::FileExists(filename));
 }
