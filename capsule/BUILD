@@ -32,8 +32,8 @@ cc_library(
 )
 
 cc_test(
-    name = "compiler_smoke_test",
-    srcs = ["compiler_smoke_test.cc"],
+    name = "compiler_positive_test",
+    srcs = ["compiler_positive_test.cc"],
     deps = [
         ":compiler_smoke_test_capsule",
         "//testing",
