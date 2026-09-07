@@ -1,5 +1,6 @@
 #include <list>
 #include <set>
+#include <unordered_set>
 
 #include "capsule/verify.h"
 
@@ -7,6 +8,24 @@ using strings::Format;
 
 namespace capsule {
 namespace {
+
+std::unordered_set<std::string_view> VerbotenSet() {
+  std::unordered_set<std::string_view> r;
+  static constexpr const char* kNope[] = {
+      // clang-format off
+  "int", "char", "long", "int8_t", "uint8_t", "int16_t", "uint16_t", "int32_t", "uint32_t", "int64_t", "uint64_t",
+  "size_t", "uintptr_t", "intptr_t", "string", "Result", "core", "base", "Log", "capsule", "vector", "string_view",
+  "const", "mutable", "override", "final", "class", "struct", "public", "private", "protected", "operator",
+  "template", "typename", "alignas", "alignof", "and", "and_eq", "asm", "auto", "bitand", "bitor", "bool", "break",
+  "case", "catch", "concept", "constexpr", "consteval", "continue", "delete", "do", "double", "float", "if", "for",
+  "else", "explicit", "goto", "inline", "new", "return", "requires", "signed", "static", "switch", "this", "true",
+  "false", "try", "union", "unsigned", "virtual", "void", "volatile", "namespace", "kTypeHash", "has_", "Decode",
+  "Encode", "ComputeStorageSize", "RefIfNeeded", "CRC32C", "kFieldCount", "MaterializedType", "ViewType",
+      // clang-format on
+  };
+  for (auto x : kNope) r.insert(x);
+  return r;
+}
 
 void Accumulate(Result* acc, const Result& r) {
   if (r.IsOk()) return;
@@ -167,12 +186,108 @@ Result VerifyCapsuleNameUniqueness(const CapsuleFile& cf) {
   return ret;
 }
 
+Result VerifyNamesNotVerboten(const CapsuleFile& cf) {
+  Result ret = Result::Ok();
+
+  // Various C++ reserved words and project vocabulary are verboten.
+  const auto verboten = VerbotenSet();
+  auto is_verboten = [&](const std::string& n) -> bool {
+    return verboten.find(n) != verboten.end();
+  };
+
+  // Don't forget the damn namespace.
+  if (is_verboten(cf.namespace_name)) {
+    Accumulate(&ret, Error(-1, Format("Namespace name [{}] is verboten.",
+                                      cf.namespace_name)));
+  }
+
+  // Capsule names may not be verboten.
+  for (const auto& c : cf.capsules) {
+    if (is_verboten(c.name)) {
+      Accumulate(&ret, Error(c.srcloc,
+                             Format("Capsule name [{}] is verboten.", c.name)));
+    }
+    for (const auto& f : c.fields) {
+      if (is_verboten(f.name)) {
+        Accumulate(&ret, Error(f.srcloc,
+                               Format("Field name [{}] is verboten.", f.name)));
+      }
+    }
+  }
+
+  return ret;
+}
+
+Result VerifyNoGeneratedNameCollision(const CapsuleFile& cf) {
+  Result ret = Result::Ok();
+
+  // From capsule names, we'll create symbols:
+  // CapsuleM, CapsuleV, CapsuleBase
+  //
+  // These types must be unique within the namespace, so these may not be used
+  // as the name for fields. And while it would probably work, it'd be weird to
+  // use those for capsules, so disallow that too.
+  std::set<std::string> nope;
+  auto is_disallowed = [&](const std::string& n) -> bool {
+    return nope.find(n) != nope.end();
+  };
+
+  for (const auto& c : cf.capsules) {
+    nope.insert(c.name + "M");
+    nope.insert(c.name + "V");
+    nope.insert(c.name + "Base");
+  }
+  for (const auto& c : cf.capsules) {
+    if (is_disallowed(c.name)) {
+      Accumulate(&ret,
+                 Error(c.srcloc,
+                       Format("Capsule name [{}] collides with generated name.",
+                              c.name)));
+    }
+    for (const auto& f : c.fields) {
+      if (is_disallowed(f.name)) {
+        Accumulate(&ret,
+                   Error(f.srcloc,
+                         Format("Field name [{}] collides with generated name.",
+                                f.name)));
+      }
+    }
+  }
+
+  nope.clear();  // reusing since it has such a nice name.
+
+  // From field names, we'll generate additional symbols:
+  // _Default, _Index, _FieldHash, has_foo
+  for (const auto& c : cf.capsules) {
+    for (const auto& f : c.fields) {
+      nope.insert(f.name + "_Default");
+      nope.insert(f.name + "_Index");
+      nope.insert(f.name + "_FieldHash");
+      nope.insert("has_" + f.name);
+    }
+  }
+  for (const auto& c : cf.capsules) {
+    for (const auto& f : c.fields) {
+      if (is_disallowed(f.name)) {
+        Accumulate(&ret,
+                   Error(f.srcloc,
+                         Format("Field name [{}] collides with generated name.",
+                                f.name)));
+      }
+    }
+  }
+
+  return ret;
+}
+
 Result Verify(const CapsuleFile& cf) {
   Result ret = Result::Ok();
   Accumulate(&ret, VerifyAtLeastOneCapsule(cf));
   Accumulate(&ret, VerifyTypeSoundness(cf));
   Accumulate(&ret, VerifyCapsuleNameUniqueness(cf));
   Accumulate(&ret, VerifyNamesDistinctFromTypes(cf));
+  Accumulate(&ret, VerifyNamesNotVerboten(cf));
+  Accumulate(&ret, VerifyNoGeneratedNameCollision(cf));
   return ret;
 }
 

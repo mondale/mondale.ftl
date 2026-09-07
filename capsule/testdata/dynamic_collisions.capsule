@@ -1,0 +1,8 @@
+namespace lolz
+
+capsule Cappy {
+  u32 CappyV  // nope
+
+  u64 x
+  u64 x_FieldHash  // nope
+}

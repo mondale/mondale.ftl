@@ -73,4 +73,14 @@ TEST_F(NegativeCompilationFixture, RedundantCapsule) {
        "7: Capsule names must be unique within a capsule definition [Roo].");
 }
 
+TEST_F(NegativeCompilationFixture, VerbotenNames) {
+  Nope("verboten_names.capsule",  //
+       "3: Capsule name [uint64_t] is verboten.");
+}
+
+TEST_F(NegativeCompilationFixture, DynamicVerbotenNames) {
+  Nope("dynamic_collisions.capsule",  //
+       "8: Field name [x_FieldHash] collides with generated name.");
+}
+
 }  // namespace

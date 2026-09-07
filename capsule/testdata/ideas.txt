@@ -1,15 +1,5 @@
-capsule file with name collisions on M, V, _Default, _FieldHash, _TypeHash, has_
-
-capsule file with an extra token somewhere
-
 unrecognized attributes
 
 attributes on bullshit combiantiosn, e.g., defaults on vectors
-
-vector without >
-
-vector with space before <
-
-vector of vector
 
 retired field is checked for name collision with new field

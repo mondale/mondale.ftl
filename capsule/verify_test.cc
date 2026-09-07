@@ -68,4 +68,51 @@ TEST(RepeatedCapsuleNames) {
   EXPECT_THAT(str, HasSubstr("003"));
 }
 
+TEST(VerbotenNames) {
+  CapsuleFile cf;
+  cf.namespace_name = "char";
+  EXPECT_THAT(VerifyNamesNotVerboten(cf).ToString(), HasSubstr("char"));
+
+  cf.namespace_name = "okns";
+  cf.capsules.resize(1);
+  cf.capsules[0].name = "core";
+  EXPECT_THAT(VerifyNamesNotVerboten(cf).ToString(), HasSubstr("core"));
+  cf.capsules[0].name = "Stuff";
+
+  cf.capsules[0].fields.resize(1);
+  cf.capsules[0].fields[0].name = "namespace";
+  EXPECT_THAT(VerifyNamesNotVerboten(cf).ToString(), HasSubstr("namespace"));
+}
+
+TEST(CollisionsWithGeneratedCapsule) {
+  // capsule Foo { ... } capsule FooBase { ... }
+  CapsuleFile cf;
+  cf.capsules.resize(2);
+  cf.capsules[0].name = "Foo";
+  cf.capsules[1].name = "FooBase";
+  EXPECT_THAT(VerifyNoGeneratedNameCollision(cf).ToString(),
+              HasSubstr("FooBase"));
+}
+
+TEST(CollisionsWithGeneratedCapsuleFieldName) {
+  // capsule Foo { u32 FooM }
+  CapsuleFile cf;
+  cf.capsules.resize(1);
+  cf.capsules[0].name = "Foo";
+  cf.capsules[0].fields.resize(1);
+  cf.capsules[0].fields[0].name = "FooM";
+  EXPECT_THAT(VerifyNoGeneratedNameCollision(cf).ToString(), HasSubstr("FooM"));
+}
+
+TEST(CollisionsWithGeneratedFieldVariable) {
+  // capsule Foo { u32 FooM }
+  CapsuleFile cf;
+  cf.capsules.resize(1);
+  cf.capsules[0].fields.resize(2);
+  cf.capsules[0].fields[0].name = "blinding";
+  cf.capsules[0].fields[1].name = "blinding_FieldHash";
+  EXPECT_THAT(VerifyNoGeneratedNameCollision(cf).ToString(),
+              HasSubstr("blinding_FieldHash"));
+}
+
 }  // namespace capsule

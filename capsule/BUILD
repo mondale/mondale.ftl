@@ -38,6 +38,7 @@ cc_test(
     data = [
         "testdata/bogus_type.capsule",
         "testdata/capsule_named_like_primitive.capsule",
+        "testdata/dynamic_collisions.capsule",
         "testdata/field_name_same_as_capsule.capsule",
         "testdata/no_capsules.capsule",
         "testdata/no_closing_brace.capsule",
@@ -46,6 +47,7 @@ cc_test(
         "testdata/small_binary.capsule",
         "testdata/two_namespaces.capsule",
         "testdata/type_named_variable.capsule",
+        "testdata/verboten_names.capsule",
     ],
     deps = [
         ":compiler",

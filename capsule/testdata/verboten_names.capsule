@@ -1,0 +1,5 @@
+namespace int   // verboten
+
+capsule uint64_t {  // verboten
+  u64 Result  // verboten
+}

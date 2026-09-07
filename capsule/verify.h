@@ -15,6 +15,8 @@ Result VerifyAtLeastOneCapsule(const CapsuleFile& cf);
 Result VerifyTypeSoundness(const CapsuleFile& cf);
 Result VerifyCapsuleNameUniqueness(const CapsuleFile& cf);
 Result VerifyNamesDistinctFromTypes(const CapsuleFile& cf);
+Result VerifyNamesNotVerboten(const CapsuleFile& cf);
+Result VerifyNoGeneratedNameCollision(const CapsuleFile& cf);
 
 }  // namespace capsule
 
