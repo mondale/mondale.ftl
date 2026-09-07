@@ -1,6 +1,7 @@
 #include <execinfo.h>
 #include <fcntl.h>
 #include <linux/futex.h>
+#include <pthread.h>
 #include <signal.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -30,6 +31,26 @@ using namespace base::raw_syscalls;
 
 namespace base {
 namespace {
+
+void PreForkHandler() {
+  // we do nothing here
+}
+
+void ParentPostForkHandler() {
+  // we do nothing here, either
+}
+
+std::atomic<bool> global_has_forked{false};
+
+void ChildPostForkHandler() {
+  // Advertise this process as having forked.
+  global_has_forked.store(true, std::memory_order_release);
+}
+
+void SetupForkDetector() {
+  pthread_atfork(&PreForkHandler, &ParentPostForkHandler,
+                 &ChildPostForkHandler);
+}
 
 bool IsLogDirectoryWritable() {
   // mkstemp requires a modifiable character array template
@@ -212,6 +233,10 @@ FlushHook* global_flush_hook = nullptr;
 
 }  // namespace
 
+bool AmIInAForkedSubprocess() {
+  return global_has_forked.load(std::memory_order_acquire);
+}
+
 bool RegisterStartupHook(std::function<void()> fn) {
   GetStartupHooks()->push_back(std::move(fn));
   return true;
@@ -227,6 +252,12 @@ void RegisterLogsFlushHook(std::function<void()> fn) {
 }
 
 void FlushLogs() {
+  if (AmIInAForkedSubprocess()) {
+    std::cerr << "This is a subprocess. Logs no longer operating and cannot be "
+                 "flushed."
+              << std::endl;
+    return;
+  }
   if (nullptr != global_flush_hook) {
     global_flush_hook->fn();
   }
@@ -239,6 +270,7 @@ void Initialize(int argc, char* argv[]) {
   }
 
   RegisterMainThread();
+  SetupForkDetector();
   SetupThreadCaptureHandler();
   SetupDeadlySignalHandler();
 

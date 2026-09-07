@@ -5,8 +5,13 @@
 #include <type_traits>
 #include <utility>
 
+#include "base/source_location.h"
+#include "core/result.h"
+
 // Main APIs:
 //  auto cleanup = util::MakeCleanup([captures]() { DoCleanup(); });
+//
+//  util::DieElegantlyIfNotOk(result);
 //
 // Horrible templates follow.
 
@@ -50,6 +55,11 @@ template <typename F>
 [[nodiscard]] auto MakeCleanup(F&& func) {
   return internal::CleanupGuard<std::decay_t<F>>(std::forward<F>(func));
 }
+
+// Helper to terminate the process elegantly while complaining about 'r' if
+// necessary.
+void DieElegantlyIfNotOk(
+    Result r, base::SourceLocation loc = base::SourceLocation::Current());
 
 }  // namespace core::util
 

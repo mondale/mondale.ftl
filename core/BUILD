@@ -180,7 +180,7 @@ cc_library(
     srcs = ["util.cc"],
     hdrs = ["util.h"],
     compiler_flags = ["-fno-exceptions"],
-    deps = [":result"],
+    deps = [":result", "//base:logging", "//base:process", "//base:source_location",],
 )
 
 cc_test(

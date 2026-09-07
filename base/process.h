@@ -18,6 +18,9 @@ void RegisterLogsFlushHook(std::function<void()> fn);
 // Request to flush logs.
 void FlushLogs();
 
+// Returns true (probably) when you're (probably) in a forked subprocess.
+bool AmIInAForkedSubprocess();
+
 }  // namespace base
 
 #endif  // #ifndef BASE_PROCESS_H_

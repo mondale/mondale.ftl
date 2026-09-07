@@ -33,4 +33,14 @@ TEST(CleanupRawFunctionPointer) {
   EXPECT_EQ(1, global_x);
 }
 
+TEST(ElegantDeathAvoided) { core::util::DieElegantlyIfNotOk(Result::Ok()); }
+
+TEST(ElegantDeathEmbraced) {
+  EXPECT_DEATH(
+      []() {
+        core::util::DieElegantlyIfNotOk(NotFoundError("I cannot go on"));
+      },
+      testing::StderrContains("I cannot go on"));
+}
+
 }  // namespace
