@@ -1,0 +1,6 @@
+namespace n
+
+capsule BadCapsule {
+  u65 not_a_type
+  u64 is_a_type
+}

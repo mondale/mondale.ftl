@@ -1,12 +1,4 @@
-capsule without namespace
-
-capsule file without capsules
-
-capsule file with bogus type
-
-capsule file wite name collisions
-
-capsule that's actually an mp3 or something
+capsule file with name collisions
 
 capsule file with an extra token somewhere
 
@@ -14,3 +6,8 @@ unrecognized attributes
 
 attributes on bullshit combiantiosn, e.g., defaults on vectors
 
+vector without >
+
+vector with space before <
+
+vector of vector

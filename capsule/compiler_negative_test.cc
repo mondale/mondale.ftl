@@ -32,4 +32,24 @@ TEST_F(NegativeCompilationFixture, RequiresAtLeastOneCapsule) {
        "0: No capsules defined.");
 }
 
+TEST_F(NegativeCompilationFixture, NonBinaryFile) {
+  Nope("small_binary.capsule",  //
+       "kStreamFatal");         // not too opinionated
+}
+
+TEST_F(NegativeCompilationFixture, NoNamespace) {
+  Nope("no_namespace.capsule",  //
+       "Expected 'namespace' declaration");
+}
+
+TEST_F(NegativeCompilationFixture, MultipleNamespaces) {
+  Nope("two_namespaces.capsule",  //
+       "9: Error: Expected 'capsule' keyword");
+}
+
+TEST_F(NegativeCompilationFixture, BogusType) {
+  Nope("bogus_type.capsule",  //
+       "5: Unrecognized primitive, vector, or capsule type [u65]");
+}
+
 }  // namespace

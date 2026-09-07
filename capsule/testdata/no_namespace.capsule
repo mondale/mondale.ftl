@@ -1,0 +1,5 @@
+// There's no namespace in here.
+
+capsule MyCapsule {
+  u32 awesome_field
+}

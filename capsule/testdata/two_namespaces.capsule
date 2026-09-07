@@ -1,0 +1,9 @@
+// Can't have more than one namespace
+
+namespace one
+
+capsule Ok {
+  u32 yup
+}
+
+namespace two

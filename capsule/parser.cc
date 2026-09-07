@@ -39,7 +39,7 @@ class Parser::Impl {
   Result MakeError(std::string_view msg) {
     std::string formatted =
         strings::Format("{}:{}: Error: {}", filename_, tok_.line, msg);
-    return Result(Code::kError, formatted);
+    return Result(Code::kStreamFatal, formatted);
   }
 
   ResultOr<Capsule> ParseCapsule() {
