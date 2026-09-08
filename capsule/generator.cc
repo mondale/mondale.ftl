@@ -59,7 +59,6 @@ std::string CppDefaultForType(const std::string& tp) {
 std::string CppDefaultValue(const Field& f) {
   std::string d;
   for (const auto& a : f.attributes) {
-    // TODO - validate that attributes are uniquely specified
     if (a.name != "default") continue;
     d = a.value;
   }
@@ -83,8 +82,26 @@ bool DefaultValueSupported(const Field& f) {
   return !IsVectorType(f.type) && !IsCapsuleType(f.type);
 }
 
+bool FieldHasAttr(const Field& f, std::string_view attr) {
+  for (const auto& a : f.attributes) {
+    if (a.name == attr) return true;
+  }
+  return false;
+}
+
+bool FieldIsRetired(const Field& f) { return FieldHasAttr(f, "retired"); }
+
+int CountNonRetiredFields(const Capsule& c) {
+  int count = 0;
+  for (const auto& f : c.fields) {
+    if (!FieldIsRetired(f)) count++;
+  }
+  return count;
+}
+
 bool RefsStorage(const Capsule& c) {
   for (const auto& f : c.fields) {
+    if (FieldIsRetired(f)) continue;
     if (f.type == "string" || f.type == "vector<string>") return true;
   }
   return false;
@@ -110,8 +127,6 @@ ResultOr<std::string> GenerateHeader(const CapsuleFile& file) {
   oss << "namespace " << file.namespace_name << " {\n\n";
 
   // Struct forward declarations.
-  // TODO -- validate name uniqueness, including after appending M and V and
-  // Base.
   for (const auto& cp : file.capsules) {
     oss << "struct " << cp.name << "M;\n";
     oss << "struct " << cp.name << "V;\n";
@@ -124,16 +139,14 @@ ResultOr<std::string> GenerateHeader(const CapsuleFile& file) {
     oss << "  using MaterializedType = " << cp.name << "M;\n";
     oss << "  using ViewType = " << cp.name << "V;\n";
     oss << "\n";
-    // TODO - validate fields > 0
-    oss << "  static constexpr uint32_t kFieldCount = " << cp.fields.size()
-        << ";\n";
+    oss << "  static constexpr uint32_t kFieldCount = "
+        << CountNonRetiredFields(cp) << ";\n";
 
     // Field hashes.
-    // TODO - validate that fields will not have name collisios when names
-    //        have _FieldHash, _Default, and _Index appended.
     for (int i = 0; i < cp.fields.size(); ++i) {
       const auto& f = cp.fields[i];
-      if (cp.fields[i].hashes.empty()) {
+      if (FieldIsRetired(f)) continue;
+      if (f.hashes.empty()) {
         return Result(Code::kInvalidArgument,
                       strings::Format("Field {} missing hashes.", f.name));
       }
@@ -147,6 +160,7 @@ ResultOr<std::string> GenerateHeader(const CapsuleFile& file) {
     for (int i = 0; i < cp.fields.size(); ++i) {
       const auto& f = cp.fields[i];
       if (!DefaultValueSupported(f)) continue;
+      if (FieldIsRetired(f)) continue;
       oss << "  static constexpr " << MapType(f.type) << " " << f.name
           << "_Default = " << CppDefaultValue(f) << ";\n";
     }
@@ -154,6 +168,7 @@ ResultOr<std::string> GenerateHeader(const CapsuleFile& file) {
     // Field indexes.
     for (int i = 0; i < cp.fields.size(); ++i) {
       const auto& f = cp.fields[i];
+      if (FieldIsRetired(f)) continue;
       oss << "  static constexpr int " << f.name << "_Index = " << i << ";\n";
     }
 
@@ -162,6 +177,7 @@ ResultOr<std::string> GenerateHeader(const CapsuleFile& file) {
     // The ever-lovely has_ family of accessors.
     for (int i = 0; i < cp.fields.size(); ++i) {
       const auto& f = cp.fields[i];
+      if (FieldIsRetired(f)) continue;
       oss << "  bool has_" << f.name << "() const { return has_[" << f.name
           << "_Index]; }\n";
     }
@@ -176,8 +192,9 @@ ResultOr<std::string> GenerateHeader(const CapsuleFile& file) {
   // Materialized structs.
   for (const auto& cp : file.capsules) {
     oss << "struct " << cp.name << "M : public " << cp.name << "Base {\n";
-    for (const auto& fd : cp.fields) {
-      oss << "  " << MapType(fd.type) << " " << fd.name << ";\n";
+    for (const auto& f : cp.fields) {
+      if (FieldIsRetired(f)) continue;
+      oss << "  " << MapType(f.type) << " " << f.name << ";\n";
     }
     oss << "\n";
     oss << "  size_t ComputeStorageSize() const;\n";
@@ -189,8 +206,9 @@ ResultOr<std::string> GenerateHeader(const CapsuleFile& file) {
   // View structs.
   for (const auto& cp : file.capsules) {
     oss << "struct " << cp.name << "V : public " << cp.name << "Base {\n";
-    for (const auto& fd : cp.fields) {
-      oss << "  " << TypeToViewType(fd.type) << " " << fd.name << ";\n";
+    for (const auto& f : cp.fields) {
+      if (FieldIsRetired(f)) continue;
+      oss << "  " << TypeToViewType(f.type) << " " << f.name << ";\n";
     }
     oss << "\n";
     if (RefsStorage(cp)) {
@@ -213,6 +231,7 @@ Result EmitDecodeImpl(std::ostringstream& oss, std::string_view class_postfix,
   oss << "  ::core::Code ret = ::core::Code::kOk;\n";
   for (int i = 0; i < cp.fields.size(); ++i) {
     const auto& f = cp.fields[i];
+    if (FieldIsRetired(f)) continue;
     const auto& n = f.name;
     const auto& t = f.type;
     // Find, FindCapsule, FindCapsuleVector, FindStringVector are distinct
@@ -258,6 +277,7 @@ ResultOr<std::string> GenerateSource(const CapsuleFile& file,
     oss << "  ::capsule::SizeBuilder sb;\n";
     for (int i = 0; i < cp.fields.size(); ++i) {
       const auto& f = cp.fields[i];
+      if (FieldIsRetired(f)) continue;
       oss << "  sb.Add(" << f.name << ");\n";
     }
     oss << "  return sb.Build();\n";
@@ -269,6 +289,7 @@ ResultOr<std::string> GenerateSource(const CapsuleFile& file,
     oss << "void " << cp.name << "M::Encode(::capsule::Encoder* e) const {\n";
     for (int i = 0; i < cp.fields.size(); ++i) {
       const auto& f = cp.fields[i];
+      if (FieldIsRetired(f)) continue;
       // AddCapsuleVector is a distinct API in Encoder, probably because I'm bad
       // at templates.
       if (IsCapsuleVectorType(f.type)) {
