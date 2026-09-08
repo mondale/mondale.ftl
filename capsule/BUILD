@@ -67,7 +67,6 @@ cc_test(
 capsule_library(
     name = "compiler_smoke_test_capsule",
     src = "compiler_smoke_test.capsule",
-    visibility = ["//capsule/..."],
 )
 
 cc_library(
@@ -167,6 +166,25 @@ cc_library(
     deps = ["//core:crc32c"],
 )
 
+capsule_library(
+    name = "version_change_capsule",
+    src = "version_change.capsule",
+)
+
+cc_test(
+    name = "version_change_test",
+    srcs = ["version_change_test.cc"],
+    deps = [
+        ":version_change_capsule",
+        ":decoder",
+        ":encoder",
+        ":storage",
+        ":storage_factory",
+        "//core",
+        "//testing",
+    ],
+)
+
 cc_library(
     name = "view_mapper",
     srcs = ["view_mapper.cc"],
@@ -254,7 +272,6 @@ cc_test(
     srcs = ["by_hand_test.cc"],
     deps = [
         ":abi",
-        ":codec",
         ":decoder",
         ":encoder",
         ":size_builder",

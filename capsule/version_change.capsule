@@ -1,0 +1,23 @@
+namespace capsule_version_change
+
+capsule NewCapsule {
+  u32 unchanged_field
+
+  @formerly(cleverly_named_field)
+  u32 renamed_field
+
+  @retired
+  u32 retired_field
+
+}
+
+capsule OldCapsule {
+  u32 unchanged_field
+  
+  u32 cleverly_named_field
+
+  u32 retired_field
+
+  u32 long_dead_field
+}
+
