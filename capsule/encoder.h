@@ -5,7 +5,6 @@
 
 #include <bit>
 
-#include "capsule/codec.h"
 #include "capsule/size_builder.h"
 #include "core/vocabulary.h"
 
@@ -101,7 +100,7 @@ class Encoder final {
       ErrorSlotOverflow();
       return;
     }
-    auto* const ote = Codec::OteEntryNumber(base_, field_cursor_);
+    auto* const ote = OteEntryNumber(field_cursor_);
     field_cursor_++;
     ote->field_hash = hash;
     ote->value = value;
@@ -387,6 +386,13 @@ class Encoder final {
   void ErrorSlotOverflow();
   void ErrorSubcapsuleLies();
   void SetIfOk(Result r);
+
+  abi::OffsetTableEntry* OteEntryNumber(uint32_t cursor) const {
+    auto* const c = reinterpret_cast<char*>(base_);
+    auto* const first_ote =
+        reinterpret_cast<abi::OffsetTableEntry*>(c + sizeof(abi::Header));
+    return first_ote + cursor;
+  }
 
   Encoder* const parent_;
   void* const base_;

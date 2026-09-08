@@ -1,4 +1,3 @@
-#include "capsule/codec.h"
 #include "capsule/encoder.h"
 
 namespace capsule {
@@ -8,7 +7,8 @@ Encoder::Encoder(void* base, size_t length, uint32_t field_count, Encoder* p)
       base_(base),
       payload_cursor_(sizeof(abi::Header) +
                       sizeof(abi::OffsetTableEntry) * field_count),
-      payload_bytes_remain_(Codec::PayloadAreaSize(length, field_count)),
+      payload_bytes_remain_(length - sizeof(abi::Header) -
+                            sizeof(abi::OffsetTableEntry) * field_count),
       field_cursor_(0),
       field_count_(field_count),
       encoding_result_() {

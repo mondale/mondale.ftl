@@ -230,7 +230,6 @@ cc_library(
     hdrs = ["encoder.h"],
     visibility = ["//..."],
     deps = [
-        ":codec",
         ":size_builder",
         "//core",
     ],
