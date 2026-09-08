@@ -154,6 +154,11 @@ ResultOr<std::string> GenerateHeader(const CapsuleFile& file) {
       oss << "  static constexpr ::core::CRC32C " << f.name
           << "_FieldHash = ::core::CRC32C(0x" << std::hex << f.hashes[0].value()
           << "u);\n";
+      for (int i = 1; i < f.hashes.size(); ++i) {
+        oss << "  static constexpr ::core::CRC32C " << f.name << "_FieldHash"
+            << i << " = ::core::CRC32C(0x" << std::hex << f.hashes[i].value()
+            << "u);\n";
+      }
     }
 
     // Field defaults.
@@ -236,26 +241,30 @@ Result EmitDecodeImpl(std::ostringstream& oss, std::string_view class_postfix,
     const auto& t = f.type;
     // Find, FindCapsule, FindCapsuleVector, FindStringVector are distinct
     // APIs on Decode b/c I am bad at templates.
-    if (IsCapsuleVectorType(t)) {
-      oss << "  ret.Incorporate(d->FindCapsuleVector(" << n << "_FieldHash, &"
-          << n << ", has_[" << n << "_Index]));\n";
-    } else if (IsStringVectorType(t)) {
-      oss << "  ret.Incorporate(d->FindStringVector(" << n << "_FieldHash, &"
-          << n << ", has_[" << n << "_Index]));\n";
-    } else if (IsCapsuleType(t)) {
-      oss << "  ret.Incorporate(d->FindCapsule(" << n << "_FieldHash, &" << n
-          << ", " << n << ", has_[" << n << "_Index]));\n";
-    } else {  // primitive type
-      if (!DefaultValueSupported(f)) {
-        return Result(
-            Code::kUnimplemented,
-            strings::Format("Type [{}] does not support a default type and "
-                            "yet has no recognized Decode API.",
-                            t));
+    oss << "  ";
+    auto emit = [&](const std::string& fh) {
+      if (IsCapsuleVectorType(t)) {
+        oss << "ret.Incorporate(d->FindCapsuleVector(" << fh << ", &" << n
+            << ", has_[" << n << "_Index]));\n";
+      } else if (IsStringVectorType(t)) {
+        oss << "ret.Incorporate(d->FindStringVector(" << fh << ", &" << n
+            << ", has_[" << n << "_Index]));\n";
+      } else if (IsCapsuleType(t)) {
+        oss << "ret.Incorporate(d->FindCapsule(" << fh << ", &" << n << ", "
+            << n << ", has_[" << n << "_Index]));\n";
+      } else {  // primitive type
+        oss << "ret.Incorporate(d->Find<decltype(" << n << ")>(" << fh << ", &"
+            << n << ", " << n << "_Default, has_[" << n << "_Index]));\n";
       }
-      oss << "  ret.Incorporate(d->Find<decltype(" << n << ")>(" << n
-          << "_FieldHash, &" << n << ", " << n << "_Default, has_[" << n
-          << "_Index]));\n";
+    };
+    emit(n + "_FieldHash");
+
+    // Support for formerly attribute.
+    for (int i = 1; i < f.hashes.size(); ++i) {
+      // if (!has_[foo_Index]) ret.Incor(... FieldHash1);
+      oss << "  if (!has_[" << n << "_Index]) ";
+      std::string fhi = strings::Format("{}_FieldHash{}", n, i);
+      emit(fhi);
     }
   }
   oss << "  return ret;\n";
