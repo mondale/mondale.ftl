@@ -19,7 +19,7 @@ TEST(VersionChangeThroughSerialization) {
 
   const auto size = o.ComputeStorageSize();
   auto fac = capsule::NewHeapStorageFactory().ValueOrDie();
-  auto storage = capsule::Storage::Allocate(fac.get(), size).ValueOrDie();
+  auto storage = capsule::Storage::Allocate(fac, size).ValueOrDie();
   auto* const base = storage->DataAsPtrTo<void>();
   capsule::Encoder e(base, size,
                      capsule_version_change::OldCapsuleM::kFieldCount);

@@ -29,8 +29,8 @@ class HeapStorageFactory final : public StorageFactory {
 StorageFactory::~StorageFactory() {}
 StorageSpan::~StorageSpan() {}
 
-ResultOr<std::unique_ptr<StorageFactory>> NewHeapStorageFactory() {
-  return {std::make_unique<HeapStorageFactory>()};
+ResultOr<std::shared_ptr<StorageFactory>> NewHeapStorageFactory() {
+  return {std::make_shared<HeapStorageFactory>()};
 }
 
 }  // namespace capsule

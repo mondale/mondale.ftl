@@ -41,7 +41,7 @@ class StorageFactory {
 };
 
 // Returns a simple StorageFactory that just uses the C++ heap.
-ResultOr<std::unique_ptr<StorageFactory>> NewHeapStorageFactory();
+ResultOr<std::shared_ptr<StorageFactory>> NewHeapStorageFactory();
 
 }  // namespace capsule
 

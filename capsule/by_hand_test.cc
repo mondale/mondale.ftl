@@ -581,7 +581,7 @@ void RunTranscodeTest(std::unique_ptr<CAPSULE> m) {
   // Allocate the necessary storage size.
   auto fac = capsule::NewHeapStorageFactory().ValueOrDie();
   auto storage =
-      capsule::Storage::Allocate(fac.get(), capsule_storage_size).ValueOrDie();
+      capsule::Storage::Allocate(fac, capsule_storage_size).ValueOrDie();
   ASSERT_EQ(capsule_storage_size, storage->n());
   auto* const base = storage->template DataAsPtrTo<void>();
   ASSERT_EQ(reinterpret_cast<uintptr_t>(base) % 8, 0);

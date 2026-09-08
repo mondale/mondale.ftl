@@ -11,8 +11,8 @@ namespace capsule {
 class Storage final {
  public:
   // Prefer this method when constucting a View.
-  static ResultOr<std::shared_ptr<Storage>> Allocate(StorageFactory* f,
-                                                     size_t n);
+  static ResultOr<std::shared_ptr<Storage>> Allocate(
+      std::shared_ptr<StorageFactory> f, size_t n);
 
   template <typename T>
   T* DataAsPtrTo() const {

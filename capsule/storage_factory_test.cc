@@ -12,16 +12,16 @@ using capsule::StorageFactory;
 using capsule::StorageSpan;
 
 TEST(HeapStorageFactoryTest_CreateFactory) {
-  ResultOr<std::unique_ptr<StorageFactory>> factory_result =
+  ResultOr<std::shared_ptr<StorageFactory>> factory_result =
       NewHeapStorageFactory();
   ASSERT_TRUE(factory_result.IsOk());
-  std::unique_ptr<StorageFactory> factory =
+  std::shared_ptr<StorageFactory> factory =
       std::move(factory_result).ValueOrDie();
   EXPECT_NE(factory, nullptr);
 }
 
 TEST(HeapStorageFactoryTest_AllocateSpan) {
-  std::unique_ptr<StorageFactory> factory =
+  std::shared_ptr<StorageFactory> factory =
       NewHeapStorageFactory().ValueOrDie();
 
   ResultOr<std::unique_ptr<StorageSpan>> span_result = factory->NewSpan(64);
@@ -34,7 +34,7 @@ TEST(HeapStorageFactoryTest_AllocateSpan) {
 }
 
 TEST(HeapStorageFactoryTest_AllocateZeroBytes) {
-  std::unique_ptr<StorageFactory> factory =
+  std::shared_ptr<StorageFactory> factory =
       NewHeapStorageFactory().ValueOrDie();
 
   ResultOr<std::unique_ptr<StorageSpan>> span_result = factory->NewSpan(0);
@@ -46,7 +46,7 @@ TEST(HeapStorageFactoryTest_AllocateZeroBytes) {
 }
 
 TEST(HeapStorageFactoryTest_ConcurrentAllocation) {
-  std::unique_ptr<StorageFactory> factory =
+  std::shared_ptr<StorageFactory> factory =
       NewHeapStorageFactory().ValueOrDie();
 
   constexpr int kNumThreads = 4;
