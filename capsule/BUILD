@@ -251,7 +251,6 @@ cc_library(
     visibility = ["//..."],
     deps = [
         ":abi",
-        ":codec",
         ":view_mapper",
         "//core",
     ],

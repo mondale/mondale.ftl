@@ -7,7 +7,6 @@
 #include <string_view>
 #include <vector>
 
-#include "capsule/codec.h"
 #include "capsule/view_mapper.h"
 #include "core/vocabulary.h"
 
@@ -184,7 +183,7 @@ class Decoder final {
     // Code is OK, indirect to get the 64b primitive.
     if (ptr > (length_ - 8)) return Code::kCapsuleFatal;
     if ((ptr % 8) != 0) return Code::kCapsuleFatal;
-    *out = ProperCast64<A64>(*Codec::AtPtr<const uint64_t>(base_, ptr));
+    *out = ProperCast64<A64>(*AtPtr<const uint64_t>(ptr));
     present = true;
     return Code::kOk;
   }
@@ -214,10 +213,10 @@ class Decoder final {
     const auto code = vm_.Lookup(h, &ptr);
     if (Code::kOk == code) {
       if (ptr > (length_ - 4)) return Code::kCapsuleFatal;
-      const uint32_t str_len = *Codec::AtPtr<const uint32_t>(base_, ptr);
+      const uint32_t str_len = *AtPtr<const uint32_t>(ptr);
       if (str_len > length_) return Code::kCapsuleFatal;
       if ((ptr + 4 + str_len) > length_) return Code::kCapsuleFatal;
-      const char* const s = Codec::AtPtr<const char>(base_, ptr + 4);
+      const char* const s = AtPtr<const char>(ptr + 4);
       *out = std::string_view(s, str_len);
       present = true;
       return Code::kOk;
@@ -275,7 +274,7 @@ class Decoder final {
 
     if (ptr > (length_ - sizeof(abi::VectorHeader))) return Code::kCapsuleFatal;
     if ((ptr % 8) != 0) return Code::kCapsuleFatal;
-    const auto* const vh = Codec::AtPtr<const abi::VectorHeader>(base_, ptr);
+    const auto* const vh = AtPtr<const abi::VectorHeader>(ptr);
     if (vh->padding != 0xda4eda4eu) return Code::kCapsuleFatal;
     const uint32_t element_count = vh->element_count;
     out->resize(element_count);
@@ -283,12 +282,12 @@ class Decoder final {
     present = true;
 
     for (uint32_t i = 0; i < element_count; ++i) {
-      const uint32_t string_length = *Codec::AtPtr<const uint32_t>(base_, ptr);
+      const uint32_t string_length = *AtPtr<const uint32_t>(ptr);
       uint32_t str_ptr = ptr + sizeof(uint32_t);
       if (string_length > length_) return Code::kCapsuleFatal;
       if (str_ptr > (length_ - string_length)) return Code::kCapsuleFatal;
-      SetStringValueHelper(
-          &out->at(i), Codec::AtPtr<const char>(base_, str_ptr), string_length);
+      SetStringValueHelper(&out->at(i), AtPtr<const char>(str_ptr),
+                           string_length);
       ptr += (string_length + sizeof(uint32_t) + 7) / 8 * 8;
     }
     return Code::kOk;
@@ -336,7 +335,7 @@ class Decoder final {
     }
     if (ptr > (length_ - sizeof(abi::VectorHeader))) return Code::kCapsuleFatal;
     if ((ptr % 8) != 0) return Code::kCapsuleFatal;
-    const auto* const vh = Codec::AtPtr<const abi::VectorHeader>(base_, ptr);
+    const auto* const vh = AtPtr<const abi::VectorHeader>(ptr);
     if (vh->padding != 0xda4eda4eu) return Code::kCapsuleFatal;
     const uint32_t element_count = vh->element_count;
     out->resize(element_count);
@@ -344,7 +343,7 @@ class Decoder final {
     present = true;
 
     for (uint32_t i = 0; i < element_count; ++i) {
-      const auto* const h = Codec::AtPtr<const abi::Header>(base_, ptr);
+      const auto* const h = AtPtr<const abi::Header>(ptr);
       const uint32_t subcapsule_length = h->capsule_length;
       if (subcapsule_length > length_) return Code::kCapsuleFatal;
       if (ptr > (length_ - subcapsule_length)) return Code::kCapsuleFatal;
@@ -360,6 +359,11 @@ class Decoder final {
   }
 
  private:
+  template <typename T>
+  T* AtPtr(uint32_t ptr) const {
+    return reinterpret_cast<T*>(reinterpret_cast<const char*>(base_) + ptr);
+  }
+
   const void* const base_;
   size_t length_;
   ViewMapper vm_;

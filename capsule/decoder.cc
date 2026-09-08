@@ -34,7 +34,7 @@ ResultOr<Decoder> Decoder::Build(const void* base, size_t memory_length) {
   if (memory_length < sizeof(abi::Header)) {
     return ErrorInsufficientMemoryLength(memory_length);
   }
-  const auto* const header = Codec::AtPtr<const abi::Header>(base, 0);
+  const auto* const header = reinterpret_cast<const abi::Header*>(base);
   const uint32_t otes = header->offset_table_count;
   const uint32_t length = header->capsule_length;
   if (length > memory_length) {
@@ -49,9 +49,9 @@ ResultOr<Decoder> Decoder::Build(const void* base, size_t memory_length) {
 
   Decoder d(base);
   d.length_ = length;
-  TRY_ASSIGN(d.vm_, ViewMapper::Build(Codec::AtPtr<const abi::OffsetTableEntry>(
-                                          base, sizeof(abi::Header)),
-                                      otes));
+  const auto* const ote = reinterpret_cast<const abi::OffsetTableEntry*>(
+      reinterpret_cast<const char*>(base) + sizeof(abi::Header));
+  TRY_ASSIGN(d.vm_, ViewMapper::Build(ote, otes));
   return d;
 }
 

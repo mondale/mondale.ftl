@@ -19,9 +19,6 @@ class Codec final {
   }
 
  private:
-  static uint32_t* DwordRelative(void* base, uint32_t count) {
-    return reinterpret_cast<uint32_t*>(base) + count;
-  }
 };
 
 }  // namespace capsule
