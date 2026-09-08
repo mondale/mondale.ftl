@@ -3,6 +3,8 @@ namespace capsule_version_change
 capsule NewCapsule {
   u32 unchanged_field
 
+  // This field will decode the value of 'cleverly_named_field' on an
+  // OldCapsule.
   @formerly(cleverly_named_field)
   u32 renamed_field
 
