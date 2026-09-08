@@ -246,6 +246,9 @@ Result NotFoundError(std::string_view msg, base::SourceLocation loc =
 Result PermissionError(
     std::string_view msg,
     base::SourceLocation loc = base::SourceLocation::Current());
+Result CapsuleFatalError(
+    std::string_view msg,
+    base::SourceLocation loc = base::SourceLocation::Current());
 
 template <typename T>
 class [[nodiscard]] ResultOr;

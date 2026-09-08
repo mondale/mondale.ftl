@@ -321,3 +321,31 @@ cc_test(
         "//testing",
     ],
 )
+
+cc_library(
+  name = "capsule",
+  hdrs = ["capsule.h"],
+  srcs = ["capsule.cc"],
+  deps = [
+          ":encoder",
+          ":decoder",
+          ":storage",
+          "//core",
+  ],
+)
+
+capsule_library(
+    name = "capsule_test_capsule",
+    src = "capsule_test.capsule",
+)
+
+cc_test(
+  name = "capsule_test",
+  srcs = ["capsule_test.cc"],
+  deps = [":capsule",
+          ":capsule_test_capsule",
+          ":storage_factory",
+          "//testing",
+          "//core",
+  ],
+)

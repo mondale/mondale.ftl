@@ -141,4 +141,8 @@ Result PermissionError(std::string_view msg, base::SourceLocation loc) {
   return MakeError(Code::kPermission, msg, loc);
 }
 
+Result CapsuleFatalError(std::string_view msg, base::SourceLocation loc) {
+  return MakeError(Code::kCapsuleFatal, msg, loc);
+}
+
 }  // namespace core
