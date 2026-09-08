@@ -7,11 +7,32 @@
 
 namespace capsule::abi {
 
+// This only goes [0-7].
+enum class FrameType {
+  kReserved = 0,
+  kChecksummed = 1,
+  kFurtureUse0 = 2,  // future encrypted?
+  kFurtureUse1 = 3,
+  kFurtureUse2 = 4,
+  kFurtureUse3 = 5,
+  kFurtureUse4 = 6,
+  kFurtureUse5 = 7,
+};
+
 struct FrameHeader final {
   core::CRC32C capsule_id_hash;
-  uint32_t frame_length;
+  uint32_t frame_length : 29;
+  uint32_t frame_type : 3;
 };
 static_assert(sizeof(FrameHeader) == 8, "FrameHeader needs to be 2 DWORDS.");
+
+struct ChecksummedFrameFooter final {
+  uint32_t reiterated_frame_length : 29;
+  uint32_t reiterated_frame_type : 3;
+  core::CRC32C frame_crc;
+};
+static_assert(sizeof(ChecksummedFrameFooter) == 8,
+              "ChecksummedFrameFooter needs to be 2 DWORDS.");
 
 struct Header final {
   uint32_t offset_table_count;

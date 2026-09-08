@@ -18,16 +18,21 @@ struct FramedCapsule {
   capsule::abi::Header ih;
   capsule::abi::OffsetTableEntry ot[3];
   uint64_t data[8];
-  core::CRC32C crc;
+  capsule::abi::ChecksummedFrameFooter cff;
 };
 
 std::unique_ptr<FramedCapsule> MakeUnsignedOkFramedCapsule() {
   auto c = std::make_unique<FramedCapsule>();
   memset(c.get(), 0, sizeof(*c));
   c->fh.frame_length = sizeof(FramedCapsule);
+  c->fh.frame_type =
+      static_cast<uint32_t>(capsule::abi::FrameType::kChecksummed);
   c->ih.capsule_length = sizeof(FramedCapsule) -
                          sizeof(capsule::abi::FrameHeader) -
-                         sizeof(core::CRC32C);
+                         sizeof(capsule::abi::ChecksummedFrameFooter);
+  c->cff.reiterated_frame_type =
+      static_cast<uint32_t>(capsule::abi::FrameType::kChecksummed);
+  c->cff.reiterated_frame_length = sizeof(FramedCapsule);
   c->ih.offset_table_count = 3;
   for (int i = 0; i < 3; ++i) {
     c->ot[i].value = offsetof(FramedCapsule, data[i]);
@@ -58,7 +63,18 @@ TEST(MinLength) {
 TEST(LengthCongruency) {
   auto c = MakeUnsignedOkFramedCapsule();
   ASSERT_THAT(Codec::Validate(c.get(), sizeof(FramedCapsule) - 1).ToString(),
-              HasSubstr("not a multiple of 4"));
+              HasSubstr("not a multiple of 8"));
+}
+
+TEST(TypeChecks) {
+  auto c = MakeUnsignedOkFramedCapsule();
+  c->fh.frame_type = 0;
+  ASSERT_THAT(Codec::Validate(c.get(), sizeof(FramedCapsule)).ToString(),
+              HasSubstr("frame type"));
+  c->fh.frame_type = c->cff.reiterated_frame_type;
+  c->cff.reiterated_frame_type = 0;
+  ASSERT_THAT(Codec::Validate(c.get(), sizeof(FramedCapsule)).ToString(),
+              HasSubstr("frame type"));
 }
 
 TEST(LengthAgreement) {
@@ -69,6 +85,9 @@ TEST(LengthAgreement) {
   c->ih.capsule_length--;
   ASSERT_THAT(Codec::Validate(c.get(), sizeof(FramedCapsule) + 8).ToString(),
               HasSubstr("differs from memory"));
+  c->cff.reiterated_frame_length--;
+  ASSERT_THAT(Codec::Validate(c.get(), sizeof(FramedCapsule)).ToString(),
+              HasSubstr("footer-encoded"));
 }
 
 TEST(OteCount) {
