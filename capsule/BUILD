@@ -139,9 +139,9 @@ cc_test(
 )
 
 cc_library(
-    name = "codec",
-    srcs = ["codec.cc"],
-    hdrs = ["codec.h"],
+    name = "framing",
+    srcs = ["framing.cc"],
+    hdrs = ["framing.h"],
     deps = [
         ":abi",
         "//core",
@@ -150,11 +150,11 @@ cc_library(
 )
 
 cc_test(
-    name = "codec_test",
-    srcs = ["codec_test.cc"],
+    name = "framing_test",
+    srcs = ["framing_test.cc"],
     deps = [
         ":abi",
-        ":codec",
+        ":framing",
         "//testing",
     ],
 )

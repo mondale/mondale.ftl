@@ -1,5 +1,5 @@
 #include "capsule/abi.h"
-#include "capsule/codec.h"
+#include "capsule/framing.h"
 #include "core/crc32c.h"
 
 using core::CRC32C;
@@ -134,7 +134,7 @@ Result ValidateCrc(void* base, size_t n) {
 }  // namespace
 
 // static
-Result Codec::Validate(void* base, size_t n) {
+Result Framing::Validate(void* base, size_t n) {
   TRY(ValidateAlignment(base));
   TRY(ValidateMinLength(n));
   TRY(ValidateLengthMultiple(n));
@@ -149,7 +149,7 @@ Result Codec::Validate(void* base, size_t n) {
 }
 
 // static
-Result Codec::Sign(void* base, size_t n) {
+Result Framing::Sign(void* base, size_t n) {
   TRY(ValidateAlignment(base));
   TRY(ValidateMinLength(n));
   auto* const header = To<abi::FrameHeader>(base);

@@ -4,10 +4,10 @@
 #include <memory>
 
 #include "capsule/abi.h"
-#include "capsule/codec.h"
+#include "capsule/framing.h"
 #include "testing/testing.h"
 
-using capsule::Codec;
+using capsule::Framing;
 using testing::HasSubstr;
 using testing::IsOk;
 
@@ -42,67 +42,67 @@ std::unique_ptr<FramedCapsule> MakeUnsignedOkFramedCapsule() {
 
 TEST(SignAndValidate) {
   auto c = MakeUnsignedOkFramedCapsule();
-  ASSERT_THAT(Codec::Sign(c.get(), sizeof(FramedCapsule)), IsOk());
-  ASSERT_THAT(Codec::Validate(c.get(), sizeof(FramedCapsule)), IsOk());
+  ASSERT_THAT(Framing::Sign(c.get(), sizeof(FramedCapsule)), IsOk());
+  ASSERT_THAT(Framing::Validate(c.get(), sizeof(FramedCapsule)), IsOk());
 }
 
 TEST(UnalignedAddress) {
   auto c = MakeUnsignedOkFramedCapsule();
-  ASSERT_THAT(Codec::Validate(reinterpret_cast<char*>(c.get()) + 1,
-                              sizeof(FramedCapsule) - 3)
+  ASSERT_THAT(Framing::Validate(reinterpret_cast<char*>(c.get()) + 1,
+                                sizeof(FramedCapsule) - 3)
                   .ToString(),
               HasSubstr("Storage address"));
 }
 
 TEST(MinLength) {
   auto c = MakeUnsignedOkFramedCapsule();
-  ASSERT_THAT(Codec::Validate(c.get(), 4).ToString(),
+  ASSERT_THAT(Framing::Validate(c.get(), 4).ToString(),
               HasSubstr("less than minimum"));
 }
 
 TEST(LengthCongruency) {
   auto c = MakeUnsignedOkFramedCapsule();
-  ASSERT_THAT(Codec::Validate(c.get(), sizeof(FramedCapsule) - 1).ToString(),
+  ASSERT_THAT(Framing::Validate(c.get(), sizeof(FramedCapsule) - 1).ToString(),
               HasSubstr("not a multiple of 8"));
 }
 
 TEST(TypeChecks) {
   auto c = MakeUnsignedOkFramedCapsule();
   c->fh.frame_type = 0;
-  ASSERT_THAT(Codec::Validate(c.get(), sizeof(FramedCapsule)).ToString(),
+  ASSERT_THAT(Framing::Validate(c.get(), sizeof(FramedCapsule)).ToString(),
               HasSubstr("frame type"));
   c->fh.frame_type = c->cff.reiterated_frame_type;
   c->cff.reiterated_frame_type = 0;
-  ASSERT_THAT(Codec::Validate(c.get(), sizeof(FramedCapsule)).ToString(),
+  ASSERT_THAT(Framing::Validate(c.get(), sizeof(FramedCapsule)).ToString(),
               HasSubstr("frame type"));
 }
 
 TEST(LengthAgreement) {
   auto c = MakeUnsignedOkFramedCapsule();
   c->ih.capsule_length++;
-  ASSERT_THAT(Codec::Validate(c.get(), sizeof(FramedCapsule)).ToString(),
+  ASSERT_THAT(Framing::Validate(c.get(), sizeof(FramedCapsule)).ToString(),
               HasSubstr("inconsistent with inner capsule length"));
   c->ih.capsule_length--;
-  ASSERT_THAT(Codec::Validate(c.get(), sizeof(FramedCapsule) + 8).ToString(),
+  ASSERT_THAT(Framing::Validate(c.get(), sizeof(FramedCapsule) + 8).ToString(),
               HasSubstr("differs from memory"));
   c->cff.reiterated_frame_length--;
-  ASSERT_THAT(Codec::Validate(c.get(), sizeof(FramedCapsule)).ToString(),
+  ASSERT_THAT(Framing::Validate(c.get(), sizeof(FramedCapsule)).ToString(),
               HasSubstr("footer-encoded"));
 }
 
 TEST(OteCount) {
   auto c = MakeUnsignedOkFramedCapsule();
   c->ih.offset_table_count = 0;
-  ASSERT_THAT(Codec::Validate(c.get(), sizeof(FramedCapsule)).ToString(),
+  ASSERT_THAT(Framing::Validate(c.get(), sizeof(FramedCapsule)).ToString(),
               HasSubstr("encodes empty offset table"));
   c->ih.offset_table_count = 9999;
-  ASSERT_THAT(Codec::Validate(c.get(), sizeof(FramedCapsule)).ToString(),
+  ASSERT_THAT(Framing::Validate(c.get(), sizeof(FramedCapsule)).ToString(),
               HasSubstr("encodes offset table count [9999]"));
 }
 
 TEST(CrcFail) {
   auto c = MakeUnsignedOkFramedCapsule();
-  ASSERT_THAT(Codec::Validate(c.get(), sizeof(FramedCapsule)).ToString(),
+  ASSERT_THAT(Framing::Validate(c.get(), sizeof(FramedCapsule)).ToString(),
               HasSubstr("CRC32C"));
 }
 
