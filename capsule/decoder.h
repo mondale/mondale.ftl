@@ -294,12 +294,11 @@ class Decoder final {
   }
 
   template <typename C>
-  Code FindCapsule(core::CRC32C h, C* out, const C& def,
+  Code FindCapsule(core::CRC32C h, C* out,
                    std::vector<bool>::reference present) const {
     uint32_t ptr = 0;
     const auto code = vm_.Lookup(h, &ptr);
     if (Code::kNotFound == code) {
-      *out = def;
       present = false;
       return Code::kOk;
     } else if (Code::kOk != code) {

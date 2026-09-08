@@ -9,7 +9,6 @@ namespace {
 
 using capsule::NewHeapStorageFactory;
 using capsule::StorageFactory;
-using capsule::StorageSpan;
 
 TEST(HeapStorageFactoryTest_CreateFactory) {
   ResultOr<std::shared_ptr<StorageFactory>> factory_result =
@@ -20,29 +19,12 @@ TEST(HeapStorageFactoryTest_CreateFactory) {
   EXPECT_NE(factory, nullptr);
 }
 
-TEST(HeapStorageFactoryTest_AllocateSpan) {
+TEST(HeapStorageFactoryTest_AllocateAlloc) {
   std::shared_ptr<StorageFactory> factory =
       NewHeapStorageFactory().ValueOrDie();
 
-  ResultOr<std::unique_ptr<StorageSpan>> span_result = factory->NewSpan(64);
-  ASSERT_TRUE(span_result.IsOk());
-
-  std::unique_ptr<StorageSpan> span = std::move(span_result).ValueOrDie();
-  ASSERT_NE(span, nullptr);
-
-  EXPECT_EQ(span->n(), 64);
-}
-
-TEST(HeapStorageFactoryTest_AllocateZeroBytes) {
-  std::shared_ptr<StorageFactory> factory =
-      NewHeapStorageFactory().ValueOrDie();
-
-  ResultOr<std::unique_ptr<StorageSpan>> span_result = factory->NewSpan(0);
-  ASSERT_TRUE(span_result.IsOk());
-
-  std::unique_ptr<StorageSpan> span = std::move(span_result).ValueOrDie();
-  ASSERT_NE(span, nullptr);
-  EXPECT_EQ(span->n(), 0);
+  auto alloc = factory->NewAlloc(64).ValueOrDie();
+  EXPECT_EQ(alloc->n(), 64);
 }
 
 TEST(HeapStorageFactoryTest_ConcurrentAllocation) {
@@ -58,8 +40,8 @@ TEST(HeapStorageFactoryTest_ConcurrentAllocation) {
   for (int i = 0; i < kNumThreads; ++i) {
     threads.push_back(CreateThread("alloc_thread", [factory = factory.get()]() {
       for (int j = 0; j < kAllocationsPerThread; ++j) {
-        auto span = factory->NewSpan(32).ValueOrDie();
-        CHECK_EQ(span->n(), size_t{32});
+        auto alloc = factory->NewAlloc(32).ValueOrDie();
+        CHECK_EQ(alloc->n(), size_t{32});
       }
     }));
   }

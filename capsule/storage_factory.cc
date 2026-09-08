@@ -5,10 +5,10 @@
 namespace capsule {
 namespace {
 
-class HeapStorageSpan final : public StorageSpan {
+class HeapAlloc final : public StorageFactory::Alloc {
  public:
-  HeapStorageSpan(size_t bytes) : StorageSpan(New(bytes), bytes) {}
-  ~HeapStorageSpan() { std::free(DataAsPtrTo<void>()); }
+  HeapAlloc(size_t bytes) : StorageFactory::Alloc(New(bytes), bytes) {}
+  ~HeapAlloc() { std::free(data()); }
 
  private:
   static size_t RoundUp8(size_t n) { return (n + 7) / 8 * 8; }
@@ -19,15 +19,16 @@ class HeapStorageFactory final : public StorageFactory {
  public:
   ~HeapStorageFactory() override {}
 
-  ResultOr<std::unique_ptr<StorageSpan>> NewSpan(size_t size_bytes) final {
-    return {std::make_unique<HeapStorageSpan>(size_bytes)};
+  ResultOr<std::shared_ptr<StorageFactory::Alloc>> NewAlloc(
+      size_t size_bytes) final {
+    return {std::make_shared<HeapAlloc>(size_bytes)};
   }
 };
 
 }  // namespace
 
 StorageFactory::~StorageFactory() {}
-StorageSpan::~StorageSpan() {}
+StorageFactory::Alloc::~Alloc() {}
 
 ResultOr<std::shared_ptr<StorageFactory>> NewHeapStorageFactory() {
   return {std::make_shared<HeapStorageFactory>()};

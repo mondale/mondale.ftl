@@ -163,8 +163,7 @@ Result SubM::Decode(::capsule::Decoder* d) {
   Code ret = Code::kOk;
   ret.Incorporate(
       d->Find(u64a_FieldHash, &u64a, u64a_Default, has_[u64a_Index]));
-  ret.Incorporate(
-      d->FindCapsule(sub1_FieldHash, &sub1, sub1, has_[sub1_Index]));
+  ret.Incorporate(d->FindCapsule(sub1_FieldHash, &sub1, has_[sub1_Index]));
   ret.Incorporate(
       d->FindCapsuleVector(vsub1_FieldHash, &vsub1, has_[vsub1_Index]));
   return ret;
@@ -354,8 +353,7 @@ Result TopLevelM::Decode(::capsule::Decoder* d) {
   ret.Incorporate(d->Find(i8a_FieldHash, &i8a, i8a_Default, has_[i8a_Index]));
   ret.Incorporate(d->Find(b1_FieldHash, &b1, b1_Default, has_[b1_Index]));
   ret.Incorporate(d->FindStringVector(vs1_FieldHash, &vs1, has_[vs1_Index]));
-  ret.Incorporate(
-      d->FindCapsule(sub1_FieldHash, &sub1, sub1, has_[sub1_Index]));
+  ret.Incorporate(d->FindCapsule(sub1_FieldHash, &sub1, has_[sub1_Index]));
   ret.Incorporate(
       d->Find(f32a_FieldHash, &f32a, f32a_Default, has_[f32a_Index]));
   ret.Incorporate(
@@ -424,10 +422,10 @@ struct SubSubV final : public SubSubBase {
   int32_t i1;
   std::string_view s1;
 
-  std::shared_ptr<::capsule::Storage> ref_;
+  std::unique_ptr<::capsule::Storage> ref_;
 
   Result Decode(::capsule::Decoder* d);
-  void RefIfNeeded(std::shared_ptr<::capsule::Storage> s);
+  void RefIfNeeded(::capsule::Storage* s);
 };
 
 Result SubSubV::Decode(::capsule::Decoder* d) {
@@ -442,7 +440,7 @@ Result SubSubV::Decode(::capsule::Decoder* d) {
   return ret;
 }
 
-void SubSubV::RefIfNeeded(std::shared_ptr<::capsule::Storage> s) { ref_ = s; }
+void SubSubV::RefIfNeeded(::capsule::Storage* s) { ref_ = s->Ref(); }
 
 void Compare(const SubSubM* l, const SubSubV* r) {
   ASSERT_EQ(SubSubV::kFieldCount, r->has_.size());
@@ -460,7 +458,7 @@ struct SubV final : public SubBase {
   std::vector<SubSubV> vsub1;
 
   Result Decode(::capsule::Decoder* d);
-  void RefIfNeeded(std::shared_ptr<::capsule::Storage> s);
+  void RefIfNeeded(::capsule::Storage* s);
 };
 
 void Compare(const SubM* l, const SubV* r) {
@@ -479,14 +477,13 @@ Result SubV::Decode(::capsule::Decoder* d) {
   Code ret = Code::kOk;
   ret.Incorporate(d->Find<decltype(u64a)>(u64a_FieldHash, &u64a, u64a_Default,
                                           has_[u64a_Index]));
-  ret.Incorporate(
-      d->FindCapsule(sub1_FieldHash, &sub1, sub1, has_[sub1_Index]));
+  ret.Incorporate(d->FindCapsule(sub1_FieldHash, &sub1, has_[sub1_Index]));
   ret.Incorporate(
       d->FindCapsuleVector(vsub1_FieldHash, &vsub1, has_[vsub1_Index]));
   return ret;
 }
 
-void SubV::RefIfNeeded(std::shared_ptr<::capsule::Storage> s) {}
+void SubV::RefIfNeeded(::capsule::Storage* s) {}
 
 struct TopLevelV final : public TopLevelBase {
   uint64_t u64a;
@@ -504,7 +501,7 @@ struct TopLevelV final : public TopLevelBase {
   double f64a;
 
   Result Decode(::capsule::Decoder* d);
-  void RefIfNeeded(std::shared_ptr<::capsule::Storage> s);
+  void RefIfNeeded(::capsule::Storage* s);
 
   std::shared_ptr<::capsule::Storage> ref_;
 };
@@ -560,8 +557,7 @@ Result TopLevelV::Decode(::capsule::Decoder* d) {
   ret.Incorporate(d->Find(i8a_FieldHash, &i8a, i8a_Default, has_[i8a_Index]));
   ret.Incorporate(d->Find(b1_FieldHash, &b1, b1_Default, has_[b1_Index]));
   ret.Incorporate(d->FindStringVector(vs1_FieldHash, &vs1, has_[vs1_Index]));
-  ret.Incorporate(
-      d->FindCapsule(sub1_FieldHash, &sub1, sub1, has_[sub1_Index]));
+  ret.Incorporate(d->FindCapsule(sub1_FieldHash, &sub1, has_[sub1_Index]));
   ret.Incorporate(
       d->Find(f32a_FieldHash, &f32a, f32a_Default, has_[f32a_Index]));
   ret.Incorporate(
@@ -569,7 +565,7 @@ Result TopLevelV::Decode(::capsule::Decoder* d) {
   return ret;
 }
 
-void TopLevelV::RefIfNeeded(std::shared_ptr<::capsule::Storage> s) { ref_ = s; }
+void TopLevelV::RefIfNeeded(::capsule::Storage* s) { ref_ = s->Ref(); }
 
 template <typename CAPSULE>
 void RunTranscodeTest(std::unique_ptr<CAPSULE> m) {
@@ -604,7 +600,7 @@ void RunTranscodeTest(std::unique_ptr<CAPSULE> m) {
 
   // Build a view instead of a materialized.
   auto v = std::make_unique<typename CAPSULE::ViewType>();
-  v->RefIfNeeded(storage);
+  v->RefIfNeeded(storage.get());
   EXPECT_THAT(v->Decode(&d), IsOk());
   Compare(m.get(), v.get());
 }

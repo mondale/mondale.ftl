@@ -144,6 +144,8 @@ cc_library(
     hdrs = ["framing.h"],
     deps = [
         ":abi",
+        ":storage",
+        ":storage_factory",
         "//core",
         "//core:crc32c",
     ],

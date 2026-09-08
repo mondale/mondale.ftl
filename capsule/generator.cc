@@ -216,10 +216,10 @@ ResultOr<std::string> GenerateHeader(const CapsuleFile& file) {
     }
     oss << "\n";
     if (RefsStorage(cp)) {
-      oss << "  std::shared_ptr<::capsule::Storage> ref_;\n\n";
+      oss << "  std::unique_ptr<::capsule::Storage> ref_;\n\n";
     }
     oss << "  ::core::Result Decode(::capsule::Decoder* d);\n";
-    oss << "  void RefIfNeeded(std::shared_ptr<::capsule::Storage> s);\n";
+    oss << "  void RefIfNeeded(::capsule::Storage* s);\n";
     oss << "};\n\n";
   }
 
@@ -249,8 +249,8 @@ Result EmitDecodeImpl(std::ostringstream& oss, std::string_view class_postfix,
         oss << "ret.Incorporate(d->FindStringVector(" << fh << ", &" << n
             << ", has_[" << n << "_Index]));\n";
       } else if (IsCapsuleType(t)) {
-        oss << "ret.Incorporate(d->FindCapsule(" << fh << ", &" << n << ", "
-            << n << ", has_[" << n << "_Index]));\n";
+        oss << "ret.Incorporate(d->FindCapsule(" << fh << ", &" << n
+            << ", has_[" << n << "_Index]));\n";
       } else {  // primitive type
         oss << "ret.Incorporate(d->Find<decltype(" << n << ")>(" << fh << ", &"
             << n << ", " << n << "_Default, has_[" << n << "_Index]));\n";
@@ -318,10 +318,9 @@ ResultOr<std::string> GenerateSource(const CapsuleFile& file,
 
   // RefIfNeeded impls (View types only).
   for (const auto& cp : file.capsules) {
-    oss << "void " << cp.name
-        << "V::RefIfNeeded(std::shared_ptr<::capsule::Storage> s) {\n";
+    oss << "void " << cp.name << "V::RefIfNeeded(::capsule::Storage* s) {\n";
     if (RefsStorage(cp)) {
-      oss << "  ref_ = s;\n";
+      oss << "  ref_ = s->Ref();\n";
     }
     oss << "}\n\n";
   }

@@ -445,7 +445,7 @@ TEST_F(DecoderTest, FindSubcapsule) {
   auto d = Decoder::Build(&nested_, sizeof(nested_)).ValueOrDie();
   std::vector<bool> presence(1, false);
   TinyCapsule tc;
-  EXPECT_EQ(Code::kOk, d.FindCapsule(core::CRC32C('o'), &tc, tc, presence[0]));
+  EXPECT_EQ(Code::kOk, d.FindCapsule(core::CRC32C('o'), &tc, presence[0]));
   EXPECT_EQ(tc.val_, 9);
 }
 
@@ -460,7 +460,7 @@ TEST_F(DecoderTest, FindSubcapsuleBogus) {
   auto d = Decoder::Build(&nested_, sizeof(nested_)).ValueOrDie();
   std::vector<bool> presence(1, false);
   TinyCapsule tc;
-  EXPECT_NE(Code::kOk, d.FindCapsule(core::CRC32C('o'), &tc, tc, presence[0]));
+  EXPECT_NE(Code::kOk, d.FindCapsule(core::CRC32C('o'), &tc, presence[0]));
 }
 
 class VectorTinyCapsule final {
