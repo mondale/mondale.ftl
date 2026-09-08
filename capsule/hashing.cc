@@ -53,6 +53,7 @@ Result ComputeHashes(Capsule* c) {
   for (auto& f : c->fields) {
     TRY(ComputeHashes(&f));
   }
+  c->hash = core::ComputeCRC32C(c->name);
   return Result::Ok();
 }
 

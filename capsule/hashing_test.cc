@@ -15,6 +15,7 @@ class HashingTestFixture : public ::testing::Test {
   HashingTestFixture() {
     cf_.capsules.resize(kCapsules);
     for (int i = 0; i < kCapsules; ++i) {
+      cf_.capsules[i].name = strings::Format("Capsule{}", i);
       cf_.capsules[i].fields.resize(kFields);
       for (int j = 0; j < kFields; ++j) {
         auto& f = cf_.capsules[i].fields[j];
@@ -33,6 +34,7 @@ class HashingTestFixture : public ::testing::Test {
         auto& f = cf_.capsules[i].fields[j];
         EXPECT_GT(f.hashes.size(), 0);
       }
+      EXPECT_NE(cf_.capsules[i].hash, core::CRC32C(0));
     }
   }
   capsule::CapsuleFile cf_;

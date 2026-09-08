@@ -117,8 +117,6 @@ ResultOr<std::string> GenerateHeader(const CapsuleFile& file) {
   oss << "#include <memory>\n";
   oss << "#include <string>\n";
   oss << "#include <vector>\n";
-
-  // TODO - move includes to source where possible
   oss << "#include \"capsule/decoder.h\"\n";
   oss << "#include \"capsule/encoder.h\"\n";
   oss << "#include \"capsule/size_builder.h\"\n";
@@ -139,6 +137,8 @@ ResultOr<std::string> GenerateHeader(const CapsuleFile& file) {
     oss << "  using MaterializedType = " << cp.name << "M;\n";
     oss << "  using ViewType = " << cp.name << "V;\n";
     oss << "\n";
+    oss << "  static constexpr ::core::CRC32C kTypeHash = ::core::CRC32C(0x"
+        << std::hex << cp.hash.value() << "u);\n";
     oss << "  static constexpr uint32_t kFieldCount = "
         << CountNonRetiredFields(cp) << ";\n";
 
@@ -150,7 +150,6 @@ ResultOr<std::string> GenerateHeader(const CapsuleFile& file) {
         return Result(Code::kInvalidArgument,
                       strings::Format("Field {} missing hashes.", f.name));
       }
-      // TODO - support hashes from former name attributes.
       oss << "  static constexpr ::core::CRC32C " << f.name
           << "_FieldHash = ::core::CRC32C(0x" << std::hex << f.hashes[0].value()
           << "u);\n";

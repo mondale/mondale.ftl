@@ -24,6 +24,7 @@ struct Field {
 struct Capsule {
   std::string name;
   std::string srcloc;
+  core::CRC32C hash;
   std::vector<Field> fields;
 };
 

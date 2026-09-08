@@ -106,7 +106,7 @@ struct SubBase {
   using MaterializedType = SubM;
   using ViewType = SubV;
 
-  // TODO - reinstate type hashes
+  // Note -> real ones have type hashes now.
   static constexpr uint32_t kFieldCount = 3;
   static constexpr core::CRC32C u64a_FieldHash = core::CRC32C(21);
   static constexpr core::CRC32C sub1_FieldHash = core::CRC32C(22);
