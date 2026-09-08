@@ -1,4 +1,4 @@
-namespace test::ns
+namespace test_ns
 
 // Do comments work?
 capsule LittlePair {
