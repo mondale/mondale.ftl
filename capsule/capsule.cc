@@ -2,54 +2,41 @@
 
 namespace capsule {
 
-Result DeserializeArgsCheck(const std::shared_ptr<Storage>& s, size_t offset) {
+Result DeserializeArgsCheck(const Storage* s) {
   auto* const base = s->DataAsPtrTo<char>();
-  auto* const target = base + offset;
-  const uintptr_t addr = reinterpret_cast<uintptr_t>(target);
+  const uintptr_t addr = reinterpret_cast<uintptr_t>(base);
   if (0 != (addr % 8)) {
     return core::InvalidArgumentError(
         strings::Format("Capsule deserialization must occur at address "
                         "congruent to zero mod 8 [0x{:016x}]",
                         addr));
   }
-  if (offset > s->n()) {
-    return core::InvalidArgumentError(
-        strings::Format("Offset [{}] exceeds length of provided Storage [{}].",
-                        offset, s->n()));
-  }
-  const auto size = s->n() - offset;
+  const auto size = s->n();
   if (size < kMinimumCapsuleSizeBytes) {
     return core::InvalidArgumentError(strings::Format(
         "A minimum size of [{}] bytes is needed for deserialization. Storage "
-        "size [{}], offset [{}].",
-        kMinimumCapsuleSizeBytes, s->n(), offset));
+        "size [{}].",
+        kMinimumCapsuleSizeBytes, s->n()));
   }
   return Result::Ok();
 }
 
-Result SerializeArgsCheck(const std::shared_ptr<Storage>& s, size_t offset,
-                          size_t capsule_size) {
+Result SerializeArgsCheck(const Storage* s, size_t capsule_size) {
   auto* const base = s->DataAsPtrTo<char>();
-  auto* const target = base + offset;
-  const uintptr_t addr = reinterpret_cast<uintptr_t>(target);
+  const uintptr_t addr = reinterpret_cast<uintptr_t>(base);
   if (0 != (addr % 8)) {
     return core::InvalidArgumentError(
         strings::Format("Capsule serialization must occur at address "
                         "congruent to zero mod 8 [0x{:016x}]",
                         addr));
   }
-  if (offset > s->n()) {
-    return core::InvalidArgumentError(
-        strings::Format("Offset [{}] exceeds length of provided Storage [{}].",
-                        offset, s->n()));
-  }
-  const auto size = s->n() - offset;
+  const auto size = s->n();
   if (size < capsule_size) {
     return core::InvalidArgumentError(
         strings::Format("Capsule requires a minimum size of [{}] bytes for "
                         "serialization. Storage "
-                        "size [{}], offset [{}].",
-                        capsule_size, s->n(), offset));
+                        "size [{}].",
+                        capsule_size, s->n()));
   }
   return Result::Ok();
 }

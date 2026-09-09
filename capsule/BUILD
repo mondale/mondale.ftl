@@ -330,6 +330,7 @@ cc_library(
           ":encoder",
           ":decoder",
           ":storage",
+          ":storage_factory",
           "//core",
   ],
 )
