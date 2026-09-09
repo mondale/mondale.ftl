@@ -13,7 +13,7 @@ Encoder::Encoder(void* base, size_t length, uint32_t field_count, Encoder* p)
       field_count_(field_count),
       encoding_result_() {
   auto* const h = reinterpret_cast<abi::Header*>(base);
-  h->offset_table_count = field_count;
+  h->offset_table_size = field_count;
   h->capsule_length = length;
 }
 

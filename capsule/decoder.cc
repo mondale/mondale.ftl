@@ -35,7 +35,7 @@ ResultOr<Decoder> Decoder::Build(const void* base, size_t memory_length) {
     return ErrorInsufficientMemoryLength(memory_length);
   }
   const auto* const header = reinterpret_cast<const abi::Header*>(base);
-  const uint32_t otes = header->offset_table_count;
+  const uint32_t otes = header->offset_table_size;
   const uint32_t length = header->capsule_length;
   if (length > memory_length) {
     return ErrorLengthDecoding(memory_length, length);

@@ -219,7 +219,7 @@ TEST_F(EncoderTest, EncodeNestedCapsule) {
   // Inspect inner capsule encoding.
   auto* const inner_header =
       reinterpret_cast<capsule::abi::Header*>(&capsule1_.space[0]);
-  EXPECT_EQ(1, inner_header->offset_table_count);
+  EXPECT_EQ(1, inner_header->offset_table_size);
   EXPECT_EQ(16, inner_header->capsule_length);
   auto* const inner_ot =
       reinterpret_cast<capsule::abi::OffsetTableEntry*>(&capsule1_.space[2]);
@@ -343,7 +343,7 @@ TEST_F(EncoderTest, EncodeCapsuleVector) {
   {
     const auto* const h =
         reinterpret_cast<const capsule::abi::Header*>(&capsule1_.space[2]);
-    EXPECT_EQ(DefinitelyACapsule::kFieldCount, h->offset_table_count);
+    EXPECT_EQ(DefinitelyACapsule::kFieldCount, h->offset_table_size);
     EXPECT_EQ(DefinitelyACapsule().ComputeStorageSize(), h->capsule_length);
 
     // Space4 - Space10 inclusive should be OTEs.
@@ -361,7 +361,7 @@ TEST_F(EncoderTest, EncodeCapsuleVector) {
   {
     const auto* const h =
         reinterpret_cast<const capsule::abi::Header*>(&capsule1_.space[12]);
-    EXPECT_EQ(DefinitelyACapsule::kFieldCount, h->offset_table_count);
+    EXPECT_EQ(DefinitelyACapsule::kFieldCount, h->offset_table_size);
     EXPECT_EQ(DefinitelyACapsule().ComputeStorageSize(), h->capsule_length);
 
     // Space14 - Space20 inclusive should be OTEs.

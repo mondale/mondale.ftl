@@ -32,7 +32,7 @@ void PopulateUnsignedOkFramedCapsule(FramedCapsule* c) {
   c->cff.reiterated_frame_type =
       static_cast<uint32_t>(capsule::abi::FrameType::kChecksummed);
   c->cff.reiterated_frame_length = sizeof(FramedCapsule);
-  c->ih.offset_table_count = 3;
+  c->ih.offset_table_size = 3;
   for (int i = 0; i < 3; ++i) {
     c->ot[i].value = offsetof(FramedCapsule, data[i]);
   }
@@ -96,10 +96,10 @@ TEST(LengthAgreement) {
 
 TEST(OteCount) {
   auto c = MakeUnsignedOkFramedCapsule();
-  c->ih.offset_table_count = 0;
+  c->ih.offset_table_size = 0;
   ASSERT_THAT(Framing::Validate(c.get(), sizeof(FramedCapsule)).ToString(),
               HasSubstr("encodes empty offset table"));
-  c->ih.offset_table_count = 9999;
+  c->ih.offset_table_size = 9999;
   ASSERT_THAT(Framing::Validate(c.get(), sizeof(FramedCapsule)).ToString(),
               HasSubstr("encodes offset table count [9999]"));
 }

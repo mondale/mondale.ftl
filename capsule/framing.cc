@@ -94,15 +94,15 @@ Result ValidateFraming(const abi::FrameHeader* fh, const abi::Header* ih,
   // Every offset table entry requires at least 8B: 4B for the hash, 4B for the
   // value.
   const size_t max_offset_table_entries = (ih->capsule_length) / 8;
-  if (ih->offset_table_count > max_offset_table_entries) {
+  if (ih->offset_table_size > max_offset_table_entries) {
     return Result(
         Code::kCapsuleFatal,
         strings::Format("Capsule encodes offset table count [{}] in excess of "
                         "framing maximum [{}].",
-                        ih->offset_table_count, max_offset_table_entries));
+                        ih->offset_table_size, max_offset_table_entries));
   }
 
-  if (ih->offset_table_count == 0) {
+  if (ih->offset_table_size == 0) {
     return Result(Code::kCapsuleFatal, "Capsule encodes empty offset table.");
   }
 
@@ -170,7 +170,7 @@ ResultOr<Framing::UnframedCapsule> Framing::Unframe(const Storage* s) {
   TRY(Framing::Validate(s->base(), s->n()));
   const auto* const fh = To<const abi::FrameHeader>(s->base());
   UnframedCapsule c;
-  c.enclosed_type = fh->capsule_id_hash;
+  c.enclosed_type = fh->enclosed_type;
   TRY_ASSIGN(c.storage, s->Carve(sizeof(abi::FrameHeader),
                                  sizeof(abi::ChecksummedFrameFooter)));
   return std::move(c);
@@ -196,7 +196,7 @@ ResultOr<Framing::FramedCapsule> Framing::AllocFrame(
 // static
 Result Framing::CompleteFraming(core::CRC32C enclosed_type, FramedCapsule* fc) {
   auto* const fh = fc->frame_storage->DataAsPtrTo<abi::FrameHeader>();
-  fh->capsule_id_hash = enclosed_type;
+  fh->enclosed_type = enclosed_type;
   fh->frame_length = fc->frame_storage->n();
   fh->frame_type = static_cast<uint32_t>(abi::FrameType::kChecksummed);
   return Framing::Sign(fc->frame_storage->base(), fc->frame_storage->n());

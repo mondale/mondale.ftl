@@ -19,9 +19,8 @@ enum class FrameType {
   kFurtureUse5 = 7,
 };
 
-// TODO - rename fields.
 struct FrameHeader final {
-  core::CRC32C capsule_id_hash;
+  core::CRC32C enclosed_type;
   uint32_t frame_length : 29;
   uint32_t frame_type : 3;
 };
@@ -36,7 +35,7 @@ static_assert(sizeof(ChecksummedFrameFooter) == 8,
               "ChecksummedFrameFooter needs to be 2 DWORDS.");
 
 struct Header final {
-  uint32_t offset_table_count;
+  uint32_t offset_table_size;
   uint32_t capsule_length;
 };
 static_assert(sizeof(Header) == 8, "Header needs to be 2 DWORDS.");

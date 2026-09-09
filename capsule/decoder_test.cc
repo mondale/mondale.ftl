@@ -35,9 +35,9 @@ class DecoderTest : public ::testing::Test {
     capsule1_.otes = 1;
     capsule1_.capsule_length = sizeof(capsule1_);
     memset(&nested_, 0, sizeof(nested_));
-    nested_.outer_ih.offset_table_count = 1;
+    nested_.outer_ih.offset_table_size = 1;
     nested_.outer_ih.capsule_length = sizeof(nested_);
-    nested_.inner_ih.offset_table_count = 1;
+    nested_.inner_ih.offset_table_size = 1;
     nested_.inner_ih.capsule_length = sizeof(nested_) / 2;
   }
 
@@ -485,7 +485,7 @@ struct VectorCapsuleLayout {
 TEST_F(DecoderTest, FindCapsuleVectorClean) {
   VectorCapsuleLayout layout;
   memset(&layout, 0, sizeof(layout));
-  layout.header.offset_table_count = 1;
+  layout.header.offset_table_size = 1;
   layout.header.capsule_length = sizeof(layout);
 
   const auto crc = core::CRC32C(100);
@@ -500,7 +500,7 @@ TEST_F(DecoderTest, FindCapsuleVectorClean) {
   ptr += sizeof(capsule::abi::VectorHeader);
 
   auto* sub_h = reinterpret_cast<capsule::abi::Header*>(ptr);
-  sub_h->offset_table_count = 1;
+  sub_h->offset_table_size = 1;
   sub_h->capsule_length = 24;
 
   auto* sub_ot = reinterpret_cast<capsule::abi::OffsetTableEntry*>(
@@ -531,7 +531,7 @@ TEST_F(DecoderTest, FindCapsuleVectorNotFound) {
 TEST_F(DecoderTest, FindCapsuleVectorBogusPadding) {
   VectorCapsuleLayout layout;
   memset(&layout, 0, sizeof(layout));
-  layout.header.offset_table_count = 1;
+  layout.header.offset_table_size = 1;
   layout.header.capsule_length = sizeof(layout);
 
   const auto crc = core::CRC32C(100);
@@ -559,7 +559,7 @@ TEST_F(DecoderTest, FindStringVectorClean) {
 
   StringVectorCapsuleLayout layout;
   memset(&layout, 0, sizeof(layout));
-  layout.header.offset_table_count = 1;
+  layout.header.offset_table_size = 1;
   layout.header.capsule_length = sizeof(layout);
 
   const auto crc = core::CRC32C(200);
@@ -604,7 +604,7 @@ TEST_F(DecoderTest, FindStringVectorBogusPadding) {
 
   StringVectorCapsuleLayout layout;
   memset(&layout, 0, sizeof(layout));
-  layout.header.offset_table_count = 1;
+  layout.header.offset_table_size = 1;
   layout.header.capsule_length = sizeof(layout);
 
   const auto crc = core::CRC32C(200);
