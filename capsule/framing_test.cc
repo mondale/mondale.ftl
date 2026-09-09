@@ -21,9 +21,8 @@ struct FramedCapsule {
   capsule::abi::ChecksummedFrameFooter cff;
 };
 
-std::unique_ptr<FramedCapsule> MakeUnsignedOkFramedCapsule() {
-  auto c = std::make_unique<FramedCapsule>();
-  memset(c.get(), 0, sizeof(*c));
+void PopulateUnsignedOkFramedCapsule(FramedCapsule* c) {
+  memset(c, 0, sizeof(*c));
   c->fh.frame_length = sizeof(FramedCapsule);
   c->fh.frame_type =
       static_cast<uint32_t>(capsule::abi::FrameType::kChecksummed);
@@ -37,6 +36,11 @@ std::unique_ptr<FramedCapsule> MakeUnsignedOkFramedCapsule() {
   for (int i = 0; i < 3; ++i) {
     c->ot[i].value = offsetof(FramedCapsule, data[i]);
   }
+}
+
+std::unique_ptr<FramedCapsule> MakeUnsignedOkFramedCapsule() {
+  auto c = std::make_unique<FramedCapsule>();
+  PopulateUnsignedOkFramedCapsule(c.get());
   return c;
 }
 
@@ -104,6 +108,28 @@ TEST(CrcFail) {
   auto c = MakeUnsignedOkFramedCapsule();
   ASSERT_THAT(Framing::Validate(c.get(), sizeof(FramedCapsule)).ToString(),
               HasSubstr("CRC32C"));
+}
+
+class FramingFixture : public ::testing::Test {
+ protected:
+  std::shared_ptr<capsule::StorageFactory> fac_ =
+      capsule::NewHeapStorageFactory().ValueOrDie();
+};
+
+TEST_F(FramingFixture, FrameAlloc) {
+  const size_t framesize = sizeof(capsule::abi::FrameHeader) +
+                           sizeof(capsule::abi::ChecksummedFrameFooter);
+  const size_t capsize = sizeof(FramedCapsule) - framesize;
+  auto fc = Framing::AllocFrame(capsize, fac_).ValueOrDie();
+  EXPECT_EQ(fc.frame_storage->n(), framesize + capsize);
+  EXPECT_EQ(fc.capsule_storage->n(), capsize);
+  auto* const cap = reinterpret_cast<FramedCapsule*>(fc.frame_storage->base());
+  PopulateUnsignedOkFramedCapsule(cap);
+  ASSERT_THAT(Framing::CompleteFraming(core::CRC32C(4), &fc), IsOk());
+
+  auto unframed = Framing::Unframe(fc.frame_storage.get(), fac_).ValueOrDie();
+  EXPECT_EQ(core::CRC32C(4), unframed.enclosed_type);
+  EXPECT_EQ(fc.capsule_storage->base(), unframed.storage->base());
 }
 
 }  // namespace

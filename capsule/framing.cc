@@ -13,7 +13,7 @@ T* To(F* f) {
   return reinterpret_cast<T*>(f);
 }
 
-Result ValidateAlignment(void* base) {
+Result ValidateAlignment(const void* base) {
   const auto uptr = reinterpret_cast<uintptr_t>(base);
   if (0 == (uptr % 8)) return Result::Ok();
   return Result(
@@ -109,18 +109,23 @@ Result ValidateFraming(const abi::FrameHeader* fh, const abi::Header* ih,
   return Result::Ok();
 }
 
+const abi::ChecksummedFrameFooter* BaseToFooter(const void* base, size_t n) {
+  return To<const abi::ChecksummedFrameFooter>(
+      To<const char>(base) + ((n - sizeof(abi::ChecksummedFrameFooter))));
+}
+
 abi::ChecksummedFrameFooter* BaseToFooter(void* base, size_t n) {
   return To<abi::ChecksummedFrameFooter>(
       To<char>(base) + ((n - sizeof(abi::ChecksummedFrameFooter))));
 }
 
-CRC32C ComputeCrc(void* base, size_t n) {
+CRC32C ComputeCrc(const void* base, size_t n) {
   static_assert((sizeof(abi::ChecksummedFrameFooter) -
                  offsetof(abi::ChecksummedFrameFooter, frame_crc)) == 4);
   return core::ComputeCRC32C(base, n - 4);
 }
 
-Result ValidateCrc(void* base, size_t n) {
+Result ValidateCrc(const void* base, size_t n) {
   const auto computed = ComputeCrc(base, n);
   const auto stored = BaseToFooter(base, n)->frame_crc;
   if (computed == stored) return Result::Ok();
@@ -134,15 +139,15 @@ Result ValidateCrc(void* base, size_t n) {
 }  // namespace
 
 // static
-Result Framing::Validate(void* base, size_t n) {
+Result Framing::Validate(const void* base, size_t n) {
   TRY(ValidateAlignment(base));
   TRY(ValidateMinLength(n));
   TRY(ValidateLengthMultiple(n));
-  auto* const fh = To<abi::FrameHeader>(base);
-  auto* const ih = To<abi::Header>(fh + 1);
+  const auto* const fh = To<const abi::FrameHeader>(base);
+  const auto* const ih = To<const abi::Header>(fh + 1);
   static_assert(sizeof(abi::FrameHeader) == sizeof(abi::Header),
                 "Dirty trick above only works with equal size structs.");
-  auto* const cff = BaseToFooter(base, n);
+  const auto* const cff = BaseToFooter(base, n);
   TRY(ValidateFraming(fh, ih, cff, n));
   TRY(ValidateCrc(base, n));
   return Result::Ok();
@@ -158,6 +163,44 @@ Result Framing::Sign(void* base, size_t n) {
   footer->reiterated_frame_type = header->frame_type;
   footer->frame_crc = ComputeCrc(base, n);
   return Result::Ok();
+}
+
+// static
+ResultOr<Framing::UnframedCapsule> Framing::Unframe(
+    Storage* s, std::shared_ptr<StorageFactory> fac) {
+  TRY(Framing::Validate(s->base(), s->n()));
+  const auto* const fh = To<const abi::FrameHeader>(s->base());
+  UnframedCapsule c;
+  c.enclosed_type = fh->capsule_id_hash;
+  TRY_ASSIGN(c.storage, s->Carve(sizeof(abi::FrameHeader),
+                                 sizeof(abi::ChecksummedFrameFooter)));
+  return std::move(c);
+}
+
+// static
+ResultOr<Framing::FramedCapsule> Framing::AllocFrame(
+    size_t capsule_size, std::shared_ptr<StorageFactory> fac) {
+  TRY(ValidateLengthMultiple(capsule_size));
+  const auto allocation_size = capsule_size + sizeof(abi::FrameHeader) +
+                               sizeof(abi::ChecksummedFrameFooter);
+  TRY(ValidateMinLength(allocation_size));
+
+  FramedCapsule fc;
+  TRY_ASSIGN(fc.frame_storage,
+             Storage::Allocate(std::move(fac), allocation_size));
+  TRY_ASSIGN(fc.capsule_storage,
+             fc.frame_storage->Carve(sizeof(abi::FrameHeader),
+                                     sizeof(abi::ChecksummedFrameFooter)));
+  return fc;
+}
+
+// static
+Result Framing::CompleteFraming(core::CRC32C enclosed_type, FramedCapsule* fc) {
+  auto* const fh = fc->frame_storage->DataAsPtrTo<abi::FrameHeader>();
+  fh->capsule_id_hash = enclosed_type;
+  fh->frame_length = fc->frame_storage->n();
+  fh->frame_type = static_cast<uint32_t>(abi::FrameType::kChecksummed);
+  return Framing::Sign(fc->frame_storage->base(), fc->frame_storage->n());
 }
 
 }  // namespace capsule

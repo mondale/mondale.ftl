@@ -10,15 +10,27 @@ namespace capsule {
 
 class Framing final {
  public:
-  struct Capsule {
+  // Method to run integrity checks on an encoded frame and remove outer
+  // framing. May allocate from 'fac' if needed.
+  struct UnframedCapsule final {
     core::CRC32C enclosed_type;
-    std::shared_ptr<Storage> storage;
+    std::unique_ptr<Storage> storage;
   };
+  static ResultOr<UnframedCapsule> Unframe(Storage* s,
+                                           std::shared_ptr<StorageFactory> fac);
 
-  static ResultOr<Capsule> Unframe(std::shared_ptr<Storage> storage,
-                                   std::shared_ptr<StorageFactory> fac);
+  // Methods to allocate memory to frame a capsule and then complete the
+  // framing.
+  struct FramedCapsule final {
+    std::unique_ptr<Storage> frame_storage;
+    std::unique_ptr<Storage> capsule_storage;
+  };
+  static ResultOr<FramedCapsule> AllocFrame(
+      size_t capsule_size, std::shared_ptr<StorageFactory> fac);
+  static Result CompleteFraming(core::CRC32C enclosed_type, FramedCapsule* fc);
 
-  static Result Validate(void* base, size_t n);
+  // Helpers for the above, public for testing.
+  static Result Validate(const void* base, size_t n);
   static Result Sign(void* base, size_t n);
 };
 

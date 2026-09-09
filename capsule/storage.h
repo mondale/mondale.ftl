@@ -25,7 +25,7 @@ class Storage final {
   // Take a ref on the underlying Alloc.
   std::unique_ptr<Storage> Ref() const;
 
-  // Prefer this method when constucting a View.
+  // Prefer this method when constructing a frame.
   static ResultOr<std::unique_ptr<Storage>> Allocate(
       std::shared_ptr<StorageFactory> f, size_t n);
 

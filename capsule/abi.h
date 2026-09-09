@@ -19,6 +19,7 @@ enum class FrameType {
   kFurtureUse5 = 7,
 };
 
+// TODO - rename fields.
 struct FrameHeader final {
   core::CRC32C capsule_id_hash;
   uint32_t frame_length : 29;
