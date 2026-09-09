@@ -1,4 +1,5 @@
 #include "capsule/capsule.h"
+#include "capsule/framing.h"
 
 namespace capsule {
 
@@ -46,6 +47,14 @@ Result SealSizesDiffer(size_t seal_size, size_t capsule_size) {
       strings::Format("After encoding capsule reports size [{}], not equal to "
                       "predicted size [{}].",
                       seal_size, capsule_size));
+}
+
+ResultOr<UnframedCapsule> UnframeAndReportType(const Storage* s) {
+  TRY_ASSIGN(auto uc, Framing::Unframe(s));
+  UnframedCapsule ret;
+  ret.enclosed_type = uc.enclosed_type;
+  ret.storage = std::move(uc.storage);
+  return ret;
 }
 
 }  // namespace capsule

@@ -166,8 +166,7 @@ Result Framing::Sign(void* base, size_t n) {
 }
 
 // static
-ResultOr<Framing::UnframedCapsule> Framing::Unframe(
-    Storage* s, std::shared_ptr<StorageFactory> fac) {
+ResultOr<Framing::UnframedCapsule> Framing::Unframe(const Storage* s) {
   TRY(Framing::Validate(s->base(), s->n()));
   const auto* const fh = To<const abi::FrameHeader>(s->base());
   UnframedCapsule c;

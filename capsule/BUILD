@@ -327,10 +327,12 @@ cc_library(
   hdrs = ["capsule.h"],
   srcs = ["capsule.cc"],
   deps = [
-          ":encoder",
           ":decoder",
+          ":encoder",
+          ":framing",
           ":storage",
           ":storage_factory",
+          "//core:crc32c",
           "//core",
   ],
 )

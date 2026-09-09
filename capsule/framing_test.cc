@@ -127,7 +127,7 @@ TEST_F(FramingFixture, FrameAlloc) {
   PopulateUnsignedOkFramedCapsule(cap);
   ASSERT_THAT(Framing::CompleteFraming(core::CRC32C(4), &fc), IsOk());
 
-  auto unframed = Framing::Unframe(fc.frame_storage.get(), fac_).ValueOrDie();
+  auto unframed = Framing::Unframe(fc.frame_storage.get()).ValueOrDie();
   EXPECT_EQ(core::CRC32C(4), unframed.enclosed_type);
   EXPECT_EQ(fc.capsule_storage->base(), unframed.storage->base());
 }
