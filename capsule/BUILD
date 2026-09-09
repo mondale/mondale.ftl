@@ -177,11 +177,11 @@ cc_test(
     name = "version_change_test",
     srcs = ["version_change_test.cc"],
     deps = [
-        ":version_change_capsule",
         ":decoder",
         ":encoder",
         ":storage",
         ":storage_factory",
+        ":version_change_capsule",
         "//core",
         "//testing",
     ],
@@ -323,18 +323,18 @@ cc_test(
 )
 
 cc_library(
-  name = "capsule",
-  hdrs = ["capsule.h"],
-  srcs = ["capsule.cc"],
-  deps = [
-          ":decoder",
-          ":encoder",
-          ":framing",
-          ":storage",
-          ":storage_factory",
-          "//core:crc32c",
-          "//core",
-  ],
+    name = "capsule",
+    srcs = ["capsule.cc"],
+    hdrs = ["capsule.h"],
+    deps = [
+        ":decoder",
+        ":encoder",
+        ":framing",
+        ":storage",
+        ":storage_factory",
+        "//core",
+        "//core:crc32c",
+    ],
 )
 
 capsule_library(
@@ -343,12 +343,13 @@ capsule_library(
 )
 
 cc_test(
-  name = "capsule_test",
-  srcs = ["capsule_test.cc"],
-  deps = [":capsule",
-          ":capsule_test_capsule",
-          ":storage_factory",
-          "//testing",
-          "//core",
-  ],
+    name = "capsule_test",
+    srcs = ["capsule_test.cc"],
+    deps = [
+        ":capsule",
+        ":capsule_test_capsule",
+        ":storage_factory",
+        "//core",
+        "//testing",
+    ],
 )
