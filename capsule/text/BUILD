@@ -1,0 +1,18 @@
+
+
+
+cc_library(
+  name = "text_lexer",
+  hdrs = ["text_lexer.h"],
+  srcs = ["text_lexer.cc"],
+  deps = [],
+)
+
+cc_library(
+  name = "text_parser",
+  hdrs = ["text_parser.h"],
+  srcs = ["text_parser.cc"],
+  deps = [":text_lexer",
+          "//core",],
+)
+
