@@ -15,6 +15,8 @@ namespace capsule {
 // Helper to decode a Storage to a View or a Materialized.
 class Decoder final {
  public:
+  using BoolRef = std::vector<bool>::reference;
+
   Decoder(const void* base);
 
   static ResultOr<Decoder> Build(const void* base, size_t memory_length);
@@ -22,10 +24,10 @@ class Decoder final {
   // If this type is called, you need to define a specialization below.
   template <typename T>
   Code Find(core::CRC32C h, T* out, const T& def,
-            std::vector<bool>::reference present) const = delete;
+            BoolRef present) const = delete;
 
   Code FindBoolean(core::CRC32C h, bool* out, const bool& def,
-                   std::vector<bool>::reference present) const {
+                   BoolRef present) const {
     uint32_t v = 0;
     const auto code = vm_.Lookup(h, &v);
     if (Code::kOk == code) {
@@ -45,13 +47,13 @@ class Decoder final {
 
   template <>
   Code Find<bool>(core::CRC32C h, bool* out, const bool& def,
-                  std::vector<bool>::reference present) const {
+                  BoolRef present) const {
     return FindBoolean(h, out, def, present);
   }
 
   template <typename A8>
   Code Find8bPrimitive(core::CRC32C h, A8* out, const A8& def,
-                       std::vector<bool>::reference present) const {
+                       BoolRef present) const {
     uint32_t v = 0;
     const auto code = vm_.Lookup(h, &v);
     if (Code::kOk == code) {
@@ -71,19 +73,19 @@ class Decoder final {
 
   template <>
   Code Find<int8_t>(core::CRC32C h, int8_t* out, const int8_t& def,
-                    std::vector<bool>::reference present) const {
+                    BoolRef present) const {
     return Find8bPrimitive(h, out, def, present);
   }
 
   template <>
   Code Find<uint8_t>(core::CRC32C h, uint8_t* out, const uint8_t& def,
-                     std::vector<bool>::reference present) const {
+                     BoolRef present) const {
     return Find8bPrimitive(h, out, def, present);
   }
 
   template <typename A16>
   Code Find16bPrimitive(core::CRC32C h, A16* out, const A16& def,
-                        std::vector<bool>::reference present) const {
+                        BoolRef present) const {
     uint32_t v = 0;
     const auto code = vm_.Lookup(h, &v);
     if (Code::kOk == code) {
@@ -103,13 +105,13 @@ class Decoder final {
 
   template <>
   Code Find<int16_t>(core::CRC32C h, int16_t* out, const int16_t& def,
-                     std::vector<bool>::reference present) const {
+                     BoolRef present) const {
     return Find16bPrimitive(h, out, def, present);
   }
 
   template <>
   Code Find<uint16_t>(core::CRC32C h, uint16_t* out, const uint16_t& def,
-                      std::vector<bool>::reference present) const {
+                      BoolRef present) const {
     return Find16bPrimitive(h, out, def, present);
   }
 
@@ -125,7 +127,7 @@ class Decoder final {
 
   template <typename A32>
   Code Find32bPrimitive(core::CRC32C h, A32* out, const A32& def,
-                        std::vector<bool>::reference present) const {
+                        BoolRef present) const {
     uint32_t v = 0;
     const auto code = vm_.Lookup(h, &v);
     if (Code::kOk == code) {
@@ -142,19 +144,19 @@ class Decoder final {
 
   template <>
   Code Find<int32_t>(core::CRC32C h, int32_t* out, const int32_t& def,
-                     std::vector<bool>::reference present) const {
+                     BoolRef present) const {
     return Find32bPrimitive(h, out, def, present);
   }
 
   template <>
   Code Find<uint32_t>(core::CRC32C h, uint32_t* out, const uint32_t& def,
-                      std::vector<bool>::reference present) const {
+                      BoolRef present) const {
     return Find32bPrimitive(h, out, def, present);
   }
 
   template <>
   Code Find<float>(core::CRC32C h, float* out, const float& def,
-                   std::vector<bool>::reference present) const {
+                   BoolRef present) const {
     return Find32bPrimitive(h, out, def, present);
   }
 
@@ -170,7 +172,7 @@ class Decoder final {
 
   template <typename A64>
   Code Find64bPrimitive(core::CRC32C h, A64* out, const A64& def,
-                        std::vector<bool>::reference present) const {
+                        BoolRef present) const {
     uint32_t ptr = 0;
     const auto code = vm_.Lookup(h, &ptr);
     if (Code::kNotFound == code) {
@@ -190,25 +192,24 @@ class Decoder final {
 
   template <>
   Code Find<int64_t>(core::CRC32C h, int64_t* out, const int64_t& def,
-                     std::vector<bool>::reference present) const {
+                     BoolRef present) const {
     return Find64bPrimitive(h, out, def, present);
   }
 
   template <>
   Code Find<uint64_t>(core::CRC32C h, uint64_t* out, const uint64_t& def,
-                      std::vector<bool>::reference present) const {
+                      BoolRef present) const {
     return Find64bPrimitive(h, out, def, present);
   }
 
   template <>
   Code Find<double>(core::CRC32C h, double* out, const double& def,
-                    std::vector<bool>::reference present) const {
+                    BoolRef present) const {
     return Find64bPrimitive(h, out, def, present);
   }
 
   template <typename S>
-  Code FindString(core::CRC32C h, S* out, const S& def,
-                  std::vector<bool>::reference present) const {
+  Code FindString(core::CRC32C h, S* out, const S& def, BoolRef present) const {
     uint32_t ptr = 0;
     const auto code = vm_.Lookup(h, &ptr);
     if (Code::kOk == code) {
@@ -230,15 +231,14 @@ class Decoder final {
 
   template <>
   Code Find<std::string>(core::CRC32C h, std::string* out,
-                         const std::string& def,
-                         std::vector<bool>::reference present) const {
+                         const std::string& def, BoolRef present) const {
     return FindString(h, out, def, present);
   }
 
   template <>
   Code Find<std::string_view>(core::CRC32C h, std::string_view* out,
                               const std::string_view& def,
-                              std::vector<bool>::reference present) const {
+                              BoolRef present) const {
     return FindString(h, out, def, present);
   }
 
@@ -260,7 +260,7 @@ class Decoder final {
 
   template <typename S>
   Code FindStringVector(core::CRC32C h, std::vector<S>* out,
-                        std::vector<bool>::reference present) const {
+                        BoolRef present) const {
     uint32_t ptr = 0;
     const auto code = vm_.Lookup(h, &ptr);
     if (Code::kNotFound == code) {
@@ -294,8 +294,7 @@ class Decoder final {
   }
 
   template <typename C>
-  Code FindCapsule(core::CRC32C h, C* out,
-                   std::vector<bool>::reference present) const {
+  Code FindCapsule(core::CRC32C h, C* out, BoolRef present) const {
     uint32_t ptr = 0;
     const auto code = vm_.Lookup(h, &ptr);
     if (Code::kNotFound == code) {
@@ -321,7 +320,7 @@ class Decoder final {
 
   template <typename C>
   Code FindCapsuleVector(core::CRC32C h, std::vector<C>* out,
-                         std::vector<bool>::reference present) const {
+                         BoolRef present) const {
     uint32_t ptr = 0;
     const auto code = vm_.Lookup(h, &ptr);
     if (Code::kNotFound == code) {
