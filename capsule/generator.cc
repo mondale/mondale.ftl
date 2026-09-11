@@ -216,7 +216,7 @@ ResultOr<std::string> GenerateHeader(const CapsuleFile& file) {
     oss << "  size_t ComputeStorageSize() const;\n";
     oss << "  void Encode(::capsule::Encoder* e) const;\n";
     oss << "  ::core::Result Decode(::capsule::Decoder* d);\n";
-    oss << "  std::string ToString(int indent) const;\n";
+    oss << "  std::string ToString(int indent = 0) const;\n";
     oss << "};\n\n";
   }
 
@@ -233,7 +233,7 @@ ResultOr<std::string> GenerateHeader(const CapsuleFile& file) {
     }
     oss << "  ::core::Result Decode(::capsule::Decoder* d);\n";
     oss << "  void RefIfNeeded(::capsule::Storage* s);\n";
-    oss << "  std::string ToString(int indent) const;\n";
+    oss << "  std::string ToString(int indent = 0) const;\n";
     oss << "};\n\n";
   }
 
