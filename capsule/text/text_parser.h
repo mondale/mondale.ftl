@@ -16,6 +16,8 @@ class TextParser {
   // Initializes the parser with the source text view.
   explicit TextParser(std::string_view src);
 
+  const Token& CurrentToken() const { return current_; }
+
   // Returns true if the parser has reached the end of the input stream.
   bool IsAtEnd() const;
 

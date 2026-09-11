@@ -1,4 +1,5 @@
 #include <bitset>
+#include <map>
 #include <random>
 #include <vector>
 // TODO - need randomness support in runtime
@@ -9,6 +10,7 @@
 #include "capsule/size_builder.h"
 #include "capsule/storage.h"
 #include "capsule/storage_factory.h"
+#include "capsule/text/text_parser.h"
 #include "testing/testing.h"
 
 using testing::IsOk;
@@ -62,27 +64,121 @@ class ParsingWidget final {
  public:
   using ParseFn = std::function<Result(std::string_view)>;
 
-  void AddU8(std::string_view n, uint8_t* u8p);
-  void AddI8(std::string_view n, int8_t* i8p);
-  void AddU16(std::string_view n, uint16_t* u16p);
-  void AddI16(std::string_view n, int16_t* i16p);
-  void AddU32(std::string_view n, uint32_t* u32p);
-  void AddI32(std::string_view n, int32_t* i32p);
-  void AddF32(std::string_view n, float* f32p);
-  void AddU64(std::string_view n, uint64_t* u64p);
-  void AddI64(std::string_view n, int64_t* i64p);
-  void AddF64(std::string_view n, double* f64p);
-  void AddString(std::string_view n, std::string* sp);
+  void Add(std::string_view n, bool* bp);
+  void Add(std::string_view n, uint8_t* u8p);
+  void Add(std::string_view n, int8_t* i8p);
+  void Add(std::string_view n, uint16_t* u16p);
+  void Add(std::string_view n, int16_t* i16p);
+  void Add(std::string_view n, uint32_t* u32p);
+  void Add(std::string_view n, int32_t* i32p);
+  void Add(std::string_view n, float* f32p);
+  void Add(std::string_view n, uint64_t* u64p);
+  void Add(std::string_view n, int64_t* i64p);
+  void Add(std::string_view n, double* f64p);
+  void Add(std::string_view n, std::string* sp);
   void AddStringVector(std::string_view n, std::vector<std::string>* vsp);
   void AddCapsule(std::string_view n, ParseFn fn);
   void AddCapsuleVector(std::string_view n, ParseFn fn);
 
+  Result ParseFrom(std::string_view s);
+
  private:
+  Result ParseSubmodule(std::string_view s);
+
+  std::map<std::string_view, bool*> bm_;
+  std::map<std::string_view, uint8_t*> u8m_;
+  std::map<std::string_view, int8_t*> i8m_;
+  std::map<std::string_view, uint16_t*> u16m_;
+  std::map<std::string_view, int16_t*> i16m_;
+  std::map<std::string_view, uint32_t*> u32m_;
+  std::map<std::string_view, int32_t*> i32m_;
+  std::map<std::string_view, float*> f32m_;
+  std::map<std::string_view, uint64_t*> u64m_;
+  std::map<std::string_view, int64_t*> i64m_;
+  std::map<std::string_view, double*> f64m_;
+  std::map<std::string_view, std::string*> string_m_;
+  std::map<std::string_view, std::vector<std::string>*> string_vector_m_;
+  std::map<std::string_view, ParseFn> capsule_m_;
+  std::map<std::string_view, ParseFn> capsule_vector_m_;
 };
 
-Result SubSubM::ParseFrom(std::string_view s) {
-  //
+Result ParsingWidget::ParseFrom(std::string_view s) {
+  // Begin parsing the input stream at the start of a given capsule.
+  using capsule::text::Token;
+
+  capsule::text::TextParser p(s);
+  while (!p.IsAtEnd()) {
+    if (p.Check(Token::Type::kRBrace)) break;  // that's end of our capsule.
+
+    // Everything at this point should be an identifier.
+    TRY_ASSIGN(std::string field_name, p.ExpectIdentifier());
+
+    // Depending on what comes next, we go into a more specific parsing
+    // sequence...
+    // * If it's a {, we're parsing a submodule.
+    if (p.Check(Token::Type::kLBrace)) {
+      TRY(p.Match(Token::Type::kLBrace));
+      // figure this out.
+      continue;
+    }
+
+    // * If it's a [, we're parsing a vector of something.
+    if (p.Check(Token::Type::kLBracket)) {
+      TRY(p.Match(Token::Type::kLBracket));
+      // figure this out.
+      continue;
+    }
+
+    // * If it's a :, we're parsing a primitive.
+    if (p.Check(Token::Type::kColon)) {
+      TRY(p.Match(Token::Type::kColon));
+      // figure this out.
+      continue;
+    }
+
+    // ... anything else is invalid.
+    return core::InvalidArgumentError(
+        strings::Format("Not expecting token [{}] at line [{}].",
+                        p.CurrentToken().text, p.current_line()));
+  }
+  TRY(p.Match(Token::Type::kRBrace));
   return Result::Ok();
+}
+
+void ParsingWidget::Add(std::string_view n, bool* bp) { bm_[n] = bp; }
+void ParsingWidget::Add(std::string_view n, uint8_t* u8p) { u8m_[n] = u8p; }
+void ParsingWidget::Add(std::string_view n, int8_t* i8p) { i8m_[n] = i8p; }
+void ParsingWidget::Add(std::string_view n, uint16_t* u16p) { u16m_[n] = u16p; }
+void ParsingWidget::Add(std::string_view n, int16_t* i16p) { i16m_[n] = i16p; }
+void ParsingWidget::Add(std::string_view n, uint32_t* u32p) { u32m_[n] = u32p; }
+void ParsingWidget::Add(std::string_view n, int32_t* i32p) { i32m_[n] = i32p; }
+void ParsingWidget::Add(std::string_view n, float* f32p) { f32m_[n] = f32p; }
+void ParsingWidget::Add(std::string_view n, uint64_t* u64p) { u64m_[n] = u64p; }
+void ParsingWidget::Add(std::string_view n, int64_t* i64p) { i64m_[n] = i64p; }
+void ParsingWidget::Add(std::string_view n, double* f64p) { f64m_[n] = f64p; }
+void ParsingWidget::Add(std::string_view n, std::string* sp) {
+  string_m_[n] = sp;
+}
+
+void ParsingWidget::AddStringVector(std::string_view n,
+                                    std::vector<std::string>* vsp) {
+  string_vector_m_[n] = vsp;
+}
+
+void ParsingWidget::AddCapsule(std::string_view n, ParseFn fn) {
+  capsule_m_[n] = std::move(fn);
+}
+
+void ParsingWidget::AddCapsuleVector(std::string_view n, ParseFn fn) {
+  capsule_vector_m_[n] = std::move(fn);
+}
+
+Result SubSubM::ParseFrom(std::string_view s) {
+  ParsingWidget widget;
+  widget.Add("b1", &b1);
+  widget.Add("ii", &i1);
+  widget.Add("s1", &s1);
+  return widget.ParseFrom(s);
 }
 
 std::string SubSubM::ToString(int indent) const {
