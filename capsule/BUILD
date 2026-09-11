@@ -277,6 +277,7 @@ cc_test(
         ":size_builder",
         ":storage",
         ":storage_factory",
+        "//capsule/text:text_parser",
         "//core",
         "//testing",
     ],

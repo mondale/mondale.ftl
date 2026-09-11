@@ -55,7 +55,35 @@ struct SubSubM final : public SubSubBase {
   void Encode(::capsule::Encoder* e) const;
   Result Decode(::capsule::Decoder* d);
   std::string ToString(int indent = 0) const;
+  Result ParseFrom(std::string_view s);
 };
+
+class ParsingWidget final {
+ public:
+  using ParseFn = std::function<Result(std::string_view)>;
+
+  void AddU8(std::string_view n, uint8_t* u8p);
+  void AddI8(std::string_view n, int8_t* i8p);
+  void AddU16(std::string_view n, uint16_t* u16p);
+  void AddI16(std::string_view n, int16_t* i16p);
+  void AddU32(std::string_view n, uint32_t* u32p);
+  void AddI32(std::string_view n, int32_t* i32p);
+  void AddF32(std::string_view n, float* f32p);
+  void AddU64(std::string_view n, uint64_t* u64p);
+  void AddI64(std::string_view n, int64_t* i64p);
+  void AddF64(std::string_view n, double* f64p);
+  void AddString(std::string_view n, std::string* sp);
+  void AddStringVector(std::string_view n, std::vector<std::string>* vsp);
+  void AddCapsule(std::string_view n, ParseFn fn);
+  void AddCapsuleVector(std::string_view n, ParseFn fn);
+
+ private:
+};
+
+Result SubSubM::ParseFrom(std::string_view s) {
+  //
+  return Result::Ok();
+}
 
 std::string SubSubM::ToString(int indent) const {
   std::ostringstream oss;

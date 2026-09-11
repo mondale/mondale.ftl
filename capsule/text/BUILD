@@ -14,5 +14,6 @@ cc_library(
   srcs = ["text_parser.cc"],
   deps = [":text_lexer",
           "//core",],
+  visibility = ["//capsule/..."],
 )
 
