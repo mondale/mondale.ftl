@@ -20,7 +20,7 @@ std::unordered_set<std::string_view> VerbotenSet() {
   "case", "catch", "concept", "constexpr", "consteval", "continue", "delete", "do", "double", "float", "if", "for",
   "else", "explicit", "goto", "inline", "new", "return", "requires", "signed", "static", "switch", "this", "true",
   "false", "try", "union", "unsigned", "virtual", "void", "volatile", "namespace", "kTypeHash", "has_", "Decode",
-  "Encode", "ComputeStorageSize", "RefIfNeeded", "CRC32C", "kFieldCount", "MaterializedType", "ViewType",
+  "Encode", "ComputeStorageSize", "RefIfNeeded", "CRC32C", "kFieldCount", "MaterializedType", "ViewType", "has",
       // clang-format on
   };
   for (auto x : kNope) r.insert(x);
