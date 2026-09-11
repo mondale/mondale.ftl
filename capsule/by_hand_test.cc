@@ -1,3 +1,4 @@
+#include <bitset>
 #include <random>
 #include <vector>
 // TODO - need randomness support in runtime
@@ -13,6 +14,8 @@
 using testing::IsOk;
 
 namespace {
+
+std::string Spaces(int amount) { return std::string(amount, ' '); }
 
 struct SubSubM;
 struct SubSubV;
@@ -32,10 +35,14 @@ struct SubSubBase {
   static constexpr int i1_Index = 1;
   static constexpr int s1_Index = 2;
 
-  bool has_b1() const { return has_[b1_Index]; }
-  bool has_i1() const { return has_[i1_Index]; }
-  bool has_s1() const { return has_[s1_Index]; }
+  bool has_b1() const { return has() && has_[b1_Index]; }
+  bool has_i1() const { return has() && has_[i1_Index]; }
+  bool has_s1() const { return has() && has_[s1_Index]; }
+  bool has() const { return !has_.empty(); }
 
+  // todo - convert to std::bitset<kFieldCount>
+  // call the field 'absent' and change to clear it if not found during
+  // deserialization which leverages zero initialization.
   std::vector<bool> has_;
 };
 
@@ -47,16 +54,18 @@ struct SubSubM final : public SubSubBase {
   size_t ComputeStorageSize() const;
   void Encode(::capsule::Encoder* e) const;
   Result Decode(::capsule::Decoder* d);
+  std::string ToString(int indent = 0) const;
 };
 
-void Compare(const SubSubM* l, const SubSubM* r) {
-  ASSERT_EQ(SubSubM::kFieldCount, r->has_.size());
-  EXPECT_EQ(l->b1, r->b1);
-  EXPECT_TRUE(r->has_b1());
-  EXPECT_EQ(l->i1, r->i1);
-  EXPECT_TRUE(r->has_i1());
-  EXPECT_EQ(l->s1, r->s1);
-  EXPECT_TRUE(r->has_s1());
+std::string SubSubM::ToString(int indent) const {
+  std::ostringstream oss;
+  if (!has() || has_b1())
+    oss << Spaces(indent) << "b1" << ": " << b1 << std::endl;
+  if (!has() || has_i1())
+    oss << Spaces(indent) << "i1" << ": " << i1 << std::endl;
+  if (!has() || has_s1())
+    oss << Spaces(indent) << "s1" << ": \"" << s1 << "\"" << std::endl;
+  return oss.str();
 }
 
 size_t SubSubM::ComputeStorageSize() const {
@@ -116,9 +125,10 @@ struct SubBase {
   static constexpr int sub1_Index = 1;
   static constexpr int vsub1_Index = 2;
 
-  bool has_u64a() const { return has_[u64a_Index]; }
-  bool has_sub1() const { return has_[sub1_Index]; }
-  bool has_vsub1() const { return has_[vsub1_Index]; }
+  bool has_u64a() const { return has() && has_[u64a_Index]; }
+  bool has_sub1() const { return has() && has_[sub1_Index]; }
+  bool has_vsub1() const { return has() && has_[vsub1_Index]; }
+  bool has() const { return has_.size() == kFieldCount; }
 
   std::vector<bool> has_;
 };
@@ -131,17 +141,28 @@ struct SubM final : public SubBase {
   size_t ComputeStorageSize() const;
   void Encode(::capsule::Encoder* e) const;
   Result Decode(::capsule::Decoder* d);
+  std::string ToString(int indent = 0) const;
 };
 
-void Compare(const SubM* l, const SubM* r) {
-  EXPECT_EQ(l->u64a, r->u64a);
-  EXPECT_TRUE(r->has_u64a());
-  Compare(&l->sub1, &r->sub1);
-  EXPECT_TRUE(r->has_vsub1());
-  ASSERT_EQ(l->vsub1.size(), r->vsub1.size());
-  for (int i = 0; i < l->vsub1.size(); ++i) {
-    Compare(&l->vsub1[i], &r->vsub1[i]);
+std::string SubM::ToString(int indent) const {
+  std::ostringstream oss;
+  if (!has() || has_u64a())
+    oss << Spaces(indent) << "u64a" << ": " << u64a << std::endl;
+  if (!has() || has_sub1()) {
+    oss << Spaces(indent) << "sub1" << " {" << std::endl;
+    oss << sub1.ToString(indent + 2);
+    oss << Spaces(indent) << "}" << std::endl;
   }
+  if ((!has() || has_vsub1()) && !vsub1.empty()) {
+    oss << Spaces(indent) << "vsub1" << "[" << vsub1.size() << "]";
+    for (auto& elem : vsub1) {
+      oss << " {" << std::endl;
+      oss << elem.ToString(indent + 2);
+      oss << Spaces(indent) << "}";
+    }
+    oss << std::endl;
+  }
+  return oss.str();
 }
 
 size_t SubM::ComputeStorageSize() const {
@@ -231,19 +252,20 @@ struct TopLevelBase {
   static constexpr int f32a_Index = 11;
   static constexpr int f64a_Index = 12;
 
-  bool has_u64a() const { return has_[u64a_Index]; }
-  bool has_i64a() const { return has_[i64a_Index]; }
-  bool has_u32a() const { return has_[u32a_Index]; }
-  bool has_i32a() const { return has_[i32a_Index]; }
-  bool has_u16a() const { return has_[u16a_Index]; }
-  bool has_i16a() const { return has_[i16a_Index]; }
-  bool has_u8a() const { return has_[u8a_Index]; }
-  bool has_i8a() const { return has_[i8a_Index]; }
-  bool has_b1() const { return has_[b1_Index]; }
-  bool has_vs1() const { return has_[vs1_Index]; }
-  bool has_sub1() const { return has_[sub1_Index]; }
-  bool has_f32a() const { return has_[f32a_Index]; }
-  bool has_f64a() const { return has_[f64a_Index]; }
+  bool has_u64a() const { return has() && has_[u64a_Index]; }
+  bool has_i64a() const { return has() && has_[i64a_Index]; }
+  bool has_u32a() const { return has() && has_[u32a_Index]; }
+  bool has_i32a() const { return has() && has_[i32a_Index]; }
+  bool has_u16a() const { return has() && has_[u16a_Index]; }
+  bool has_i16a() const { return has() && has_[i16a_Index]; }
+  bool has_u8a() const { return has() && has_[u8a_Index]; }
+  bool has_i8a() const { return has() && has_[i8a_Index]; }
+  bool has_b1() const { return has() && has_[b1_Index]; }
+  bool has_vs1() const { return has() && has_[vs1_Index]; }
+  bool has_sub1() const { return has() && has_[sub1_Index]; }
+  bool has_f32a() const { return has() && has_[f32a_Index]; }
+  bool has_f64a() const { return has() && has_[f64a_Index]; }
+  bool has() const { return has_.size() == kFieldCount; }
 
   std::vector<bool> has_;
 };
@@ -266,38 +288,48 @@ struct TopLevelM final : public TopLevelBase {
   size_t ComputeStorageSize() const;
   void Encode(::capsule::Encoder* e) const;
   Result Decode(::capsule::Decoder* d);
+  std::string ToString(int indent = 0) const;
 };
 
-void Compare(const TopLevelM* l, const TopLevelM* r) {
-  EXPECT_TRUE(r->has_u64a());
-  EXPECT_TRUE(r->has_i64a());
-  EXPECT_TRUE(r->has_u32a());
-  EXPECT_TRUE(r->has_i32a());
-  EXPECT_TRUE(r->has_u16a());
-  EXPECT_TRUE(r->has_i16a());
-  EXPECT_TRUE(r->has_u8a());
-  EXPECT_TRUE(r->has_i8a());
-  EXPECT_TRUE(r->has_b1());
-  EXPECT_TRUE(r->has_vs1());
-  EXPECT_TRUE(r->has_sub1());
-  EXPECT_TRUE(r->has_f32a());
-  EXPECT_TRUE(r->has_f64a());
-  EXPECT_EQ(l->u64a, r->u64a);
-  EXPECT_EQ(l->i64a, r->i64a);
-  EXPECT_EQ(l->u32a, r->u32a);
-  EXPECT_EQ(l->i32a, r->i32a);
-  EXPECT_EQ(l->u16a, r->u16a);
-  EXPECT_EQ(l->i16a, r->i16a);
-  EXPECT_EQ(l->u8a, r->u8a);
-  EXPECT_EQ(l->i8a, r->i8a);
-  EXPECT_EQ(l->b1, r->b1);
-  EXPECT_EQ(l->f32a, r->f32a);
-  EXPECT_EQ(l->f64a, r->f64a);
-  Compare(&l->sub1, &r->sub1);
-  ASSERT_EQ(l->vs1.size(), r->vs1.size());
-  for (int i = 0; i < l->vs1.size(); ++i) {
-    EXPECT_EQ(l->vs1[i], r->vs1[i]);
+std::string TopLevelM::ToString(int indent) const {
+  std::ostringstream oss;
+  if (!has() || has_u64a())
+    oss << Spaces(indent) << "u64a" << ": " << u64a << std::endl;
+  if (!has() || has_i64a())
+    oss << Spaces(indent) << "i64a" << ": " << i64a << std::endl;
+  if (!has() || has_u32a())
+    oss << Spaces(indent) << "u32a" << ": " << u32a << std::endl;
+  if (!has() || has_i32a())
+    oss << Spaces(indent) << "i32a" << ": " << i32a << std::endl;
+  if (!has() || has_u16a())
+    oss << Spaces(indent) << "u16a" << ": " << u16a << std::endl;
+  if (!has() || has_i16a())
+    oss << Spaces(indent) << "i16a" << ": " << i16a << std::endl;
+  if (!has() || has_u8a())
+    oss << Spaces(indent) << "u8a" << ": " << static_cast<uint16_t>(u8a)
+        << std::endl;
+  if (!has() || has_i8a())
+    oss << Spaces(indent) << "i8a" << ": " << static_cast<int16_t>(i8a)
+        << std::endl;
+  if (!has() || has_b1())
+    oss << Spaces(indent) << "b1" << ": " << b1 << std::endl;
+  if ((!has() || has_vs1()) && !vs1.empty()) {
+    oss << Spaces(indent) << "vs1" << " {" << std::endl;
+    for (const auto& s : vs1) {
+      oss << Spaces(indent + 2) << "\"" << s << "\"," << std::endl;
+    }
+    oss << Spaces(indent) << "}" << std::endl;
   }
+  if (!has() || has_sub1()) {
+    oss << Spaces(indent) << "sub1" << " {" << std::endl;
+    oss << sub1.ToString(indent + 2);
+    oss << Spaces(indent) << "}" << std::endl;
+  }
+  if (!has() || has_f32a())
+    oss << Spaces(indent) << "f32a" << ": " << f32a << std::endl;
+  if (!has() || has_f64a())
+    oss << Spaces(indent) << "f64a" << ": " << f64a << std::endl;
+  return oss.str();
 }
 
 size_t TopLevelM::ComputeStorageSize() const {
@@ -426,7 +458,19 @@ struct SubSubV final : public SubSubBase {
 
   Result Decode(::capsule::Decoder* d);
   void RefIfNeeded(::capsule::Storage* s);
+  std::string ToString(int indent = 0) const;
 };
+
+std::string SubSubV::ToString(int indent) const {
+  std::ostringstream oss;
+  if (!has() || has_b1())
+    oss << Spaces(indent) << "b1" << ": " << b1 << std::endl;
+  if (!has() || has_i1())
+    oss << Spaces(indent) << "i1" << ": " << i1 << std::endl;
+  if (!has() || has_s1())
+    oss << Spaces(indent) << "s1" << ": \"" << s1 << "\"" << std::endl;
+  return oss.str();
+}
 
 Result SubSubV::Decode(::capsule::Decoder* d) {
   has_.resize(kFieldCount, false);
@@ -442,6 +486,16 @@ Result SubSubV::Decode(::capsule::Decoder* d) {
 
 void SubSubV::RefIfNeeded(::capsule::Storage* s) { ref_ = s->Ref(); }
 
+void Compare(const SubSubM* l, const SubSubM* r) {
+  ASSERT_EQ(SubSubM::kFieldCount, r->has_.size());
+  EXPECT_EQ(l->b1, r->b1);
+  EXPECT_TRUE(r->has_b1());
+  EXPECT_EQ(l->i1, r->i1);
+  EXPECT_TRUE(r->has_i1());
+  EXPECT_EQ(l->s1, r->s1);
+  EXPECT_TRUE(r->has_s1());
+}
+
 void Compare(const SubSubM* l, const SubSubV* r) {
   ASSERT_EQ(SubSubV::kFieldCount, r->has_.size());
   EXPECT_EQ(l->b1, r->b1);
@@ -452,6 +506,49 @@ void Compare(const SubSubM* l, const SubSubV* r) {
   EXPECT_TRUE(r->has_s1());
 }
 
+void Compare(const SubM* l, const SubM* r) {
+  EXPECT_EQ(l->u64a, r->u64a);
+  EXPECT_TRUE(r->has_u64a());
+  Compare(&l->sub1, &r->sub1);
+  EXPECT_TRUE(r->has_vsub1());
+  ASSERT_EQ(l->vsub1.size(), r->vsub1.size());
+  for (int i = 0; i < l->vsub1.size(); ++i) {
+    Compare(&l->vsub1[i], &r->vsub1[i]);
+  }
+}
+
+void Compare(const TopLevelM* l, const TopLevelM* r) {
+  EXPECT_TRUE(r->has_u64a());
+  EXPECT_TRUE(r->has_i64a());
+  EXPECT_TRUE(r->has_u32a());
+  EXPECT_TRUE(r->has_i32a());
+  EXPECT_TRUE(r->has_u16a());
+  EXPECT_TRUE(r->has_i16a());
+  EXPECT_TRUE(r->has_u8a());
+  EXPECT_TRUE(r->has_i8a());
+  EXPECT_TRUE(r->has_b1());
+  EXPECT_TRUE(r->has_vs1());
+  EXPECT_TRUE(r->has_sub1());
+  EXPECT_TRUE(r->has_f32a());
+  EXPECT_TRUE(r->has_f64a());
+  EXPECT_EQ(l->u64a, r->u64a);
+  EXPECT_EQ(l->i64a, r->i64a);
+  EXPECT_EQ(l->u32a, r->u32a);
+  EXPECT_EQ(l->i32a, r->i32a);
+  EXPECT_EQ(l->u16a, r->u16a);
+  EXPECT_EQ(l->i16a, r->i16a);
+  EXPECT_EQ(l->u8a, r->u8a);
+  EXPECT_EQ(l->i8a, r->i8a);
+  EXPECT_EQ(l->b1, r->b1);
+  EXPECT_EQ(l->f32a, r->f32a);
+  EXPECT_EQ(l->f64a, r->f64a);
+  Compare(&l->sub1, &r->sub1);
+  ASSERT_EQ(l->vs1.size(), r->vs1.size());
+  for (int i = 0; i < l->vs1.size(); ++i) {
+    EXPECT_EQ(l->vs1[i], r->vs1[i]);
+  }
+}
+
 struct SubV final : public SubBase {
   uint64_t u64a;
   SubSubM sub1;
@@ -459,6 +556,7 @@ struct SubV final : public SubBase {
 
   Result Decode(::capsule::Decoder* d);
   void RefIfNeeded(::capsule::Storage* s);
+  std::string ToString(int indent = 0) const;
 };
 
 void Compare(const SubM* l, const SubV* r) {
@@ -485,6 +583,27 @@ Result SubV::Decode(::capsule::Decoder* d) {
 
 void SubV::RefIfNeeded(::capsule::Storage* s) {}
 
+std::string SubV::ToString(int indent) const {
+  std::ostringstream oss;
+  if (!has() || has_u64a())
+    oss << Spaces(indent) << "u64a" << ": " << u64a << std::endl;
+  if (!has() || has_sub1()) {
+    oss << Spaces(indent) << "sub1" << " {" << std::endl;
+    oss << sub1.ToString(indent + 2);
+    oss << Spaces(indent) << "}" << std::endl;
+  }
+  if ((!has() || has_vsub1()) && !vsub1.empty()) {
+    oss << Spaces(indent) << "vsub1" << "[" << vsub1.size() << "]";
+    for (auto& elem : vsub1) {
+      oss << " {" << std::endl;
+      oss << elem.ToString(indent + 2);
+      oss << Spaces(indent) << "}";
+    }
+    oss << std::endl;
+  }
+  return oss.str();
+}
+
 struct TopLevelV final : public TopLevelBase {
   uint64_t u64a;
   int64_t i64a;
@@ -502,9 +621,51 @@ struct TopLevelV final : public TopLevelBase {
 
   Result Decode(::capsule::Decoder* d);
   void RefIfNeeded(::capsule::Storage* s);
+  std::string ToString(int indent = 0) const;
 
   std::shared_ptr<::capsule::Storage> ref_;
 };
+
+std::string TopLevelV::ToString(int indent) const {
+  std::ostringstream oss;
+  if (!has() || has_u64a())
+    oss << Spaces(indent) << "u64a" << ": " << u64a << std::endl;
+  if (!has() || has_i64a())
+    oss << Spaces(indent) << "i64a" << ": " << i64a << std::endl;
+  if (!has() || has_u32a())
+    oss << Spaces(indent) << "u32a" << ": " << u32a << std::endl;
+  if (!has() || has_i32a())
+    oss << Spaces(indent) << "i32a" << ": " << i32a << std::endl;
+  if (!has() || has_u16a())
+    oss << Spaces(indent) << "u16a" << ": " << u16a << std::endl;
+  if (!has() || has_i16a())
+    oss << Spaces(indent) << "i16a" << ": " << i16a << std::endl;
+  if (!has() || has_u8a())
+    oss << Spaces(indent) << "u8a" << ": " << static_cast<uint16_t>(u8a)
+        << std::endl;
+  if (!has() || has_i8a())
+    oss << Spaces(indent) << "i8a" << ": " << static_cast<int16_t>(i8a)
+        << std::endl;
+  if (!has() || has_b1())
+    oss << Spaces(indent) << "b1" << ": " << b1 << std::endl;
+  if ((!has() || has_vs1()) && !vs1.empty()) {
+    oss << Spaces(indent) << "vs1" << " {" << std::endl;
+    for (const auto& s : vs1) {
+      oss << Spaces(indent + 2) << "\"" << s << "\"," << std::endl;
+    }
+    oss << Spaces(indent) << "}" << std::endl;
+  }
+  if (!has() || has_sub1()) {
+    oss << Spaces(indent) << "sub1" << " {" << std::endl;
+    oss << sub1.ToString(indent + 2);
+    oss << Spaces(indent) << "}" << std::endl;
+  }
+  if (!has() || has_f32a())
+    oss << Spaces(indent) << "f32a" << ": " << f32a << std::endl;
+  if (!has() || has_f64a())
+    oss << Spaces(indent) << "f64a" << ": " << f64a << std::endl;
+  return oss.str();
+}
 
 void Compare(const TopLevelM* l, const TopLevelV* r) {
   EXPECT_TRUE(r->has_u64a());
@@ -603,6 +764,7 @@ void RunTranscodeTest(std::unique_ptr<CAPSULE> m) {
   v->RefIfNeeded(storage.get());
   EXPECT_THAT(v->Decode(&d), IsOk());
   Compare(m.get(), v.get());
+  EXPECT_EQ(v->ToString(), m2->ToString());
 }
 
 template <typename CAPSULE>
