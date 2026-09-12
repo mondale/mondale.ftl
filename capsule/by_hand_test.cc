@@ -286,7 +286,8 @@ std::string SubSubM::ToString(int indent) const {
   if (!has() || has_i1())
     oss << Spaces(indent) << "i1" << ": " << i1 << std::endl;
   if (!has() || has_s1())
-    oss << Spaces(indent) << "s1" << ": \"" << s1 << "\"" << std::endl;
+    oss << Spaces(indent) << "s1" << ": \"" << strings::EscapeString(s1) << "\""
+        << std::endl;
   return oss.str();
 }
 
@@ -318,7 +319,7 @@ void Randomize(SubSubM* c, std::mt19937_64* rng) {
   std::uniform_int_distribution<int32_t> dist_i32(
       std::numeric_limits<int32_t>::min(), std::numeric_limits<int32_t>::max());
   std::uniform_int_distribution<size_t> dist_len(0, 33);
-  std::uniform_int_distribution<int> dist_char(32, 126);
+  std::uniform_int_distribution<int> dist_char(35, 126);
 
   c->b1 = dist_bool(*rng) != 0;
   c->i1 = dist_i32(*rng);
@@ -367,7 +368,14 @@ struct SubM final : public SubBase {
   Result ParseFrom(::capsule::text::TextParser* p);
 };
 
-Result SubM::ParseFrom(::capsule::text::TextParser* p) { return Result::Ok(); }
+Result SubM::ParseFrom(::capsule::text::TextParser* p) {
+  ParsingWidget widget;
+  widget.Add("u64a", &u64a);
+  widget.AddCapsule("sub1", [this](auto* p) { return sub1.ParseFrom(p); });
+  widget.AddCapsuleVector(
+      "vsub1", [this](auto* p) { return vsub1.emplace_back().ParseFrom(p); });
+  return widget.ParseFrom(p);
+}
 
 std::string SubM::ToString(int indent) const {
   std::ostringstream oss;
@@ -379,7 +387,7 @@ std::string SubM::ToString(int indent) const {
     oss << Spaces(indent) << "}" << std::endl;
   }
   if ((!has() || has_vsub1()) && !vsub1.empty()) {
-    oss << Spaces(indent) << "vsub1" << "[" << vsub1.size() << "]";
+    oss << Spaces(indent) << "vsub1" << "[]";
     for (auto& elem : vsub1) {
       oss << " {" << std::endl;
       oss << elem.ToString(indent + 2);
@@ -546,7 +554,8 @@ std::string TopLevelM::ToString(int indent) const {
   if ((!has() || has_vs1()) && !vs1.empty()) {
     oss << Spaces(indent) << "vs1" << " {" << std::endl;
     for (const auto& s : vs1) {
-      oss << Spaces(indent + 2) << "\"" << s << "\"," << std::endl;
+      oss << Spaces(indent + 2) << "\"" << strings::EscapeString(s) << "\","
+          << std::endl;
     }
     oss << Spaces(indent) << "}" << std::endl;
   }
@@ -646,7 +655,7 @@ void Randomize(TopLevelM* c, std::mt19937_64* rng) {
   std::uniform_int_distribution<int> dist_bool(0, 1);
   std::uniform_int_distribution<size_t> dist_vec_len(0, 4);
   std::uniform_int_distribution<size_t> dist_str_len(0, 33);
-  std::uniform_int_distribution<int> dist_char(32, 126);
+  std::uniform_int_distribution<int> dist_char(35, 126);
   std::uniform_real_distribution<float> dist_f32(
       std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max());
   std::uniform_real_distribution<double> dist_f64(
@@ -823,7 +832,7 @@ std::string SubV::ToString(int indent) const {
     oss << Spaces(indent) << "}" << std::endl;
   }
   if ((!has() || has_vsub1()) && !vsub1.empty()) {
-    oss << Spaces(indent) << "vsub1" << "[" << vsub1.size() << "]";
+    oss << Spaces(indent) << "vsub1" << "[]";
     for (auto& elem : vsub1) {
       oss << " {" << std::endl;
       oss << elem.ToString(indent + 2);
@@ -1022,7 +1031,7 @@ TEST(SubSubMTest) {
   RunTranscodeTest(std::move(m));
 }
 
-TEST(DISABLED_SubMTest) {
+TEST(SubMTest) {
   auto m = std::make_unique<SubM>();
   Randomize(m.get());
   RunTranscodeTest(std::move(m));

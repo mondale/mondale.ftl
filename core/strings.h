@@ -223,6 +223,15 @@ inline constexpr SplitView Split(std::string_view input,
   return SplitView(input, delimiter);
 }
 
+// Escapes control characters, quotes, backslashes, and invalid UTF-8 byte
+// sequences into standard C-style hex/character escape sequences (\n, \t, \",
+// \\, \xXX).
+std::string EscapeString(std::string_view s);
+
+// Unescapes standard C-style escape sequences (\n, \t, \", \\, \xXX) back into
+// raw bytes.
+ResultOr<std::string> UnescapeString(std::string_view s);
+
 }  // namespace core::strings
 
 #endif  // #ifndef CORE_STRINGS_H_

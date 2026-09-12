@@ -326,7 +326,7 @@ Result EmitToStringImpl(std::ostringstream& oss, std::string_view class_postfix,
       oss << "  if ((!has() || has_" << f.name << "()) && !" << f.name
           << ".empty()) {\n";
       oss << "    oss << std::string(indent, ' ') << \"" << f.name
-          << " {\" << std::endl;\n";
+          << "[] {\" << std::endl;\n";
       oss << "    for (const auto& elem : " << f.name << ") {\n";
       oss << "      oss << \" {\" << std::endl;\n";
       oss << "      oss << elem.ToString(indent + 2);\n";

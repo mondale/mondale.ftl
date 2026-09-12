@@ -134,4 +134,41 @@ TEST(SplitMultiCharacterDelimiter) {
   }
 }
 
+TEST(EscapeStringTest_BasicEscapes) {
+  EXPECT_EQ(EscapeString("Hello \"World\""), "Hello \\\"World\\\"");
+  EXPECT_EQ(EscapeString("Line1\nLine2\tTabbed"), "Line1\\nLine2\\tTabbed");
+  EXPECT_EQ(EscapeString("Backslash: \\"), "Backslash: \\\\");
+}
+
+TEST(EscapeStringTest_ValidUtf8Preserved) {
+  // Valid multi-byte UTF-8 sequences (e.g., "Hello, ??!") should remain
+  // untouched
+  EXPECT_EQ(EscapeString("Hello, ?\?!"), "Hello, ?\?!");
+}
+
+TEST(EscapeStringTest_InvalidUtf8Escaped) {
+  // Truncated multi-byte byte sequence 0xE6 0x97 (missing third byte)
+  std::string_view bad_utf8(
+      "\xE6"
+      "\x97",
+      2);
+  EXPECT_EQ(EscapeString(bad_utf8), "\\xe6\\x97");
+}
+
+TEST(UnEscapeStringTest_Success) {
+  auto res = UnescapeString("Hello \\\"World\\\"\\n\\t\\\\");
+  ASSERT_TRUE(res.IsOk());
+  EXPECT_EQ(res.ValueOrDie(), "Hello \"World\"\n\t\\");
+
+  auto hex_res = UnescapeString("\\x48\\x65\\x6c\\x6c\\x6f");
+  ASSERT_TRUE(hex_res.IsOk());
+  EXPECT_EQ(hex_res.ValueOrDie(), "Hello");
+}
+
+TEST(UnEscapeStringTest_InvalidEscapesFail) {
+  EXPECT_FALSE(UnescapeString("Trailing \\").IsOk());
+  EXPECT_FALSE(UnescapeString("Invalid \\z escape").IsOk());
+  EXPECT_FALSE(UnescapeString("Incomplete \\x1").IsOk());
+}
+
 }  // namespace core::strings
