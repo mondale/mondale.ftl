@@ -25,6 +25,8 @@ struct Token {
   Type type;
   std::string text;
   int line;
+
+  std::string ToString() const;
 };
 
 class TextLexer {

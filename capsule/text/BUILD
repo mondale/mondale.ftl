@@ -5,7 +5,7 @@ cc_library(
   name = "text_lexer",
   hdrs = ["text_lexer.h"],
   srcs = ["text_lexer.cc"],
-  deps = [],
+  deps = ["//core",],
 )
 
 cc_library(

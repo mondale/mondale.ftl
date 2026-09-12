@@ -16,14 +16,13 @@ Result TextParser::Match(Token::Type type) {
     Advance();
     return Result::Ok();
   }
-  return Result(Code::kError,
-                "Unexpected token at line " + std::to_string(current_.line));
+  return Result(Code::kError, "Unexpected token " + current_.ToString());
 }
 
 ResultOr<std::string> TextParser::ExpectIdentifier() {
   if (current_.type != Token::Type::kIdentifier) {
-    return Result(Code::kError, "Expected identifier at line " +
-                                    std::to_string(current_.line));
+    return Result(Code::kError,
+                  "Expected identifier at " + current_.ToString());
   }
   std::string name = current_.text;
   Advance();

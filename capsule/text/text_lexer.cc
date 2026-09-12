@@ -1,8 +1,46 @@
 #include <cctype>
 
 #include "capsule/text/text_lexer.h"
+#include "core/vocabulary.h"
 
 namespace capsule::text {
+namespace {
+
+std::string TypeString(Token::Type t) {
+  switch (t) {
+    case Token::Type::kEof:
+      return "kEof";
+    case Token::Type::kUnknown:
+      return "kUnknown";
+    case Token::Type::kIdentifier:
+      return "kIdentifier";
+    case Token::Type::kStringLiteral:
+      return "kStringLiteral";
+    case Token::Type::kNumberLiteral:
+      return "kNumberLiteral";
+    case Token::Type::kLBrace:
+      return "kLBrace";
+    case Token::Type::kRBrace:
+      return "kRBrace";
+    case Token::Type::kLBracket:
+      return "kLBracket";
+    case Token::Type::kRBracket:
+      return "kRBracket";
+    case Token::Type::kComma:
+      return "kComma";
+    case Token::Type::kColon:
+      return "kColon";
+    case Token::Type::kCapsule:
+      return "kCapsule";
+  }
+}
+
+}  // namespace
+
+std::string Token::ToString() const {
+  return strings::Format("Line {}: Type[{}] Text[{}]", line, TypeString(type),
+                         text);
+}
 
 TextLexer::TextLexer(std::string_view sv) : src_(sv), pos_(0), line_(1) {}
 

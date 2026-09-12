@@ -27,7 +27,7 @@ namespace core::strings {
 // e.g.:
 //   Join({"a", "bc", "d"}, ", ");    // a, bc, d
 //
-// const auto ParseAs<[integer type]>(String);
+// const auto ParseAs<[numeric type]>(String);
 //
 // auto Split(String, Delimiter);
 //
