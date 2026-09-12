@@ -10,6 +10,8 @@
 
 namespace capsule::text {
 
+// Helper to keep the parsing state machine as outside of generated types as
+// possible.
 class ParsingWidget final {
  public:
   using ParseFn = std::function<Result(capsule::text::TextParser* p)>;
