@@ -122,59 +122,11 @@ Token TextLexer::NextToken() {
       pos_++;
     }
 
-    /*
-
-          if (escaped) {
-            switch (curr) {
-              case 'n':
-                s.push_back('\n');
-                break;
-              case 't':
-                s.push_back('\t');
-                break;
-              case 'r':
-                s.push_back('\r');
-                break;
-              case '\\':
-                s.push_back('\\');
-                break;
-              case '"':
-                s.push_back('"');
-                break;
-              default:
-                s.push_back(curr);
-                break;
-            }
-            escaped = false;
-          } else if (curr == '\\') {
-            escaped = true;
-          } else if (curr == '"') {
-            break;
-          } else {
-            s.push_back(curr);
-          }
-          pos_++;
-        }
-    */
-
     if (pos_ < src_.size()) {
       pos_++;  // skip closing quote
     }
     return {Token::Type::kStringLiteral, s, token_line};
   }
-  /*
-    if (ch == '"') {
-      pos_++;
-      size_t start = pos_;
-      while (pos_ < src_.size() && src_[pos_] != '"') {
-        if (src_[pos_] == '\n') line_++;
-        pos_++;
-      }
-      std::string s(src_.substr(start, pos_ - start));
-      if (pos_ < src_.size()) pos_++;  // skip closing quote
-      return {Token::Type::kStringLiteral, s, token_line};
-    }
-  */
 
   if (std::isalpha(ch) || ch == '_') {
     size_t start = pos_;
