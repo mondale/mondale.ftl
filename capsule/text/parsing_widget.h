@@ -30,11 +30,11 @@ class ParsingWidget final {
   void Add(std::string_view n, std::string* sp);
   void AddStringVector(std::string_view n, std::vector<std::string>* vsp);
 
-  // The target of this ParseFn is Parse on the nested capsule.
+  // The target of this ParseFn is ParseFrom on the nested capsule.
   void AddCapsule(std::string_view n, ParseFn fn);
 
   // The target of this ParseFn is a method that invokes emplace_back on the
-  // target vector then invokes Parse on the nested capsule.
+  // target vector then invokes ParseFrom on the nested capsule.
   void AddCapsuleVector(std::string_view n, ParseFn fn);
 
   Result ParseFrom(::capsule::text::TextParser* p);
