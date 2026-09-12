@@ -49,6 +49,12 @@ inline pid_t GetCachedTid() {
   return tid;
 }
 
+// Self-label the calling thread as a background thread.
+void BecomeBackgroundThread();
+
+// Self-label the calling thread as a foreground thread.
+void BecomeForegroundThread();
+
 }  // namespace base
 
 #endif  // #ifndef BASE_THREAD_H_

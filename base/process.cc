@@ -280,6 +280,7 @@ void Initialize(int argc, char* argv[]) {
     exit(1);
   }
 
+  BecomeBackgroundThread();
   RunStartupHooks();
 }
 
