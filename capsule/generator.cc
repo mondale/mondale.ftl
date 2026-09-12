@@ -132,6 +132,8 @@ ResultOr<std::string> GenerateHeader(const CapsuleFile& file) {
   oss << "#include \"capsule/encoder.h\"\n";
   oss << "#include \"capsule/size_builder.h\"\n";
   oss << "#include \"capsule/storage.h\"\n";
+  oss << "#include \"capsule/text/parsing_widget.h\"\n";
+  oss << "#include \"capsule/text/text_parser.h\"\n";
   oss << "#include \"core/vocabulary.h\"\n\n";
   oss << "namespace " << file.namespace_name << " {\n\n";
 
@@ -217,6 +219,7 @@ ResultOr<std::string> GenerateHeader(const CapsuleFile& file) {
     oss << "  void Encode(::capsule::Encoder* e) const;\n";
     oss << "  ::core::Result Decode(::capsule::Decoder* d);\n";
     oss << "  std::string ToString(int indent = 0) const;\n";
+    oss << "  ::core::Result ParseFrom(::capsule::text::TextParser* p);\n";
     oss << "};\n\n";
   }
 
@@ -344,6 +347,30 @@ Result EmitToStringImpl(std::ostringstream& oss, std::string_view class_postfix,
   return Result::Ok();
 }
 
+Result EmitParseFromImpl(std::ostringstream& oss, const capsule::Capsule& cp) {
+  oss << "::core::Result " << cp.name
+      << "M::ParseFrom(::capsule::text::TextParser* p) {\n";
+  oss << "  ::capsule::text::ParsingWidget w;\n";
+  for (const auto& f : cp.fields) {
+    if (FieldIsRetired(f)) continue;
+    if (IsCapsuleType(f.type)) {
+      oss << "  w.AddCapsule(\"" << f.name << "\", [this](auto* p) { return "
+          << f.name << ".ParseFrom(p); });\n";
+    } else if (IsCapsuleVectorType(f.type)) {
+      oss << "  w.AddCapsuleVector(\"" << f.name
+          << "\", [this](auto* p) { return " << f.name
+          << ".emplace_back().ParseFrom(p); });\n";
+    } else if (IsStringVectorType(f.type)) {
+      oss << "  w.AddStringVector(\"" << f.name << "\", &" << f.name << ");\n";
+    } else {
+      oss << "  w.Add(\"" << f.name << "\", &" << f.name << ");\n";
+    }
+  }
+  oss << "  return w.ParseFrom(p);\n";
+  oss << "}\n\n";
+  return Result::Ok();
+}
+
 ResultOr<std::string> GenerateSource(const CapsuleFile& file,
                                      std::string_view header_location) {
   std::ostringstream oss;
@@ -403,6 +430,11 @@ ResultOr<std::string> GenerateSource(const CapsuleFile& file,
   for (const auto& cp : file.capsules) {
     TRY(EmitToStringImpl(oss, "M", cp));
     TRY(EmitToStringImpl(oss, "V", cp));
+  }
+
+  // ParseFrom() impls (Materialized types only).
+  for (const auto& cp : file.capsules) {
+    TRY(EmitParseFromImpl(oss, cp));
   }
 
   oss << "}  // namespace " << file.namespace_name << "\n";

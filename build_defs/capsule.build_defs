@@ -40,6 +40,8 @@ def capsule_library(name, src, visibility = None):
                 "//capsule:encoder",
                 "//capsule:size_builder",
                 "//capsule:storage",
+                "//capsule/text:parsing_widget",
+                "//capsule/text:text_parser",
                 "//core",
                ],
         visibility = visibility,
