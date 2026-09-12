@@ -6,6 +6,7 @@
 #include "capsule/framing.h"
 #include "capsule/storage.h"
 #include "capsule/storage_factory.h"
+#include "capsule/text/text_parser.h"
 #include "core/crc32c.h"
 #include "core/vocabulary.h"
 
@@ -32,6 +33,10 @@ Result Deserialize(T* out, const Storage* s);
 // Note that serialization to a framed format should use the helper above.
 template <typename T>
 Result Serialize(const T& in, Storage* s);
+
+// API to parse a capsule from a capsuletext.
+template <typename T>
+Result ParseFromText(T* out, std::string_view text);
 
 ///// Implementation follows.
 
@@ -71,6 +76,12 @@ ResultOr<std::unique_ptr<Storage>> SerializeAndFrame(
   TRY(Serialize(in, fc.capsule_storage.get()));
   TRY(Framing::CompleteFraming(T::kTypeHash, &fc));
   return std::move(fc.frame_storage);
+}
+
+template <typename T>
+Result ParseFromText(T* out, std::string_view text) {
+  text::TextParser p(text);
+  return out->ParseFrom(&p);
 }
 
 }  // namespace capsule

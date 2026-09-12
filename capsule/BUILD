@@ -334,6 +334,7 @@ cc_library(
         ":framing",
         ":storage",
         ":storage_factory",
+"//capsule/text:text_parser",
         "//core",
         "//core:crc32c",
     ],

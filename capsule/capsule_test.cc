@@ -62,4 +62,11 @@ TEST_F(CapsuleTestFixture, SerializeSizeTooSmall) {
   EXPECT_THAT(capsule::Serialize(cap_, s.get()), Not(IsOk()));
 }
 
+TEST_F(CapsuleTestFixture, ParseFromToString) {
+  capsule_test::TestCapsuleM m;
+  EXPECT_THAT(capsule::ParseFromText(&m, cap_.ToString()), IsOk());
+  EXPECT_EQ(m.code, cap_.code);
+  EXPECT_EQ(m.message, cap_.message);
+}
+
 }  // namespace
