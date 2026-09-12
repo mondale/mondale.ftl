@@ -22,3 +22,18 @@ cc_library(
   visibility = ["//capsule/..."],
 )
 
+
+cc_library(
+  name = "parsing_widget",
+  hdrs = ["parsing_widget.h"],
+  srcs = ["parsing_widget.cc"],
+  deps = [],
+)
+
+cc_test(
+  name = "parsing_widget_test",
+  srcs = ["parsing_widget_test.cc"],
+  deps = [":parsing_widget",
+          "//testing",
+  ],
+)

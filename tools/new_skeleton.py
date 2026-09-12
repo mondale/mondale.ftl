@@ -5,17 +5,19 @@ import pathlib
 
 def main():
     if len(sys.argv) < 2:
-        print("Error: Missing argument. Usage: ./tools/new_skeleton.py <directory/basename>", file=sys.stderr)
+        print("Error: Missing argument. Usage: ./tools/new_skeleton.py <path/to/basename>", file=sys.stderr)
         sys.exit(1)
 
     target = pathlib.Path(sys.argv[1])
     directory = target.parent
     basename = target.name
+    parts = target.parts  # e.g., ('capsule', 'text', 'foo')
 
-    # Check if BUILD file exists; if not, print an error and stop.
-    build_path = (directory / "BUILD") if directory != pathlib.Path('.') else pathlib.Path("BUILD")
+    # Check if BUILD file exists in the target directory; if not, print an error and stop.
+    build_path = (directory / "BUILD") if directory != pathlib.Path('') else pathlib.Path("BUILD")
     if not build_path.exists():
-        print(f"Error: BUILD file not found in directory '{directory if directory != pathlib.Path('.') else '.'}'.", file=sys.stderr)
+        dir_str = str(directory) if str(directory) else "."
+        print(f"Error: BUILD file not found in directory '{dir_str}'.", file=sys.stderr)
         return
 
     # Define paths for the new files
@@ -23,25 +25,21 @@ def main():
     cc_path = directory / f"{basename}.cc"
     test_path = directory / f"{basename}_test.cc"
 
-    # If any of the target files already exist, print a warning and do nothing.
+    # If any of the target files already exist, print an error and do nothing.
     existing_files = [p for p in (h_path, cc_path, test_path) if p.exists()]
     if existing_files:
         print(f"Error: One or more target files already exist: {', '.join(str(p) for p in existing_files)}", file=sys.stderr)
         return
 
-    # Derive naming conventions
-    namespace = directory.name if directory != pathlib.Path('.') else ""
+    # Derive naming conventions from path parts
+    namespace = "::".join(parts[:-1])
     class_name = "".join(word.capitalize() for word in basename.split("_"))
-    
-    if namespace:
-        include_guard = f"{namespace.upper()}_{basename.upper()}_H_"
-        header_include = f"{namespace}/{basename}.h"
-    else:
-        include_guard = f"{basename.upper()}_H_"
-        header_include = f"{basename}.h"
+    include_guard = "_".join(p.upper() for p in parts) + "_H_"
+    header_include = "/".join(parts) + ".h"
 
-    # File contents
-    h_content = f"""#ifndef {include_guard}
+    # File contents based on whether a namespace exists
+    if namespace:
+        h_content = f"""#ifndef {include_guard}
 #define {include_guard}
 
 namespace {namespace} {{
@@ -56,13 +54,29 @@ class {class_name} final {{
 #endif  // #ifndef {include_guard}
 """
 
-    cc_content = f"""#include "{header_include}"
+        cc_content = f"""#include "{header_include}"
 
 namespace {namespace} {{
 
 //
 
 }}  // namespace {namespace}
+"""
+    else:
+        h_content = f"""#ifndef {include_guard}
+#define {include_guard}
+
+class {class_name} final {{
+ public:
+ private:
+}};
+
+#endif  // #ifndef {include_guard}
+"""
+
+        cc_content = f"""#include "{header_include}"
+
+//
 """
 
     test_content = f"""#include "{header_include}"
@@ -104,7 +118,8 @@ cc_test(
         with open(build_path, "a", encoding="utf-8") as f:
             f.write(build_snippet)
             
-        print(f"Successfully created skeleton files for {basename} in {directory if directory != pathlib.Path('.') else '.'}")
+        dir_str = str(directory) if str(directory) else "."
+        print(f"Successfully created skeleton files for {basename} in {dir_str}")
     except Exception as e:
         print(f"Error: Failed to write files or update BUILD: {e}", file=sys.stderr)
         sys.exit(1)
