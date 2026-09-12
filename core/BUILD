@@ -69,6 +69,7 @@ cc_library(
         ":result",
         "//base:rawlog",
     ],
+    visibility = ["//..."],
 )
 
 cc_test(
