@@ -232,6 +232,12 @@ TEST_F(SimpleFixture, DISABLED_DisabledTestWithFixtureDoesNothing) {
   ASSERT_FALSE(true);
 }
 
+TEST(FloatEq) {
+  EXPECT_EQ(-24.2896, -24.2896);
+  double d = -9129.66;
+  EXPECT_EQ(-9129.66, d);
+}
+
 TEST(Nearness) {
   EXPECT_NEAR(7.7, 7.7);
   EXPECT_NEAR_ABS(7.7, 7.8, 0.2);

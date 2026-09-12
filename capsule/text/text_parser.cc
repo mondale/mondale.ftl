@@ -31,8 +31,8 @@ ResultOr<std::string> TextParser::ExpectIdentifier() {
 
 ResultOr<std::string> TextParser::ExpectString() {
   if (current_.type != Token::Type::kStringLiteral) {
-    return Result(Code::kError, "Expected string literal at line " +
-                                    std::to_string(current_.line));
+    return Result(Code::kError,
+                  "Expected string literal, found " + current_.ToString());
   }
   std::string val = current_.text;
   Advance();
@@ -41,8 +41,8 @@ ResultOr<std::string> TextParser::ExpectString() {
 
 ResultOr<std::string> TextParser::ExpectNumber() {
   if (current_.type != Token::Type::kNumberLiteral) {
-    return Result(Code::kError, "Expected number literal at line " +
-                                    std::to_string(current_.line));
+    return Result(Code::kError,
+                  "Expected number literal, found " + current_.ToString());
   }
   std::string text = current_.text;
   Advance();

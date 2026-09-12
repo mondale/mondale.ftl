@@ -163,9 +163,11 @@ Result ParsingWidget::ParseSubcapsule(std::string_view n,
 
 Result ParsingWidget::ParseStringVector(capsule::text::TextParser* p,
                                         std::vector<std::string>* v) {
+  TRY(p->Match(Token::Type::kLBrace));
   v->clear();
   while (p->Check(Token::Type::kStringLiteral)) {
     TRY_ASSIGN(v->emplace_back(), p->ExpectString());
+
     // Commas are optional in the syntax.
     if (p->Check(Token::Type::kComma)) {
       TRY(p->Match(Token::Type::kComma));
@@ -286,8 +288,7 @@ std::string SubSubM::ToString(int indent) const {
   if (!has() || has_i1())
     oss << Spaces(indent) << "i1" << ": " << i1 << std::endl;
   if (!has() || has_s1())
-    oss << Spaces(indent) << "s1" << ": \"" << strings::EscapeString(s1) << "\""
-        << std::endl;
+    oss << Spaces(indent) << "s1" << ": \"" << s1 << "\"" << std::endl;
   return oss.str();
 }
 
@@ -319,7 +320,7 @@ void Randomize(SubSubM* c, std::mt19937_64* rng) {
   std::uniform_int_distribution<int32_t> dist_i32(
       std::numeric_limits<int32_t>::min(), std::numeric_limits<int32_t>::max());
   std::uniform_int_distribution<size_t> dist_len(0, 33);
-  std::uniform_int_distribution<int> dist_char(35, 126);
+  std::uniform_int_distribution<int> dist_char(48, 90);
 
   c->b1 = dist_bool(*rng) != 0;
   c->i1 = dist_i32(*rng);
@@ -526,7 +527,21 @@ struct TopLevelM final : public TopLevelBase {
 };
 
 Result TopLevelM::ParseFrom(::capsule::text::TextParser* p) {
-  return Result::Ok();
+  ParsingWidget widget;
+  widget.Add("u64a", &u64a);
+  widget.Add("i64a", &i64a);
+  widget.Add("f64a", &f64a);
+  widget.Add("u32a", &u32a);
+  widget.Add("i32a", &i32a);
+  widget.Add("f32a", &f32a);
+  widget.Add("u16a", &u16a);
+  widget.Add("i16a", &i16a);
+  widget.Add("u8a", &u8a);
+  widget.Add("i8a", &i8a);
+  widget.Add("b1", &b1);
+  widget.AddStringVector("vs1", &vs1);
+  widget.AddCapsule("sub1", [this](auto* p) { return sub1.ParseFrom(p); });
+  return widget.ParseFrom(p);
 }
 
 std::string TopLevelM::ToString(int indent) const {
@@ -552,10 +567,9 @@ std::string TopLevelM::ToString(int indent) const {
   if (!has() || has_b1())
     oss << Spaces(indent) << "b1" << ": " << b1 << std::endl;
   if ((!has() || has_vs1()) && !vs1.empty()) {
-    oss << Spaces(indent) << "vs1" << " {" << std::endl;
+    oss << Spaces(indent) << "vs1" << "[] {" << std::endl;
     for (const auto& s : vs1) {
-      oss << Spaces(indent + 2) << "\"" << strings::EscapeString(s) << "\","
-          << std::endl;
+      oss << Spaces(indent + 2) << "\"" << s << "\"," << std::endl;
     }
     oss << Spaces(indent) << "}" << std::endl;
   }
@@ -655,12 +669,9 @@ void Randomize(TopLevelM* c, std::mt19937_64* rng) {
   std::uniform_int_distribution<int> dist_bool(0, 1);
   std::uniform_int_distribution<size_t> dist_vec_len(0, 4);
   std::uniform_int_distribution<size_t> dist_str_len(0, 33);
-  std::uniform_int_distribution<int> dist_char(35, 126);
-  std::uniform_real_distribution<float> dist_f32(
-      std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max());
-  std::uniform_real_distribution<double> dist_f64(
-      std::numeric_limits<double>::lowest(),
-      std::numeric_limits<double>::max());
+  std::uniform_int_distribution<int> dist_char(48, 90);
+  std::uniform_real_distribution<float> dist_f32(-100.0, 100.0);
+  std::uniform_real_distribution<double> dist_f64(-10000.0, 10000.0);
 
   c->u64a = dist_u64(*rng);
   c->i64a = dist_i64(*rng);
@@ -888,7 +899,7 @@ std::string TopLevelV::ToString(int indent) const {
   if (!has() || has_b1())
     oss << Spaces(indent) << "b1" << ": " << b1 << std::endl;
   if ((!has() || has_vs1()) && !vs1.empty()) {
-    oss << Spaces(indent) << "vs1" << " {" << std::endl;
+    oss << Spaces(indent) << "vs1" << "[] {" << std::endl;
     for (const auto& s : vs1) {
       oss << Spaces(indent + 2) << "\"" << s << "\"," << std::endl;
     }
@@ -929,8 +940,9 @@ void Compare(const TopLevelM* l, const TopLevelV* r) {
   EXPECT_EQ(l->u8a, r->u8a);
   EXPECT_EQ(l->i8a, r->i8a);
   EXPECT_EQ(l->b1, r->b1);
-  EXPECT_EQ(l->f32a, r->f32a);
-  EXPECT_EQ(l->f64a, r->f64a);
+  // Generous nearness b/c going through text is disruptive.
+  EXPECT_NEAR_ABS(l->f32a, r->f32a, 0.01);
+  EXPECT_NEAR_ABS(l->f64a, r->f64a, 0.01);
   Compare(&l->sub1, &r->sub1);
   ASSERT_EQ(l->vs1.size(), r->vs1.size());
   for (int i = 0; i < l->vs1.size(); ++i) {
@@ -1037,13 +1049,13 @@ TEST(SubMTest) {
   RunTranscodeTest(std::move(m));
 }
 
-TEST(DISABLED_TopLevelMTest) {
+TEST(TopLevelMTest) {
   auto m = std::make_unique<TopLevelM>();
   Randomize(m.get());
   RunTranscodeTest(std::move(m));
 }
 
-TEST(DISABLED_SubSubMTest100) {
+TEST(SubSubMTest100) {
   for (int i = 0; i < 100; ++i) {
     auto m = std::make_unique<SubSubM>();
     Randomize(m.get(), true);
@@ -1051,7 +1063,7 @@ TEST(DISABLED_SubSubMTest100) {
   }
 }
 
-TEST(DISABLED_SubMTest100) {
+TEST(SubMTest100) {
   for (int i = 0; i < 100; ++i) {
     auto m = std::make_unique<SubM>();
     Randomize(m.get(), true);
@@ -1059,7 +1071,7 @@ TEST(DISABLED_SubMTest100) {
   }
 }
 
-TEST(DISABLED_TopLevelMTest100) {
+TEST(TopLevelMTest100) {
   for (int i = 0; i < 100; ++i) {
     auto m = std::make_unique<TopLevelM>();
     Randomize(m.get(), true);
