@@ -278,6 +278,7 @@ cc_test(
         ":storage",
         ":storage_factory",
         "//capsule/text:text_parser",
+        "//capsule/text:parsing_widget",
         "//core",
         "//testing",
     ],

@@ -19,7 +19,7 @@ cc_library(
   srcs = ["text_parser.cc"],
   deps = [":text_lexer",
           "//core",],
-  visibility = ["//capsule/..."],
+  visibility = ["//..."],
 )
 
 
@@ -27,7 +27,8 @@ cc_library(
   name = "parsing_widget",
   hdrs = ["parsing_widget.h"],
   srcs = ["parsing_widget.cc"],
-  deps = [],
+  deps = [":text_parser",],
+  visibility = ["//..."],
 )
 
 cc_test(
