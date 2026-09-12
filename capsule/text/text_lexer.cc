@@ -79,6 +79,7 @@ Token TextLexer::NextToken() {
   }
 
   if (ch == '"') {
+    // TODO - this is fragile as heck.
     pos_++;
     std::string s;
     bool escaped = false;
