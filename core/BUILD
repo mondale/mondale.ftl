@@ -213,3 +213,18 @@ cc_test(
           "//testing",
   ],
 )
+
+cc_library(
+  name = "handle_table",
+  hdrs = ["handle_table.h"],
+  srcs = ["handle_table.cc"],
+  deps = ["//core", ":syscalls",],
+)
+
+cc_test(
+  name = "handle_table_test",
+  srcs = ["handle_table_test.cc"],
+  deps = [":handle_table",
+          "//testing",
+  ],
+)

@@ -2,6 +2,7 @@
 #define CORE_SYSCALLS_H_
 
 #include <fcntl.h>
+#include <sys/mman.h>
 #include <sys/resource.h>
 #include <sys/stat.h>
 
@@ -15,6 +16,7 @@ namespace core::syscalls {
 Result Access(std::string_view path, int mode);
 ResultOr<struct stat> FStat(const FileDescriptor& fd);
 ResultOr<struct rlimit> GetRLimit(int resource);
+Result Madvise(void* p, size_t n, int advice);
 ResultOr<FileDescriptor> Open(std::string_view path, int flags, mode_t mode);
 ResultOr<size_t> Read(const FileDescriptor& fd, char* buf, size_t count);
 Result SetRLimit(int resource, const struct rlimit* l);

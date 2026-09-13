@@ -102,4 +102,11 @@ Result SetRLimit(int resource, const struct rlimit* l) {
   return NoReturnNonZero(ret, "SetRLimit");
 }
 
+Result Madvise(void* p, size_t n, int advice) {
+  auto syscall = [&]() -> int { return ::madvise(p, n, advice); };
+  auto accept = [](int ret) -> bool { return ret == 0; };
+  TRY_ASSIGN(const int ret, SyscallRetryEintr<int>(syscall, accept));
+  return NoReturnNonZero(ret, "Madvise");
+}
+
 }  // namespace core::syscalls

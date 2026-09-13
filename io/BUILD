@@ -5,7 +5,7 @@ cc_library(
   name = "epoller",
   hdrs = ["epoller.h"],
   srcs = ["epoller.cc"],
-  deps = ["//core",],
+  deps = ["//core","//core:file_descriptor",],
 )
 
 cc_test(

@@ -39,7 +39,18 @@ struct Compare {
     }
     // Integer path
     else if constexpr (std::is_integral_v<T> && std::is_integral_v<U>) {
-      return std::cmp_equal(lhs, rhs);
+      // std::cmp_equal only accepts standard integer types, excluding char,
+      // bool, etc.
+      if constexpr (std::is_same_v<std::remove_cv_t<T>, char> ||
+                    std::is_same_v<std::remove_cv_t<U>, char> ||
+                    std::is_same_v<std::remove_cv_t<T>, bool> ||
+                    std::is_same_v<std::remove_cv_t<U>, bool> ||
+                    std::is_same_v<std::remove_cv_t<T>, wchar_t> ||
+                    std::is_same_v<std::remove_cv_t<U>, wchar_t>) {
+        return lhs == rhs;
+      } else {
+        return std::cmp_equal(lhs, rhs);
+      }
     }
     // Fallback for user types / pointers / mixed types
     else {
