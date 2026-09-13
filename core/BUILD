@@ -198,3 +198,18 @@ cc_test(
         "//testing",
     ],
 )
+
+cc_library(
+  name = "intrusive_list",
+  hdrs = ["intrusive_list.h"],
+  srcs = [],
+  deps = ["//core",],
+)
+
+cc_test(
+  name = "intrusive_list_test",
+  srcs = ["intrusive_list_test.cc"],
+  deps = [":intrusive_list",
+          "//testing",
+  ],
+)
