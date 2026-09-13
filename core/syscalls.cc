@@ -1,3 +1,6 @@
+#include <signal.h>
+#include <sys/epoll.h>
+#include <sys/eventfd.h>
 #include <unistd.h>
 
 #include <concepts>
@@ -107,6 +110,80 @@ Result Madvise(void* p, size_t n, int advice) {
   auto accept = [](int ret) -> bool { return ret == 0; };
   TRY_ASSIGN(const int ret, SyscallRetryEintr<int>(syscall, accept));
   return NoReturnNonZero(ret, "Madvise");
+}
+
+ResultOr<FileDescriptor> EpollCreate1(int flags) {
+  auto syscall = [&]() -> int { return ::epoll_create1(flags); };
+  auto accept = [](int ret) -> bool { return ret >= 0; };
+  TRY_ASSIGN(const int raw_fd, SyscallRetryEintr(syscall, accept));
+  return FileDescriptor(raw_fd);
+}
+
+Result EpollCtl(const FileDescriptor& epfd, int op, const FileDescriptor& fd,
+                struct epoll_event* event) {
+  auto syscall = [&]() -> int {
+    return ::epoll_ctl(epfd.fd(), op, fd.fd(), event);
+  };
+  auto accept = [](int ret) -> bool { return ret == 0; };
+  TRY_ASSIGN(const int ret, SyscallRetryEintr<int>(syscall, accept));
+  return NoReturnNonZero(ret, "EpollCtl");
+}
+
+ResultOr<FileDescriptor> EventFd(unsigned int initval, int flags) {
+  auto syscall = [&]() -> int { return ::eventfd(initval, flags); };
+  auto accept = [](int ret) -> bool { return ret >= 0; };
+  TRY_ASSIGN(const int raw_fd, SyscallRetryEintr(syscall, accept));
+  return FileDescriptor(raw_fd);
+}
+
+ResultOr<size_t> EventFdRead(const FileDescriptor& fd, eventfd_t* value) {
+  auto syscall = [&]() -> int { return ::eventfd_read(fd.fd(), value); };
+  auto accept = [](int ret) -> bool { return ret == 0; };
+  TRY_ASSIGN(const int ret, SyscallRetryEintr<int>(syscall, accept));
+  TRY(NoReturnNonZero(ret, "EventFdRead"));
+  return sizeof(eventfd_t);
+}
+
+Result EventFdWrite(const FileDescriptor& fd, eventfd_t value) {
+  auto syscall = [&]() -> int { return ::eventfd_write(fd.fd(), value); };
+  auto accept = [](int ret) -> bool { return ret == 0; };
+  TRY_ASSIGN(const int ret, SyscallRetryEintr<int>(syscall, accept));
+  return NoReturnNonZero(ret, "EventFdWrite");
+}
+
+ResultOr<int> Fcntl(const FileDescriptor& fd, int cmd) {
+  auto syscall = [&]() -> int { return ::fcntl(fd.fd(), cmd); };
+  auto accept = [](int ret) -> bool { return ret >= 0; };
+  TRY_ASSIGN(const int ret, SyscallRetryEintr<int>(syscall, accept));
+  return ret;
+}
+
+ResultOr<int> Fcntl(const FileDescriptor& fd, int cmd, int arg) {
+  auto syscall = [&]() -> int { return ::fcntl(fd.fd(), cmd, arg); };
+  auto accept = [](int ret) -> bool { return ret >= 0; };
+  TRY_ASSIGN(const int ret, SyscallRetryEintr<int>(syscall, accept));
+  return ret;
+}
+
+ResultOr<int> Fcntl(const FileDescriptor& fd, int cmd, void* arg) {
+  auto syscall = [&]() -> int { return ::fcntl(fd.fd(), cmd, arg); };
+  auto accept = [](int ret) -> bool { return ret >= 0; };
+  TRY_ASSIGN(const int ret, SyscallRetryEintr<int>(syscall, accept));
+  return ret;
+}
+
+ResultOr<int> EpollPwait2(const FileDescriptor& epfd,
+                          struct epoll_event* events, int maxevents,
+                          const struct timespec* timeout,
+                          const sigset_t* sigmask) {
+  const int ret =
+      ::epoll_pwait2(epfd.fd(), events, maxevents, timeout, sigmask);
+  if (ret < 0 && errno == EINTR) {
+    return 0;
+  } else if (ret < 0) {
+    return ResultFromErrno(errno);
+  }
+  return ret;
 }
 
 }  // namespace core::syscalls

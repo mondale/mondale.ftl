@@ -2,6 +2,8 @@
 #define CORE_SYSCALLS_H_
 
 #include <fcntl.h>
+#include <sys/epoll.h>
+#include <sys/eventfd.h>
 #include <sys/mman.h>
 #include <sys/resource.h>
 #include <sys/stat.h>
@@ -14,6 +16,19 @@
 namespace core::syscalls {
 
 Result Access(std::string_view path, int mode);
+ResultOr<FileDescriptor> EpollCreate1(int flags);
+Result EpollCtl(const FileDescriptor& epfd, int op, const FileDescriptor& fd,
+                struct epoll_event* event);
+ResultOr<int> EpollPwait2(const FileDescriptor& epfd,
+                          struct epoll_event* events, int maxevents,
+                          const struct timespec* timeout,
+                          const sigset_t* sigmask);
+ResultOr<FileDescriptor> EventFd(unsigned int initval, int flags);
+ResultOr<size_t> EventFdRead(const FileDescriptor& fd, eventfd_t* value);
+Result EventFdWrite(const FileDescriptor& fd, eventfd_t value);
+ResultOr<int> Fcntl(const FileDescriptor& fd, int cmd);
+ResultOr<int> Fcntl(const FileDescriptor& fd, int cmd, int arg);
+ResultOr<int> Fcntl(const FileDescriptor& fd, int cmd, void* arg);
 ResultOr<struct stat> FStat(const FileDescriptor& fd);
 ResultOr<struct rlimit> GetRLimit(int resource);
 Result Madvise(void* p, size_t n, int advice);

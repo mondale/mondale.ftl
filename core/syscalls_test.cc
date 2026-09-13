@@ -31,4 +31,36 @@ TEST(GetAndSetRlimit) {
   EXPECT_THAT(syscalls::SetRLimit(RLIMIT_NOFILE, &lims), IsOk());
 }
 
+TEST(EventFdAndFcntl) {
+  auto efd = syscalls::EventFd(0, EFD_NONBLOCK | EFD_CLOEXEC).ValueOrDie();
+  EXPECT_THAT(syscalls::EventFdWrite(efd, 10), IsOk());
+
+  eventfd_t val = 0;
+  EXPECT_EQ(syscalls::EventFdRead(efd, &val).ValueOrDie(), sizeof(eventfd_t));
+  EXPECT_EQ(val, 10);
+
+  auto flags = syscalls::Fcntl(efd, F_GETFL).ValueOrDie();
+  EXPECT_NE(flags & O_NONBLOCK, 0);
+}
+
+TEST(EpollPwait2AndCtl) {
+  auto efd = syscalls::EventFd(0, EFD_NONBLOCK | EFD_CLOEXEC).ValueOrDie();
+  auto epfd = syscalls::EpollCreate1(EPOLL_CLOEXEC).ValueOrDie();
+
+  struct epoll_event ev;
+  ev.events = EPOLLIN;
+  ev.data.fd = efd.fd();
+  EXPECT_THAT(syscalls::EpollCtl(epfd, EPOLL_CTL_ADD, efd, &ev), IsOk());
+
+  EXPECT_THAT(syscalls::EventFdWrite(efd, 5), IsOk());
+
+  struct epoll_event events[1];
+  struct timespec timeout = {.tv_sec = 1, .tv_nsec = 0};
+  auto n =
+      syscalls::EpollPwait2(epfd, events, 1, &timeout, nullptr).ValueOrDie();
+  EXPECT_EQ(n, 1);
+  EXPECT_EQ(events[0].data.fd, efd.fd());
+  EXPECT_NE((events[0].events & EPOLLIN), 0);
+}
+
 }  // namespace
