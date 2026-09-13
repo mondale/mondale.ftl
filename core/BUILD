@@ -65,11 +65,11 @@ cc_library(
     name = "file_descriptor",
     srcs = ["file_descriptor.cc"],
     hdrs = ["file_descriptor.h"],
+    visibility = ["//..."],
     deps = [
         ":result",
         "//base:rawlog",
     ],
-    visibility = ["//..."],
 )
 
 cc_test(
@@ -200,31 +200,36 @@ cc_test(
 )
 
 cc_library(
-  name = "intrusive_list",
-  hdrs = ["intrusive_list.h"],
-  srcs = [],
-  deps = ["//core",],
+    name = "intrusive_list",
+    srcs = [],
+    hdrs = ["intrusive_list.h"],
+    deps = ["//core"],
 )
 
 cc_test(
-  name = "intrusive_list_test",
-  srcs = ["intrusive_list_test.cc"],
-  deps = [":intrusive_list",
-          "//testing",
-  ],
+    name = "intrusive_list_test",
+    srcs = ["intrusive_list_test.cc"],
+    deps = [
+        ":intrusive_list",
+        "//testing",
+    ],
 )
 
 cc_library(
-  name = "handle_table",
-  hdrs = ["handle_table.h"],
-  srcs = ["handle_table.cc"],
-  deps = ["//core", ":syscalls",],
+    name = "handle_table",
+    srcs = ["handle_table.cc"],
+    hdrs = ["handle_table.h"],
+    deps = [
+        ":syscalls",
+        "//core",
+    ],
 )
 
 cc_test(
-  name = "handle_table_test",
-  srcs = ["handle_table_test.cc"],
-  deps = [":handle_table",
-          "//testing",
-  ],
+    name = "handle_table_test",
+    srcs = ["handle_table_test.cc"],
+    deps = [
+        ":handle_table",
+        "//testing",
+    ],
 )

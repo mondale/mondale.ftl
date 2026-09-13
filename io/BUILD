@@ -1,17 +1,18 @@
-
-
-
 cc_library(
-  name = "epoller",
-  hdrs = ["epoller.h"],
-  srcs = ["epoller.cc"],
-  deps = ["//core","//core:file_descriptor",],
+    name = "epoller",
+    srcs = ["epoller.cc"],
+    hdrs = ["epoller.h"],
+    deps = [
+        "//core",
+        "//core:file_descriptor",
+    ],
 )
 
 cc_test(
-  name = "epoller_test",
-  srcs = ["epoller_test.cc"],
-  deps = [":epoller",
-          "//testing",
-  ],
+    name = "epoller_test",
+    srcs = ["epoller_test.cc"],
+    deps = [
+        ":epoller",
+        "//testing",
+    ],
 )

@@ -380,8 +380,12 @@ cc_library(
     srcs = ["thread.cc"],
     hdrs = ["thread.h"],
     visibility = ["//..."],
-    deps = [":flags", ":cpu", ":rawlog",
-            ":thread_registry"],
+    deps = [
+        ":cpu",
+        ":flags",
+        ":rawlog",
+        ":thread_registry",
+    ],
 )
 
 cc_test(
