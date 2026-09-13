@@ -86,4 +86,20 @@ ResultOr<size_t> Write(const FileDescriptor& fd, const char* buf,
   return static_cast<size_t>(bytes);
 }
 
+ResultOr<struct rlimit> GetRLimit(int resource) {
+  struct rlimit lim;
+  auto syscall = [&]() -> int { return ::getrlimit(resource, &lim); };
+  auto accept = [](int ret) -> bool { return ret == 0; };
+  TRY_ASSIGN(const int ret, SyscallRetryEintr<int>(syscall, accept));
+  TRY(NoReturnNonZero(ret, "GetRLimit"));
+  return lim;
+}
+
+Result SetRLimit(int resource, const struct rlimit* l) {
+  auto syscall = [&]() -> int { return ::setrlimit(resource, l); };
+  auto accept = [](int ret) -> bool { return ret == 0; };
+  TRY_ASSIGN(const int ret, SyscallRetryEintr<int>(syscall, accept));
+  return NoReturnNonZero(ret, "SetRLimit");
+}
+
 }  // namespace core::syscalls

@@ -3,6 +3,7 @@
 #include "testing/testing.h"
 
 using ::testing::HasSubstr;
+using ::testing::IsOk;
 using namespace core;
 
 namespace {
@@ -22,6 +23,12 @@ TEST(OpenAndStat) {
               HasSubstr("Enoent"));
   EXPECT_THAT(syscalls::Access("/does/not/exist/probably", R_OK).ToString(),
               HasSubstr("Enoent"));
+}
+
+TEST(GetAndSetRlimit) {
+  auto lims = syscalls::GetRLimit(RLIMIT_NOFILE).ValueOrDie();
+  lims.rlim_cur = lims.rlim_max;
+  EXPECT_THAT(syscalls::SetRLimit(RLIMIT_NOFILE, &lims), IsOk());
 }
 
 }  // namespace
