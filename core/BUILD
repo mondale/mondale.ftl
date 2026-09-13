@@ -223,6 +223,7 @@ cc_library(
         ":syscalls",
         "//core",
     ],
+    visibility = ["//..."],
 )
 
 cc_test(

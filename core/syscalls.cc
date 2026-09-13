@@ -60,7 +60,7 @@ ResultOr<struct stat> FStat(const FileDescriptor& fd) {
   auto syscall = [&]() -> int { return ::fstat(fd.fd(), &sb); };
   auto accept = [](int ret) -> bool { return ret >= 0; };
   TRY_ASSIGN(const int ret, SyscallRetryEintr(syscall, accept));
-  TRY(NoReturnNonZero(ret, "Ftat"));
+  TRY(NoReturnNonZero(ret, "FStat"));
   return sb;
 }
 

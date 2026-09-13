@@ -8,6 +8,11 @@ namespace io {
 
 class Epoller final {
  public:
+  HANDLE_TYPE(FdHandle, int64_t);
+
+  Epoller();
+  ~Epoller();
+
   enum class Action {
     kFdEagain,  // FD had an EAGAIN
     kYield,     // Please call me again
@@ -15,22 +20,30 @@ class Epoller final {
     kClose,     // Please close the FD and stop calling me.
   };
 
-  class Control {
-   public:
-    virtual void RequestWrite() = 0;
-    virtual void RequestRead() = 0;
-  };
-
   class Handler {
    public:
-    virtual Action HandleRead(const core::FileDescriptor& fd) = 0;
-    virtual Action HandleWrite(const core::FileDescriptor& fd) = 0;
+    virtual Action HandleRead(Epoller* e, FdHandle h,
+                              const core::FileDescriptor& fd) = 0;
+    virtual Action HandleWrite(Epoller* e, FdHandle h,
+                               const core::FileDescriptor& fd) = 0;
   };
 
-  ResultOr<std::unique_ptr<Control>> Register(core::FileDescriptor fd,
-                                              std::shared_ptr<Handler> h);
+  // Request a call to HandleRead for the Handler associated with h.
+  void RequestRead(FdHandle h);
+
+  // Request a call to HandleWrite for the Handler associated with h.
+  void RequestWrite(FdHandle h);
+
+  // Request to run 'fn' sometime in the near future.
+  void Run(std::move_only_function<void()> fn);
+
+  // Register a new file descriptor with the epoll set.
+  ResultOr<FdHandle> Register(core::FileDescriptor fd,
+                              std::shared_ptr<Handler> h);
 
  private:
+  class Impl;
+  Impl* const impl_;
 };
 
 }  // namespace io

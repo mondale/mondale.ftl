@@ -5,6 +5,7 @@ cc_library(
     deps = [
         "//core",
         "//core:file_descriptor",
+        "//core:handle_table",
     ],
 )
 
