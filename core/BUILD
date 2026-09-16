@@ -234,3 +234,18 @@ cc_test(
         "//testing",
     ],
 )
+
+cc_library(
+  name = "stateless_random",
+  hdrs = ["stateless_random.h"],
+  srcs = ["stateless_random.cc"],
+  deps = ["//core",],
+)
+
+cc_test(
+  name = "stateless_random_test",
+  srcs = ["stateless_random_test.cc"],
+  deps = [":stateless_random",
+          "//testing",
+  ],
+)
