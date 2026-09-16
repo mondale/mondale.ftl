@@ -20,13 +20,21 @@ ResultOr<std::unique_ptr<Epoller>> Epoller::Build(int silos) {
         "Epoller may not be built with < 1 silos [{}].", silos));
   }
 
+  auto ret = std::make_unique<Epoller>();
+
   std::vector<std::unique_ptr<PerThread>> threads;
   threads.resize(silos);
   for (int i = 0; i < silos; ++i) {
-    //
+    auto& s = *threads[i];
+    const std::string name = strings::Format("silo{}", i);
+    s.thread = CreateThread(name, [e = &ret->exiting_, util = &s.utilization,
+                                   mu = &s.mu, l = &s.inbound]() {
+      base::BecomeForegroundThread();
+      auto x = std::make_unique<Silo>(e, mu, l, util);
+      x->ThreadMain();
+    });
   }
 
-  auto ret = std::make_unique<Epoller>();
   ret->threads_ = std::move(threads);
   return ret;
 }

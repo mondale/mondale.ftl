@@ -25,7 +25,7 @@ cc_library(
   name = "silo",
   hdrs = ["silo.h"],
   srcs = ["silo.cc"],
-  deps = ["//core", ":io_handler",],
+  deps = ["//core", ":io_handler", ":utilization_estimator",],
 )
 
 cc_test(
@@ -48,6 +48,21 @@ cc_test(
   name = "io_handler_test",
   srcs = ["io_handler_test.cc"],
   deps = [":io_handler",
+          "//testing",
+  ],
+)
+
+cc_library(
+  name = "utilization_estimator",
+  hdrs = ["utilization_estimator.h"],
+  srcs = [],
+  deps = [],
+)
+
+cc_test(
+  name = "utilization_estimator_test",
+  srcs = ["utilization_estimator_test.cc"],
+  deps = [":utilization_estimator",
           "//testing",
   ],
 )
