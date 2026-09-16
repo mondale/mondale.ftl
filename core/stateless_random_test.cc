@@ -93,4 +93,40 @@ TEST(WeightedSelectorTest_SelectionFallsWithinValidBounds) {
   }
 }
 
+TEST(RandomUniformTest_EqualBoundsReturnsLow) {
+  uint32_t val = core::RandomUniform(42, 42);
+  EXPECT_EQ(val, 42);
+}
+
+TEST(RandomUniformTest_ResultsWithinBounds) {
+  constexpr uint32_t kLow = 10;
+  constexpr uint32_t kHigh = 20;
+
+  for (int i = 0; i < 100; ++i) {
+    uint32_t val = core::RandomUniform(kLow, kHigh);
+    EXPECT_GE(val, kLow);
+    EXPECT_LT(val, kHigh);
+  }
+}
+
+TEST(RandomUniformTest_SampleRandomnessStatisticalValidity) {
+  constexpr uint32_t kLow = 0;
+  constexpr uint32_t kHigh = 100;
+  constexpr int kNumSamples = 1000;
+
+  uint64_t sum = 0;
+  for (int i = 0; i < kNumSamples; ++i) {
+    uint32_t val = core::RandomUniform(kLow, kHigh);
+    EXPECT_GE(val, kLow);
+    EXPECT_LT(val, kHigh);
+    sum += val;
+  }
+
+  double average = static_cast<double>(sum) / kNumSamples;
+  // The expected midpoint for a uniform distribution over [0, 100) is 49.5
+  double expected_average = static_cast<double>(kLow + kHigh - 1) / 2.0;
+
+  EXPECT_NEAR_ABS(average, expected_average, 2.0);
+}
+
 }  // namespace

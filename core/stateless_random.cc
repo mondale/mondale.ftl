@@ -54,4 +54,14 @@ ResultOr<size_t> WeightedSelect(std::span<const uint32_t> weights) {
   return weights.size() - 1;
 }
 
+uint32_t RandomUniform(uint32_t low, uint32_t high) {
+  if (low >= high) {
+    return low;
+  }
+
+  const uint32_t range = high - low;
+  const uint32_t r = Rand<uint32_t>(low ^ high);
+  return low + ScaleToRange(r, range);
+}
+
 }  // namespace core

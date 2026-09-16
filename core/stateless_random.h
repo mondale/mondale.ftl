@@ -15,6 +15,9 @@ T Rand(uint64_t entropy = 0) {
   return static_cast<T>(Rand64(entropy));
 }
 
+// Low is inclusive, high is exclusive. [low, high)
+uint32_t RandomUniform(uint32_t low, uint32_t high);
+
 ResultOr<size_t> WeightedSelect(std::span<const uint32_t> weights);
 
 }  // namespace core

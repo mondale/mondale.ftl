@@ -5,10 +5,9 @@
 
 #include "core/file_descriptor.h"
 #include "core/vocabulary.h"
+#include "io/io_handler.h"
 
 namespace io {
-
-HANDLE_TYPE(FdHandle, int64_t);
 
 // PollingContext is a bag holder and API gateway for using inside the
 // Epoller's upcalls.
@@ -32,43 +31,17 @@ class Epoller final {
 
   static ResultOr<std::unique_ptr<Epoller>> Build(int silos);
 
-  enum class Outcome {
-    kFdEagain,  // FD had an EAGAIN
-    kYield,     // Please call me again
-    kSuspend,   // Please don't call until I ask.
-    kClose,     // Please close the FD and stop calling me.
-  };
-
-  class Handler {
-   public:
-    virtual Outcome HandleRead(PollingContext* c, FdHandle h,
-                               const core::FileDescriptor& fd) = 0;
-    virtual Outcome HandleWrite(PollingContext* c, FdHandle h,
-                                const core::FileDescriptor& fd) = 0;
-
-   private:
-    static constexpr int kNoAffinity = INT_MAX;
-    friend class Epoller;
-
-    void SetAffinity(int a) { affinity_.store(a, std::memory_order_release); }
-    int GetAffinity() const {
-      return affinity_.load(std::memory_order_acquire);
-    }
-
-    std::atomic<int> affinity_{kNoAffinity};
-  };
-
   // Register a new file descriptor with the epoll set. Ownership of fd
   // transfers to the Epoller. The mapping from h->fd is one to many.
-  Result Register(std::shared_ptr<Handler> h, core::FileDescriptor&& fd);
+  Result Register(std::shared_ptr<IoHandler> h, core::FileDescriptor&& fd);
 
  private:
   friend class PollingContext;
 
-  // Request a call to HandleRead for the Handler associated with h.
+  // Request a call to HandleRead for the IoHandler associated with h.
   void RequestRead(PollingContext* c, FdHandle h);
 
-  // Request a call to HandleWrite for the Handler associated with h.
+  // Request a call to HandleWrite for the IoHandler associated with h.
   void RequestWrite(PollingContext* c, FdHandle h);
 
   // Request to run 'fn' sometime in the near future.
@@ -76,21 +49,17 @@ class Epoller final {
 
   int SelectSilo();
 
-  struct Inbound {
-    std::shared_ptr<Handler> h;
-    core::FileDescriptor fd;
-  };
-  void Route(Inbound&& i);
-  void RouteTo(int silo, Inbound&& i);
+  void Route(internal::HFDPair&& i);
+  void RouteTo(int silo, internal::HFDPair&& i);
 
   Notification exiting_;
   struct PerThread {
     Mutex mu;
-    std::list<Inbound> inbound GUARDED_BY(mu);
+    std::list<internal::HFDPair> inbound GUARDED_BY(mu);
     std::atomic<int> utilization{0};  // [0, 100].
     std::unique_ptr<Thread> thread;
   };
-  std::vector<PerThread> threads_;
+  std::vector<std::unique_ptr<PerThread>> threads_;
 };
 
 inline void PollingContext::RequestRead(PollingContext* c, FdHandle h) {

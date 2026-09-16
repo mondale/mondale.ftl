@@ -240,6 +240,7 @@ cc_library(
   hdrs = ["stateless_random.h"],
   srcs = ["stateless_random.cc"],
   deps = ["//core",],
+    visibility = ["//..."],
 )
 
 cc_test(
