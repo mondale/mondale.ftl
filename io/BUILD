@@ -25,8 +25,8 @@ cc_library(
   name = "silo",
   hdrs = ["silo.h"],
   srcs = ["silo.cc"],
-  deps = ["//core", ":io_handler", ":utilization_estimator",],
-)
+  deps = ["//core", ":io_handler", ":utilization_estimator","//core:syscalls",
+          "//core:handle_table","//core:intrusive_list",],)
 
 cc_test(
   name = "silo_test",

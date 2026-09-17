@@ -27,12 +27,15 @@ ResultOr<std::unique_ptr<Epoller>> Epoller::Build(int silos) {
   for (int i = 0; i < silos; ++i) {
     auto& s = *threads[i];
     const std::string name = strings::Format("silo{}", i);
-    s.thread = CreateThread(name, [e = &ret->exiting_, util = &s.utilization,
-                                   mu = &s.mu, l = &s.inbound]() {
-      base::BecomeForegroundThread();
-      auto x = std::make_unique<Silo>(e, mu, l, util);
-      x->ThreadMain();
-    });
+    s.thread =
+        CreateThread(name, [id = i, e = &ret->exiting_, util = &s.utilization,
+                            mu = &s.mu, l = &s.inbound, ep = ret.get()]() {
+          base::BecomeForegroundThread();
+          auto x = std::make_unique<Silo>(
+              id, e, mu, l, util,
+              [ep](internal::HFDPair&& i) { ep->Route(std::move(i)); });
+          x->ThreadMain();
+        });
   }
 
   ret->threads_ = std::move(threads);

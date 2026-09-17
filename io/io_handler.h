@@ -31,6 +31,7 @@ class IoHandler {
  private:
   static constexpr int kNoAffinity = INT_MAX;
   friend class Epoller;
+  friend class Silo;
 
   void SetAffinity(int a) { affinity_.store(a, std::memory_order_release); }
   int GetAffinity() const { return affinity_.load(std::memory_order_acquire); }

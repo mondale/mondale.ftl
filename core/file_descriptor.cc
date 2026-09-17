@@ -8,36 +8,36 @@ namespace {
 
 constexpr int kInvalid = -1;
 
+void CloseDoggedlyOrDie(int fd) {
+  int ret = 0;
+  while ((ret = ::close(fd)) < 0 && errno == EINTR) continue;
+  RAW_CHECK(ret == 0) << "Close failed on FD " << fd;
+}
+
 }  // namespace
 
 FileDescriptor::~FileDescriptor() {
   if (fd_ >= 0) {
-    int ret = 0;
-    while (::close(fd_) < 0 && errno == EINTR) continue;
-    RAW_CHECK(ret == 0) << "Close failed on FD " << fd_;
+    CloseDoggedlyOrDie(fd_);
   }
 }
 
-FileDescriptor::FileDescriptor(FileDescriptor&& other) noexcept {
-  if (&other != this) {
-    fd_ = other.fd_;
-    other.fd_ = kInvalid;
-  }
-}
+FileDescriptor::FileDescriptor(FileDescriptor&& other) noexcept
+    : fd_(std::exchange(other.fd_, kInvalid)) {}
 
 FileDescriptor& FileDescriptor::operator=(FileDescriptor&& other) noexcept {
-  if (&other != this) {
-    fd_ = other.fd_;
-    other.fd_ = kInvalid;
+  if (this != &other) {
+    if (fd_ >= 0) {
+      CloseDoggedlyOrDie(fd_);
+    }
+    fd_ = std::exchange(other.fd_, kInvalid);
   }
   return *this;
 }
 
 ResultOr<int> FileDescriptor::Release() {
   if (fd_ >= 0) {
-    const int ret = fd_;
-    fd_ = -kInvalid;
-    return ret;
+    return std::exchange(fd_, kInvalid);
   }
 
   return Result(Code::kPrecondition);

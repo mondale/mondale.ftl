@@ -8,6 +8,7 @@ namespace core {
 // Holds an open file descriptor and closes on dtor.
 class FileDescriptor {
  public:
+  FileDescriptor() : FileDescriptor(-1) {}
   explicit FileDescriptor(int fd) : fd_(fd) {}
   ~FileDescriptor();
 

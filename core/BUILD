@@ -165,6 +165,7 @@ cc_library(
         ":result",
         ":strings",
     ],
+    visibility = ["//..."],
 )
 
 cc_test(
@@ -204,6 +205,7 @@ cc_library(
     srcs = [],
     hdrs = ["intrusive_list.h"],
     deps = ["//core"],
+    visibility = ["//..."],
 )
 
 cc_test(
