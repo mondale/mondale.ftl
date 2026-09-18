@@ -2,6 +2,8 @@
 #define IO_SILO_H_
 
 #include <atomic>
+#include <list>
+#include <vector>
 
 #include "core/handle_table.h"
 #include "core/intrusive_list.h"
@@ -16,9 +18,15 @@ class Silo final {
 
   using InList = std::list<internal::HFDPair>;
   using ShedFn = std::function<void(internal::HFDPair&&)>;
+  using PeekFn = std::function<void(std::vector<int>*)>;
 
   Silo(int id, Notification* exiting, Mutex* inbound_mu, InList* inbound,
-       std::atomic<int>* util, ShedFn sf);
+       std::atomic<int>* util, ShedFn sf, PeekFn pf);
+
+  // Called via Context.
+  void RequestRead(FdHandle h);
+  void RequestWrite(FdHandle h);
+  void Run(FdHandle h, std::move_only_function<void()> fn);
 
   void ThreadMain();
 
@@ -29,8 +37,13 @@ class Silo final {
 
   void GetInList(InList* swapee) LOCKS_EXCLUDED(inbound_mu_);
   Result RunAdmission() LOCKS_EXCLUDED(inbound_mu_);
+  void ConsiderLoadShedding(int util);
   Result Add(internal::HFDPair&& i);
   Result Remove(PerFd* perfd);
+  bool ActivationsEmpty() const;
+  void RunReaders(Context* c);
+  void RunWriters(Context* c);
+  void RunRunners();
 
   const int id_;
   Mutex* const inbound_mu_;
@@ -38,6 +51,7 @@ class Silo final {
   std::atomic<int>* const util_;
   Notification* const exiting_;
   ShedFn shed_;
+  bool impending_shed_ = false;
 
   struct Readers {};
   struct Writers {};
@@ -49,15 +63,24 @@ class Silo final {
     std::shared_ptr<IoHandler> handler;
     core::FileDescriptor fd;
     FdHandle handle;
+    std::list<std::move_only_function<void()>> fns;
   };
+
   using HTable = core::HandleTable<PerFd, kMaxFds>;
   HTable::Handle Coerce(FdHandle h) const { return HTable::Handle(h.value()); }
   FdHandle Coerce(HTable::Handle h) const { return FdHandle(h.value()); }
+  void Expunge(PerFd* perfd);
+
   HTable ht_;
   core::FileDescriptor efd_;
   core::IntrusiveList<PerFd, Readers> readers_;
   core::IntrusiveList<PerFd, Writers> writers_;
   core::IntrusiveList<PerFd, Runners> runners_;
+  core::IntrusiveList<PerFd, Runners> closers_;
+  FdHandle current_ = FdHandle::kInvalid;
+
+  PeekFn peek_;
+  std::vector<int> utils_;
 };
 
 }  // namespace io

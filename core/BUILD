@@ -252,3 +252,18 @@ cc_test(
           "//testing",
   ],
 )
+
+cc_library(
+  name = "inlined_vector",
+  hdrs = ["inlined_vector.h"],
+  srcs = [],
+  deps = [],
+)
+
+cc_test(
+  name = "inlined_vector_test",
+  srcs = ["inlined_vector_test.cc"],
+  deps = [":inlined_vector",
+          "//testing",
+  ],
+)

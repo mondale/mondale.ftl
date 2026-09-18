@@ -51,6 +51,7 @@ class Epoller final {
 
   void Route(internal::HFDPair&& i);
   void RouteTo(int silo, internal::HFDPair&& i);
+  void Peek(std::vector<int>* utils);
 
   Notification exiting_;
   struct PerThread {

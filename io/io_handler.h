@@ -11,8 +11,7 @@ namespace io {
 
 HANDLE_TYPE(FdHandle, int64_t);
 
-class Epoller;
-class PollingContext;
+class Context;
 
 class IoHandler {
  public:
@@ -23,9 +22,9 @@ class IoHandler {
     kClose,     // Please close the FD and stop calling me.
   };
 
-  virtual Outcome HandleRead(PollingContext* c, FdHandle h,
+  virtual Outcome HandleRead(Context* c, FdHandle h,
                              const core::FileDescriptor& fd) = 0;
-  virtual Outcome HandleWrite(PollingContext* c, FdHandle h,
+  virtual Outcome HandleWrite(Context* c, FdHandle h,
                               const core::FileDescriptor& fd) = 0;
 
  private:

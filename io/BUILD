@@ -26,7 +26,7 @@ cc_library(
   hdrs = ["silo.h"],
   srcs = ["silo.cc"],
   deps = ["//core", ":io_handler", ":utilization_estimator","//core:syscalls",
-          "//core:handle_table","//core:intrusive_list",],)
+          "//core:handle_table","//core:intrusive_list", ":context",],)
 
 cc_test(
   name = "silo_test",
@@ -63,6 +63,21 @@ cc_test(
   name = "utilization_estimator_test",
   srcs = ["utilization_estimator_test.cc"],
   deps = [":utilization_estimator",
+          "//testing",
+  ],
+)
+
+cc_library(
+  name = "context",
+  hdrs = ["context.h"],
+  srcs = ["context.cc"],
+  deps = ["//base:time", ":io_handler",],
+)
+
+cc_test(
+  name = "context_test",
+  srcs = ["context_test.cc"],
+  deps = [":context",
           "//testing",
   ],
 )

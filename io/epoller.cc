@@ -33,7 +33,8 @@ ResultOr<std::unique_ptr<Epoller>> Epoller::Build(int silos) {
           base::BecomeForegroundThread();
           auto x = std::make_unique<Silo>(
               id, e, mu, l, util,
-              [ep](internal::HFDPair&& i) { ep->Route(std::move(i)); });
+              [ep](internal::HFDPair&& i) { ep->Route(std::move(i)); },
+              [ep](std::vector<int>* utils) { ep->Peek(utils); });
           x->ThreadMain();
         });
   }
@@ -42,16 +43,26 @@ ResultOr<std::unique_ptr<Epoller>> Epoller::Build(int silos) {
   return ret;
 }
 
+void Epoller::Peek(std::vector<int>* utils) {
+  const auto n = threads_.size();
+  utils->resize(n);
+  for (int i = 0; i < n; ++i) {
+    const auto u = std::clamp<int>(
+        threads_[i]->utilization.load(std::memory_order_acquire), 1, 99);
+    (*utils)[i] = u;
+  }
+}
+
 int Epoller::SelectSilo() {
   // Weighted random based on utilization, fall back to uniform random.
   const auto n = threads_.size();
+  std::vector<int> utils;
+  Peek(&utils);
+
   std::vector<uint32_t> weights;
   weights.resize(n);
   for (int i = 0; i < n; ++i) {
-    // u has range [1, 99]
-    const auto u = std::clamp<uint32_t>(
-        threads_[i]->utilization.load(std::memory_order_acquire), 1u, 99u);
-    weights[i] = 100 - u;
+    weights[i] = 100 - utils[i];
   }
   auto maybe_selection = core::WeightedSelect(weights);
   if (maybe_selection.ok()) {
