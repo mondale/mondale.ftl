@@ -232,8 +232,9 @@ class SiloTest : public ::testing::Test {
     (*us)[3] = utils_[3];
   }
 
-  std::pair<core::FileDescriptor, core::FileDescriptor> MakePipe() {
-    auto pair = std::move(core::syscalls::Pipe2(O_CLOEXEC).ValueOrDie());
+  std::pair<core::FileDescriptor, core::FileDescriptor> MakeSocketPair() {
+    auto pair = std::move(
+        core::syscalls::SocketPair(AF_UNIX, SOCK_STREAM, 0).ValueOrDie());
     CHECK_OK(core::idioms::SetNonBlocking(pair.second));
     return pair;
   }
@@ -242,7 +243,7 @@ class SiloTest : public ::testing::Test {
 
   core::FileDescriptor InstallPipe(std::shared_ptr<IoHandler> h) {
     ++expected_living_handlers_;
-    auto [mine, silos] = MakePipe();
+    auto [mine, silos] = MakeSocketPair();
     internal::HFDs i;
     i.h = h;
     i.fds.push_back(std::move(silos));

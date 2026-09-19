@@ -6,6 +6,7 @@
 #include <sys/eventfd.h>
 #include <sys/mman.h>
 #include <sys/resource.h>
+#include <sys/socket.h>
 #include <sys/stat.h>
 
 #include <string_view>
@@ -37,6 +38,9 @@ ResultOr<FileDescriptor> Open(std::string_view path, int flags, mode_t mode);
 ResultOr<std::pair<FileDescriptor, FileDescriptor>> Pipe2(int flags);
 ResultOr<size_t> Read(const FileDescriptor& fd, char* buf, size_t count);
 Result SetRLimit(int resource, const struct rlimit* l);
+ResultOr<std::pair<FileDescriptor, FileDescriptor>> SocketPair(int domain,
+                                                               int type,
+                                                               int protocol);
 ResultOr<struct stat> Stat(std::string_view path);
 ResultOr<size_t> Write(const FileDescriptor& fd, const char* buf, size_t count);
 

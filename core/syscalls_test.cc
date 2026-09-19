@@ -74,4 +74,17 @@ TEST(Pipe2AndReadWrite) {
   EXPECT_EQ(std::string_view(buf, n), msg);
 }
 
+TEST(SocketPairAndReadWrite) {
+  auto [sv0, sv1] = syscalls::SocketPair(AF_UNIX, SOCK_STREAM, 0).ValueOrDie();
+
+  std::string_view msg = "Hello, socketpair!";
+  EXPECT_EQ(syscalls::Write(sv0, msg.data(), msg.size()).ValueOrDie(),
+            msg.size());
+
+  char buf[32] = {};
+  auto n = syscalls::Read(sv1, buf, sizeof(buf)).ValueOrDie();
+  EXPECT_EQ(n, msg.size());
+  EXPECT_EQ(std::string_view(buf, n), msg);
+}
+
 }  // namespace

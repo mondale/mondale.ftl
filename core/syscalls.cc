@@ -196,4 +196,17 @@ ResultOr<std::pair<FileDescriptor, FileDescriptor>> Pipe2(int flags) {
   return std::make_pair(FileDescriptor(fds[0]), FileDescriptor(fds[1]));
 }
 
+ResultOr<std::pair<FileDescriptor, FileDescriptor>> SocketPair(int domain,
+                                                               int type,
+                                                               int protocol) {
+  int sv[2];
+  auto syscall = [&]() -> int {
+    return ::socketpair(domain, type, protocol, sv);
+  };
+  auto accept = [](int ret) -> bool { return ret == 0; };
+  TRY_ASSIGN(const int ret, SyscallRetryEintr<int>(syscall, accept));
+  TRY(NoReturnNonZero(ret, "SocketPair"));
+  return std::make_pair(FileDescriptor(sv[0]), FileDescriptor(sv[1]));
+}
+
 }  // namespace core::syscalls
