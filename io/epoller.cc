@@ -110,10 +110,4 @@ Result Epoller::Register(std::shared_ptr<IoHandler> h,
   return Result::Ok();
 }
 
-void Epoller::RequestRead(PollingContext* c, FdHandle h) {}
-
-void Epoller::RequestWrite(PollingContext* c, FdHandle h) {}
-
-void Epoller::Run(PollingContext* c, std::move_only_function<void()> fn) {}
-
 }  // namespace io

@@ -9,21 +9,6 @@
 
 namespace io {
 
-// PollingContext is a bag holder and API gateway for using inside the
-// Epoller's upcalls.
-class Epoller;
-class PollingContext final {
- public:
-  explicit PollingContext(Epoller* e) : e_(e) {}
-
-  void RequestRead(PollingContext* c, FdHandle h);
-  void RequestWrite(PollingContext* c, FdHandle h);
-  void Run(PollingContext* c, std::move_only_function<void()> fn);
-
- private:
-  Epoller* const e_;
-};
-
 class Epoller final {
  public:
   Epoller();
@@ -36,17 +21,6 @@ class Epoller final {
   Result Register(std::shared_ptr<IoHandler> h, core::FileDescriptor&& fd);
 
  private:
-  friend class PollingContext;
-
-  // Request a call to HandleRead for the IoHandler associated with h.
-  void RequestRead(PollingContext* c, FdHandle h);
-
-  // Request a call to HandleWrite for the IoHandler associated with h.
-  void RequestWrite(PollingContext* c, FdHandle h);
-
-  // Request to run 'fn' sometime in the near future.
-  void Run(PollingContext* c, std::move_only_function<void()> fn);
-
   int SelectSilo();
 
   void Route(internal::HFDs&& i);
@@ -63,17 +37,6 @@ class Epoller final {
   };
   std::vector<std::unique_ptr<PerThread>> threads_;
 };
-
-inline void PollingContext::RequestRead(PollingContext* c, FdHandle h) {
-  e_->RequestRead(c, h);
-}
-inline void PollingContext::RequestWrite(PollingContext* c, FdHandle h) {
-  e_->RequestWrite(c, h);
-}
-inline void PollingContext::Run(PollingContext* c,
-                                std::move_only_function<void()> fn) {
-  e_->Run(c, std::move(fn));
-}
 
 }  // namespace io
 
