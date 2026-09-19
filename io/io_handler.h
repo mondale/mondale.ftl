@@ -2,6 +2,7 @@
 #define IO_IO_HANDLER_H_
 
 #include <atomic>
+#include <list>
 #include <memory>
 
 #include "core/file_descriptor.h"
@@ -36,6 +37,7 @@ class IoHandler {
   int GetAffinity() const { return affinity_.load(std::memory_order_acquire); }
 
   std::atomic<int> affinity_{kNoAffinity};
+  std::list<FdHandle> handles_;
 };
 
 namespace internal {

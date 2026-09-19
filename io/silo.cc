@@ -163,6 +163,7 @@ Result Silo::Add(internal::HFDPair&& i) {
   TRY_ASSIGN(auto h, ht_.Allocate());
   TRY_ASSIGN(auto* perfd, ht_.Lookup(h));
   perfd->handler = std::move(i.h);
+  perfd->handler->handles_.push_back(Coerce(h));
   perfd->fd = std::move(i.fd);
   perfd->handle = Coerce(h);
 
