@@ -29,7 +29,7 @@ class IoHandler {
   virtual Outcome HandleWrite(Context* c, FdHandle h,
                               const core::FileDescriptor& fd) = 0;
 
- private:
+  // Subclasses, ignore all below.
   static constexpr int kNoAffinity = INT_MAX;
   friend class Epoller;
   friend class Silo;
