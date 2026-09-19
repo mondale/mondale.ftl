@@ -19,6 +19,11 @@ class Epoller final {
   // Register a new file descriptor with the epoll set. Ownership of fd
   // transfers to the Epoller. The mapping from h->fd is one to many.
   Result Register(std::shared_ptr<IoHandler> h, core::FileDescriptor&& fd);
+  Result SetNonBlockingAndRegister(std::shared_ptr<IoHandler> h,
+                                   core::FileDescriptor&& fd);
+
+  // Set non-blocking flags on FD, generally necessary for edge-triggered epoll.
+  static Result SetNonBlocking(const core::FileDescriptor& fd);
 
  private:
   int SelectSilo();

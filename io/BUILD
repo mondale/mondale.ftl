@@ -41,6 +41,8 @@ cc_test(
     srcs = ["silo_test.cc"],
     deps = [
         ":silo",
+        "//core",
+        "//core:syscalls",
         "//testing",
     ],
 )

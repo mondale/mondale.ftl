@@ -110,4 +110,17 @@ Result Epoller::Register(std::shared_ptr<IoHandler> h,
   return Result::Ok();
 }
 
+// static
+Result Epoller::SetNonBlocking(const core::FileDescriptor& fd) {
+  TRY_ASSIGN(int flags, core::syscalls::Fcntl(fd, F_GETFL, 0));
+  TRY_ASSIGN(flags, core::syscalls::Fcntl(fd, F_SETFL, flags | O_NONBLOCK));
+  return Result::Ok();
+}
+
+Result Epoller::SetNonBlockingAndRegister(std::shared_ptr<IoHandler> h,
+                                          core::FileDescriptor&& fd) {
+  TRY(SetNonBlocking(fd));
+  return Register(std::move(h), std::move(fd));
+}
+
 }  // namespace io
