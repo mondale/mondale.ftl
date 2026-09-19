@@ -160,12 +160,12 @@ cc_library(
     name = "syscalls",
     srcs = ["syscalls.cc"],
     hdrs = ["syscalls.h"],
+    visibility = ["//..."],
     deps = [
         ":file_descriptor",
         ":result",
         ":strings",
     ],
-    visibility = ["//..."],
 )
 
 cc_test(
@@ -204,8 +204,8 @@ cc_library(
     name = "intrusive_list",
     srcs = [],
     hdrs = ["intrusive_list.h"],
-    deps = ["//core"],
     visibility = ["//..."],
+    deps = ["//core"],
 )
 
 cc_test(
@@ -221,11 +221,11 @@ cc_library(
     name = "handle_table",
     srcs = ["handle_table.cc"],
     hdrs = ["handle_table.h"],
+    visibility = ["//..."],
     deps = [
         ":syscalls",
         "//core",
     ],
-    visibility = ["//..."],
 )
 
 cc_test(
@@ -238,33 +238,35 @@ cc_test(
 )
 
 cc_library(
-  name = "stateless_random",
-  hdrs = ["stateless_random.h"],
-  srcs = ["stateless_random.cc"],
-  deps = ["//core",],
+    name = "stateless_random",
+    srcs = ["stateless_random.cc"],
+    hdrs = ["stateless_random.h"],
     visibility = ["//..."],
+    deps = ["//core"],
 )
 
 cc_test(
-  name = "stateless_random_test",
-  srcs = ["stateless_random_test.cc"],
-  deps = [":stateless_random",
-          "//testing",
-  ],
+    name = "stateless_random_test",
+    srcs = ["stateless_random_test.cc"],
+    deps = [
+        ":stateless_random",
+        "//testing",
+    ],
 )
 
 cc_library(
-  name = "inlined_vector",
-  hdrs = ["inlined_vector.h"],
-  srcs = [],
-  deps = [],
+    name = "inlined_vector",
+    srcs = [],
+    hdrs = ["inlined_vector.h"],
     visibility = ["//..."],
+    deps = [],
 )
 
 cc_test(
-  name = "inlined_vector_test",
-  srcs = ["inlined_vector_test.cc"],
-  deps = [":inlined_vector",
-          "//testing",
-  ],
+    name = "inlined_vector_test",
+    srcs = ["inlined_vector_test.cc"],
+    deps = [
+        ":inlined_vector",
+        "//testing",
+    ],
 )

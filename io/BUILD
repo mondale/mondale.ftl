@@ -22,62 +22,80 @@ cc_test(
 )
 
 cc_library(
-  name = "silo",
-  hdrs = ["silo.h"],
-  srcs = ["silo.cc"],
-  deps = ["//core", ":io_handler", ":utilization_estimator","//core:syscalls",
-          "//core:handle_table","//core:intrusive_list", ":context",],)
-
-cc_test(
-  name = "silo_test",
-  srcs = ["silo_test.cc"],
-  deps = [":silo",
-          "//testing",
-  ],
-)
-
-
-cc_library(
-  name = "io_handler",
-  hdrs = ["io_handler.h"],
-  srcs = ["io_handler.cc"],
-  deps = ["//core","//core:file_descriptor","//core:inlined_vector",],
+    name = "silo",
+    srcs = ["silo.cc"],
+    hdrs = ["silo.h"],
+    deps = [
+        ":context",
+        ":io_handler",
+        ":utilization_estimator",
+        "//core",
+        "//core:handle_table",
+        "//core:intrusive_list",
+        "//core:syscalls",
+    ],
 )
 
 cc_test(
-  name = "io_handler_test",
-  srcs = ["io_handler_test.cc"],
-  deps = [":io_handler",
-          "//testing",
-  ],
+    name = "silo_test",
+    srcs = ["silo_test.cc"],
+    deps = [
+        ":silo",
+        "//testing",
+    ],
 )
 
 cc_library(
-  name = "utilization_estimator",
-  hdrs = ["utilization_estimator.h"],
-  srcs = [],
-  deps = [],
+    name = "io_handler",
+    srcs = ["io_handler.cc"],
+    hdrs = ["io_handler.h"],
+    deps = [
+        "//core",
+        "//core:file_descriptor",
+        "//core:inlined_vector",
+    ],
 )
 
 cc_test(
-  name = "utilization_estimator_test",
-  srcs = ["utilization_estimator_test.cc"],
-  deps = [":utilization_estimator",
-          "//testing",
-  ],
+    name = "io_handler_test",
+    srcs = ["io_handler_test.cc"],
+    deps = [
+        ":io_handler",
+        "//testing",
+    ],
 )
 
 cc_library(
-  name = "context",
-  hdrs = ["context.h"],
-  srcs = ["context.cc"],
-  deps = ["//base:time", ":io_handler",],
+    name = "utilization_estimator",
+    srcs = [],
+    hdrs = ["utilization_estimator.h"],
+    deps = [],
 )
 
 cc_test(
-  name = "context_test",
-  srcs = ["context_test.cc"],
-  deps = [":context",
-          "//testing",
-  ],
+    name = "utilization_estimator_test",
+    srcs = ["utilization_estimator_test.cc"],
+    deps = [
+        ":utilization_estimator",
+        "//testing",
+    ],
+)
+
+cc_library(
+    name = "context",
+    srcs = ["context.cc"],
+    hdrs = ["context.h"],
+    deps = [
+        ":io_handler",
+        "//base:time",
+    ],
+)
+
+cc_test(
+    name = "context_test",
+    srcs = ["context_test.cc"],
+    deps = [
+        ":context",
+        "//testing",
+    ],
 )
