@@ -58,6 +58,11 @@ Result Silo::ThreadMain2() {
     const auto busy_start = MonotonicTime::Now();
     SiloContext context(this, busy_start);
 
+    // Load shedding metadata.
+    const int shed_target = impending_shed_ ? (ready_count + 1) / 2 : 0;
+    impending_shed_ = false;
+    int shed_count = 0;
+
     // Convert epoll events to list activations.
     for (int i = 0; i < ready_count; ++i) {
       const auto e = events[i].events;
@@ -78,6 +83,15 @@ Result Silo::ThreadMain2() {
         continue;
       }
 
+      // Possibly shed. Prefer to shed active FDs so the shedding is more
+      // effective.
+      if (shed_count < shed_target) {
+        Expunge(perfd);
+        shedders_.PushBack(perfd);
+        shed_count++;
+        continue;
+      }
+
       // Add to read list if not already there?
       if (e & EPOLLIN) {
         DCHECK(!readers_.IsLinked(perfd));
@@ -91,6 +105,9 @@ Result Silo::ThreadMain2() {
       }
     }
 
+    // Shed any chosed FDs.
+    RunShedders();
+
     // Until they are all empty...
     while (!ActivationsEmpty()) {
       RunReaders(&context);
@@ -101,7 +118,7 @@ Result Silo::ThreadMain2() {
     // Close doomed file handles.
     while (!closers_.Empty()) {
       PerFd* const perfd = &*closers_.begin();
-      core::IntrusiveList<PerFd, Runners>::Erase(perfd);
+      core::IntrusiveList<PerFd, Shared>::Erase(perfd);
       TRY(Remove(perfd));
     }
 
@@ -158,20 +175,38 @@ Result Silo::RunAdmission() {
   return Result::Ok();
 }
 
-Result Silo::Add(internal::HFDPair&& i) {
+Result Silo::Add(internal::HFDs&& i) {
+  std::list<FdHandle> hs;
+  auto oops = MakeCleanup([&]() {
+    for (auto h : hs) {
+      CHECK_OK(ht_.Free(Coerce(h)));
+    }
+  });
+  for (auto& fd : i.fds) {
+    TRY_ASSIGN(auto h, Add(i.h, std::move(fd)));
+    hs.push_back(h);
+  }
+  oops.Cancel();
+  return Result::Ok();
+}
+
+ResultOr<FdHandle> Silo::Add(std::shared_ptr<IoHandler> handler,
+                             core::FileDescriptor fd) {
   // Allocate a handle and initialize the PerFd.
   TRY_ASSIGN(auto h, ht_.Allocate());
+  const auto real_h = Coerce(h);
   TRY_ASSIGN(auto* perfd, ht_.Lookup(h));
-  perfd->handler = std::move(i.h);
-  perfd->handler->handles_.push_back(Coerce(h));
-  perfd->fd = std::move(i.fd);
-  perfd->handle = Coerce(h);
+  perfd->handler = std::move(handler);
+  perfd->handler->handles_.push_back(real_h);
+  perfd->fd = std::move(fd);
+  perfd->handle = real_h;
 
   // Add to epoll set.
   struct epoll_event e;
   e.events = EPOLLHUP | EPOLLERR | EPOLLRDHUP | EPOLLIN | EPOLLOUT | EPOLLET;
   e.data.u64 = static_cast<uint64_t>(h.value());
-  return core::syscalls::EpollCtl(efd_, EPOLL_CTL_ADD, perfd->fd, &e);
+  TRY(core::syscalls::EpollCtl(efd_, EPOLL_CTL_ADD, perfd->fd, &e));
+  return real_h;
 }
 
 Result Silo::Remove(PerFd* perfd) {
@@ -287,7 +322,7 @@ void Silo::RunWriters(Context* c) {
 void Silo::RunRunners() {
   while (!runners_.Empty()) {
     PerFd* const perfd = &*runners_.begin();
-    core::IntrusiveList<PerFd, Runners>::Erase(perfd);
+    core::IntrusiveList<PerFd, Shared>::Erase(perfd);
     current_ = perfd->handle;
     while (!perfd->fns.empty()) {
       auto fn = std::move(perfd->fns.front());
@@ -301,7 +336,29 @@ void Silo::RunRunners() {
 void Silo::Expunge(PerFd* perfd) {
   core::IntrusiveList<PerFd, Readers>::Erase(perfd);
   core::IntrusiveList<PerFd, Writers>::Erase(perfd);
-  core::IntrusiveList<PerFd, Runners>::Erase(perfd);
+  core::IntrusiveList<PerFd, Shared>::Erase(perfd);
+}
+
+void Silo::RunShedders() {
+  while (!shedders_.Empty()) {
+    PerFd* const perfd = &*shedders_.begin();
+    core::IntrusiveList<PerFd, Shared>::Erase(perfd);
+
+    // From this FDs handler find all the FDs it owns and shed them all.
+    internal::HFDs hfds;
+    hfds.h = perfd->handler;  // copy to ensure we keep a ref
+    std::list<FdHandle> handles;
+    std::swap(handles, perfd->handler->handles_);
+    for (const auto h : handles) {
+      auto* const pfd = ht_.Lookup(Coerce(h)).ValueOrDie();
+      DCHECK_EQ(perfd->handler.get(), pfd->handler.get());
+      Expunge(pfd);
+      CHECK_OK(core::syscalls::EpollCtl(efd_, EPOLL_CTL_DEL, pfd->fd, nullptr));
+      hfds.fds.emplace_back(std::move(pfd->fd));
+      CHECK_OK(ht_.Free(Coerce(h)));
+    }
+    shed_(std::move(hfds));
+  }
 }
 
 }  // namespace io

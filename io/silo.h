@@ -16,8 +16,8 @@ class Silo final {
  public:
   static constexpr int kMaxFds = 1024 * 1014;
 
-  using InList = std::list<internal::HFDPair>;
-  using ShedFn = std::function<void(internal::HFDPair&&)>;
+  using InList = std::list<internal::HFDs>;
+  using ShedFn = std::function<void(internal::HFDs&&)>;
   using PeekFn = std::function<void(std::vector<int>*)>;
 
   Silo(int id, Notification* exiting, Mutex* inbound_mu, InList* inbound,
@@ -38,12 +38,14 @@ class Silo final {
   void GetInList(InList* swapee) LOCKS_EXCLUDED(inbound_mu_);
   Result RunAdmission() LOCKS_EXCLUDED(inbound_mu_);
   void ConsiderLoadShedding(int util);
-  Result Add(internal::HFDPair&& i);
+  Result Add(internal::HFDs&& i);
+  ResultOr<FdHandle> Add(std::shared_ptr<IoHandler> h, core::FileDescriptor fd);
   Result Remove(PerFd* perfd);
   bool ActivationsEmpty() const;
   void RunReaders(Context* c);
   void RunWriters(Context* c);
   void RunRunners();
+  void RunShedders();
 
   const int id_;
   Mutex* const inbound_mu_;
@@ -55,11 +57,11 @@ class Silo final {
 
   struct Readers {};
   struct Writers {};
-  struct Runners {};
+  struct Shared {};
 
   struct PerFd : public core::IntrusiveListHook<Readers>,
                  public core::IntrusiveListHook<Writers>,
-                 public core::IntrusiveListHook<Runners> {
+                 public core::IntrusiveListHook<Shared> {
     std::shared_ptr<IoHandler> handler;
     core::FileDescriptor fd;
     FdHandle handle;
@@ -75,8 +77,9 @@ class Silo final {
   core::FileDescriptor efd_;
   core::IntrusiveList<PerFd, Readers> readers_;
   core::IntrusiveList<PerFd, Writers> writers_;
-  core::IntrusiveList<PerFd, Runners> runners_;
-  core::IntrusiveList<PerFd, Runners> closers_;
+  core::IntrusiveList<PerFd, Shared> runners_;
+  core::IntrusiveList<PerFd, Shared> closers_;
+  core::IntrusiveList<PerFd, Shared> shedders_;
   FdHandle current_ = FdHandle::kInvalid;
 
   PeekFn peek_;

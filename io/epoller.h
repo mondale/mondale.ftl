@@ -49,14 +49,14 @@ class Epoller final {
 
   int SelectSilo();
 
-  void Route(internal::HFDPair&& i);
-  void RouteTo(int silo, internal::HFDPair&& i);
+  void Route(internal::HFDs&& i);
+  void RouteTo(int silo, internal::HFDs&& i);
   void Peek(std::vector<int>* utils);
 
   Notification exiting_;
   struct PerThread {
     Mutex mu;
-    std::list<internal::HFDPair> inbound GUARDED_BY(mu);
+    std::list<internal::HFDs> inbound GUARDED_BY(mu);
     std::atomic<int> utilization{0};  // [0, 100].
     std::unique_ptr<Thread> thread;
   };

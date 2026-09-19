@@ -258,6 +258,7 @@ cc_library(
   hdrs = ["inlined_vector.h"],
   srcs = [],
   deps = [],
+    visibility = ["//..."],
 )
 
 cc_test(

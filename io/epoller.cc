@@ -33,7 +33,7 @@ ResultOr<std::unique_ptr<Epoller>> Epoller::Build(int silos) {
           base::BecomeForegroundThread();
           auto x = std::make_unique<Silo>(
               id, e, mu, l, util,
-              [ep](internal::HFDPair&& i) { ep->Route(std::move(i)); },
+              [ep](internal::HFDs&& i) { ep->Route(std::move(i)); },
               [ep](std::vector<int>* utils) { ep->Peek(utils); });
           x->ThreadMain();
         });
@@ -71,7 +71,7 @@ int Epoller::SelectSilo() {
   return core::RandomUniform(0, n);
 }
 
-void Epoller::Route(internal::HFDPair&& i) {
+void Epoller::Route(internal::HFDs&& i) {
   int silo = i.h->GetAffinity();
   if (IoHandler::kNoAffinity == silo) {
     silo = SelectSilo();
@@ -85,7 +85,7 @@ void Epoller::Route(internal::HFDPair&& i) {
   RouteTo(silo, std::move(i));
 }
 
-void Epoller::RouteTo(int silo, internal::HFDPair&& i) {
+void Epoller::RouteTo(int silo, internal::HFDs&& i) {
   DCHECK_GE(silo, 0);
   DCHECK_LT(silo, threads_.size());
   {
@@ -97,7 +97,9 @@ void Epoller::RouteTo(int silo, internal::HFDPair&& i) {
 
 Result Epoller::Register(std::shared_ptr<IoHandler> h,
                          core::FileDescriptor&& fd) {
-  Route({std::move(h), std::move(fd)});
+  core::InlinedVector<core::FileDescriptor, 2> fds;
+  fds.emplace_back(std::move(fd));
+  Route({std::move(h), std::move(fds)});
   return Result::Ok();
 }
 

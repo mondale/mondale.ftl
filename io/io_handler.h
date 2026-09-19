@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "core/file_descriptor.h"
+#include "core/inlined_vector.h"
 #include "core/vocabulary.h"
 
 namespace io {
@@ -41,9 +42,9 @@ class IoHandler {
 };
 
 namespace internal {
-struct HFDPair {
+struct HFDs {
   std::shared_ptr<IoHandler> h;
-  core::FileDescriptor fd;
+  core::InlinedVector<core::FileDescriptor, 2> fds;
 };
 }  // namespace internal
 

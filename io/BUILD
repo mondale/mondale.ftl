@@ -41,7 +41,7 @@ cc_library(
   name = "io_handler",
   hdrs = ["io_handler.h"],
   srcs = ["io_handler.cc"],
-  deps = ["//core","//core:file_descriptor",],
+  deps = ["//core","//core:file_descriptor","//core:inlined_vector",],
 )
 
 cc_test(
