@@ -6,6 +6,7 @@ cc_library(
         ":io_handler",
         ":silo",
         "//core",
+        "//core:idioms",
         "//core:file_descriptor",
         "//core:handle_table",
         "//core:stateless_random",
@@ -42,6 +43,7 @@ cc_test(
     deps = [
         ":silo",
         "//core",
+        "//core:idioms",
         "//core:syscalls",
         "//testing",
     ],

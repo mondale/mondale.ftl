@@ -187,4 +187,13 @@ ResultOr<int> EpollPwait2(const FileDescriptor& epfd,
   return ret;
 }
 
+ResultOr<std::pair<FileDescriptor, FileDescriptor>> Pipe2(int flags) {
+  int fds[2];
+  auto syscall = [&]() -> int { return ::pipe2(fds, flags); };
+  auto accept = [](int ret) -> bool { return ret == 0; };
+  TRY_ASSIGN(const int ret, SyscallRetryEintr<int>(syscall, accept));
+  TRY(NoReturnNonZero(ret, "Pipe2"));
+  return std::make_pair(FileDescriptor(fds[0]), FileDescriptor(fds[1]));
+}
+
 }  // namespace core::syscalls

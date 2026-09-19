@@ -35,7 +35,8 @@ void HandleTableBase::MaybeMadviseStorage(void* addr, size_t size) {
   void* target = reinterpret_cast<char*>(addr) + kThreshold;
   size_t len = size - kThreshold;
   Result result = syscalls::Madvise(target, len, MADV_DONTNEED);
-  Log(WARNING, If(!result.IsOk())) << "Madvise failed" << result;
+  Log(WARNING, If(!result.IsOk()))
+      << "Madvise(" << addr << ", " << size << ") failed" << result;
 }
 
 }  // namespace internal

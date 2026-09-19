@@ -82,7 +82,7 @@ Result Silo::ThreadMain2() {
 
       // Check for an eventfd edge -> very special case.
       if (kIsPollFd == datum) {
-        static_cast<void>(core::syscalls::EventFdRead(*event_fd_).ValueOrDie());
+        static_cast<void>(core::syscalls::EventFdRead(*event_fd_));
         continue;
       }
 

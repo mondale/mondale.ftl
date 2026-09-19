@@ -9,6 +9,7 @@
 #include <sys/stat.h>
 
 #include <string_view>
+#include <utility>
 
 #include "core/file_descriptor.h"
 #include "core/result.h"
@@ -33,6 +34,7 @@ ResultOr<struct stat> FStat(const FileDescriptor& fd);
 ResultOr<struct rlimit> GetRLimit(int resource);
 Result Madvise(void* p, size_t n, int advice);
 ResultOr<FileDescriptor> Open(std::string_view path, int flags, mode_t mode);
+ResultOr<std::pair<FileDescriptor, FileDescriptor>> Pipe2(int flags);
 ResultOr<size_t> Read(const FileDescriptor& fd, char* buf, size_t count);
 Result SetRLimit(int resource, const struct rlimit* l);
 ResultOr<struct stat> Stat(std::string_view path);

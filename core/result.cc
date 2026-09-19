@@ -42,6 +42,7 @@ std::string_view ToString(BaseCode bc) {
     ENUM_SWITCH_TOSTRING(BaseCode, kEintr);
     ENUM_SWITCH_TOSTRING(BaseCode, kEnoent);
     ENUM_SWITCH_TOSTRING(BaseCode, kEinval);
+    ENUM_SWITCH_TOSTRING(BaseCode, kEagain);
     ENUM_SWITCH_TOSTRING(BaseCode, kUnimplemented);
   }
 }
@@ -109,6 +110,8 @@ BaseCode BaseCodeFromErrno(int e) {
       return BaseCode::kEnoent;
     case EINVAL:
       return BaseCode::kEinval;
+    case EAGAIN:
+      return BaseCode::kEagain;
     default:
       break;
   }

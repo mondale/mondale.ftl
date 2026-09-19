@@ -61,4 +61,17 @@ TEST(EpollPwait2AndCtl) {
   EXPECT_NE((events[0].events & EPOLLIN), 0);
 }
 
+TEST(Pipe2AndReadWrite) {
+  auto [read_fd, write_fd] = syscalls::Pipe2(O_CLOEXEC).ValueOrDie();
+
+  std::string_view msg = "Hello, pipe2!";
+  EXPECT_EQ(syscalls::Write(write_fd, msg.data(), msg.size()).ValueOrDie(),
+            msg.size());
+
+  char buf[32] = {};
+  auto n = syscalls::Read(read_fd, buf, sizeof(buf)).ValueOrDie();
+  EXPECT_EQ(n, msg.size());
+  EXPECT_EQ(std::string_view(buf, n), msg);
+}
+
 }  // namespace

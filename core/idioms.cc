@@ -33,4 +33,11 @@ Result WriteExactly(const FileDescriptor& fd, std::string_view data) {
   return Result::Ok();
 }
 
+Result SetNonBlocking(const FileDescriptor& fd) {
+  // TODO - need an idioms test
+  TRY_ASSIGN(int flags, core::syscalls::Fcntl(fd, F_GETFL, 0));
+  TRY_ASSIGN(flags, core::syscalls::Fcntl(fd, F_SETFL, flags | O_NONBLOCK));
+  return Result::Ok();
+}
+
 }  // namespace core::idioms

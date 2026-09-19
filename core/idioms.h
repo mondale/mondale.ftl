@@ -10,6 +10,7 @@ namespace core::idioms {
 
 Result ReadExactly(const FileDescriptor& fd, char* output, size_t bytes);
 Result WriteExactly(const FileDescriptor& fd, std::string_view data);
+Result SetNonBlocking(const FileDescriptor& fd);
 
 }  // namespace core::idioms
 

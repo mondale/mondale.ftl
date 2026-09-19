@@ -53,6 +53,7 @@ enum class BaseCode : uint8_t {
   kEintr = 100,
   kEnoent = 101,
   kEinval = 102,
+  kEagain = 103,
 
   // Unimplemented code path reached.
   kUnimplemented = 255,
@@ -77,6 +78,7 @@ struct Code final {
   static constexpr BaseCode kCapsuleFatal = BaseCode::kCapsuleFatal;
   static constexpr BaseCode kStreamFatal = BaseCode::kStreamFatal;
   static constexpr BaseCode kUnimplemented = BaseCode::kUnimplemented;
+  static constexpr BaseCode kEagain = BaseCode::kEagain;
 
   Code() = default;
   static Code Ok() { return Code(); }

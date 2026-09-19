@@ -52,14 +52,19 @@ class HandleTable final : public internal::HandleTableBase {
   HANDLE_TYPE(Handle, int64_t);
 
   HandleTable() : internal::HandleTableBase(N) {
-    storage_ = std::make_unique<Slot[]>(N);
-    MaybeMadviseStorage(storage_.get(), sizeof(Slot) * N);
+    constexpr size_t kPageSize = 4096;
+    size_t total_size = sizeof(Slot) * N;
+    void* raw_ptr = nullptr;
+    int err = posix_memalign(&raw_ptr, kPageSize, total_size);
+    CHECK_EQ(err, 0);
+    storage_.reset(static_cast<Slot*>(raw_ptr));
+    MaybeMadviseStorage(storage_.get(), total_size);
   }
 
   ~HandleTable() {
     for (int i = 0; i < next_allocate_; ++i) {
-      if (storage_[i].handle != 0) {
-        std::destroy_at(reinterpret_cast<T*>(storage_[i].storage));
+      if (storage_.get()[i].handle != 0) {
+        std::destroy_at(reinterpret_cast<T*>(storage_.get()[i].storage));
       }
     }
   }
@@ -75,7 +80,7 @@ class HandleTable final : public internal::HandleTableBase {
     int64_t raw_h = AllocateHandle();
     int index = GetIndex(raw_h);
 
-    Slot& slot = storage_[index];
+    Slot& slot = storage_.get()[index];
     slot.handle = raw_h;
     std::construct_at(reinterpret_cast<T*>(slot.storage));
 
@@ -89,7 +94,7 @@ class HandleTable final : public internal::HandleTableBase {
     }
 
     int index = GetIndex(raw_h);
-    Slot& slot = storage_[index];
+    Slot& slot = storage_.get()[index];
     if (slot.handle != raw_h || slot.handle == 0) {
       return Result(Code::kInvalidArgument);
     }
@@ -104,7 +109,7 @@ class HandleTable final : public internal::HandleTableBase {
     }
 
     int index = GetIndex(raw_h);
-    Slot& slot = storage_[index];
+    Slot& slot = storage_.get()[index];
     if (slot.handle != raw_h || slot.handle == 0) {
       return Result(Code::kInvalidArgument);
     }
@@ -122,7 +127,11 @@ class HandleTable final : public internal::HandleTableBase {
     int64_t handle{0};
   };
 
-  std::unique_ptr<Slot[]> storage_;
+  struct SlotDeleter {
+    void operator()(Slot* ptr) const { std::free(ptr); }
+  };
+
+  std::unique_ptr<Slot, SlotDeleter> storage_;
 };
 
 }  // namespace core
