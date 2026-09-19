@@ -83,7 +83,7 @@ cc_test(
 
 cc_library(
     name = "context",
-    srcs = ["context.cc"],
+    srcs = [],
     hdrs = ["context.h"],
     deps = [
         ":io_handler",
