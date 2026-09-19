@@ -57,33 +57,52 @@ ResultOr<size_t> NonBlockingWrite(IoHandler::Outcome* outcome,
   return r.result();
 }
 
-class Refs {
+struct Stuff final {
+  std::atomic<int> refs{0};
+  std::atomic<int64_t> read_upcalls{0};
+  std::atomic<int64_t> write_upcalls{0};
+  std::atomic<int64_t> bytes_read{0};
+  std::atomic<int64_t> bytes_written{0};
+};
+
+class HandlerBase {
  public:
-  Refs(int* r) : r_(r) { (*r_)++; }
-  ~Refs() {
-    (*r_)--;
-    CHECK_GE(*r_, 0);
+  explicit HandlerBase(Stuff* s) : s_(s) { s_->refs++; }
+  ~HandlerBase() {
+    s_->refs--;
+    CHECK_GE(s_->refs.load(std::memory_order_acquire), 0);
+  }
+
+  void HandledWrite(size_t bytes) {
+    s_->write_upcalls++;
+    s_->bytes_written += bytes;
+  }
+
+  void HandledRead(size_t bytes) {
+    s_->read_upcalls++;
+    s_->bytes_read += bytes;
   }
 
  private:
-  int* const r_;
+  Stuff* const s_;
 };
 
 // Always willing to read, down for a good time.
-class EagerSwallowHandler final : public Refs, public IoHandler {
+class EagerSwallowHandler final : public HandlerBase, public IoHandler {
  public:
-  explicit EagerSwallowHandler(int* r) : Refs(r), IoHandler() {}
+  explicit EagerSwallowHandler(Stuff* s) : HandlerBase(s), IoHandler() {}
   static constexpr size_t kSwallowSize = 64;
   Outcome HandleRead(Context* c, FdHandle h,
                      const core::FileDescriptor& fd) override {
     Outcome o = Outcome::kYield;
-    CHECK_OK(NonBlockingRead(&o, fd, buf_, kSwallowSize).result());
+    HandledRead(NonBlockingRead(&o, fd, buf_, kSwallowSize).ValueOrDie());
     return o;
   }
 
   Outcome HandleWrite(Context* c, FdHandle h,
                       const core::FileDescriptor& fd) override {
     // I never want to write.
+    HandledWrite(0);
     return Outcome::kSuspend;
   }
 
@@ -91,12 +110,13 @@ class EagerSwallowHandler final : public Refs, public IoHandler {
 };
 
 // Always has something to write.
-class GarbageFountainHandler final : public Refs, public IoHandler {
+class GarbageFountainHandler final : public HandlerBase, public IoHandler {
  public:
-  explicit GarbageFountainHandler(int* r) : Refs(r), IoHandler() {}
+  explicit GarbageFountainHandler(Stuff* s) : HandlerBase(s), IoHandler() {}
   Outcome HandleRead(Context* c, FdHandle h,
                      const core::FileDescriptor& fd) override {
     // I never want to read.
+    HandledRead(0);
     return Outcome::kSuspend;
   }
 
@@ -105,40 +125,47 @@ class GarbageFountainHandler final : public Refs, public IoHandler {
     Outcome o = Outcome::kYield;
     constexpr const char kMsg[] =
         "Passersby were amazed by unusually large amounts of blood. ";
-    CHECK_OK(NonBlockingWrite(&o, fd, kMsg, strlen(kMsg)).result());
+    HandledWrite(NonBlockingWrite(&o, fd, kMsg, strlen(kMsg)).ValueOrDie());
     return o;
   }
 };
 
 // Hates all file descriptors and just wants them to die.
-class ClosingHandler final : public Refs, public IoHandler {
+class ClosingHandler final : public HandlerBase, public IoHandler {
  public:
-  explicit ClosingHandler(int* r) : Refs(r), IoHandler() {}
+  explicit ClosingHandler(Stuff* s) : HandlerBase(s), IoHandler() {}
   Outcome HandleRead(Context* c, FdHandle h,
                      const core::FileDescriptor& fd) override {
     // Eeew! Close this thing!
+    HandledRead(0);
     return Outcome::kClose;
   }
 
   Outcome HandleWrite(Context* c, FdHandle h,
                       const core::FileDescriptor& fd) override {
     // Eeew! Close this thing!
+    HandledWrite(0);
     return Outcome::kClose;
   }
 };
 
 // Merrily echoes whatever it reads, but has a small internal buffer.
-class EchoingHandler final : public Refs, public IoHandler {
+class EchoingHandler final : public HandlerBase, public IoHandler {
  public:
-  explicit EchoingHandler(int* r) : Refs(r), IoHandler() {}
+  explicit EchoingHandler(Stuff* s) : HandlerBase(s), IoHandler() {}
   static constexpr size_t kSize = 64;
   Outcome HandleRead(Context* c, FdHandle h,
                      const core::FileDescriptor& fd) override {
     // Call me back when my buffer is empty.
-    if (!buffer_.empty()) return Outcome::kSuspend;
+    if (!buffer_.empty()) {
+      HandledRead(0);
+      return Outcome::kSuspend;
+    }
+
     buffer_.resize(kSize);
     Outcome o = Outcome::kYield;
     auto bytes = NonBlockingRead(&o, fd, &buffer_[0], kSize).ValueOrDie();
+    HandledRead(bytes);
     CHECK_LE(bytes, kSize);
     buffer_.resize(bytes);
     c->RequestWrite(h);
@@ -149,11 +176,15 @@ class EchoingHandler final : public Refs, public IoHandler {
   Outcome HandleWrite(Context* c, FdHandle h,
                       const core::FileDescriptor& fd) override {
     // Call me back when my buffer is not empty.
-    if (buffer_.empty()) return Outcome::kSuspend;
+    if (buffer_.empty()) {
+      HandledWrite(0);
+      return Outcome::kSuspend;
+    }
 
     Outcome o = Outcome::kYield;
     auto remain = buffer_.size();
     auto bytes = NonBlockingWrite(&o, fd, &buffer_[0], remain).ValueOrDie();
+    HandledWrite(bytes);
     CHECK_LE(bytes, remain);
     memmove(&buffer_[0], &buffer_[bytes], (remain - bytes));
     buffer_.resize(remain - bytes);
@@ -187,7 +218,8 @@ class SiloTest : public ::testing::Test {
     gfh_.reset();
     ch_.reset();
     eh_.reset();
-    CHECK_EQ(expected_living_handlers_, living_handlers_);
+    CHECK_EQ(expected_living_handlers_,
+             stuff_.refs.load(std::memory_order_acquire));
   }
 
   void ShedFn(internal::HFDs&& i) { sheds_.emplace_back(std::move(i)); }
@@ -201,9 +233,27 @@ class SiloTest : public ::testing::Test {
   }
 
   std::pair<core::FileDescriptor, core::FileDescriptor> MakePipe() {
-    auto pair = std::move(core::syscalls::Pipe2(FD_CLOEXEC).ValueOrDie());
+    auto pair = std::move(core::syscalls::Pipe2(O_CLOEXEC).ValueOrDie());
     CHECK_OK(core::idioms::SetNonBlocking(pair.second));
     return pair;
+  }
+
+  void Poke() { CHECK_OK(core::syscalls::EventFdWrite(event_fd_, 1)); }
+
+  core::FileDescriptor InstallPipe(std::shared_ptr<IoHandler> h) {
+    ++expected_living_handlers_;
+    auto [mine, silos] = MakePipe();
+    internal::HFDs i;
+    i.h = h;
+    i.fds.push_back(std::move(silos));
+    auto poke = MakeCleanup([this]() { Poke(); });
+    MutexLock l(&inbound_mu_);
+    inbound_.emplace_back(std::move(i));
+    return std::move(mine);
+  }
+
+  void Write(const core::FileDescriptor& fd, std::string_view data) {
+    CHECK_OK(core::idioms::WriteExactly(fd, data));
   }
 
   core::FileDescriptor event_fd_ =
@@ -231,17 +281,29 @@ class SiloTest : public ::testing::Test {
   // Change this if you expect Silo to still be retaining references at the end
   // of test.
   int expected_living_handlers_ = 0;
-  int living_handlers_ = 0;
+  Stuff stuff_;
   std::shared_ptr<IoHandler> esh_ =
-      std::make_shared<EagerSwallowHandler>(&living_handlers_);
+      std::make_shared<EagerSwallowHandler>(&stuff_);
   std::shared_ptr<IoHandler> gfh_ =
-      std::make_shared<GarbageFountainHandler>(&living_handlers_);
-  std::shared_ptr<IoHandler> ch_ =
-      std::make_shared<ClosingHandler>(&living_handlers_);
-  std::shared_ptr<IoHandler> eh_ =
-      std::make_shared<EchoingHandler>(&living_handlers_);
+      std::make_shared<GarbageFountainHandler>(&stuff_);
+  std::shared_ptr<IoHandler> ch_ = std::make_shared<ClosingHandler>(&stuff_);
+  std::shared_ptr<IoHandler> eh_ = std::make_shared<EchoingHandler>(&stuff_);
 };
 
 TEST_F(SiloTest, SetupAndTeardownWorks) {}
+
+TEST_F(SiloTest, PokeTolerant) {
+  // Just jab the silo in the eye repeatedly and it shouldn't break.
+  for (int i = 0; i < 38; ++i) {
+    for (int j = 0; j < i; ++j) Poke();
+    SleepFor(Microseconds(100));
+  }
+}
+
+TEST_F(SiloTest, EagerSwallowCanReadBasic) {
+  auto fd = InstallPipe(esh_);
+  Write(fd, {"Hello, there!"});
+  //
+}
 
 }  // namespace io

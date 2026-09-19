@@ -54,6 +54,7 @@ enum class BaseCode : uint8_t {
   kEnoent = 101,
   kEinval = 102,
   kEagain = 103,
+  kEbadf = 104,
 
   // Unimplemented code path reached.
   kUnimplemented = 255,
