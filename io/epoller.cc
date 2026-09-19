@@ -1,4 +1,5 @@
 #include "core/stateless_random.h"
+#include "core/syscalls.h"
 #include "io/epoller.h"
 #include "io/silo.h"
 
@@ -26,17 +27,21 @@ ResultOr<std::unique_ptr<Epoller>> Epoller::Build(int silos) {
   threads.resize(silos);
   for (int i = 0; i < silos; ++i) {
     auto& s = *threads[i];
+    TRY_ASSIGN(s.event_fd,
+               core::syscalls::EventFd(0, EFD_CLOEXEC | EFD_NONBLOCK));
+
+    // Fire up the silo's thread.
     const std::string name = strings::Format("silo{}", i);
-    s.thread =
-        CreateThread(name, [id = i, e = &ret->exiting_, util = &s.utilization,
-                            mu = &s.mu, l = &s.inbound, ep = ret.get()]() {
-          base::BecomeForegroundThread();
-          auto x = std::make_unique<Silo>(
-              id, e, mu, l, util,
-              [ep](internal::HFDs&& i) { ep->Route(std::move(i)); },
-              [ep](std::vector<int>* utils) { ep->Peek(utils); });
-          x->ThreadMain();
-        });
+    s.thread = CreateThread(name, [id = i, ev = &s.event_fd, e = &ret->exiting_,
+                                   util = &s.utilization, mu = &s.mu,
+                                   l = &s.inbound, ep = ret.get()]() {
+      base::BecomeForegroundThread();
+      auto x = std::make_unique<Silo>(
+          id, ev, e, mu, l, util,
+          [ep](internal::HFDs&& i) { ep->Route(std::move(i)); },
+          [ep](std::vector<int>* utils) { ep->Peek(utils); });
+      x->ThreadMain();
+    });
   }
 
   ret->threads_ = std::move(threads);
@@ -88,11 +93,13 @@ void Epoller::Route(internal::HFDs&& i) {
 void Epoller::RouteTo(int silo, internal::HFDs&& i) {
   DCHECK_GE(silo, 0);
   DCHECK_LT(silo, threads_.size());
+  PerThread& s = *threads_[silo];
   {
-    MutexLock l(&threads_[silo]->mu);
-    threads_[silo]->inbound.emplace_back(std::move(i));
+    MutexLock l(&s.mu);
+    s.inbound.emplace_back(std::move(i));
   }
-  // TODO - poke target thread.
+  // Poke target thread.
+  CHECK_OK(core::syscalls::EventFdWrite(s.event_fd, 1));
 }
 
 Result Epoller::Register(std::shared_ptr<IoHandler> h,

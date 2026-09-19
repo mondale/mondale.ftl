@@ -20,8 +20,9 @@ class Silo final {
   using ShedFn = std::function<void(internal::HFDs&&)>;
   using PeekFn = std::function<void(std::vector<int>*)>;
 
-  Silo(int id, Notification* exiting, Mutex* inbound_mu, InList* inbound,
-       std::atomic<int>* util, ShedFn sf, PeekFn pf);
+  Silo(int id, const core::FileDescriptor* efd, Notification* exiting,
+       Mutex* inbound_mu, InList* inbound, std::atomic<int>* util, ShedFn sf,
+       PeekFn pf);
 
   // Called via Context.
   void RequestRead(FdHandle h);
@@ -52,6 +53,7 @@ class Silo final {
   InList* const inbound_ GUARDED_BY(inbound_mu_);
   std::atomic<int>* const util_;
   Notification* const exiting_;
+  const core::FileDescriptor* const event_fd_;
   ShedFn shed_;
   bool impending_shed_ = false;
 

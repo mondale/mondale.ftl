@@ -35,9 +35,7 @@ TEST(EventFdAndFcntl) {
   auto efd = syscalls::EventFd(0, EFD_NONBLOCK | EFD_CLOEXEC).ValueOrDie();
   EXPECT_THAT(syscalls::EventFdWrite(efd, 10), IsOk());
 
-  eventfd_t val = 0;
-  EXPECT_EQ(syscalls::EventFdRead(efd, &val).ValueOrDie(), sizeof(eventfd_t));
-  EXPECT_EQ(val, 10);
+  EXPECT_EQ(10, syscalls::EventFdRead(efd).ValueOrDie());
 
   auto flags = syscalls::Fcntl(efd, F_GETFL).ValueOrDie();
   EXPECT_NE(flags & O_NONBLOCK, 0);

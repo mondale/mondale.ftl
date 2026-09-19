@@ -58,6 +58,7 @@ class Epoller final {
     Mutex mu;
     std::list<internal::HFDs> inbound GUARDED_BY(mu);
     std::atomic<int> utilization{0};  // [0, 100].
+    core::FileDescriptor event_fd;
     std::unique_ptr<Thread> thread;
   };
   std::vector<std::unique_ptr<PerThread>> threads_;

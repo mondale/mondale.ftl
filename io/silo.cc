@@ -25,13 +25,15 @@ class SiloContext final : public Context {
 
 }  // namespace
 
-Silo::Silo(int id, Notification* exiting, Mutex* inbound_mu, InList* inbound,
-           std::atomic<int>* util, ShedFn sf, PeekFn pf)
+Silo::Silo(int id, const core::FileDescriptor* efd, Notification* exiting,
+           Mutex* inbound_mu, InList* inbound, std::atomic<int>* util,
+           ShedFn sf, PeekFn pf)
     : id_(id),
       inbound_mu_(inbound_mu),
       inbound_(inbound),
       util_(util),
       exiting_(exiting),
+      event_fd_(efd),
       shed_(std::move(sf)),
       peek_(std::move(pf)) {}
 
@@ -45,6 +47,16 @@ void Silo::ThreadMain() {
 Result Silo::ThreadMain2() {
   UtilizationEstimator ue;
   TRY_ASSIGN(efd_, core::syscalls::EpollCreate1(EPOLL_CLOEXEC));
+
+  // Add the event FD to the epoll set.
+  constexpr uint64_t kIsPollFd = UINT64_MAX;
+  {
+    struct epoll_event e;
+    e.events = EPOLLHUP | EPOLLERR | EPOLLRDHUP | EPOLLIN | EPOLLOUT | EPOLLET;
+    e.data.u64 = kIsPollFd;
+    TRY(core::syscalls::EpollCtl(efd_, EPOLL_CTL_ADD, *event_fd_, &e));
+  }
+
   struct timespec timeout = Milliseconds(10).ToTimespec();
   constexpr int kMaxEvents = 64;
   alignas(64) std::array<struct epoll_event, kMaxEvents> events;
@@ -66,7 +78,15 @@ Result Silo::ThreadMain2() {
     // Convert epoll events to list activations.
     for (int i = 0; i < ready_count; ++i) {
       const auto e = events[i].events;
-      const auto h = FdHandle(static_cast<int64_t>(events[i].data.u64));
+      const uint64_t datum = events[i].data.u64;
+
+      // Check for an eventfd edge -> very special case.
+      if (kIsPollFd == datum) {
+        static_cast<void>(core::syscalls::EventFdRead(*event_fd_).ValueOrDie());
+        continue;
+      }
+
+      const auto h = FdHandle(static_cast<int64_t>(datum));
 
       // Lookup handle and get the per-FD object.
       TRY_ASSIGN(auto* perfd, ht_.Lookup(Coerce(h)));

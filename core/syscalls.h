@@ -24,7 +24,7 @@ ResultOr<int> EpollPwait2(const FileDescriptor& epfd,
                           const struct timespec* timeout,
                           const sigset_t* sigmask);
 ResultOr<FileDescriptor> EventFd(unsigned int initval, int flags);
-ResultOr<size_t> EventFdRead(const FileDescriptor& fd, eventfd_t* value);
+ResultOr<uint64_t> EventFdRead(const FileDescriptor& fd);
 Result EventFdWrite(const FileDescriptor& fd, eventfd_t value);
 ResultOr<int> Fcntl(const FileDescriptor& fd, int cmd);
 ResultOr<int> Fcntl(const FileDescriptor& fd, int cmd, int arg);

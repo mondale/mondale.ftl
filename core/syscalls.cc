@@ -136,12 +136,13 @@ ResultOr<FileDescriptor> EventFd(unsigned int initval, int flags) {
   return FileDescriptor(raw_fd);
 }
 
-ResultOr<size_t> EventFdRead(const FileDescriptor& fd, eventfd_t* value) {
-  auto syscall = [&]() -> int { return ::eventfd_read(fd.fd(), value); };
+ResultOr<uint64_t> EventFdRead(const FileDescriptor& fd) {
+  uint64_t value = 0;
+  auto syscall = [&]() -> int { return ::eventfd_read(fd.fd(), &value); };
   auto accept = [](int ret) -> bool { return ret == 0; };
   TRY_ASSIGN(const int ret, SyscallRetryEintr<int>(syscall, accept));
   TRY(NoReturnNonZero(ret, "EventFdRead"));
-  return sizeof(eventfd_t);
+  return value;
 }
 
 Result EventFdWrite(const FileDescriptor& fd, eventfd_t value) {
