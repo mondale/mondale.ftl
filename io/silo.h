@@ -67,6 +67,8 @@ class Silo final {
     std::shared_ptr<IoHandler> handler;
     core::FileDescriptor fd;
     FdHandle handle;
+    bool squelch_reads = false;
+    bool squelch_writes = false;
     std::list<std::move_only_function<void()>> fns;
   };
 

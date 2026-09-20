@@ -10,7 +10,6 @@
 namespace io {
 
 // TODO - move these to helpers.
-// TODO - sometimes these should say kClose, figure out when.
 
 ResultOr<size_t> NonBlockingRead(IoHandler::Outcome* outcome,
                                  const core::FileDescriptor& fd, char* buf,
@@ -33,7 +32,7 @@ ResultOr<size_t> NonBlockingRead(IoHandler::Outcome* outcome,
     return 0;
   }
 
-  // Some errors here should become OK.
+  // Some errors here should maybe become OK?
   *outcome = IoHandler::Outcome::kClose;
   return r.result();
 }
@@ -52,12 +51,24 @@ ResultOr<size_t> NonBlockingWrite(IoHandler::Outcome* outcome,
     return 0;
   }
 
-  // Some errors here should become OK.
+  // Some errors here should maybe become OK?
   *outcome = IoHandler::Outcome::kClose;
+  Log(FATAL);
   return r.result();
 }
 
 struct Stuff final {
+  int64_t Reads() const { return read_upcalls.load(std::memory_order_acquire); }
+  int64_t Writes() const {
+    return write_upcalls.load(std::memory_order_acquire);
+  }
+  int64_t BytesRead() const {
+    return bytes_read.load(std::memory_order_acquire);
+  }
+  int64_t BytesWritten() const {
+    return bytes_written.load(std::memory_order_acquire);
+  }
+
   std::atomic<int> refs{0};
   std::atomic<int64_t> read_upcalls{0};
   std::atomic<int64_t> write_upcalls{0};
@@ -91,6 +102,7 @@ class HandlerBase {
 class EagerSwallowHandler final : public HandlerBase, public IoHandler {
  public:
   explicit EagerSwallowHandler(Stuff* s) : HandlerBase(s), IoHandler() {}
+  virtual ~EagerSwallowHandler() {}
   static constexpr size_t kSwallowSize = 64;
   Outcome HandleRead(Context* c, FdHandle h,
                      const core::FileDescriptor& fd) override {
@@ -125,6 +137,7 @@ class GarbageFountainHandler final : public HandlerBase, public IoHandler {
     Outcome o = Outcome::kYield;
     constexpr const char kMsg[] =
         "Passersby were amazed by unusually large amounts of blood. ";
+    Log(INFO) << "";
     HandledWrite(NonBlockingWrite(&o, fd, kMsg, strlen(kMsg)).ValueOrDie());
     return o;
   }
@@ -204,14 +217,16 @@ class SiloTest : public ::testing::Test {
  protected:
   SiloTest() {
     utils_.resize(4);
-    utils_[0] = 0;
-    utils_[1] = 0;
-    utils_[2] = 0;
-    utils_[3] = 0;
+    // Defaults preclude load shedding.
+    utils_[0] = 99;
+    utils_[1] = 99;
+    utils_[2] = 99;
+    utils_[3] = 99;
   }
 
   ~SiloTest() override {
     exiting_.Notify();
+    Poke();
     thread_.reset();
 
     esh_.reset();
@@ -242,11 +257,11 @@ class SiloTest : public ::testing::Test {
   void Poke() { CHECK_OK(core::syscalls::EventFdWrite(event_fd_, 1)); }
 
   core::FileDescriptor InstallPipe(std::shared_ptr<IoHandler> h) {
-    ++expected_living_handlers_;
     auto [mine, silos] = MakeSocketPair();
     internal::HFDs i;
     i.h = h;
     i.fds.push_back(std::move(silos));
+    h->SetAffinity(1);
     auto poke = MakeCleanup([this]() { Poke(); });
     MutexLock l(&inbound_mu_);
     inbound_.emplace_back(std::move(i));
@@ -255,6 +270,16 @@ class SiloTest : public ::testing::Test {
 
   void Write(const core::FileDescriptor& fd, std::string_view data) {
     CHECK_OK(core::idioms::WriteExactly(fd, data));
+  }
+
+  bool Await(std::move_only_function<bool()> cond) {
+    constexpr Duration kMaxWait = Seconds(1);
+    const auto stop = WallTime::Now() + kMaxWait;
+    while (WallTime::Now() < stop) {
+      if (cond()) return true;
+      SleepFor(Milliseconds(1));
+    }
+    return false;
   }
 
   core::FileDescriptor event_fd_ =
@@ -303,8 +328,54 @@ TEST_F(SiloTest, PokeTolerant) {
 
 TEST_F(SiloTest, EagerSwallowCanReadBasic) {
   auto fd = InstallPipe(esh_);
-  Write(fd, {"Hello, there!"});
-  //
+  std::string_view msg = "Hello, there!";
+  Write(fd, msg);
+  EXPECT_TRUE(Await([&]() { return stuff_.BytesRead() >= msg.length(); }));
+  EXPECT_EQ(stuff_.BytesRead(), msg.length());
+  EXPECT_GE(stuff_.Reads(), 2);   // Yield, Eagain
+  EXPECT_EQ(stuff_.Writes(), 1);  // Suspend
+}
+
+TEST_F(SiloTest, EagerSwallowCanReallySwallow) {
+  constexpr int kIters = 100000;
+  auto fd = InstallPipe(esh_);
+  std::string_view msg = "0123456789";
+  for (int i = 0; i < kIters; ++i) {
+    Write(fd, msg);
+  }
+  const auto size = msg.length() * kIters;
+  EXPECT_TRUE(Await([&]() { return stuff_.BytesRead() >= size; }));
+  EXPECT_EQ(stuff_.BytesRead(), size);
+  const auto min_reads = size / EagerSwallowHandler::kSwallowSize;
+  EXPECT_GE(stuff_.Reads(), min_reads + 1);  // Yields, Eagain at least once
+  EXPECT_EQ(stuff_.Writes(), 1);             // Suspend
+}
+
+TEST_F(SiloTest, GarbageIsAlwaysReadable) {
+  auto fd = InstallPipe(gfh_);
+  char buf[128];
+  memset(buf, 0, sizeof(buf));
+  // Read from the test fixture end; garbage fountain writes continuously.
+  EXPECT_TRUE(Await([&]() {
+    auto r = core::syscalls::Read(fd, buf, 128);
+    return r.IsOk() && r.ValueOrDie() > 0;
+  }));
+  EXPECT_GT(stuff_.Writes(), 0);
+}
+
+TEST_F(SiloTest, CloserKillsTheFd) {
+  // Test case that exercises the case of a voluntary close via the
+  // CloserHandler.
+}
+
+TEST_F(SiloTest, Echo) {
+  // Test case using the echoing handler to push a hundred thousand bytes in
+  // and read them back precisely.
+}
+
+TEST_F(SiloTest, LoadShedding) {
+  // Insert a couple pipes, advertise low utilzition in other silos, and then
+  // observe some ejected FDs.
 }
 
 }  // namespace io

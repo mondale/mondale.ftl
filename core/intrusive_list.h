@@ -137,7 +137,7 @@ class IntrusiveList {
   // Blindly erases an object from whatever list its hook belongs to.
   static void Erase(T* x) {
     auto* hook = static_cast<IntrusiveListHook<Tag>*>(x);
-    DCHECK(hook->IsLinked());
+    if (!hook->IsLinked()) return;
     hook->Unlink();
   }
 

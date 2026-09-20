@@ -175,6 +175,14 @@ void SetupDeadlySignalHandler() {
   sigaction(SIGFPE, &s, nullptr);
 }
 
+void SetupIgnoredSignals() {
+  struct sigaction s = {};
+  s.sa_handler = SIG_IGN;
+  sigemptyset(&s.sa_mask);
+  s.sa_flags = 0;
+  sigaction(SIGPIPE, &s, nullptr);
+}
+
 void SetupThreadCaptureHandler() {
   struct sigaction s = {};
   s.sa_handler = &CapturedThreadHandler;
@@ -273,6 +281,7 @@ void Initialize(int argc, char* argv[]) {
   SetupForkDetector();
   SetupThreadCaptureHandler();
   SetupDeadlySignalHandler();
+  SetupIgnoredSignals();
 
   std::string err;
   if (!ParseFlags(argc, argv, &err)) {

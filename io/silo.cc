@@ -113,13 +113,13 @@ Result Silo::ThreadMain2() {
       }
 
       // Add to read list if not already there?
-      if (e & EPOLLIN) {
+      if ((e & EPOLLIN) && !perfd->squelch_reads) {
         DCHECK(!readers_.IsLinked(perfd));
         readers_.PushBack(perfd);
       }
 
       // Add to write list if not already there?
-      if (e & EPOLLOUT) {
+      if ((e & EPOLLOUT) && !perfd->squelch_writes) {
         DCHECK(!writers_.IsLinked(perfd));
         writers_.PushBack(perfd);
       }
@@ -184,7 +184,7 @@ Result Silo::RunAdmission() {
   InList in;
   GetInList(&in);
   for (auto& i : in) {
-    // Check for an affinity race conditio -- route non-matching affinity
+    // Check for an affinity race condition -- route non-matching affinity
     // elsewhere.
     if (i.h->GetAffinity() != id_) {
       shed_(std::move(i));
@@ -196,9 +196,12 @@ Result Silo::RunAdmission() {
 }
 
 Result Silo::Add(internal::HFDs&& i) {
-  std::list<FdHandle> hs;
+  core::InlinedVector<FdHandle, 2> hs;
   auto oops = MakeCleanup([&]() {
     for (auto h : hs) {
+      auto* perfd = ht_.Lookup(Coerce(h)).ValueOrDie();
+      CHECK_OK(
+          core::syscalls::EpollCtl(efd_, EPOLL_CTL_DEL, perfd->fd, nullptr));
       CHECK_OK(ht_.Free(Coerce(h)));
     }
   });
@@ -220,6 +223,8 @@ ResultOr<FdHandle> Silo::Add(std::shared_ptr<IoHandler> handler,
   perfd->handler->handles_.push_back(real_h);
   perfd->fd = std::move(fd);
   perfd->handle = real_h;
+  perfd->squelch_reads = false;
+  perfd->squelch_writes = false;
 
   // Add to epoll set.
   struct epoll_event e;
@@ -236,8 +241,8 @@ Result Silo::Remove(PerFd* perfd) {
 
   // Remove from epoll set.
   TRY(core::syscalls::EpollCtl(efd_, EPOLL_CTL_DEL, perfd->fd, nullptr));
-  static_cast<void>(std::move(perfd->fd));       // closes the fd
-  static_cast<void>(std::move(perfd->handler));  // unref the handler
+  auto fd = std::move(perfd->fd);  // closes the fd
+  perfd->handler.reset();          // unref the handler
 
   // Deallocate.
   return ht_.Free(Coerce(perfd->handle));
@@ -246,6 +251,7 @@ Result Silo::Remove(PerFd* perfd) {
 void Silo::RequestRead(FdHandle h) {
   DCHECK_NE(FdHandle::kInvalid, current_);
   auto* const perfd = ht_.Lookup(Coerce(h)).ValueOrDie();
+  perfd->squelch_reads = false;
   if (readers_.IsLinked(perfd)) {
     return;
   }
@@ -255,6 +261,7 @@ void Silo::RequestRead(FdHandle h) {
 void Silo::RequestWrite(FdHandle h) {
   DCHECK_NE(FdHandle::kInvalid, current_);
   auto* const perfd = ht_.Lookup(Coerce(h)).ValueOrDie();
+  perfd->squelch_writes = false;
   if (writers_.IsLinked(perfd)) {
     return;
   }
@@ -292,8 +299,8 @@ void Silo::RunReaders(Context* c) {
         break;
       }
       case IoHandler::Outcome::kSuspend: {
-        // Nothing to do here, handler will call RequestRead at some point in
-        // the future.
+        // Handler will call RequestRead at some point in the future.
+        perfd->squelch_reads = true;
         break;
       }
       case IoHandler::Outcome::kClose: {
@@ -324,12 +331,12 @@ void Silo::RunWriters(Context* c) {
         break;
       }
       case IoHandler::Outcome::kSuspend: {
-        // Nothing to do here, handler will call RequestWrite at some point in
-        // the future.
+        // Handler will call RequestWrite at some point in the future.
+        perfd->squelch_writes = true;
         break;
       }
       case IoHandler::Outcome::kClose: {
-        // Close is requested, move tot he closers list.
+        // Close is requested, move to the closers list.
         Expunge(perfd);
         closers_.PushBack(perfd);
         break;

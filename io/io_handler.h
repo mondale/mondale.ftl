@@ -41,6 +41,9 @@ class IoHandler {
   std::list<FdHandle> handles_;
 };
 
+std::string ToString(IoHandler::Outcome o);
+std::ostream& operator<<(std::ostream& out, IoHandler::Outcome o);
+
 namespace internal {
 struct HFDs {
   std::shared_ptr<IoHandler> h;

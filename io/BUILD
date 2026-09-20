@@ -51,7 +51,7 @@ cc_test(
 
 cc_library(
     name = "io_handler",
-    srcs = [],
+    srcs = ["io_handler.cc"],
     hdrs = ["io_handler.h"],
     deps = [
         "//core",
