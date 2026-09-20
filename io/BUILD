@@ -18,6 +18,9 @@ cc_test(
     srcs = ["epoller_test.cc"],
     deps = [
         ":epoller",
+"//core:idioms",
+"//core:syscalls",
+":test_handlers",
         "//testing",
     ],
 )

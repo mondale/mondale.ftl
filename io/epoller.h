@@ -22,9 +22,6 @@ class Epoller final {
   Result SetNonBlockingAndRegister(std::shared_ptr<IoHandler> h,
                                    core::FileDescriptor&& fd);
 
-  // Set non-blocking flags on FD, generally necessary for edge-triggered epoll.
-  static Result SetNonBlocking(const core::FileDescriptor& fd);
-
  private:
   int SelectSilo();
 

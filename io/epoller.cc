@@ -27,6 +27,7 @@ ResultOr<std::unique_ptr<Epoller>> Epoller::Build(int silos) {
   std::vector<std::unique_ptr<PerThread>> threads;
   threads.resize(silos);
   for (int i = 0; i < silos; ++i) {
+    threads[i] = std::make_unique<PerThread>();
     auto& s = *threads[i];
     TRY_ASSIGN(s.event_fd,
                core::syscalls::EventFd(0, EFD_CLOEXEC | EFD_NONBLOCK));
@@ -84,6 +85,8 @@ void Epoller::Route(internal::HFDs&& i) {
     i.h->SetAffinity(silo);
   }
   if (silo >= threads_.size()) {
+    // Nonsense affinity - avoid accidentally multithreading a handler by
+    // refusing the registration in this case.
     Log(WARNING) << "IoHandler has broken affinity for silo [" << silo
                  << "]. FD will be closed.";
     return;
