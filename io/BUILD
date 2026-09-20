@@ -56,6 +56,8 @@ cc_library(
     deps = [
         "//core",
         "//core:file_descriptor",
+        "//core:idioms",
+        "//core:syscalls",
         "//core:inlined_vector",
     ],
 )

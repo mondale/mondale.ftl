@@ -29,6 +29,14 @@ class IoHandler {
   virtual ResultOr<Outcome> HandleWrite(Context* c, FdHandle h,
                                         const core::FileDescriptor& fd) = 0;
 
+  // Helpers for subclasses to invoke.
+  ResultOr<size_t> NonBlockingRead(IoHandler::Outcome* outcome,
+                                   const core::FileDescriptor& fd, char* buf,
+                                   size_t count) const;
+  ResultOr<size_t> NonBlockingWrite(IoHandler::Outcome* outcome,
+                                    const core::FileDescriptor& fd,
+                                    const char* buf, size_t count) const;
+
   // Subclasses, ignore all below.
   static constexpr int kNoAffinity = INT_MAX;
   friend class Epoller;

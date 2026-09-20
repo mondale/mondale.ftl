@@ -9,53 +9,6 @@
 
 namespace io {
 
-// TODO - move these to helpers.
-
-ResultOr<size_t> NonBlockingRead(IoHandler::Outcome* outcome,
-                                 const core::FileDescriptor& fd, char* buf,
-                                 size_t count) {
-  auto r = core::syscalls::Read(fd, buf, count);
-  if (r.IsOk()) {
-    const auto bytes_read = r.ValueOrDie();
-    if (0 == bytes_read) {
-      // EOF -> close the FD.
-      *outcome = IoHandler::Outcome::kClose;
-      return 0;
-    }
-
-    // Could be a full or partial read, either way, yield and call again.
-    *outcome = IoHandler::Outcome::kYield;
-    return bytes_read;
-  } else if (r.result().Is(Code::kEagain)) {
-    // No more bytes, convert EAGAIN to an ok status.
-    *outcome = IoHandler::Outcome::kFdEagain;
-    return 0;
-  }
-
-  // Some errors here should maybe become OK?
-  *outcome = IoHandler::Outcome::kClose;
-  return r.result();
-}
-
-ResultOr<size_t> NonBlockingWrite(IoHandler::Outcome* outcome,
-                                  const core::FileDescriptor& fd,
-                                  const char* buf, size_t count) {
-  auto r = core::syscalls::Write(fd, buf, count);
-  if (r.IsOk()) {
-    // Presumably more bytes are writeable, so call again.
-    *outcome = IoHandler::Outcome::kYield;
-    return r.ValueOrDie();
-  } else if (r.result().Is(Code::kEagain)) {
-    // Backpressure, convert EAGAIN to an ok status.
-    *outcome = IoHandler::Outcome::kFdEagain;
-    return 0;
-  }
-
-  // Some errors here should maybe become OK?
-  *outcome = IoHandler::Outcome::kClose;
-  return r.result();
-}
-
 struct Stuff final {
   int64_t Reads() const { return read_upcalls.load(std::memory_order_acquire); }
   int64_t Writes() const {
