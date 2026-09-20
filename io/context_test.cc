@@ -8,7 +8,7 @@ class TestContext : public Context {
   TestContext() : Context(MonotonicTime::Now()) {}
   void RequestRead(FdHandle h) override {}
   void RequestWrite(FdHandle h) override {}
-  void Run(FdHandle h, std::move_only_function<void()> fn) override {}
+  void Run(FdHandle h, std::move_only_function<void(Context*)> fn) override {}
 };
 
 TEST(SimpleTest) {

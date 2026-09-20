@@ -15,7 +15,7 @@ class SiloContext final : public Context {
 
   void RequestRead(FdHandle h) override { s_->RequestRead(h); }
   void RequestWrite(FdHandle h) override { s_->RequestWrite(h); }
-  void Run(FdHandle h, std::move_only_function<void()> fn) override {
+  void Run(FdHandle h, std::move_only_function<void(Context*)> fn) override {
     s_->Run(h, std::move(fn));
   }
 
@@ -132,7 +132,7 @@ Result Silo::ThreadMain2() {
     while (!ActivationsEmpty()) {
       RunReaders(&context);
       RunWriters(&context);
-      RunRunners();
+      RunRunners(&context);
     }
 
     // Close doomed file handles.
@@ -268,7 +268,7 @@ void Silo::RequestWrite(FdHandle h) {
   writers_.PushBack(perfd);
 }
 
-void Silo::Run(FdHandle h, std::move_only_function<void()> fn) {
+void Silo::Run(FdHandle h, std::move_only_function<void(Context*)> fn) {
   DCHECK_NE(FdHandle::kInvalid, current_);
   auto* const perfd = ht_.Lookup(Coerce(h)).ValueOrDie();
   perfd->fns.emplace_back(std::move(fn));
@@ -350,7 +350,7 @@ void Silo::RunWriters(Context* c) {
   current_ = FdHandle::kInvalid;
 }
 
-void Silo::RunRunners() {
+void Silo::RunRunners(Context* c) {
   while (!runners_.Empty()) {
     PerFd* const perfd = &*runners_.begin();
     core::IntrusiveList<PerFd, Shared>::Erase(perfd);
@@ -358,7 +358,7 @@ void Silo::RunRunners() {
     while (!perfd->fns.empty()) {
       auto fn = std::move(perfd->fns.front());
       perfd->fns.pop_front();
-      fn();
+      fn(c);
     }
   }
   current_ = FdHandle::kInvalid;

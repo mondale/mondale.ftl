@@ -12,7 +12,7 @@ class Context {
 
   virtual void RequestRead(FdHandle h) = 0;
   virtual void RequestWrite(FdHandle h) = 0;
-  virtual void Run(FdHandle h, std::move_only_function<void()> fn) = 0;
+  virtual void Run(FdHandle h, std::move_only_function<void(Context*)> fn) = 0;
 
   base::MonotonicTime loop_start() const { return loop_start_; }
 

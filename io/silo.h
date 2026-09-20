@@ -27,7 +27,7 @@ class Silo final {
   // Called via Context.
   void RequestRead(FdHandle h);
   void RequestWrite(FdHandle h);
-  void Run(FdHandle h, std::move_only_function<void()> fn);
+  void Run(FdHandle h, std::move_only_function<void(Context*)> fn);
 
   void ThreadMain();
 
@@ -45,7 +45,7 @@ class Silo final {
   bool ActivationsEmpty() const;
   void RunReaders(Context* c);
   void RunWriters(Context* c);
-  void RunRunners();
+  void RunRunners(Context* c);
   void RunShedders();
 
   const int id_;
@@ -69,7 +69,7 @@ class Silo final {
     FdHandle handle;
     bool squelch_reads = false;
     bool squelch_writes = false;
-    std::list<std::move_only_function<void()>> fns;
+    std::list<std::move_only_function<void(Context*)>> fns;
   };
 
   using HTable = core::HandleTable<PerFd, kMaxFds>;

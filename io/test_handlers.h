@@ -102,6 +102,24 @@ class EchoingHandler final : public HandlerBase, public IoHandler {
   std::vector<char> buffer_;
 };
 
+// Likes to bounce its read and write requests through a closure invocation.
+// Otherwise reads eagerly.
+class CarlyHandler final : public HandlerBase, public IoHandler {
+ public:
+  explicit CarlyHandler(Stuff* s) : HandlerBase(s), IoHandler() {}
+  static constexpr size_t kSize = 64;
+  ResultOr<Outcome> HandleRead(Context* c, FdHandle h,
+                               const core::FileDescriptor& fd) override;
+  ResultOr<Outcome> HandleWrite(Context* c, FdHandle h,
+                                const core::FileDescriptor& fd) override;
+
+ private:
+  void CallMeMaybe(Context* c);
+
+  bool maybe_ = false;
+  FdHandle handle_{};
+};
+
 }  // namespace io::testing
 
 #endif  // #ifndef IO_TEST_HANDLERS_H_

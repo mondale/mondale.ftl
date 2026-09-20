@@ -96,4 +96,36 @@ ResultOr<io::IoHandler::Outcome> EchoingHandler::HandleWrite(
   return o;
 }
 
+ResultOr<io::IoHandler::Outcome> CarlyHandler::HandleRead(
+    Context* c, FdHandle h, const core::FileDescriptor& fd) {
+  // Hey, I just met you!
+  handle_ = h;
+  Outcome o = Outcome::kSuspend;
+  if (maybe_) {
+    // And this is crazy!
+    maybe_ = false;
+    char buf[64];
+    TRY_ASSIGN(const auto bytes, NonBlockingRead(&o, fd, buf, 64));
+    HandledRead(bytes);
+    return o;
+  }
+
+  HandledRead(0);
+  // But here's my number, so call me maybe!
+  c->Run(h, [&](Context* c) { CallMeMaybe(c); });
+  return o;
+}
+
+ResultOr<io::IoHandler::Outcome> CarlyHandler::HandleWrite(
+    Context* c, FdHandle h, const core::FileDescriptor& fd) {
+  handle_ = h;
+  HandledWrite(0);
+  return Outcome::kSuspend;
+}
+
+void CarlyHandler::CallMeMaybe(Context* c) {
+  maybe_ = true;
+  c->RequestRead(handle_);
+}
+
 }  // namespace io::testing
