@@ -58,8 +58,8 @@ cc_library(
         "//core",
         "//core:file_descriptor",
         "//core:idioms",
-        "//core:syscalls",
         "//core:inlined_vector",
+        "//core:syscalls",
     ],
 )
 
@@ -108,16 +108,21 @@ cc_test(
 )
 
 cc_library(
-  name = "test_handlers",
-  hdrs = ["test_handlers.h"],
-  srcs = ["test_handlers.cc"],
-  deps = [":io_handler", "//core", ":context",],
+    name = "test_handlers",
+    srcs = ["test_handlers.cc"],
+    hdrs = ["test_handlers.h"],
+    deps = [
+        ":context",
+        ":io_handler",
+        "//core",
+    ],
 )
 
 cc_test(
-  name = "test_handlers_test",
-  srcs = ["test_handlers_test.cc"],
-  deps = [":test_handlers",
-          "//testing",
-  ],
+    name = "test_handlers_test",
+    srcs = ["test_handlers_test.cc"],
+    deps = [
+        ":test_handlers",
+        "//testing",
+    ],
 )
