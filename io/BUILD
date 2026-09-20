@@ -6,9 +6,9 @@ cc_library(
         ":io_handler",
         ":silo",
         "//core",
-        "//core:idioms",
         "//core:file_descriptor",
         "//core:handle_table",
+        "//core:idioms",
         "//core:stateless_random",
     ],
 )

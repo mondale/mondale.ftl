@@ -115,8 +115,8 @@ cc_library(
     name = "idioms",
     srcs = ["idioms.cc"],
     hdrs = ["idioms.h"],
-    deps = [":syscalls"],
     visibility = ["//..."],
+    deps = [":syscalls"],
 )
 
 cc_library(

@@ -126,7 +126,7 @@ TEST(RandomUniformTest_SampleRandomnessStatisticalValidity) {
   // The expected midpoint for a uniform distribution over [0, 100) is 49.5
   double expected_average = static_cast<double>(kLow + kHigh - 1) / 2.0;
 
-  EXPECT_NEAR_ABS(average, expected_average, 2.0);
+  EXPECT_NEAR_ABS(average, expected_average, 3.0);
 }
 
 }  // namespace

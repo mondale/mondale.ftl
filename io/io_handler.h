@@ -24,10 +24,10 @@ class IoHandler {
     kClose,     // Please close the FD and stop calling me.
   };
 
-  virtual Outcome HandleRead(Context* c, FdHandle h,
-                             const core::FileDescriptor& fd) = 0;
-  virtual Outcome HandleWrite(Context* c, FdHandle h,
-                              const core::FileDescriptor& fd) = 0;
+  virtual ResultOr<Outcome> HandleRead(Context* c, FdHandle h,
+                                       const core::FileDescriptor& fd) = 0;
+  virtual ResultOr<Outcome> HandleWrite(Context* c, FdHandle h,
+                                        const core::FileDescriptor& fd) = 0;
 
   // Subclasses, ignore all below.
   static constexpr int kNoAffinity = INT_MAX;

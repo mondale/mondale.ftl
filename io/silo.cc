@@ -287,7 +287,9 @@ void Silo::RunReaders(Context* c) {
     PerFd* const perfd = &*readers_.begin();
     core::IntrusiveList<PerFd, Readers>::Erase(perfd);
     current_ = perfd->handle;
-    const auto outcome = perfd->handler->HandleRead(c, current_, perfd->fd);
+    IoHandler::Outcome outcome = IoHandler::Outcome::kClose;
+    auto r = perfd->handler->HandleRead(c, current_, perfd->fd);
+    if (r.IsOk()) outcome = r.ValueOrDie();
     switch (outcome) {
       case IoHandler::Outcome::kFdEagain: {
         // Nominal case, nothing to do here. Epoll can trigger again.
@@ -319,7 +321,9 @@ void Silo::RunWriters(Context* c) {
     PerFd* const perfd = &*writers_.begin();
     core::IntrusiveList<PerFd, Writers>::Erase(perfd);
     current_ = perfd->handle;
-    const auto outcome = perfd->handler->HandleWrite(c, current_, perfd->fd);
+    IoHandler::Outcome outcome = IoHandler::Outcome::kClose;
+    auto r = perfd->handler->HandleWrite(c, current_, perfd->fd);
+    if (r.IsOk()) outcome = r.ValueOrDie();
     switch (outcome) {
       case IoHandler::Outcome::kFdEagain: {
         // Nominal case, nothing to do here. Epoll can trigger again.
