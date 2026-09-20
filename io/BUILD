@@ -42,6 +42,7 @@ cc_test(
     srcs = ["silo_test.cc"],
     deps = [
         ":silo",
+        ":test_handlers",
         "//core",
         "//core:idioms",
         "//core:syscalls",
@@ -104,4 +105,19 @@ cc_test(
         ":context",
         "//testing",
     ],
+)
+
+cc_library(
+  name = "test_handlers",
+  hdrs = ["test_handlers.h"],
+  srcs = ["test_handlers.cc"],
+  deps = [":io_handler", "//core", ":context",],
+)
+
+cc_test(
+  name = "test_handlers_test",
+  srcs = ["test_handlers_test.cc"],
+  deps = [":test_handlers",
+          "//testing",
+  ],
 )
