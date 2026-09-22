@@ -120,6 +120,44 @@ class CarlyHandler final : public HandlerBase, public IoHandler {
   FdHandle handle_{};
 };
 
+// Never reads or writes, just counts idleness complaints.
+class SquattingHandler final : public HandlerBase, public IoHandler {
+ public:
+  explicit SquattingHandler(Stuff* s) : HandlerBase(s), IoHandler() {
+    set_idle_threshold(Milliseconds(1));
+  }
+
+  virtual ~SquattingHandler() {}
+
+  ResultOr<Outcome> HandleRead(Context* c, FdHandle h,
+                               const core::FileDescriptor& fd) override;
+  ResultOr<Outcome> HandleWrite(Context* c, FdHandle h,
+                                const core::FileDescriptor& fd) override;
+  Result HandleIdle(Context* c, FdHandle h,
+                    const core::FileDescriptor& fd) override;
+
+  int64_t idles() const { return idles_.load(std::memory_order_acquire); }
+
+ private:
+  std::atomic<int64_t> idles_;
+};
+
+// Uses default idle implementation to close its FD rapidly.
+class RapidIdleHandler final : public HandlerBase, public IoHandler {
+ public:
+  explicit RapidIdleHandler(Stuff* s) : HandlerBase(s), IoHandler() {
+    set_idle_threshold(Microseconds(1));
+  }
+  virtual ~RapidIdleHandler() {}
+
+  ResultOr<Outcome> HandleRead(Context* c, FdHandle h,
+                               const core::FileDescriptor& fd) override;
+  ResultOr<Outcome> HandleWrite(Context* c, FdHandle h,
+                                const core::FileDescriptor& fd) override;
+
+ private:
+};
+
 }  // namespace io::testing
 
 #endif  // #ifndef IO_TEST_HANDLERS_H_

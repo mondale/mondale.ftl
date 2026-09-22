@@ -128,4 +128,34 @@ void CarlyHandler::CallMeMaybe(Context* c) {
   c->RequestRead(handle_);
 }
 
+ResultOr<io::IoHandler::Outcome> SquattingHandler::HandleRead(
+    Context* c, FdHandle h, const core::FileDescriptor& fd) {
+  HandledRead(0);
+  return Outcome::kSuspend;
+}
+
+ResultOr<io::IoHandler::Outcome> SquattingHandler::HandleWrite(
+    Context* c, FdHandle h, const core::FileDescriptor& fd) {
+  HandledWrite(0);
+  return Outcome::kSuspend;
+}
+
+Result SquattingHandler::HandleIdle(Context* c, FdHandle h,
+                                    const core::FileDescriptor& fd) {
+  idles_++;
+  return Result::Ok();
+}
+
+ResultOr<io::IoHandler::Outcome> RapidIdleHandler::HandleRead(
+    Context* c, FdHandle h, const core::FileDescriptor& fd) {
+  HandledRead(0);
+  return Outcome::kSuspend;
+}
+
+ResultOr<io::IoHandler::Outcome> RapidIdleHandler::HandleWrite(
+    Context* c, FdHandle h, const core::FileDescriptor& fd) {
+  HandledWrite(0);
+  return Outcome::kSuspend;
+}
+
 }  // namespace io::testing

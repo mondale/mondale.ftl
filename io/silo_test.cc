@@ -14,6 +14,8 @@ using testing::ClosingHandler;
 using testing::EagerSwallowHandler;
 using testing::EchoingHandler;
 using testing::GarbageFountainHandler;
+using testing::RapidIdleHandler;
+using testing::SquattingHandler;
 using testing::Stuff;
 
 class SiloTest : public ::testing::Test {
@@ -36,6 +38,8 @@ class SiloTest : public ::testing::Test {
     gfh_.reset();
     ch_.reset();
     eh_.reset();
+    sh_.reset();
+    rih_.reset();
     CHECK_EQ(expected_living_handlers_,
              stuff_.refs.load(std::memory_order_acquire));
   }
@@ -89,6 +93,20 @@ class SiloTest : public ::testing::Test {
     return false;
   }
 
+  void ExpectEndOfFd(const core::FileDescriptor& fd) {
+    char buf[16];
+    EXPECT_TRUE(Await([&]() {
+      auto r = core::syscalls::Read(fd, buf, sizeof(buf));
+      if (r.IsOk()) {
+        // 0 bytes read indicates EOF (the peer/silo closed the socket).
+        return r.ValueOrDie() == 0;
+      }
+      // Any socket error (e.g., ECONNRESET, EPIPE) also confirms the FD is
+      // dead.
+      return !r.result().Is(Code::kEagain);
+    }));
+  }
+
   core::FileDescriptor event_fd_ =
       core::syscalls::EventFd(0, EFD_CLOEXEC | EFD_NONBLOCK).ValueOrDie();
   Notification exiting_;
@@ -122,6 +140,8 @@ class SiloTest : public ::testing::Test {
       std::make_shared<GarbageFountainHandler>(&stuff_);
   std::shared_ptr<IoHandler> ch_ = std::make_shared<ClosingHandler>(&stuff_);
   std::shared_ptr<IoHandler> eh_ = std::make_shared<EchoingHandler>(&stuff_);
+  std::shared_ptr<IoHandler> sh_ = std::make_shared<SquattingHandler>(&stuff_);
+  std::shared_ptr<IoHandler> rih_ = std::make_shared<RapidIdleHandler>(&stuff_);
 };
 
 TEST_F(SiloTest, SetupAndTeardownWorks) {}
@@ -180,16 +200,7 @@ TEST_F(SiloTest, CloserKillsTheFd) {
   // The CloserHandler returns Outcome::kClose immediately, causing the silo
   // to close its end of the socketpair. We wait for our end (fd) to register
   // EOF (read returning 0) or a connection error.
-  char buf[16];
-  EXPECT_TRUE(Await([&]() {
-    auto r = core::syscalls::Read(fd, buf, sizeof(buf));
-    if (r.IsOk()) {
-      // 0 bytes read indicates EOF (the peer/silo closed the socket).
-      return r.ValueOrDie() == 0;
-    }
-    // Any socket error (e.g., ECONNRESET, EPIPE) also confirms the FD is dead.
-    return !r.result().Is(Code::kEagain);
-  }));
+  ExpectEndOfFd(fd);
 }
 
 TEST_F(SiloTest, Echo) {
@@ -253,6 +264,18 @@ TEST_F(SiloTest, LoadShedding) {
   MutexLock l(&mu_);
   EXPECT_GE(sheds_.size(), 1);
   sheds_.clear();
+}
+
+TEST_F(SiloTest, SquattingHandlerCanCountIdleCalls) {
+  auto fd = InstallPipe(sh_);
+  EXPECT_TRUE(Await([&]() {
+    return dynamic_cast<SquattingHandler*>(sh_.get())->idles() > 3;
+  }));
+}
+
+TEST_F(SiloTest, RapidIdleHanlderClosesFd) {
+  auto fd = InstallPipe(rih_);
+  ExpectEndOfFd(fd);
 }
 
 }  // namespace io

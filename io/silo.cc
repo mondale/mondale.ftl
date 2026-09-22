@@ -137,12 +137,11 @@ Result Silo::ThreadMain2() {
       RunRunners(&context);
     }
 
+    // Scan for idle descriptors that need to be closed.
+    RunIdlers(&context);
+
     // Close doomed file handles.
-    while (!closers_.Empty()) {
-      PerFd* const perfd = &*closers_.begin();
-      core::IntrusiveList<PerFd, Shared>::Erase(perfd);
-      TRY(Remove(perfd));
-    }
+    TRY(RunClosers());
 
     // Run the inbound admission.
     TRY(RunAdmission(&context));
@@ -351,8 +350,12 @@ void Silo::RunActives(Context* c) {
       }
     }
 
+    // RequestRead and RequestWrite can sneak in, so we may already be in a
+    // list.
     if (closers_.IsLinked(perfd)) continue;
     if (active_.IsLinked(perfd)) continue;
+
+    // Decide list based on remaining flags.
     if (perfd->wants_read || perfd->wants_write) {
       active_.PushBack(perfd);
     } else {
@@ -376,11 +379,45 @@ void Silo::RunRunners(Context* c) {
   current_ = FdHandle::kInvalid;
 }
 
+void Silo::RunIdlers(Context* c) {
+  constexpr int kIdlersPerLoop = 1;
+  for (int i = 0; i < kIdlersPerLoop; ++i) {
+    if (!idlers_.Empty()) {
+      PerFd* const perfd = &*idlers_.begin();
+      core::IntrusiveList<PerFd, ActiveIdle>::Erase(perfd);
+      current_ = perfd->handle;
+      const Duration idle_time = c->loop_start() - perfd->last_activation;
+      Result r = Result::Ok();
+      if (idle_time > perfd->handler->idle_threshold()) {
+        r = perfd->handler->HandleIdle(c, current_, perfd->fd);
+      }
+      if (r.IsOk()) {
+        // Either not expired or handler accepted the expiration.
+        idlers_.PushBack(perfd);
+      } else {
+        // Handler requsted a close.
+        Expunge(perfd);
+        closers_.PushBack(perfd);
+      }
+    }
+  }
+  current_ = FdHandle::kInvalid;
+}
+
 void Silo::Expunge(PerFd* perfd) {
   perfd->wants_read = false;
   perfd->wants_write = false;
   core::IntrusiveList<PerFd, ActiveIdle>::Erase(perfd);
   core::IntrusiveList<PerFd, Shared>::Erase(perfd);
+}
+
+Result Silo::RunClosers() {
+  while (!closers_.Empty()) {
+    PerFd* const perfd = &*closers_.begin();
+    core::IntrusiveList<PerFd, Shared>::Erase(perfd);
+    TRY(Remove(perfd));
+  }
+  return Result::Ok();
 }
 
 void Silo::RunShedders() {

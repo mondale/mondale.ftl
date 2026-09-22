@@ -41,6 +41,10 @@ class IoHandler {
                                     const core::FileDescriptor& fd,
                                     const char* buf, size_t count) const;
 
+  Duration idle_threshold() const { return idle_threshold_; }
+  void set_idle_threshold(Duration d) { idle_threshold_ = d; }
+  Duration idle_threshold_ = base::Minutes(5);
+
   // Subclasses, ignore all below.
   static constexpr int kNoAffinity = INT_MAX;
   friend class Epoller;

@@ -46,6 +46,8 @@ class Silo final {
   bool ActivationsEmpty() const;
   void RunActives(Context* c);
   void RunRunners(Context* c);
+  void RunIdlers(Context* c);
+  Result RunClosers();
   void RunShedders();
 
   const int id_;
