@@ -143,7 +143,7 @@ Result Silo::ThreadMain2() {
     }
 
     // Run the inbound admission.
-    TRY(RunAdmission());
+    TRY(RunAdmission(&context));
 
     // Run load shedding. Deliberatly use last cycle's estimate.
     ConsiderLoadShedding(ue.Estimate());
@@ -180,7 +180,7 @@ void Silo::ConsiderLoadShedding(int util) {
   }
 }
 
-Result Silo::RunAdmission() {
+Result Silo::RunAdmission(Context* c) {
   InList in;
   GetInList(&in);
   for (auto& i : in) {
@@ -190,12 +190,12 @@ Result Silo::RunAdmission() {
       shed_(std::move(i));
       continue;
     }
-    TRY(Add(std::move(i)));
+    TRY(Add(c, std::move(i)));
   }
   return Result::Ok();
 }
 
-Result Silo::Add(internal::HFDs&& i) {
+Result Silo::Add(Context* c, internal::HFDs&& i) {
   core::InlinedVector<FdHandle, 2> hs;
   auto oops = MakeCleanup([&]() {
     for (auto h : hs) {
@@ -206,14 +206,14 @@ Result Silo::Add(internal::HFDs&& i) {
     }
   });
   for (auto& fd : i.fds) {
-    TRY_ASSIGN(auto h, Add(i.h, std::move(fd)));
+    TRY_ASSIGN(auto h, Add(c, i.h, std::move(fd)));
     hs.push_back(h);
   }
   oops.Cancel();
   return Result::Ok();
 }
 
-ResultOr<FdHandle> Silo::Add(std::shared_ptr<IoHandler> handler,
+ResultOr<FdHandle> Silo::Add(Context* c, std::shared_ptr<IoHandler> handler,
                              core::FileDescriptor fd) {
   // Allocate a handle and initialize the PerFd.
   TRY_ASSIGN(auto h, ht_.Allocate());
@@ -225,6 +225,7 @@ ResultOr<FdHandle> Silo::Add(std::shared_ptr<IoHandler> handler,
   perfd->handle = real_h;
   perfd->squelch_reads = false;
   perfd->squelch_writes = false;
+  perfd->last_activation = c->loop_start();
 
   // Add to epoll set.
   struct epoll_event e;
@@ -289,6 +290,7 @@ void Silo::RunReaders(Context* c) {
     current_ = perfd->handle;
     IoHandler::Outcome outcome = IoHandler::Outcome::kClose;
     auto r = perfd->handler->HandleRead(c, current_, perfd->fd);
+    perfd->last_activation = c->loop_start();
     if (r.IsOk()) outcome = r.ValueOrDie();
     switch (outcome) {
       case IoHandler::Outcome::kFdEagain: {
@@ -323,6 +325,7 @@ void Silo::RunWriters(Context* c) {
     current_ = perfd->handle;
     IoHandler::Outcome outcome = IoHandler::Outcome::kClose;
     auto r = perfd->handler->HandleWrite(c, current_, perfd->fd);
+    perfd->last_activation = c->loop_start();
     if (r.IsOk()) outcome = r.ValueOrDie();
     switch (outcome) {
       case IoHandler::Outcome::kFdEagain: {
