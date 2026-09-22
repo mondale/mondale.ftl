@@ -28,6 +28,10 @@ class IoHandler {
                                        const core::FileDescriptor& fd) = 0;
   virtual ResultOr<Outcome> HandleWrite(Context* c, FdHandle h,
                                         const core::FileDescriptor& fd) = 0;
+  virtual Result HandleIdle(Context* c, FdHandle h,
+                            const core::FileDescriptor& fd) {
+    return Result(Code::kDeadline);
+  }
 
   // Helpers for subclasses to invoke.
   ResultOr<size_t> NonBlockingRead(IoHandler::Outcome* outcome,

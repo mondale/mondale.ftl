@@ -115,17 +115,16 @@ Result Silo::ThreadMain2() {
       // Add to read list if not already there?
       if ((e & EPOLLIN) && !perfd->squelch_reads) {
         perfd->wants_read = true;
-        if (!active_.IsLinked(perfd)) {
-          active_.PushBack(perfd);
-        }
       }
 
       // Add to write list if not already there?
       if ((e & EPOLLOUT) && !perfd->squelch_writes) {
         perfd->wants_write = true;
-        if (!active_.IsLinked(perfd)) {
-          active_.PushBack(perfd);
-        }
+      }
+
+      if (perfd->wants_read || perfd->wants_write) {
+        core::IntrusiveList<PerFd, ActiveIdle>::Erase(perfd);
+        active_.PushBack(perfd);
       }
     }
 
@@ -203,6 +202,7 @@ Result Silo::Add(Context* c, internal::HFDs&& i) {
   auto oops = MakeCleanup([&]() {
     for (auto h : hs) {
       auto* perfd = ht_.Lookup(Coerce(h)).ValueOrDie();
+      Expunge(perfd);
       CHECK_OK(
           core::syscalls::EpollCtl(efd_, EPOLL_CTL_DEL, perfd->fd, nullptr));
       CHECK_OK(ht_.Free(Coerce(h)));
@@ -235,11 +235,13 @@ ResultOr<FdHandle> Silo::Add(Context* c, std::shared_ptr<IoHandler> handler,
   e.events = EPOLLHUP | EPOLLERR | EPOLLRDHUP | EPOLLIN | EPOLLOUT | EPOLLET;
   e.data.u64 = static_cast<uint64_t>(h.value());
   TRY(core::syscalls::EpollCtl(efd_, EPOLL_CTL_ADD, perfd->fd, &e));
+  idlers_.PushBack(perfd);
   return real_h;
 }
 
 Result Silo::Remove(PerFd* perfd) {
   DCHECK(!active_.IsLinked(perfd));
+  DCHECK(!idlers_.IsLinked(perfd));
   DCHECK(!runners_.IsLinked(perfd));
 
   // Remove from epoll set.
@@ -256,9 +258,7 @@ void Silo::RequestRead(FdHandle h) {
   auto* const perfd = ht_.Lookup(Coerce(h)).ValueOrDie();
   perfd->wants_read = true;
   perfd->squelch_reads = false;
-  if (active_.IsLinked(perfd)) {
-    return;
-  }
+  core::IntrusiveList<PerFd, ActiveIdle>::Erase(perfd);
   active_.PushBack(perfd);
 }
 
@@ -267,9 +267,7 @@ void Silo::RequestWrite(FdHandle h) {
   auto* const perfd = ht_.Lookup(Coerce(h)).ValueOrDie();
   perfd->wants_write = true;
   perfd->squelch_writes = false;
-  if (active_.IsLinked(perfd)) {
-    return;
-  }
+  core::IntrusiveList<PerFd, ActiveIdle>::Erase(perfd);
   active_.PushBack(perfd);
 }
 
@@ -291,24 +289,23 @@ void Silo::RunActives(Context* c) {
   while (!active_.Empty()) {
     PerFd* const perfd = &*active_.begin();
     core::IntrusiveList<PerFd, ActiveIdle>::Erase(perfd);
+
     current_ = perfd->handle;
     perfd->last_activation = c->loop_start();
-    IoHandler::Outcome outcome = IoHandler::Outcome::kClose;
+
+    IoHandler::Outcome read_outcome = IoHandler::Outcome::kClose;
     if (perfd->wants_read) {
       perfd->wants_read = false;
       auto r = perfd->handler->HandleRead(c, current_, perfd->fd);
-      if (r.IsOk()) outcome = r.ValueOrDie();
-      switch (outcome) {
+      if (r.IsOk()) read_outcome = r.ValueOrDie();
+      switch (read_outcome) {
         case IoHandler::Outcome::kFdEagain: {
-          // Nominal case, nothing to do here. Epoll can trigger again.
+          // Nominal case. Epoll can trigger again.
           break;
         }
         case IoHandler::Outcome::kYield: {
           // Re-enqueue for more reading.
           perfd->wants_read = true;
-          if (!active_.IsLinked(perfd)) {
-            active_.PushBack(perfd);
-          }
           break;
         }
         case IoHandler::Outcome::kSuspend: {
@@ -317,29 +314,27 @@ void Silo::RunActives(Context* c) {
           break;
         }
         case IoHandler::Outcome::kClose: {
-          // Close is requested, move tot he closers list.
+          // Close is requested, move to the closers list.
           Expunge(perfd);
           closers_.PushBack(perfd);
           break;
         }
       }
     }
-    outcome = IoHandler::Outcome::kClose;
+
+    IoHandler::Outcome write_outcome = IoHandler::Outcome::kClose;
     if (perfd->wants_write) {
       perfd->wants_write = false;
       auto r = perfd->handler->HandleWrite(c, current_, perfd->fd);
-      if (r.IsOk()) outcome = r.ValueOrDie();
-      switch (outcome) {
+      if (r.IsOk()) write_outcome = r.ValueOrDie();
+      switch (write_outcome) {
         case IoHandler::Outcome::kFdEagain: {
-          // Nominal case, nothing to do here. Epoll can trigger again.
+          // Nominal case. Epoll can trigger again.
           break;
         }
         case IoHandler::Outcome::kYield: {
-          // Re-enqueue for more writign.
+          // Re-enqueue for more writing.
           perfd->wants_write = true;
-          if (!active_.IsLinked(perfd)) {
-            active_.PushBack(perfd);
-          }
           break;
         }
         case IoHandler::Outcome::kSuspend: {
@@ -354,6 +349,14 @@ void Silo::RunActives(Context* c) {
           break;
         }
       }
+    }
+
+    if (closers_.IsLinked(perfd)) continue;
+    if (active_.IsLinked(perfd)) continue;
+    if (perfd->wants_read || perfd->wants_write) {
+      active_.PushBack(perfd);
+    } else {
+      idlers_.PushBack(perfd);
     }
   }
   current_ = FdHandle::kInvalid;

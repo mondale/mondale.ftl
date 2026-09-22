@@ -14,7 +14,7 @@ namespace io {
 
 class Silo final {
  public:
-  static constexpr int kMaxFds = 1024 * 1014;
+  static constexpr int kMaxFds = 100 * 1024;
 
   using InList = std::list<internal::HFDs>;
   using ShedFn = std::function<void(internal::HFDs&&)>;
@@ -81,6 +81,7 @@ class Silo final {
   HTable ht_;
   core::FileDescriptor efd_;
   core::IntrusiveList<PerFd, ActiveIdle> active_;
+  core::IntrusiveList<PerFd, ActiveIdle> idlers_;
   core::IntrusiveList<PerFd, Shared> runners_;
   core::IntrusiveList<PerFd, Shared> closers_;
   core::IntrusiveList<PerFd, Shared> shedders_;

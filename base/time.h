@@ -88,6 +88,15 @@ inline constexpr Duration Milliseconds(int64_t ms) {
 inline constexpr Duration Seconds(int64_t s) {
   return Duration::FromSeconds(s);
 }
+inline constexpr Duration Minutes(int64_t m) {
+  return Duration::FromSeconds(m * 60);
+}
+inline constexpr Duration Hours(int64_t h) {
+  return Duration::FromSeconds(h * 3600);
+}
+inline constexpr Duration Days(int64_t d) {
+  return Duration::FromSeconds(d * 3600 * 24);
+}
 
 // Real-world clock time. Supports offset arithmetic with Duration.
 class WallTime final {
