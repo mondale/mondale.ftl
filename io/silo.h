@@ -44,8 +44,7 @@ class Silo final {
                          core::FileDescriptor fd);
   Result Remove(PerFd* perfd);
   bool ActivationsEmpty() const;
-  void RunReaders(Context* c);
-  void RunWriters(Context* c);
+  void RunActives(Context* c);
   void RunRunners(Context* c);
   void RunShedders();
 
@@ -58,17 +57,17 @@ class Silo final {
   ShedFn shed_;
   bool impending_shed_ = false;
 
-  struct Readers {};
-  struct Writers {};
+  struct ActiveIdle {};
   struct Shared {};
 
-  struct PerFd : public core::IntrusiveListHook<Readers>,
-                 public core::IntrusiveListHook<Writers>,
+  struct PerFd : public core::IntrusiveListHook<ActiveIdle>,
                  public core::IntrusiveListHook<Shared> {
     std::shared_ptr<IoHandler> handler;
     core::FileDescriptor fd;
     FdHandle handle;
     base::MonotonicTime last_activation;
+    bool wants_read = false;
+    bool wants_write = false;
     bool squelch_reads = false;
     bool squelch_writes = false;
     std::list<std::move_only_function<void(Context*)>> fns;
@@ -81,8 +80,7 @@ class Silo final {
 
   HTable ht_;
   core::FileDescriptor efd_;
-  core::IntrusiveList<PerFd, Readers> readers_;
-  core::IntrusiveList<PerFd, Writers> writers_;
+  core::IntrusiveList<PerFd, ActiveIdle> active_;
   core::IntrusiveList<PerFd, Shared> runners_;
   core::IntrusiveList<PerFd, Shared> closers_;
   core::IntrusiveList<PerFd, Shared> shedders_;
