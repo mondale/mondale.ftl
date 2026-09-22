@@ -46,9 +46,8 @@ TEST_F(EpollerTest, BuildAndTeardown) {
 }
 
 TEST_F(EpollerTest, RegisterAndDispatch) {
-  auto epoller = std::move(Epoller::Build(2).ValueOrDie());
-
   Stuff stuff;
+  auto epoller = std::move(Epoller::Build(2).ValueOrDie());
   auto handler = std::make_shared<EagerSwallowHandler>(&stuff);
 
   // Raw socket pair (both blocking by default)

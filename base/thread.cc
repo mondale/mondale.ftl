@@ -40,6 +40,22 @@ int BackgroundCpuCount() {
   return std::clamp(f, 1, n - 1);
 }
 
+std::string CpuSetToString(const cpu_set_t& mask) {
+  std::ostringstream oss;
+  bool first = true;
+
+  for (int i = 0; i < CPU_SETSIZE; ++i) {
+    if (CPU_ISSET(i, &mask)) {
+      if (!first) {
+        oss << ", ";
+      }
+      oss << i;
+      first = false;
+    }
+  }
+  return oss.str();
+}
+
 class ThreadingStrategy final {
  public:
   static ThreadingStrategy* Instance() {
@@ -81,6 +97,7 @@ class ThreadingStrategy final {
       for (int c = 0; c < (f + b); ++c) {
         if (bg < b) {
           CPU_SET(c, &background_mask_);
+          ++bg;
         } else {
           CPU_SET(c, &foreground_mask_);
         }
@@ -97,7 +114,8 @@ class ThreadingStrategy final {
     const int ret = sched_setaffinity(GetCachedTid(), sizeof(*cs), cs);
     if (ret < 0) {
       RAW_WARNING << "Thread " << GetCachedTid()
-                  << " could not join designated CPU set.";
+                  << " could not join designated CPU set ["
+                  << CpuSetToString(*cs) << "].";
     }
   }
   cpu_set_t foreground_mask_;

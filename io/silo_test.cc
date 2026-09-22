@@ -126,7 +126,6 @@ class SiloTest : public ::testing::Test {
              &util_,
              [this](internal::HFDs&& i) { ShedFn(std::move(i)); },
              [this](std::vector<int>* utils) { PeekFn(utils); }};
-
   std::unique_ptr<Thread> thread_ =
       CreateThread("SiloTest", [this]() { silo_.ThreadMain(); });
 
@@ -188,7 +187,7 @@ TEST_F(SiloTest, GarbageIsAlwaysReadable) {
     auto r = core::syscalls::Read(fd, buf, 128);
     return r.IsOk() && r.ValueOrDie() > 0;
   }));
-  EXPECT_GT(stuff_.Writes(), 0);
+  EXPECT_TRUE(Await([&]() { return stuff_.Writes() > 0; }));
 }
 
 TEST_F(SiloTest, CloserKillsTheFd) {
