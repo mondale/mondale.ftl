@@ -129,3 +129,19 @@ cc_test(
         "//testing",
     ],
 )
+
+
+cc_library(
+  name = "source_buffer",
+  hdrs = ["source_buffer.h"],
+  srcs = [],
+  deps = ["//core",],
+)
+
+cc_test(
+  name = "source_buffer_test",
+  srcs = ["source_buffer_test.cc"],
+  deps = [":source_buffer",
+          "//testing",
+  ],
+)
