@@ -37,10 +37,20 @@ class CleanupGuard {
     other.active_ = false;
   }
 
+  CleanupGuard& operator=(CleanupGuard&& other) noexcept(
+      std::is_nothrow_move_assignable<F>::value &&
+      std::is_nothrow_move_constructible<F>::value) {
+    if (this != &other) {
+      func_ = std::move(other.func_);
+      active_ = other.active_;
+      other.active_ = false;
+    }
+    return *this;
+  }
+
   // Non-copyable and non-assignable
   CleanupGuard(const CleanupGuard&) = delete;
   CleanupGuard& operator=(const CleanupGuard&) = delete;
-  CleanupGuard& operator=(CleanupGuard&&) = delete;
 
   // Optional helper to deactivate cleanup without executing
   void Cancel() noexcept { active_ = false; }

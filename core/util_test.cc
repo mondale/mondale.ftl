@@ -33,6 +33,15 @@ TEST(CleanupRawFunctionPointer) {
   EXPECT_EQ(1, global_x);
 }
 
+TEST(CleanupCanBeMoved) {
+  int x = 0;
+  {
+    auto c1 = util::MakeCleanup([&x]() { x++; });
+    auto c2 = std::move(c1);
+  }
+  EXPECT_EQ(1, x);
+}
+
 TEST(ElegantDeathAvoided) { core::util::DieElegantlyIfNotOk(Result::Ok()); }
 
 TEST(ElegantDeathEmbraced) {

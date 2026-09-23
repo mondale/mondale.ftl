@@ -5,12 +5,12 @@
 
 namespace io {
 
-class SourceBuffer {
+class SourceBuffer final {
  public:
   SourceBuffer() = delete;
   SourceBuffer(const char* p, size_t n) : memory_(p), remain_(n) {}
 
-  virtual ~SourceBuffer() = default;
+  ~SourceBuffer() = default;
 
   SourceBuffer(const SourceBuffer&) = delete;
   SourceBuffer& operator=(const SourceBuffer&) = delete;
@@ -40,7 +40,7 @@ class SourceBuffer {
     remain_ -= amount;
   }
 
- private:
+ protected:
   const char* memory_;
   size_t remain_;
 };
