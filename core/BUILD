@@ -271,3 +271,18 @@ cc_test(
         "//testing",
     ],
 )
+
+cc_library(
+  name = "small_map",
+  hdrs = ["small_map.h"],
+  srcs = [],
+  deps = [":inlined_vector",],
+)
+
+cc_test(
+  name = "small_map_test",
+  srcs = ["small_map_test.cc"],
+  deps = [":small_map",
+          "//testing",
+  ],
+)
