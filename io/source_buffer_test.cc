@@ -10,9 +10,10 @@ TEST(SourceBufferTest_InitializationAndConsume) {
   EXPECT_EQ(buf.data(), text);
   EXPECT_EQ(buf.size(), 17);
 
-  buf.Consume(4);  // Consume "High"
+  EXPECT_FALSE(buf.Consume(4));  // Consume "High"
   EXPECT_EQ(buf.data(), text + 4);
   EXPECT_EQ(buf.size(), 13);
+  EXPECT_TRUE(buf.Consume(13));
 }
 
 TEST(SourceBufferTest_MoveConstructor) {

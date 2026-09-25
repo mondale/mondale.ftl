@@ -151,7 +151,7 @@ cc_library(
   name = "data_handler",
   hdrs = ["data_handler.h"],
   srcs = ["data_handler.cc"],
-  deps = ["//core", ":io_handler", ":source_buffer", "//core:small_map",],
+  deps = ["//core", ":io_handler", ":source_buffer", "//core:small_map", ":context"],
 )
 
 cc_test(

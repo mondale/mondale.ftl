@@ -43,10 +43,11 @@ class SourceBuffer final {
   const char* data() const { return memory_; }
   size_t size() const { return remain_; }
 
-  void Consume(size_t amount) {
+  bool Consume(size_t amount) {
     DCHECK_GE(remain_, amount);
     memory_ += amount;
     remain_ -= amount;
+    return 0 == remain_;
   }
 
  protected:
