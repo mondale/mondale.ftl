@@ -59,9 +59,9 @@ class EagerSwallowHandler final : public HandlerBase, public IoHandler {
   virtual ~EagerSwallowHandler() {}
   static constexpr size_t kSwallowSize = 64;
 
-  ResultOr<Outcome> HandleRead(Context* c, FdHandle h,
+  ResultOr<Outcome> HandleRead(FdHandle h,
                                const core::FileDescriptor& fd) override;
-  ResultOr<Outcome> HandleWrite(Context* c, FdHandle h,
+  ResultOr<Outcome> HandleWrite(FdHandle h,
                                 const core::FileDescriptor& fd) override;
 
  private:
@@ -72,9 +72,9 @@ class EagerSwallowHandler final : public HandlerBase, public IoHandler {
 class GarbageFountainHandler final : public HandlerBase, public IoHandler {
  public:
   explicit GarbageFountainHandler(Stuff* s) : HandlerBase(s), IoHandler() {}
-  ResultOr<Outcome> HandleRead(Context* c, FdHandle h,
+  ResultOr<Outcome> HandleRead(FdHandle h,
                                const core::FileDescriptor& fd) override;
-  ResultOr<Outcome> HandleWrite(Context* c, FdHandle h,
+  ResultOr<Outcome> HandleWrite(FdHandle h,
                                 const core::FileDescriptor& fd) override;
 };
 
@@ -82,9 +82,9 @@ class GarbageFountainHandler final : public HandlerBase, public IoHandler {
 class ClosingHandler final : public HandlerBase, public IoHandler {
  public:
   explicit ClosingHandler(Stuff* s) : HandlerBase(s), IoHandler() {}
-  ResultOr<Outcome> HandleRead(Context* c, FdHandle h,
+  ResultOr<Outcome> HandleRead(FdHandle h,
                                const core::FileDescriptor& fd) override;
-  ResultOr<Outcome> HandleWrite(Context* c, FdHandle h,
+  ResultOr<Outcome> HandleWrite(FdHandle h,
                                 const core::FileDescriptor& fd) override;
 };
 
@@ -93,9 +93,9 @@ class EchoingHandler final : public HandlerBase, public IoHandler {
  public:
   explicit EchoingHandler(Stuff* s) : HandlerBase(s), IoHandler() {}
   static constexpr size_t kSize = 64;
-  ResultOr<Outcome> HandleRead(Context* c, FdHandle h,
+  ResultOr<Outcome> HandleRead(FdHandle h,
                                const core::FileDescriptor& fd) override;
-  ResultOr<Outcome> HandleWrite(Context* c, FdHandle h,
+  ResultOr<Outcome> HandleWrite(FdHandle h,
                                 const core::FileDescriptor& fd) override;
 
  private:
@@ -108,13 +108,13 @@ class CarlyHandler final : public HandlerBase, public IoHandler {
  public:
   explicit CarlyHandler(Stuff* s) : HandlerBase(s), IoHandler() {}
   static constexpr size_t kSize = 64;
-  ResultOr<Outcome> HandleRead(Context* c, FdHandle h,
+  ResultOr<Outcome> HandleRead(FdHandle h,
                                const core::FileDescriptor& fd) override;
-  ResultOr<Outcome> HandleWrite(Context* c, FdHandle h,
+  ResultOr<Outcome> HandleWrite(FdHandle h,
                                 const core::FileDescriptor& fd) override;
 
  private:
-  void CallMeMaybe(Context* c);
+  void CallMeMaybe();
 
   bool maybe_ = false;
   FdHandle handle_{};
@@ -129,12 +129,11 @@ class SquattingHandler final : public HandlerBase, public IoHandler {
 
   virtual ~SquattingHandler() {}
 
-  ResultOr<Outcome> HandleRead(Context* c, FdHandle h,
+  ResultOr<Outcome> HandleRead(FdHandle h,
                                const core::FileDescriptor& fd) override;
-  ResultOr<Outcome> HandleWrite(Context* c, FdHandle h,
+  ResultOr<Outcome> HandleWrite(FdHandle h,
                                 const core::FileDescriptor& fd) override;
-  Result HandleIdle(Context* c, FdHandle h,
-                    const core::FileDescriptor& fd) override;
+  Result HandleIdle(FdHandle h, const core::FileDescriptor& fd) override;
 
   int64_t idles() const { return idles_.load(std::memory_order_acquire); }
 
@@ -150,9 +149,9 @@ class RapidIdleHandler final : public HandlerBase, public IoHandler {
   }
   virtual ~RapidIdleHandler() {}
 
-  ResultOr<Outcome> HandleRead(Context* c, FdHandle h,
+  ResultOr<Outcome> HandleRead(FdHandle h,
                                const core::FileDescriptor& fd) override;
-  ResultOr<Outcome> HandleWrite(Context* c, FdHandle h,
+  ResultOr<Outcome> HandleWrite(FdHandle h,
                                 const core::FileDescriptor& fd) override;
 
  private:

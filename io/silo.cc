@@ -15,7 +15,7 @@ class SiloContext final : public Context {
 
   void RequestRead(FdHandle h) override { s_->RequestRead(h); }
   void RequestWrite(FdHandle h) override { s_->RequestWrite(h); }
-  void Run(FdHandle h, std::move_only_function<void(Context*)> fn) override {
+  void Run(FdHandle h, std::move_only_function<void()> fn) override {
     s_->Run(h, std::move(fn));
   }
 
@@ -69,6 +69,7 @@ Result Silo::ThreadMain2() {
                                            &timeout, /*sigmask*/ nullptr));
     const auto busy_start = MonotonicTime::Now();
     SiloContext context(this, busy_start);
+    Context::SetCurrent(&context);
 
     // Load shedding metadata.
     const int shed_target = impending_shed_ ? (ready_count + 1) / 2 : 0;
@@ -133,18 +134,18 @@ Result Silo::ThreadMain2() {
 
     // Until they are all empty...
     while (!ActivationsEmpty()) {
-      RunActives(&context);
-      RunRunners(&context);
+      RunActives();
+      RunRunners();
     }
 
     // Scan for idle descriptors that need to be closed.
-    RunIdlers(&context);
+    RunIdlers();
 
     // Close doomed file handles.
     TRY(RunClosers());
 
     // Run the inbound admission.
-    TRY(RunAdmission(&context));
+    TRY(RunAdmission());
 
     // Run load shedding. Deliberatly use last cycle's estimate.
     ConsiderLoadShedding(ue.Estimate());
@@ -181,7 +182,7 @@ void Silo::ConsiderLoadShedding(int util) {
   }
 }
 
-Result Silo::RunAdmission(Context* c) {
+Result Silo::RunAdmission() {
   InList in;
   GetInList(&in);
   for (auto& i : in) {
@@ -191,12 +192,12 @@ Result Silo::RunAdmission(Context* c) {
       shed_(std::move(i));
       continue;
     }
-    TRY(Add(c, std::move(i)));
+    TRY(Add(std::move(i)));
   }
   return Result::Ok();
 }
 
-Result Silo::Add(Context* c, internal::HFDs&& i) {
+Result Silo::Add(internal::HFDs&& i) {
   core::InlinedVector<FdHandle, 2> hs;
   auto oops = MakeCleanup([&]() {
     for (auto h : hs) {
@@ -208,14 +209,14 @@ Result Silo::Add(Context* c, internal::HFDs&& i) {
     }
   });
   for (auto& fd : i.fds) {
-    TRY_ASSIGN(auto h, Add(c, i.h, std::move(fd)));
+    TRY_ASSIGN(auto h, Add(i.h, std::move(fd)));
     hs.push_back(h);
   }
   oops.Cancel();
   return Result::Ok();
 }
 
-ResultOr<FdHandle> Silo::Add(Context* c, std::shared_ptr<IoHandler> handler,
+ResultOr<FdHandle> Silo::Add(std::shared_ptr<IoHandler> handler,
                              core::FileDescriptor fd) {
   // Allocate a handle and initialize the PerFd.
   TRY_ASSIGN(auto h, ht_.Allocate());
@@ -227,7 +228,7 @@ ResultOr<FdHandle> Silo::Add(Context* c, std::shared_ptr<IoHandler> handler,
   perfd->handle = real_h;
   perfd->squelch_reads = false;
   perfd->squelch_writes = false;
-  perfd->last_activation = c->loop_start();
+  perfd->last_activation = Context::Current()->loop_start();
 
   // Add to epoll set.
   struct epoll_event e;
@@ -270,7 +271,7 @@ void Silo::RequestWrite(FdHandle h) {
   active_.PushBack(perfd);
 }
 
-void Silo::Run(FdHandle h, std::move_only_function<void(Context*)> fn) {
+void Silo::Run(FdHandle h, std::move_only_function<void()> fn) {
   DCHECK_NE(FdHandle::kInvalid, current_);
   auto* const perfd = ht_.Lookup(Coerce(h)).ValueOrDie();
   perfd->fns.emplace_back(std::move(fn));
@@ -284,18 +285,19 @@ bool Silo::ActivationsEmpty() const {
   return active_.Empty() && runners_.Empty();
 }
 
-void Silo::RunActives(Context* c) {
+void Silo::RunActives() {
+  const auto loop_start = Context::Current()->loop_start();
   while (!active_.Empty()) {
     PerFd* const perfd = &*active_.begin();
     core::IntrusiveList<PerFd, ActiveIdle>::Erase(perfd);
 
     current_ = perfd->handle;
-    perfd->last_activation = c->loop_start();
+    perfd->last_activation = loop_start;
 
     IoHandler::Outcome read_outcome = IoHandler::Outcome::kClose;
     if (perfd->wants_read) {
       perfd->wants_read = false;
-      auto r = perfd->handler->HandleRead(c, current_, perfd->fd);
+      auto r = perfd->handler->HandleRead(current_, perfd->fd);
       if (r.IsOk()) read_outcome = r.ValueOrDie();
       switch (read_outcome) {
         case IoHandler::Outcome::kFdEagain: {
@@ -324,7 +326,7 @@ void Silo::RunActives(Context* c) {
     IoHandler::Outcome write_outcome = IoHandler::Outcome::kClose;
     if (perfd->wants_write) {
       perfd->wants_write = false;
-      auto r = perfd->handler->HandleWrite(c, current_, perfd->fd);
+      auto r = perfd->handler->HandleWrite(current_, perfd->fd);
       if (r.IsOk()) write_outcome = r.ValueOrDie();
       switch (write_outcome) {
         case IoHandler::Outcome::kFdEagain: {
@@ -365,7 +367,7 @@ void Silo::RunActives(Context* c) {
   current_ = FdHandle::kInvalid;
 }
 
-void Silo::RunRunners(Context* c) {
+void Silo::RunRunners() {
   while (!runners_.Empty()) {
     PerFd* const perfd = &*runners_.begin();
     core::IntrusiveList<PerFd, Shared>::Erase(perfd);
@@ -373,23 +375,24 @@ void Silo::RunRunners(Context* c) {
     while (!perfd->fns.empty()) {
       auto fn = std::move(perfd->fns.front());
       perfd->fns.pop_front();
-      fn(c);
+      fn();
     }
   }
   current_ = FdHandle::kInvalid;
 }
 
-void Silo::RunIdlers(Context* c) {
+void Silo::RunIdlers() {
   constexpr int kIdlersPerLoop = 1;
+  const auto loop_start = Context::Current()->loop_start();
   for (int i = 0; i < kIdlersPerLoop; ++i) {
     if (!idlers_.Empty()) {
       PerFd* const perfd = &*idlers_.begin();
       core::IntrusiveList<PerFd, ActiveIdle>::Erase(perfd);
       current_ = perfd->handle;
-      const Duration idle_time = c->loop_start() - perfd->last_activation;
+      const Duration idle_time = loop_start - perfd->last_activation;
       Result r = Result::Ok();
       if (idle_time > perfd->handler->idle_threshold()) {
-        r = perfd->handler->HandleIdle(c, current_, perfd->fd);
+        r = perfd->handler->HandleIdle(current_, perfd->fd);
       }
       if (r.IsOk()) {
         // Either not expired or handler accepted the expiration.

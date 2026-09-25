@@ -6,7 +6,7 @@
 namespace io::testing {
 
 ResultOr<io::IoHandler::Outcome> EagerSwallowHandler::HandleRead(
-    Context* c, FdHandle h, const core::FileDescriptor& fd) {
+    FdHandle h, const core::FileDescriptor& fd) {
   Outcome o = Outcome::kYield;
   TRY_ASSIGN(const auto bytes, NonBlockingRead(&o, fd, buf_, kSwallowSize));
   HandledRead(bytes);
@@ -14,21 +14,21 @@ ResultOr<io::IoHandler::Outcome> EagerSwallowHandler::HandleRead(
 }
 
 ResultOr<io::IoHandler::Outcome> EagerSwallowHandler::HandleWrite(
-    Context* c, FdHandle h, const core::FileDescriptor& fd) {
+    FdHandle h, const core::FileDescriptor& fd) {
   // I never want to write.
   HandledWrite(0);
   return Outcome::kSuspend;
 }
 
 ResultOr<io::IoHandler::Outcome> GarbageFountainHandler::HandleRead(
-    Context* c, FdHandle h, const core::FileDescriptor& fd) {
+    FdHandle h, const core::FileDescriptor& fd) {
   // I never want to read.
   HandledRead(0);
   return Outcome::kSuspend;
 }
 
 ResultOr<io::IoHandler::Outcome> GarbageFountainHandler::HandleWrite(
-    Context* c, FdHandle h, const core::FileDescriptor& fd) {
+    FdHandle h, const core::FileDescriptor& fd) {
   Outcome o = Outcome::kYield;
   constexpr const char kMsg[] =
       "Passersby were amazed by unusually large amounts of blood. ";
@@ -38,21 +38,21 @@ ResultOr<io::IoHandler::Outcome> GarbageFountainHandler::HandleWrite(
 }
 
 ResultOr<io::IoHandler::Outcome> ClosingHandler::HandleRead(
-    Context* c, FdHandle h, const core::FileDescriptor& fd) {
+    FdHandle h, const core::FileDescriptor& fd) {
   // Eeew! Close this thing!
   HandledRead(0);
   return Outcome::kClose;
 }
 
 ResultOr<io::IoHandler::Outcome> ClosingHandler::HandleWrite(
-    Context* c, FdHandle h, const core::FileDescriptor& fd) {
+    FdHandle h, const core::FileDescriptor& fd) {
   // Eeew! Close this thing!
   HandledWrite(0);
   return Outcome::kClose;
 }
 
 ResultOr<io::IoHandler::Outcome> EchoingHandler::HandleRead(
-    Context* c, FdHandle h, const core::FileDescriptor& fd) {
+    FdHandle h, const core::FileDescriptor& fd) {
   // Call me back when my buffer is empty.
   if (!buffer_.empty()) {
     HandledRead(0);
@@ -65,13 +65,13 @@ ResultOr<io::IoHandler::Outcome> EchoingHandler::HandleRead(
   HandledRead(bytes);
   CHECK_LE(bytes, kSize);
   buffer_.resize(bytes);
-  c->RequestWrite(h);
-  c->RequestWrite(h);  // fun to do it twice!
+  Context::Current()->RequestWrite(h);
+  Context::Current()->RequestWrite(h);  // fun to do it twice!
   return o;
 }
 
 ResultOr<io::IoHandler::Outcome> EchoingHandler::HandleWrite(
-    Context* c, FdHandle h, const core::FileDescriptor& fd) {
+    FdHandle h, const core::FileDescriptor& fd) {
   // Call me back when my buffer is not empty.
   if (buffer_.empty()) {
     HandledWrite(0);
@@ -90,14 +90,14 @@ ResultOr<io::IoHandler::Outcome> EchoingHandler::HandleWrite(
 
   // Deliberately call more than once because Silo can just DEAL WITH IT.
   if (buffer_.empty()) {
-    c->RequestRead(h);
-    c->RequestRead(h);
+    Context::Current()->RequestRead(h);
+    Context::Current()->RequestRead(h);
   }
   return o;
 }
 
 ResultOr<io::IoHandler::Outcome> CarlyHandler::HandleRead(
-    Context* c, FdHandle h, const core::FileDescriptor& fd) {
+    FdHandle h, const core::FileDescriptor& fd) {
   // Hey, I just met you!
   handle_ = h;
   Outcome o = Outcome::kSuspend;
@@ -112,48 +112,48 @@ ResultOr<io::IoHandler::Outcome> CarlyHandler::HandleRead(
 
   HandledRead(0);
   // But here's my number, so call me maybe!
-  c->Run(h, [&](Context* c) { CallMeMaybe(c); });
+  Context::Current()->Run(h, [&]() { CallMeMaybe(); });
   return o;
 }
 
 ResultOr<io::IoHandler::Outcome> CarlyHandler::HandleWrite(
-    Context* c, FdHandle h, const core::FileDescriptor& fd) {
+    FdHandle h, const core::FileDescriptor& fd) {
   handle_ = h;
   HandledWrite(0);
   return Outcome::kSuspend;
 }
 
-void CarlyHandler::CallMeMaybe(Context* c) {
+void CarlyHandler::CallMeMaybe() {
   maybe_ = true;
-  c->RequestRead(handle_);
+  Context::Current()->RequestRead(handle_);
 }
 
 ResultOr<io::IoHandler::Outcome> SquattingHandler::HandleRead(
-    Context* c, FdHandle h, const core::FileDescriptor& fd) {
+    FdHandle h, const core::FileDescriptor& fd) {
   HandledRead(0);
   return Outcome::kSuspend;
 }
 
 ResultOr<io::IoHandler::Outcome> SquattingHandler::HandleWrite(
-    Context* c, FdHandle h, const core::FileDescriptor& fd) {
+    FdHandle h, const core::FileDescriptor& fd) {
   HandledWrite(0);
   return Outcome::kSuspend;
 }
 
-Result SquattingHandler::HandleIdle(Context* c, FdHandle h,
+Result SquattingHandler::HandleIdle(FdHandle h,
                                     const core::FileDescriptor& fd) {
   idles_++;
   return Result::Ok();
 }
 
 ResultOr<io::IoHandler::Outcome> RapidIdleHandler::HandleRead(
-    Context* c, FdHandle h, const core::FileDescriptor& fd) {
+    FdHandle h, const core::FileDescriptor& fd) {
   HandledRead(0);
   return Outcome::kSuspend;
 }
 
 ResultOr<io::IoHandler::Outcome> RapidIdleHandler::HandleWrite(
-    Context* c, FdHandle h, const core::FileDescriptor& fd) {
+    FdHandle h, const core::FileDescriptor& fd) {
   HandledWrite(0);
   return Outcome::kSuspend;
 }

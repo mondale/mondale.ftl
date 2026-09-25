@@ -93,7 +93,7 @@ cc_test(
 
 cc_library(
     name = "context",
-    srcs = [],
+    srcs = ["context.cc"],
     hdrs = ["context.h"],
     deps = [
         ":io_handler",
@@ -142,6 +142,22 @@ cc_test(
   name = "source_buffer_test",
   srcs = ["source_buffer_test.cc"],
   deps = [":source_buffer",
+          "//testing",
+  ],
+)
+
+
+cc_library(
+  name = "data_handler",
+  hdrs = ["data_handler.h"],
+  srcs = ["data_handler.cc"],
+  deps = ["//core", ":io_handler", ":source_buffer",],
+)
+
+cc_test(
+  name = "data_handler_test",
+  srcs = ["data_handler_test.cc"],
+  deps = [":data_handler",
           "//testing",
   ],
 )

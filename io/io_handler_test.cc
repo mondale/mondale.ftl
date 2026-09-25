@@ -9,12 +9,12 @@ namespace io {
 
 class TestIoHandler final : public IoHandler {
  public:
-  ResultOr<Outcome> HandleRead(Context* c, FdHandle h,
+  ResultOr<Outcome> HandleRead(FdHandle h,
                                const core::FileDescriptor& fd) override {
     return Outcome::kFdEagain;
   }
 
-  ResultOr<Outcome> HandleWrite(Context* c, FdHandle h,
+  ResultOr<Outcome> HandleWrite(FdHandle h,
                                 const core::FileDescriptor& fd) override {
     return Outcome::kFdEagain;
   }

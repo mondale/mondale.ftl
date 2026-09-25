@@ -27,7 +27,7 @@ class Silo final {
   // Called via Context.
   void RequestRead(FdHandle h);
   void RequestWrite(FdHandle h);
-  void Run(FdHandle h, std::move_only_function<void(Context*)> fn);
+  void Run(FdHandle h, std::move_only_function<void()> fn);
 
   void ThreadMain();
 
@@ -37,16 +37,15 @@ class Silo final {
   Result ThreadMain2();
 
   void GetInList(InList* swapee) LOCKS_EXCLUDED(inbound_mu_);
-  Result RunAdmission(Context* c) LOCKS_EXCLUDED(inbound_mu_);
+  Result RunAdmission() LOCKS_EXCLUDED(inbound_mu_);
   void ConsiderLoadShedding(int util);
-  Result Add(Context* c, internal::HFDs&& i);
-  ResultOr<FdHandle> Add(Context* c, std::shared_ptr<IoHandler> h,
-                         core::FileDescriptor fd);
+  Result Add(internal::HFDs&& i);
+  ResultOr<FdHandle> Add(std::shared_ptr<IoHandler> h, core::FileDescriptor fd);
   Result Remove(PerFd* perfd);
   bool ActivationsEmpty() const;
-  void RunActives(Context* c);
-  void RunRunners(Context* c);
-  void RunIdlers(Context* c);
+  void RunActives();
+  void RunRunners();
+  void RunIdlers();
   Result RunClosers();
   void RunShedders();
 
@@ -72,7 +71,7 @@ class Silo final {
     bool wants_write = false;
     bool squelch_reads = false;
     bool squelch_writes = false;
-    std::list<std::move_only_function<void(Context*)>> fns;
+    std::list<std::move_only_function<void()>> fns;
   };
 
   using HTable = core::HandleTable<PerFd, kMaxFds>;

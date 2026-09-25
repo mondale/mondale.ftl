@@ -13,8 +13,6 @@ namespace io {
 
 HANDLE_TYPE(FdHandle, int64_t);
 
-class Context;
-
 class IoHandler {
  public:
   enum class Outcome {
@@ -24,12 +22,11 @@ class IoHandler {
     kClose,     // Please close the FD and stop calling me.
   };
 
-  virtual ResultOr<Outcome> HandleRead(Context* c, FdHandle h,
+  virtual ResultOr<Outcome> HandleRead(FdHandle h,
                                        const core::FileDescriptor& fd) = 0;
-  virtual ResultOr<Outcome> HandleWrite(Context* c, FdHandle h,
+  virtual ResultOr<Outcome> HandleWrite(FdHandle h,
                                         const core::FileDescriptor& fd) = 0;
-  virtual Result HandleIdle(Context* c, FdHandle h,
-                            const core::FileDescriptor& fd) {
+  virtual Result HandleIdle(FdHandle h, const core::FileDescriptor& fd) {
     return Result(Code::kDeadline);
   }
 
