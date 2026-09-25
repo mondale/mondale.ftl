@@ -276,7 +276,8 @@ cc_library(
   name = "small_map",
   hdrs = ["small_map.h"],
   srcs = [],
-  deps = [":inlined_vector",],
+  deps = ["//core", ":inlined_vector",],
+    visibility = ["//..."],
 )
 
 cc_test(

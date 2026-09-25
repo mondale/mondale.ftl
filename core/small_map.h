@@ -8,11 +8,13 @@
 #include <utility>
 
 #include "core/inlined_vector.h"
+#include "core/vocabulary.h"
 
 namespace core {
 
-template <typename Key, typename T, size_t N = 2,
-          typename Compare = std::less<Key>>
+template <typename Key, typename T, size_t N = 8,
+          typename Hash = std::hash<Key>,
+          typename KeyEqual = std::equal_to<Key>>
 class SmallMap {
  public:
   using key_type = Key;
@@ -20,7 +22,8 @@ class SmallMap {
   using value_type = std::pair<const Key, T>;
   using size_type = size_t;
   using difference_type = ptrdiff_t;
-  using key_compare = Compare;
+  using hasher = Hash;
+  using key_equal = KeyEqual;
   using reference = value_type&;
   using const_reference = const value_type&;
   using pointer = value_type*;
@@ -29,14 +32,95 @@ class SmallMap {
  private:
   using UnderlyingVector = InlinedVector<value_type, N>;
 
-  struct KeyEqual {
-    bool operator()(const Key& lhs, const Key& rhs) const {
-      Compare comp;
-      return !comp(lhs, rhs) && !comp(rhs, lhs);
+ public:
+  class iterator;
+
+  class const_iterator {
+   public:
+    using iterator_concept = std::contiguous_iterator_tag;
+    using iterator_category = std::random_access_iterator_tag;
+    using value_type = typename SmallMap::value_type;
+    using difference_type = typename SmallMap::difference_type;
+    using pointer = typename SmallMap::const_pointer;
+    using reference = typename SmallMap::const_reference;
+
+    const_iterator() noexcept : ptr_(nullptr) {}
+    explicit const_iterator(pointer ptr) noexcept : ptr_(ptr) {}
+    const_iterator(const iterator& it) noexcept;
+
+    reference operator*() const { return *ptr_; }
+    pointer operator->() const { return ptr_; }
+
+    const_iterator& operator++() noexcept {
+      ++ptr_;
+      return *this;
     }
+
+    const_iterator operator++(int) noexcept {
+      const_iterator tmp = *this;
+      ++ptr_;
+      return tmp;
+    }
+
+    const_iterator& operator--() noexcept {
+      --ptr_;
+      return *this;
+    }
+
+    const_iterator operator--(int) noexcept {
+      const_iterator tmp = *this;
+      --ptr_;
+      return tmp;
+    }
+
+    const_iterator& operator+=(difference_type n) noexcept {
+      ptr_ += n;
+      return *this;
+    }
+
+    const_iterator& operator-=(difference_type n) noexcept {
+      ptr_ -= n;
+      return *this;
+    }
+
+    friend const_iterator operator+(const_iterator it,
+                                    difference_type n) noexcept {
+      return const_iterator(it.ptr_ + n);
+    }
+
+    friend const_iterator operator+(difference_type n,
+                                    const_iterator it) noexcept {
+      return const_iterator(it.ptr_ + n);
+    }
+
+    friend const_iterator operator-(const_iterator it,
+                                    difference_type n) noexcept {
+      return const_iterator(it.ptr_ - n);
+    }
+
+    friend difference_type operator-(const_iterator a,
+                                     const_iterator b) noexcept {
+      return a.ptr_ - b.ptr_;
+    }
+
+    reference operator[](difference_type n) const { return ptr_[n]; }
+
+    friend bool operator==(const const_iterator& a,
+                           const const_iterator& b) noexcept {
+      return a.ptr_ == b.ptr_;
+    }
+
+    friend bool operator!=(const const_iterator& a,
+                           const const_iterator& b) noexcept {
+      return a.ptr_ != b.ptr_;
+    }
+
+   private:
+    pointer ptr_;
+    friend class SmallMap;
+    friend class iterator;
   };
 
- public:
   class iterator {
    public:
     using iterator_concept = std::contiguous_iterator_tag;
@@ -110,129 +194,12 @@ class SmallMap {
       return a.ptr_ != b.ptr_;
     }
 
-    friend bool operator<(const iterator& a, const iterator& b) noexcept {
-      return a.ptr_ < b.ptr_;
-    }
-
-    friend bool operator<=(const iterator& a, const iterator& b) noexcept {
-      return a.ptr_ <= b.ptr_;
-    }
-
-    friend bool operator>(const iterator& a, const iterator& b) noexcept {
-      return a.ptr_ > b.ptr_;
-    }
-
-    friend bool operator>=(const iterator& a, const iterator& b) noexcept {
-      return a.ptr_ >= b.ptr_;
-    }
+    operator const_iterator() const noexcept { return const_iterator(ptr_); }
 
    private:
     pointer ptr_;
     friend class SmallMap;
-  };
-
-  class const_iterator {
-   public:
-    using iterator_concept = std::contiguous_iterator_tag;
-    using iterator_category = std::random_access_iterator_tag;
-    using value_type = typename SmallMap::value_type;
-    using difference_type = typename SmallMap::difference_type;
-    using pointer = typename SmallMap::const_pointer;
-    using reference = typename SmallMap::const_reference;
-
-    const_iterator() noexcept : ptr_(nullptr) {}
-    explicit const_iterator(pointer ptr) noexcept : ptr_(ptr) {}
-    const_iterator(iterator it) noexcept : ptr_(it.ptr_) {}
-
-    reference operator*() const { return *ptr_; }
-    pointer operator->() const { return ptr_; }
-
-    const_iterator& operator++() noexcept {
-      ++ptr_;
-      return *this;
-    }
-
-    const_iterator operator++(int) noexcept {
-      const_iterator tmp = *this;
-      ++ptr_;
-      return tmp;
-    }
-
-    const_iterator& operator--() noexcept {
-      --ptr_;
-      return *this;
-    }
-
-    const_iterator operator--(int) noexcept {
-      const_iterator tmp = *this;
-      --ptr_;
-      return tmp;
-    }
-
-    const_iterator& operator+=(difference_type n) noexcept {
-      ptr_ += n;
-      return *this;
-    }
-
-    const_iterator& operator-=(difference_type n) noexcept {
-      ptr_ -= n;
-      return *this;
-    }
-
-    friend const_iterator operator+(const_iterator it,
-                                    difference_type n) noexcept {
-      return const_iterator(it.ptr_ + n);
-    }
-
-    friend const_iterator operator+(difference_type n,
-                                    const_iterator it) noexcept {
-      return const_iterator(it.ptr_ + n);
-    }
-
-    friend const_iterator operator-(const_iterator it,
-                                    difference_type n) noexcept {
-      return const_iterator(it.ptr_ - n);
-    }
-
-    friend difference_type operator-(const_iterator a,
-                                     const_iterator b) noexcept {
-      return a.ptr_ - b.ptr_;
-    }
-
-    reference operator[](difference_type n) const { return ptr_[n]; }
-
-    friend bool operator==(const const_iterator& a,
-                           const const_iterator& b) noexcept {
-      return a.ptr_ == b.ptr_;
-    }
-
-    friend bool operator!=(const const_iterator& a,
-                           const const_iterator& b) noexcept {
-      return a.ptr_ != b.ptr_;
-    }
-
-    friend bool operator<(const const_iterator& a,
-                          const const_iterator& b) noexcept {
-      return a.ptr_ < b.ptr_;
-    }
-
-    friend bool operator<=(const const_iterator& a, const_iterator b) noexcept {
-      return a.ptr_ <= b.ptr_;
-    }
-
-    friend bool operator>(const const_iterator& a,
-                          const const_iterator& b) noexcept {
-      return a.ptr_ > b.ptr_;
-    }
-
-    friend bool operator>=(const const_iterator& a,
-                           const const_iterator& b) noexcept {
-      return a.ptr_ >= b.ptr_;
-    }
-
-   private:
-    pointer ptr_;
-    friend class SmallMap;
+    friend class const_iterator;
   };
 
   using reverse_iterator = std::reverse_iterator<iterator>;
@@ -247,9 +214,9 @@ class SmallMap {
   SmallMap& operator=(const SmallMap&) = default;
   SmallMap& operator=(SmallMap&&) noexcept = default;
 
-  SmallMap(std::initializer_list<value_type> init,
-           const Compare& comp = Compare())
-      : comp_(comp) {
+  SmallMap(std::initializer_list<value_type> init, const Hash& hash = Hash(),
+           const KeyEqual& equal = KeyEqual())
+      : hash_(hash), eq_(equal) {
     for (auto& item : init) {
       insert(item);
     }
@@ -372,32 +339,23 @@ class SmallMap {
 
   mapped_type& at(const Key& key) {
     auto it = find_internal(key);
-    if (it == end()) {
-      throw std::out_of_range("SmallMap::at: key not found");
-    }
+    CHECK(it != end()) << "SmallMap::at: key not found";
     return it->second;
   }
 
   const mapped_type& at(const Key& key) const {
     auto it = find_internal(key);
-    if (it == end()) {
-      throw std::out_of_range("SmallMap::at: key not found");
-    }
+    CHECK(it != end()) << "SmallMap::at: key not found";
     return it->second;
   }
 
   iterator erase(const_iterator pos) {
     size_t idx = pos - cbegin();
-    // Destroy the element being erased
     elems_[idx].~value_type();
-
-    // Shift subsequent elements left using move-construction
     for (size_t i = idx + 1; i < elems_.size(); ++i) {
       ::new (static_cast<void*>(&elems_[i - 1]))
           value_type(std::move(elems_[i]));
     }
-
-    // Pop the final slot (whose object was moved from)
     elems_.pop_back();
     return begin() + idx;
   }
@@ -420,23 +378,16 @@ class SmallMap {
       return begin() + start_idx;
     }
     size_t end_idx = start_idx + count;
-
-    // Destroy elements in the erased range
     for (size_t i = start_idx; i < end_idx; ++i) {
       elems_[i].~value_type();
     }
-
-    // Shift remaining elements left
     for (size_t i = end_idx; i < elems_.size(); ++i) {
       ::new (static_cast<void*>(&elems_[i - count]))
           value_type(std::move(elems_[i]));
     }
-
-    // Pop back for each removed slot
     for (size_t i = 0; i < count; ++i) {
       elems_.pop_back();
     }
-
     return begin() + start_idx;
   }
 
@@ -450,70 +401,28 @@ class SmallMap {
     return find_internal(key) != end() ? 1 : 0;
   }
 
-  std::pair<iterator, iterator> equal_range(const Key& key) {
-    auto it = find_internal(key);
-    if (it == end()) {
-      return {end(), end()};
-    }
-    return {it, it + 1};
-  }
+  hasher hash_function() const { return hash_; }
+  key_equal key_eq() const { return eq_; }
 
-  std::pair<const_iterator, const_iterator> equal_range(const Key& key) const {
-    auto it = find_internal(key);
-    if (it == end()) {
-      return {end(), end()};
-    }
-    return {it, it + 1};
-  }
-
-  iterator lower_bound(const Key& key) {
-    Compare comp;
-    for (auto it = begin(); it != end(); ++it) {
-      if (!comp(it->first, key)) {
-        return it;
+  friend bool operator==(const SmallMap& lhs, const SmallMap& rhs) {
+    if (lhs.size() != rhs.size()) return false;
+    for (const auto& kv : lhs) {
+      auto it = rhs.find(kv.first);
+      if (it == rhs.end() || it->second != kv.second) {
+        return false;
       }
     }
-    return end();
+    return true;
   }
 
-  const_iterator lower_bound(const Key& key) const {
-    KeyEqual eq;
-    Compare comp;
-    for (auto it = begin(); it != end(); ++it) {
-      if (!comp(it->first, key)) {
-        return it;
-      }
-    }
-    return end();
+  friend bool operator!=(const SmallMap& lhs, const SmallMap& rhs) {
+    return !(lhs == rhs);
   }
-
-  iterator upper_bound(const Key& key) {
-    Compare comp;
-    for (auto it = begin(); it != end(); ++it) {
-      if (comp(key, it->first)) {
-        return it;
-      }
-    }
-    return end();
-  }
-
-  const_iterator upper_bound(const Key& key) const {
-    Compare comp;
-    for (auto it = begin(); it != end(); ++it) {
-      if (comp(key, it->first)) {
-        return it;
-      }
-    }
-    return end();
-  }
-
-  key_compare key_comp() const { return comp_; }
 
  private:
   iterator find_internal(const Key& key) {
-    KeyEqual eq;
     for (auto it = begin(); it != end(); ++it) {
-      if (eq(it->first, key)) {
+      if (eq_(it->first, key)) {
         return it;
       }
     }
@@ -521,9 +430,8 @@ class SmallMap {
   }
 
   const_iterator find_internal(const Key& key) const {
-    KeyEqual eq;
     for (auto it = begin(); it != end(); ++it) {
-      if (eq(it->first, key)) {
+      if (eq_(it->first, key)) {
         return it;
       }
     }
@@ -543,8 +451,14 @@ class SmallMap {
   }
 
   UnderlyingVector elems_;
-  [[no_unique_address]] Compare comp_;
+  [[no_unique_address]] Hash hash_;
+  [[no_unique_address]] KeyEqual eq_;
 };
+
+template <typename Key, typename T, size_t N, typename Hash, typename KeyEqual>
+inline SmallMap<Key, T, N, Hash, KeyEqual>::const_iterator::const_iterator(
+    const typename SmallMap<Key, T, N, Hash, KeyEqual>::iterator& it) noexcept
+    : ptr_(it.ptr_) {}
 
 }  // namespace core
 

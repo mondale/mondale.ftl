@@ -84,24 +84,4 @@ TEST(SmallMapErasure) {
   EXPECT_TRUE(map.empty());
 }
 
-TEST(SmallMapBoundsAndRange) {
-  SmallMap<int, int> map;
-  map.insert({5, 50});
-  map.insert({1, 10});
-  map.insert({9, 90});
-
-  auto lb = map.lower_bound(5);
-  ASSERT_FALSE(lb == map.end());
-  EXPECT_EQ(lb->first, 5);
-
-  auto ub = map.upper_bound(5);
-  ASSERT_FALSE(ub == map.end());
-  EXPECT_EQ(ub->first, 9);
-
-  auto range = map.equal_range(5);
-  ASSERT_FALSE(range.first == map.end());
-  EXPECT_EQ(range.first->first, 5);
-  EXPECT_EQ(range.second - range.first, 1);
-}
-
 }  // namespace
