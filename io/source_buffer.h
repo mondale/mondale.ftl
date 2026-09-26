@@ -5,6 +5,8 @@
 
 namespace io {
 
+// A SourceBuffer is a buffer whose contents are destined to be written to a
+// file descriptor. When ~SourceBuffer, a provided closure runs.
 class SourceBuffer final {
  public:
   SourceBuffer() = delete;

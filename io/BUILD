@@ -151,13 +151,28 @@ cc_library(
   name = "data_handler",
   hdrs = ["data_handler.h"],
   srcs = ["data_handler.cc"],
-  deps = ["//core", ":io_handler", ":source_buffer", "//core:small_map", ":context"],
+  deps = ["//core", ":io_handler", ":source_buffer", "//core:small_map", ":context", ":sink_buffer"],
 )
 
 cc_test(
   name = "data_handler_test",
   srcs = ["data_handler_test.cc"],
   deps = [":data_handler",
+          "//testing",
+  ],
+)
+
+cc_library(
+  name = "sink_buffer",
+  hdrs = ["sink_buffer.h"],
+  srcs = [],
+  deps = ["//core",],
+)
+
+cc_test(
+  name = "sink_buffer_test",
+  srcs = ["sink_buffer_test.cc"],
+  deps = [":sink_buffer",
           "//testing",
   ],
 )
