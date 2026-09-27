@@ -1,3 +1,21 @@
+cc_library(
+  name = "listener",
+  hdrs = ["listener.h"],
+  srcs = ["listener.cc"],
+  deps = ["//core", "//io", ":socket_address",
+"//core:idioms",
+],
+)
+
+cc_test(
+  name = "listener_test",
+  srcs = ["listener_test.cc"],
+  deps = [":listener",
+          "//io",
+          "//testing",
+":socket_address",
+  ],
+)
 
 cc_library(
   name = "socket_address",

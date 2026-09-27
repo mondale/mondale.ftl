@@ -111,11 +111,12 @@ TEST(SocketServerAndAccept) {
       IsOk());
   EXPECT_THAT(syscalls::Listen(server_fd, 1), IsOk());
 
-  // Create a client socket and connect using the raw file descriptor
+  // Create a client socket and connect using syscalls::Connect
   auto client_fd = syscalls::Socket(AF_UNIX, SOCK_STREAM, 0).ValueOrDie();
-  int connect_ret = ::connect(
-      client_fd.fd(), reinterpret_cast<struct sockaddr*>(&addr), sizeof(addr));
-  ASSERT_EQ(connect_ret, 0);
+  EXPECT_THAT(
+      syscalls::Connect(client_fd, reinterpret_cast<struct sockaddr*>(&addr),
+                        sizeof(addr)),
+      IsOk());
 
   // Accept the incoming connection
   struct sockaddr_un client_addr;
@@ -123,7 +124,7 @@ TEST(SocketServerAndAccept) {
   auto accepted_fd =
       syscalls::Accept4(server_fd,
                         reinterpret_cast<struct sockaddr*>(&client_addr),
-                        &client_addr_len, SOCK_NONBLOCK | SOCK_CLOEXEC)
+                        &client_addr_len, SOCK_CLOEXEC)
           .ValueOrDie();
 
   // Clean up the socket file path

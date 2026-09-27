@@ -12,17 +12,3 @@ cc_binary(
   ],
 )
 
-cc_library(
-  name = "listener",
-  hdrs = ["listener.h"],
-  srcs = ["listener.cc"],
-  deps = ["//core", "//io:io_handler",],
-)
-
-cc_test(
-  name = "listener_test",
-  srcs = ["listener_test.cc"],
-  deps = [":listener",
-          "//testing",
-  ],
-)

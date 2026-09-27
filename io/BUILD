@@ -1,4 +1,18 @@
 cc_library(
+ name = "io",
+ srcs = [],
+ hdrs = ["io.h"],
+  visibility = ["//..."],
+ deps = [
+   ":epoller",
+   ":io_handler",
+   ":data_handler",
+   ":source_buffer",
+   ":sink_buffer",
+   ":context",
+])
+
+cc_library(
     name = "epoller",
     srcs = ["epoller.cc"],
     hdrs = ["epoller.h"],
@@ -11,7 +25,6 @@ cc_library(
         "//core:idioms",
         "//core:stateless_random",
     ],
-  visibility = ["//..."],
 )
 
 cc_test(
@@ -65,7 +78,6 @@ cc_library(
         "//core:inlined_vector",
         "//core:syscalls",
     ],
-  visibility = ["//..."],
 )
 
 cc_test(
@@ -101,7 +113,6 @@ cc_library(
         ":io_handler",
         "//base:time",
     ],
-  visibility = ["//..."],
 )
 
 cc_test(
@@ -139,7 +150,6 @@ cc_library(
   hdrs = ["source_buffer.h"],
   srcs = [],
   deps = ["//core",],
-  visibility = ["//..."],
 )
 
 cc_test(
@@ -156,7 +166,6 @@ cc_library(
   hdrs = ["data_handler.h"],
   srcs = ["data_handler.cc"],
   deps = ["//core", ":io_handler", ":source_buffer", "//core:small_map", ":context", ":sink_buffer"],
-  visibility = ["//..."],
 )
 
 cc_test(
@@ -172,7 +181,6 @@ cc_library(
   hdrs = ["sink_buffer.h"],
   srcs = [],
   deps = ["//core",],
-  visibility = ["//..."],
 )
 
 cc_test(

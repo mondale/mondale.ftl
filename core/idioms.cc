@@ -57,6 +57,11 @@ ResultOr<FileDescriptor> NewListenSocket(uint16_t port, int backlog) {
   TRY(core::syscalls::SetSockOpt(fd, IPPROTO_IPV6, IPV6_V6ONLY, &opt,
                                  sizeof(opt)));
 
+  // Allow rebind if prior socket is in TIME_WAIT.
+  opt = 1;  // yes, reuse addr
+  TRY(core::syscalls::SetSockOpt(fd, SOL_SOCKET, SO_REUSEADDR, &opt,
+                                 sizeof(opt)));
+
   // Bind to the ipv6 any address.
   sockaddr_in6 addr{};
   addr.sin6_family = AF_INET6;

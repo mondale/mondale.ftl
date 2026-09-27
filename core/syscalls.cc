@@ -252,4 +252,12 @@ ResultOr<FileDescriptor> Socket(int domain, int type, int protocol) {
   return FileDescriptor(raw_fd);
 }
 
+Result Connect(const FileDescriptor& sockfd, const struct sockaddr* addr,
+               socklen_t addrlen) {
+  auto syscall = [&]() -> int { return ::connect(sockfd.fd(), addr, addrlen); };
+  auto accept = [](int ret) -> bool { return ret == 0; };
+  TRY_ASSIGN(const int ret, SyscallRetryEintr<int>(syscall, accept));
+  return NoReturnNonZero(ret, "Connect");
+}
+
 }  // namespace core::syscalls

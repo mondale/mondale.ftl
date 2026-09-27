@@ -1,17 +1,22 @@
+#include "core/idioms.h"
 #include "core/syscalls.h"
-#include "http/listener.h"
+#include "net/listener.h"
+#include "net/socket_address.h"
 
-namespace http {
+namespace net {
 namespace {
 
-Result NonBlockingAccept(
-    io::IoHandler::Outcome* o, const core::FileDescriptor& fd,
-    const std::move_only_function<void(core::FileDescriptor)>& fn) {
-  auto maybe_fd = core::syscalls::Accept4(fd, nullptr, nullptr,
+Result NonBlockingAccept(io::IoHandler::Outcome* o,
+                         const core::FileDescriptor& fd,
+                         Listener::AcceptFn& fn) {
+  SocketAddress sa;
+  socklen_t unused = 0;
+  auto maybe_fd = core::syscalls::Accept4(fd, sa.AsSockaddr(), &unused,
                                           SOCK_NONBLOCK | SOCK_CLOEXEC);
   if (maybe_fd.IsOk()) {
     *o = io::IoHandler::Outcome::kYield;
-    // extract fd TODO
+    auto fd = std::move(maybe_fd.ValueOrDie());
+    fn(std::move(fd), sa);
     return Result::Ok();
   } else if (maybe_fd.result().Is(Code::kEagain)) {
     *o = io::IoHandler::Outcome::kFdEagain;
@@ -22,9 +27,18 @@ Result NonBlockingAccept(
 
 }  // namespace
 
-Listener::Listener(
-    std::move_only_function<void(core::FileDescriptor)> on_accept)
-    : on_accept_(std::move(on_accept)) {
+//  static
+ResultOr<std::shared_ptr<Listener>> Listener::Build(io::Epoller* ep,
+                                                    uint16_t port,
+                                                    AcceptFn af) {
+  constexpr int kBacklog = 100;
+  TRY_ASSIGN(auto fd, core::idioms::NewListenSocket(port, kBacklog));
+  auto l = std::make_shared<Listener>(PrivateTag{}, std::move(af));
+  TRY(ep->Register(std::move(l), std::move(fd)));
+  return l;
+}
+
+Listener::Listener(PrivateTag, AcceptFn af) : on_accept_(std::move(af)) {
   set_idle_threshold(base::Days(1));
 }
 
@@ -47,4 +61,4 @@ Result Listener::HandleIdle(io::FdHandle h, const core::FileDescriptor& fd) {
   return Result::Ok();
 }
 
-}  // namespace http
+}  // namespace net

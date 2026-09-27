@@ -23,6 +23,8 @@ ResultOr<FileDescriptor> Accept4(const FileDescriptor& sockfd,
 Result Access(std::string_view path, int mode);
 Result Bind(const FileDescriptor& sockfd, const struct sockaddr* addr,
             socklen_t addrlen);
+Result Connect(const FileDescriptor& sockfd, const struct sockaddr* addr,
+               socklen_t addrlen);
 ResultOr<FileDescriptor> EpollCreate1(int flags);
 Result EpollCtl(const FileDescriptor& epfd, int op, const FileDescriptor& fd,
                 struct epoll_event* event);

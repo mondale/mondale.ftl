@@ -62,4 +62,42 @@ TEST(SocketAddressTest_CopyAndMoveSemantics) {
   EXPECT_EQ(addr3.ToString(), "10.0.0.1:1234");
 }
 
+TEST(SocketAddressTest_FromStringIPv4) {
+  ResultOr<SocketAddress> res = SocketAddress::FromString("127.0.0.1:80");
+  ASSERT_TRUE(res.IsOk());
+  SocketAddress addr = res.ValueOrDie();
+  EXPECT_EQ(addr.IpAddress(), "127.0.0.1");
+  EXPECT_EQ(addr.Port(), 80);
+  EXPECT_EQ(addr.ToString(), "127.0.0.1:80");
+}
+
+TEST(SocketAddressTest_FromStringIPv6Bracketed) {
+  ResultOr<SocketAddress> res = SocketAddress::FromString("[::1]:443");
+  ASSERT_TRUE(res.IsOk());
+  SocketAddress addr = res.ValueOrDie();
+  EXPECT_EQ(addr.IpAddress(), "::1");
+  EXPECT_EQ(addr.Port(), 443);
+  EXPECT_EQ(addr.ToString(), "[::1]:443");
+}
+
+TEST(SocketAddressTest_FromStringErrors) {
+  // Missing port
+  EXPECT_FALSE(SocketAddress::FromString("127.0.0.1").IsOk());
+
+  // Unbracketed IPv6 (ambiguous)
+  EXPECT_FALSE(SocketAddress::FromString("2001:db8::1:8080").IsOk());
+
+  // Missing closing bracket
+  EXPECT_FALSE(SocketAddress::FromString("[::1:8080").IsOk());
+
+  // Missing separator after bracket
+  EXPECT_FALSE(SocketAddress::FromString("[::1]8080").IsOk());
+
+  // Invalid IP format
+  EXPECT_FALSE(SocketAddress::FromString("999.999.999.999:80").IsOk());
+
+  // Out of range port
+  EXPECT_FALSE(SocketAddress::FromString("127.0.0.1:70000").IsOk());
+}
+
 }  // namespace

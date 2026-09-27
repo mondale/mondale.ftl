@@ -4,13 +4,17 @@
 #include <sys/socket.h>
 
 #include <cstdint>
+#include <cstring>
 #include <string>
+
+#include "core/vocabulary.h"
 
 namespace net {
 
 // Convenience wrapper around a sockaddr_storage.
 class SocketAddress final {
  public:
+  SocketAddress() { memset(&ss_, 0, sizeof(ss_)); }
   explicit SocketAddress(const struct sockaddr_storage& ss) {
     memcpy(&ss_, &ss, sizeof(ss_));
   }
@@ -22,6 +26,10 @@ class SocketAddress final {
 
   ~SocketAddress() = default;
 
+  // Parses an address string of the form "ip:port" (e.g., "1.2.3.4:5678" or
+  // "[2001:db8::1]:5678").
+  static ResultOr<SocketAddress> FromString(std::string_view addr);
+
   // Returns ip:port, e.g., "1.2.3.4:5678" or "[2001:db8::1]:5678" for IPv6.
   std::string ToString() const;
 
@@ -30,6 +38,12 @@ class SocketAddress final {
 
   // Returns port number, e.g., 5678.
   uint16_t Port() const;
+
+  struct sockaddr* AsSockaddr() {
+    return reinterpret_cast<struct sockaddr*>(&ss_);
+  }
+
+  socklen_t socklen() const { return sizeof(ss_); }
 
  private:
   struct sockaddr_storage ss_;
