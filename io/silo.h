@@ -28,6 +28,7 @@ class Silo final {
   void RequestRead(FdHandle h);
   void RequestWrite(FdHandle h);
   void Run(FdHandle h, std::move_only_function<void()> fn);
+  ResultOr<FdHandle> Add(std::shared_ptr<IoHandler> h, core::FileDescriptor fd);
 
   void ThreadMain();
 
@@ -40,7 +41,7 @@ class Silo final {
   Result RunAdmission() LOCKS_EXCLUDED(inbound_mu_);
   void ConsiderLoadShedding(int util);
   Result Add(internal::HFDs&& i);
-  ResultOr<FdHandle> Add(std::shared_ptr<IoHandler> h, core::FileDescriptor fd);
+  Result Affinitize(IoHandler* h) const;
   Result Remove(PerFd* perfd);
   bool ActivationsEmpty() const;
   void RunActives();

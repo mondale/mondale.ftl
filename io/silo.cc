@@ -18,6 +18,10 @@ class SiloContext final : public Context {
   void Run(FdHandle h, std::move_only_function<void()> fn) override {
     s_->Run(h, std::move(fn));
   }
+  ResultOr<FdHandle> Add(std::shared_ptr<IoHandler> h,
+                         core::FileDescriptor fd) override {
+    return s_->Add(std::move(h), std::move(fd));
+  }
 
  private:
   Silo* const s_;
@@ -216,10 +220,23 @@ Result Silo::Add(internal::HFDs&& i) {
   return Result::Ok();
 }
 
+Result Silo::Affinitize(IoHandler* h) const {
+  const auto a = h->GetAffinity();
+  if (a == IoHandler::kNoAffinity) {
+    h->SetAffinity(id_);
+  } else if (a != id_) {
+    return core::PreconditionError("Affinity mismatch during add.");
+  }
+  return Result::Ok();
+}
+
 ResultOr<FdHandle> Silo::Add(std::shared_ptr<IoHandler> handler,
                              core::FileDescriptor fd) {
+  TRY(Affinitize(handler.get()));
+
   // Allocate a handle and initialize the PerFd.
   TRY_ASSIGN(auto h, ht_.Allocate());
+  auto cleanup = MakeCleanup([&]() { CHECK_OK(ht_.Free(h)); });
   const auto real_h = Coerce(h);
   TRY_ASSIGN(auto* perfd, ht_.Lookup(h));
   perfd->handler = std::move(handler);
@@ -235,6 +252,7 @@ ResultOr<FdHandle> Silo::Add(std::shared_ptr<IoHandler> handler,
   e.events = EPOLLHUP | EPOLLERR | EPOLLRDHUP | EPOLLIN | EPOLLOUT | EPOLLET;
   e.data.u64 = static_cast<uint64_t>(h.value());
   TRY(core::syscalls::EpollCtl(efd_, EPOLL_CTL_ADD, perfd->fd, &e));
+  cleanup.Cancel();
   idlers_.PushBack(perfd);
   return real_h;
 }

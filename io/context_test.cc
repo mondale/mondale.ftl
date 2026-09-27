@@ -9,6 +9,10 @@ class TestContext : public Context {
   void RequestRead(FdHandle h) override {}
   void RequestWrite(FdHandle h) override {}
   void Run(FdHandle h, std::move_only_function<void()> fn) override {}
+  ResultOr<FdHandle> Add(std::shared_ptr<IoHandler> h,
+                         core::FileDescriptor fd) override {
+    return FdHandle(7);
+  }
 };
 
 TEST(SimpleTest) {

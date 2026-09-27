@@ -256,6 +256,9 @@ Result CapsuleFatalError(
 Result UnimplementedError(
     std::string_view msg,
     base::SourceLocation loc = base::SourceLocation::Current());
+Result PreconditionError(
+    std::string_view msg,
+    base::SourceLocation loc = base::SourceLocation::Current());
 
 template <typename T>
 class [[nodiscard]] ResultOr;

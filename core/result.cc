@@ -158,4 +158,8 @@ Result UnimplementedError(std::string_view msg, base::SourceLocation loc) {
   return MakeError(Code::kUnimplemented, msg, loc);
 }
 
+Result PreconditionError(std::string_view msg, base::SourceLocation loc) {
+  return MakeError(Code::kPrecondition, msg, loc);
+}
+
 }  // namespace core
