@@ -40,6 +40,7 @@ std::string_view ToString(BaseCode bc) {
     ENUM_SWITCH_TOSTRING(BaseCode, kCapsuleFatal);
     ENUM_SWITCH_TOSTRING(BaseCode, kStreamFatal);
     ENUM_SWITCH_TOSTRING(BaseCode, kEintr);
+    ENUM_SWITCH_TOSTRING(BaseCode, kEaddrinuse);
     ENUM_SWITCH_TOSTRING(BaseCode, kEnoent);
     ENUM_SWITCH_TOSTRING(BaseCode, kEinval);
     ENUM_SWITCH_TOSTRING(BaseCode, kEagain);
@@ -118,6 +119,8 @@ BaseCode BaseCodeFromErrno(int e) {
       return BaseCode::kEbadf;
     case EPIPE:
       return BaseCode::kEpipe;
+    case EADDRINUSE:
+      return BaseCode::kEaddrinuse;
     default:
       break;
   }

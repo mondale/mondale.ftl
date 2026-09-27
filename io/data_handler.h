@@ -13,13 +13,16 @@
 namespace io {
 
 // Generic IoHandler for a data FD type that never wants a partial read.
-class DataHandler final : public IoHandler,
-                          public std::enable_shared_from_this<DataHandler> {
+//
+// Subclasses may partially override.
+class DataHandler : public IoHandler,
+                    public std::enable_shared_from_this<DataHandler> {
  private:
   struct PrivateTag {};
 
  public:
   explicit DataHandler(PrivateTag) {}
+  virtual ~DataHandler() = default;
 
   static std::shared_ptr<DataHandler> Create() {
     return std::make_shared<DataHandler>(PrivateTag{});

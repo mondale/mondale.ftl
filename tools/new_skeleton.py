@@ -42,6 +42,8 @@ def main():
         h_content = f"""#ifndef {include_guard}
 #define {include_guard}
 
+#include "core/vocabulary.h"
+
 namespace {namespace} {{
 
 class {class_name} final {{
@@ -65,6 +67,8 @@ namespace {namespace} {{
     else:
         h_content = f"""#ifndef {include_guard}
 #define {include_guard}
+
+#include "core/vocabulary.h"
 
 class {class_name} final {{
  public:
@@ -96,7 +100,8 @@ cc_library(
   name = "{basename}",
   hdrs = ["{basename}.h"],
   srcs = ["{basename}.cc"],
-  deps = [],
+  deps = ["//core",
+  ],
 )
 
 cc_test(
