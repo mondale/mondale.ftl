@@ -3,6 +3,11 @@
 
 namespace io {
 
+ResultOr<FdHandle> DataHandler::Add(core::FileDescriptor fd) {
+  auto self = shared_from_this();
+  return Context::Current()->Add(std::move(self), std::move(fd));
+}
+
 ResultOr<IoHandler::Outcome> DataHandler::HandleRead(
     FdHandle h, const core::FileDescriptor& fd) {
   Outcome ret = Outcome::kSuspend;

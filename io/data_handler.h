@@ -1,6 +1,7 @@
 #ifndef IO_DATA_HANDLER_H_
 #define IO_DATA_HANDLER_H_
 
+#include <memory>
 #include <queue>
 
 #include "core/small_map.h"
@@ -12,8 +13,18 @@
 namespace io {
 
 // Generic IoHandler for a data FD type that never wants a partial read.
-class DataHandler final : public IoHandler {
+class DataHandler final : public IoHandler,
+                          public std::enable_shared_from_this<DataHandler> {
+ private:
+  struct PrivateTag {};
+
  public:
+  explicit DataHandler(PrivateTag) {}
+
+  static std::shared_ptr<DataHandler> Create() {
+    return std::make_shared<DataHandler>(PrivateTag{});
+  }
+
   ResultOr<Outcome> HandleRead(FdHandle h,
                                const core::FileDescriptor& fd) override;
   ResultOr<Outcome> HandleWrite(FdHandle h,
@@ -21,6 +32,8 @@ class DataHandler final : public IoHandler {
 
   void Post(FdHandle h, SourceBuffer sb);
   void Post(FdHandle h, SinkBuffer sb);
+
+  ResultOr<FdHandle> Add(core::FileDescriptor fd);
 
  private:
   struct PerFd {
