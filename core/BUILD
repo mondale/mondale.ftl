@@ -116,7 +116,10 @@ cc_library(
     srcs = ["idioms.cc"],
     hdrs = ["idioms.h"],
     visibility = ["//..."],
-    deps = [":syscalls", ":strings",],
+    deps = [
+        ":strings",
+        ":syscalls",
+    ],
 )
 
 cc_library(
@@ -273,17 +276,21 @@ cc_test(
 )
 
 cc_library(
-  name = "small_map",
-  hdrs = ["small_map.h"],
-  srcs = [],
-  deps = ["//core", ":inlined_vector",],
+    name = "small_map",
+    srcs = [],
+    hdrs = ["small_map.h"],
     visibility = ["//..."],
+    deps = [
+        ":inlined_vector",
+        "//core",
+    ],
 )
 
 cc_test(
-  name = "small_map_test",
-  srcs = ["small_map_test.cc"],
-  deps = [":small_map",
-          "//testing",
-  ],
+    name = "small_map_test",
+    srcs = ["small_map_test.cc"],
+    deps = [
+        ":small_map",
+        "//testing",
+    ],
 )

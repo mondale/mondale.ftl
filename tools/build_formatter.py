@@ -5,45 +5,57 @@ import sys
 import tempfile
 from pathlib import Path
 
+# ANSI escape codes for coloring
+GREEN = "\033[32m"
+BLUE = "\033[34m"
+RED = "\033[31m"
+RESET = "\033[0m"
+
+# Bracketed status badges, padded to the exact same visual width (9 characters)
+OK_GREEN = f"{GREEN}[  OK   ]{RESET}"
+OK_BLUE = f"{BLUE}[  OK   ]{RESET}"
+ERROR_RED = f"{RED}[ ERROR ]{RESET}"
+
 
 def main():
-    ignored_dirs = {"plugins", "plz-out"}
-    build_files = [
-        p
-        for p in Path(".").rglob("BUILD")
-        if not any(part in ignored_dirs for part in p.parts)
-    ]
+  ignored_dirs = {"plugins", "plz-out"}
+  build_files = [
+    p
+    for p in Path(".").rglob("BUILD")
+    if not any(part in ignored_dirs for part in p.parts)
+  ]
 
-    if not build_files:
-        return
+  if not build_files:
+    return
 
-    for build_file in build_files:
-        tmp_file = tempfile.NamedTemporaryFile(
-            mode="w", delete=False, encoding="utf-8", dir=build_file.parent
+  for build_file in build_files:
+    tmp_file = tempfile.NamedTemporaryFile(
+      mode="w", delete=False, encoding="utf-8", dir=build_file.parent
+    )
+    tmp_path = Path(tmp_file.name)
+    tmp_file.close()
+
+    try:
+      with open(tmp_path, "w", encoding="utf-8") as f:
+        subprocess.run(
+          ["plz", "fmt", str(build_file)],
+          stdout=f,
+          check=True,
+          text=True,
         )
-        tmp_path = Path(tmp_file.name)
-        tmp_file.close()
-
-        try:
-            with open(tmp_path, "w", encoding="utf-8") as f:
-                subprocess.run(
-                    ["plz", "fmt", str(build_file)],
-                    stdout=f,
-                    check=True,
-                    text=True,
-                )
-            
-            if tmp_path.stat().st_size > 0:
-                tmp_path.replace(build_file)
-            else:
-                print(f"Formatter output for {build_file} was empty; skipping replacement.", file=sys.stdout)
-        except subprocess.CalledProcessError as e:
-            print(f"Error formatting {build_file}: {e}", file=sys.stderr)
-            sys.exit(1)
-        finally:
-            if tmp_path.exists():
-                tmp_path.unlink()
+      
+      if tmp_path.stat().st_size > 0:
+        tmp_path.replace(build_file)
+        print(f"{OK_GREEN} {build_file}")
+      else:
+        print(f"{OK_BLUE} {build_file}")
+    except subprocess.CalledProcessError as e:
+      print(f"{ERROR_RED} {build_file}: {e}", file=sys.stderr)
+      sys.exit(1)
+    finally:
+      if tmp_path.exists():
+        tmp_path.unlink()
 
 
 if __name__ == "__main__":
-    main()
+  main()

@@ -1,16 +1,17 @@
 cc_library(
- name = "io",
- srcs = [],
- hdrs = ["io.h"],
-  visibility = ["//..."],
- deps = [
-   ":epoller",
-   ":io_handler",
-   ":data_handler",
-   ":source_buffer",
-   ":sink_buffer",
-   ":context",
-])
+    name = "io",
+    srcs = [],
+    hdrs = ["io.h"],
+    visibility = ["//..."],
+    deps = [
+        ":context",
+        ":data_handler",
+        ":epoller",
+        ":io_handler",
+        ":sink_buffer",
+        ":source_buffer",
+    ],
+)
 
 cc_library(
     name = "epoller",
@@ -144,49 +145,57 @@ cc_test(
     ],
 )
 
-
 cc_library(
-  name = "source_buffer",
-  hdrs = ["source_buffer.h"],
-  srcs = [],
-  deps = ["//core",],
+    name = "source_buffer",
+    srcs = [],
+    hdrs = ["source_buffer.h"],
+    deps = ["//core"],
 )
 
 cc_test(
-  name = "source_buffer_test",
-  srcs = ["source_buffer_test.cc"],
-  deps = [":source_buffer",
-          "//testing",
-  ],
-)
-
-
-cc_library(
-  name = "data_handler",
-  hdrs = ["data_handler.h"],
-  srcs = ["data_handler.cc"],
-  deps = ["//core", ":io_handler", ":source_buffer", "//core:small_map", ":context", ":sink_buffer"],
-)
-
-cc_test(
-  name = "data_handler_test",
-  srcs = ["data_handler_test.cc"],
-  deps = [":data_handler",
-          "//testing",
-  ],
+    name = "source_buffer_test",
+    srcs = ["source_buffer_test.cc"],
+    deps = [
+        ":source_buffer",
+        "//testing",
+    ],
 )
 
 cc_library(
-  name = "sink_buffer",
-  hdrs = ["sink_buffer.h"],
-  srcs = [],
-  deps = ["//core",],
+    name = "data_handler",
+    srcs = ["data_handler.cc"],
+    hdrs = ["data_handler.h"],
+    deps = [
+        ":context",
+        ":io_handler",
+        ":sink_buffer",
+        ":source_buffer",
+        "//core",
+        "//core:small_map",
+    ],
 )
 
 cc_test(
-  name = "sink_buffer_test",
-  srcs = ["sink_buffer_test.cc"],
-  deps = [":sink_buffer",
-          "//testing",
-  ],
+    name = "data_handler_test",
+    srcs = ["data_handler_test.cc"],
+    deps = [
+        ":data_handler",
+        "//testing",
+    ],
+)
+
+cc_library(
+    name = "sink_buffer",
+    srcs = [],
+    hdrs = ["sink_buffer.h"],
+    deps = ["//core"],
+)
+
+cc_test(
+    name = "sink_buffer_test",
+    srcs = ["sink_buffer_test.cc"],
+    deps = [
+        ":sink_buffer",
+        "//testing",
+    ],
 )
