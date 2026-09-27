@@ -121,9 +121,9 @@ TEST(SocketServerAndAccept) {
   struct sockaddr_un client_addr;
   socklen_t client_addr_len = sizeof(client_addr);
   auto accepted_fd =
-      syscalls::Accept(server_fd,
-                       reinterpret_cast<struct sockaddr*>(&client_addr),
-                       &client_addr_len)
+      syscalls::Accept4(server_fd,
+                        reinterpret_cast<struct sockaddr*>(&client_addr),
+                        &client_addr_len, SOCK_NONBLOCK | SOCK_CLOEXEC)
           .ValueOrDie();
 
   // Clean up the socket file path

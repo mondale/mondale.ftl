@@ -17,8 +17,9 @@
 
 namespace core::syscalls {
 
-ResultOr<FileDescriptor> Accept(const FileDescriptor& sockfd,
-                                struct sockaddr* addr, socklen_t* addrlen);
+ResultOr<FileDescriptor> Accept4(const FileDescriptor& sockfd,
+                                 struct sockaddr* addr, socklen_t* addrlen,
+                                 int flags);
 Result Access(std::string_view path, int mode);
 Result Bind(const FileDescriptor& sockfd, const struct sockaddr* addr,
             socklen_t addrlen);

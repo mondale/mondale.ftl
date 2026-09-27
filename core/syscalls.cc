@@ -209,9 +209,12 @@ ResultOr<std::pair<FileDescriptor, FileDescriptor>> SocketPair(int domain,
   return std::make_pair(FileDescriptor(sv[0]), FileDescriptor(sv[1]));
 }
 
-ResultOr<FileDescriptor> Accept(const FileDescriptor& sockfd,
-                                struct sockaddr* addr, socklen_t* addrlen) {
-  auto syscall = [&]() -> int { return ::accept(sockfd.fd(), addr, addrlen); };
+ResultOr<FileDescriptor> Accept4(const FileDescriptor& sockfd,
+                                 struct sockaddr* addr, socklen_t* addrlen,
+                                 int flags) {
+  auto syscall = [&]() -> int {
+    return ::accept4(sockfd.fd(), addr, addrlen, flags);
+  };
   auto accept = [](int ret) -> bool { return ret >= 0; };
   TRY_ASSIGN(const int raw_fd, SyscallRetryEintr(syscall, accept));
   return FileDescriptor(raw_fd);
