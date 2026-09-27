@@ -3,10 +3,8 @@ cc_binary(
     srcs = ["webdump.cc"],
     deps = [
         "//base:process",
+        "//net:listener",
         "//core",
-        "//io:context",
-        "//io:data_handler",
-        "//io:epoller",
-        "//io:sink_buffer",
+        "//io",
     ],
 )

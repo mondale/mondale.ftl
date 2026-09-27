@@ -8,6 +8,7 @@ cc_library(
         "//core:idioms",
         "//io",
     ],
+    visibility = ["//http/..."],
 )
 
 cc_test(
@@ -26,6 +27,7 @@ cc_library(
     srcs = ["socket_address.cc"],
     hdrs = ["socket_address.h"],
     deps = ["//core"],
+    visibility = ["//http/..."],
 )
 
 cc_test(
