@@ -209,4 +209,44 @@ ResultOr<std::pair<FileDescriptor, FileDescriptor>> SocketPair(int domain,
   return std::make_pair(FileDescriptor(sv[0]), FileDescriptor(sv[1]));
 }
 
+ResultOr<FileDescriptor> Accept(const FileDescriptor& sockfd,
+                                struct sockaddr* addr, socklen_t* addrlen) {
+  auto syscall = [&]() -> int { return ::accept(sockfd.fd(), addr, addrlen); };
+  auto accept = [](int ret) -> bool { return ret >= 0; };
+  TRY_ASSIGN(const int raw_fd, SyscallRetryEintr(syscall, accept));
+  return FileDescriptor(raw_fd);
+}
+
+Result Bind(const FileDescriptor& sockfd, const struct sockaddr* addr,
+            socklen_t addrlen) {
+  auto syscall = [&]() -> int { return ::bind(sockfd.fd(), addr, addrlen); };
+  auto accept = [](int ret) -> bool { return ret == 0; };
+  TRY_ASSIGN(const int ret, SyscallRetryEintr<int>(syscall, accept));
+  return NoReturnNonZero(ret, "Bind");
+}
+
+Result Listen(const FileDescriptor& sockfd, int backlog) {
+  auto syscall = [&]() -> int { return ::listen(sockfd.fd(), backlog); };
+  auto accept = [](int ret) -> bool { return ret == 0; };
+  TRY_ASSIGN(const int ret, SyscallRetryEintr<int>(syscall, accept));
+  return NoReturnNonZero(ret, "Listen");
+}
+
+Result SetSockOpt(const FileDescriptor& sockfd, int level, int optname,
+                  const void* optval, socklen_t optlen) {
+  auto syscall = [&]() -> int {
+    return ::setsockopt(sockfd.fd(), level, optname, optval, optlen);
+  };
+  auto accept = [](int ret) -> bool { return ret == 0; };
+  TRY_ASSIGN(const int ret, SyscallRetryEintr<int>(syscall, accept));
+  return NoReturnNonZero(ret, "SetSockOpt");
+}
+
+ResultOr<FileDescriptor> Socket(int domain, int type, int protocol) {
+  auto syscall = [&]() -> int { return ::socket(domain, type, protocol); };
+  auto accept = [](int ret) -> bool { return ret >= 0; };
+  TRY_ASSIGN(const int raw_fd, SyscallRetryEintr(syscall, accept));
+  return FileDescriptor(raw_fd);
+}
+
 }  // namespace core::syscalls

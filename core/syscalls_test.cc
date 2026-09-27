@@ -1,3 +1,7 @@
+#include <sys/un.h>
+
+#include <cstring>
+
 #include "base/rawlog.h"
 #include "core/syscalls.h"
 #include "testing/testing.h"
@@ -83,6 +87,55 @@ TEST(SocketPairAndReadWrite) {
 
   char buf[32] = {};
   auto n = syscalls::Read(sv1, buf, sizeof(buf)).ValueOrDie();
+  EXPECT_EQ(n, msg.size());
+  EXPECT_EQ(std::string_view(buf, n), msg);
+}
+
+TEST(SocketServerAndAccept) {
+  auto server_fd = syscalls::Socket(AF_UNIX, SOCK_STREAM, 0).ValueOrDie();
+
+  struct sockaddr_un addr;
+  std::memset(&addr, 0, sizeof(addr));
+  addr.sun_family = AF_UNIX;
+  std::strcpy(addr.sun_path, "/tmp/core_syscalls_test.sock");
+  unlink(addr.sun_path);
+
+  int sock_opt = 1;
+  EXPECT_THAT(syscalls::SetSockOpt(server_fd, SOL_SOCKET, SO_REUSEADDR,
+                                   &sock_opt, sizeof(sock_opt)),
+              IsOk());
+
+  EXPECT_THAT(
+      syscalls::Bind(server_fd, reinterpret_cast<struct sockaddr*>(&addr),
+                     sizeof(addr)),
+      IsOk());
+  EXPECT_THAT(syscalls::Listen(server_fd, 1), IsOk());
+
+  // Create a client socket and connect using the raw file descriptor
+  auto client_fd = syscalls::Socket(AF_UNIX, SOCK_STREAM, 0).ValueOrDie();
+  int connect_ret = ::connect(
+      client_fd.fd(), reinterpret_cast<struct sockaddr*>(&addr), sizeof(addr));
+  ASSERT_EQ(connect_ret, 0);
+
+  // Accept the incoming connection
+  struct sockaddr_un client_addr;
+  socklen_t client_addr_len = sizeof(client_addr);
+  auto accepted_fd =
+      syscalls::Accept(server_fd,
+                       reinterpret_cast<struct sockaddr*>(&client_addr),
+                       &client_addr_len)
+          .ValueOrDie();
+
+  // Clean up the socket file path
+  unlink(addr.sun_path);
+
+  // Verify full-duplex communication between client and accepted server socket
+  std::string_view msg = "hello socket";
+  EXPECT_EQ(syscalls::Write(client_fd, msg.data(), msg.size()).ValueOrDie(),
+            msg.size());
+
+  char buf[32] = {};
+  auto n = syscalls::Read(accepted_fd, buf, sizeof(buf)).ValueOrDie();
   EXPECT_EQ(n, msg.size());
   EXPECT_EQ(std::string_view(buf, n), msg);
 }

@@ -17,7 +17,11 @@
 
 namespace core::syscalls {
 
+ResultOr<FileDescriptor> Accept(const FileDescriptor& sockfd,
+                                struct sockaddr* addr, socklen_t* addrlen);
 Result Access(std::string_view path, int mode);
+Result Bind(const FileDescriptor& sockfd, const struct sockaddr* addr,
+            socklen_t addrlen);
 ResultOr<FileDescriptor> EpollCreate1(int flags);
 Result EpollCtl(const FileDescriptor& epfd, int op, const FileDescriptor& fd,
                 struct epoll_event* event);
@@ -33,11 +37,15 @@ ResultOr<int> Fcntl(const FileDescriptor& fd, int cmd, int arg);
 ResultOr<int> Fcntl(const FileDescriptor& fd, int cmd, void* arg);
 ResultOr<struct stat> FStat(const FileDescriptor& fd);
 ResultOr<struct rlimit> GetRLimit(int resource);
+Result Listen(const FileDescriptor& sockfd, int backlog);
 Result Madvise(void* p, size_t n, int advice);
 ResultOr<FileDescriptor> Open(std::string_view path, int flags, mode_t mode);
 ResultOr<std::pair<FileDescriptor, FileDescriptor>> Pipe2(int flags);
 ResultOr<size_t> Read(const FileDescriptor& fd, char* buf, size_t count);
 Result SetRLimit(int resource, const struct rlimit* l);
+Result SetSockOpt(const FileDescriptor& sockfd, int level, int optname,
+                  const void* optval, socklen_t optlen);
+ResultOr<FileDescriptor> Socket(int domain, int type, int protocol);
 ResultOr<std::pair<FileDescriptor, FileDescriptor>> SocketPair(int domain,
                                                                int type,
                                                                int protocol);
