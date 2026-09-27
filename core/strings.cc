@@ -1,4 +1,7 @@
+#include <cstddef>
 #include <cstdint>
+#include <iomanip>
+#include <sstream>
 #include <string>
 #include <string_view>
 
@@ -195,6 +198,51 @@ ResultOr<std::string> UnescapeString(std::string_view s) {
   }
 
   return out;
+}
+
+std::string Hexdump(const char* s, size_t n) {
+  if (s == nullptr && n > 0) {
+    return "";
+  }
+
+  std::ostringstream oss;
+  const unsigned char* ptr = reinterpret_cast<const unsigned char*>(s);
+
+  for (size_t offset = 0; offset < n; offset += 16) {
+    // Print 8-digit hex offset
+    oss << std::hex << std::setfill('0') << std::setw(8) << offset << "  ";
+
+    size_t row_bytes = (n - offset < 16) ? (n - offset) : 16;
+
+    // Print hex values in two 8-byte groups
+    for (size_t i = 0; i < 16; ++i) {
+      if (i == 8) {
+        oss << " ";
+      }
+      if (i < row_bytes) {
+        oss << std::setw(2) << static_cast<int>(ptr[offset + i]) << " ";
+      } else {
+        oss << "   ";  // Padding for incomplete final row
+      }
+    }
+
+    // Print ASCII representation
+    oss << " |";
+    for (size_t i = 0; i < row_bytes; ++i) {
+      unsigned char c = ptr[offset + i];
+      if (c >= 32 && c <= 126) {
+        oss << static_cast<char>(c);
+      } else {
+        oss << '.';
+      }
+    }
+    oss << "|\n";
+  }
+
+  // Final offset line matching hexdump -C behavior
+  oss << std::hex << std::setfill('0') << std::setw(8) << n << "\n";
+
+  return oss.str();
 }
 
 }  // namespace core::strings

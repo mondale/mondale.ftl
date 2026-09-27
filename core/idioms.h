@@ -11,6 +11,7 @@ namespace core::idioms {
 Result ReadExactly(const FileDescriptor& fd, char* output, size_t bytes);
 Result WriteExactly(const FileDescriptor& fd, std::string_view data);
 Result SetNonBlocking(const FileDescriptor& fd);
+ResultOr<FileDescriptor> NewListenSocket(uint16_t port, int backlog);
 
 }  // namespace core::idioms
 

@@ -6,6 +6,7 @@
 #include "testing/testing.h"
 
 using namespace std::string_literals;
+using testing::HasSubstr;
 
 namespace core::strings {
 
@@ -169,6 +170,49 @@ TEST(UnEscapeStringTest_InvalidEscapesFail) {
   EXPECT_FALSE(UnescapeString("Trailing \\").IsOk());
   EXPECT_FALSE(UnescapeString("Invalid \\z escape").IsOk());
   EXPECT_FALSE(UnescapeString("Incomplete \\x1").IsOk());
+}
+
+TEST(HexdumpTest_EmptyInput) {
+  std::string result = Hexdump("", 0);
+  EXPECT_EQ(result, "00000000\n");
+}
+
+TEST(HexdumpTest_ShortInput) {
+  const char* data = "Hello";
+  std::string result = Hexdump(data, 5);
+
+  EXPECT_THAT(result, HasSubstr("00000000  48 65 6c 6c 6f"));
+  EXPECT_THAT(result, HasSubstr("|Hello|"));
+  EXPECT_THAT(result, HasSubstr("00000005\n"));
+}
+
+TEST(HexdumpTest_ExactlySixteenBytes) {
+  const char* data = "0123456789abcdef";
+  std::string result = Hexdump(data, 16);
+
+  EXPECT_THAT(result, HasSubstr("00000000  30 31 32 33 34 35 36 37  38 39 61 "
+                                "62 63 64 65 66  |0123456789abcdef|"));
+  EXPECT_THAT(result, HasSubstr("00000010\n"));
+}
+
+TEST(HexdumpTest_NonPrintableCharacters) {
+  char data[] = {0x00, 0x01, 0x1F, 0x7F, (char)0xFF};
+  std::string result = Hexdump(data, 5);
+
+  EXPECT_THAT(result, HasSubstr("00 01 1f 7f ff"));
+  EXPECT_THAT(result, HasSubstr("|.....|"));
+}
+
+TEST(HexdumpTest_MultiRowInput) {
+  // 20 bytes spans across two rows (16 bytes + 4 bytes)
+  const char* data = "ABCDEFGHIJKLMNOPQRST";
+  std::string result = Hexdump(data, 20);
+
+  EXPECT_THAT(result, HasSubstr("00000000  41 42 43 44 45 46 47 48  49 4a 4b "
+                                "4c 4d 4e 4f 50  |ABCDEFGHIJKLMNOP|"));
+  EXPECT_THAT(result, HasSubstr("00000010  51 52 53 54                         "
+                                "              |QRST|"));
+  EXPECT_THAT(result, HasSubstr("00000014\n"));
 }
 
 }  // namespace core::strings

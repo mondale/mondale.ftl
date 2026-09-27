@@ -1,4 +1,7 @@
+#include <netinet/in.h>
+
 #include "core/idioms.h"
+#include "core/strings.h"
 #include "core/syscalls.h"
 
 namespace core::idioms {
@@ -38,6 +41,33 @@ Result SetNonBlocking(const FileDescriptor& fd) {
   TRY_ASSIGN(int flags, core::syscalls::Fcntl(fd, F_GETFL, 0));
   TRY_ASSIGN(flags, core::syscalls::Fcntl(fd, F_SETFL, flags | O_NONBLOCK));
   return Result::Ok();
+}
+
+ResultOr<FileDescriptor> NewListenSocket(uint16_t port, int backlog) {
+  if (backlog <= 0) {
+    return core::InvalidArgumentError(
+        strings::Format("Listen backlog [{}] must be positive.", backlog));
+  }
+
+  TRY_ASSIGN(auto fd, core::syscalls::Socket(AF_INET6, SOCK_STREAM, 0));
+  TRY(SetNonBlocking(fd));
+
+  // Allow the socket to accept v4 or v6 by clearing the v6 only flag.
+  int opt = 0;  // v6 or v4
+  TRY(core::syscalls::SetSockOpt(fd, IPPROTO_IPV6, IPV6_V6ONLY, &opt,
+                                 sizeof(opt)));
+
+  // Bind to the ipv6 any address.
+  sockaddr_in6 addr{};
+  addr.sin6_family = AF_INET6;
+  addr.sin6_addr = in6addr_any;
+  addr.sin6_port = htons(port);
+  TRY(core::syscalls::Bind(fd, reinterpret_cast<const struct sockaddr*>(&addr),
+                           sizeof(addr)));
+
+  // Begin listening.
+  TRY(core::syscalls::Listen(fd, backlog));
+  return fd;
 }
 
 }  // namespace core::idioms

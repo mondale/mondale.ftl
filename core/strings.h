@@ -232,6 +232,9 @@ std::string EscapeString(std::string_view s);
 // raw bytes.
 ResultOr<std::string> UnescapeString(std::string_view s);
 
+// Returns the canonical hexdump of [s, s+n).
+std::string Hexdump(const char* s, size_t n);
+
 }  // namespace core::strings
 
 #endif  // #ifndef CORE_STRINGS_H_

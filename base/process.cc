@@ -273,6 +273,7 @@ void FlushLogs() {
 
 void Initialize(int argc, char* argv[]) {
   if (!ValidateEnvironment()) {
+    // TODO - switch to RAWLOG
     std::cerr << "Unsuitable environment. Exiting." << std::endl;
     exit(1);
   }
