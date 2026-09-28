@@ -157,6 +157,10 @@ Result CapsuleFatalError(std::string_view msg, base::SourceLocation loc) {
   return MakeError(Code::kCapsuleFatal, msg, loc);
 }
 
+Result StreamFatalError(std::string_view msg, base::SourceLocation loc) {
+  return MakeError(Code::kStreamFatal, msg, loc);
+}
+
 Result UnimplementedError(std::string_view msg, base::SourceLocation loc) {
   return MakeError(Code::kUnimplemented, msg, loc);
 }

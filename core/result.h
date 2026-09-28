@@ -254,6 +254,9 @@ Result PermissionError(
 Result CapsuleFatalError(
     std::string_view msg,
     base::SourceLocation loc = base::SourceLocation::Current());
+Result StreamFatalError(
+    std::string_view msg,
+    base::SourceLocation loc = base::SourceLocation::Current());
 Result UnimplementedError(
     std::string_view msg,
     base::SourceLocation loc = base::SourceLocation::Current());

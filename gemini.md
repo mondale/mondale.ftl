@@ -106,6 +106,10 @@ Review these instructions and LMK when you are ready to proceed.
    `StdoutContains(regex)`, and `StderrContains(regex)`.
  * When extracting a value from a `ResultOr<T>`, use `r.ValueOrDie()` and not
    a macro.
+ * When testing an iterator `x` against a container's `end()`, use 
+   `ASSERT_TRUE(x != c.end())` to test that a container contains an element, and
+   use `ASSERT_TRUE(x ==c.end())` to test that a container does not contain an
+   element.
  * If mocking is needed:
    * `#include "testing/mock.h"`:
    * Mocks are subclasses of what they mock.
