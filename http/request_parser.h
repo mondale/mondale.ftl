@@ -36,6 +36,8 @@ class RequestParser final {
   // the front of 's' to account for all header and body bytes.
   ResultOr<size_t> Parse(std::string_view s);
 
+  std::string ToString() const;
+
   Method method() const { return method_; }
   Version version() const { return version_; }
   const std::string& uri() const { return uri_; }

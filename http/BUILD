@@ -2,6 +2,7 @@ cc_binary(
     name = "webdump",
     srcs = ["webdump.cc"],
     deps = [
+":request_parser",
         "//base:process",
         "//net:listener",
         "//core",

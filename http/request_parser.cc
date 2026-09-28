@@ -173,6 +173,16 @@ ResultOr<size_t> RequestParser::Parse(std::string_view s) {
   return total_required_size;
 }
 
+std::string RequestParser::ToString() const {
+  std::string headers_str;
+  for (const auto& [k, v] : keyvals()) {
+    headers_str += strings::Format("{}: {}\r\n", k, v);
+  }
+  return strings::Format("{} {} {}\r\n{}\r\n{}", ::http::ToString(method()),
+                         uri(), ::http::ToString(version()), headers_str,
+                         body());
+}
+
 std::string ToString(RequestParser::Method method) {
   switch (method) {
     case RequestParser::Method::kGet:

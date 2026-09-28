@@ -1,6 +1,7 @@
 #include "base/flags.h"
 #include "base/process.h"
 #include "core/vocabulary.h"
+#include "http/request_parser.h"
 #include "io/io.h"
 #include "net/listener.h"
 
@@ -28,6 +29,9 @@ class Dumper final : public io::IoHandler {
     TRY_ASSIGN(auto n, NonBlockingRead(&o, fd, buf, kSize));
     if (n > 0) {
       Log(INFO) << "\n" << strings::Hexdump(buf, n);
+      http::RequestParser p;
+      TRY(p.Parse({buf, n}));
+      Log(INFO) << p.ToString();
     }
     return o;
   }
