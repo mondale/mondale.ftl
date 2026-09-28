@@ -56,8 +56,8 @@ Result Webdump() {
             //
           }));
   Log(INFO) << "Listener online on port [" << port << "].";
-  SleepFor(base::Hours(1));
-  Log(INFO) << "Listener timeout.";
+  base::AwaitSigInt();
+  Log(INFO) << "CTRL+C'd, exiting.";
 
   return Result::Ok();
 }

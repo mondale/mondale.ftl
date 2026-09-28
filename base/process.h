@@ -21,6 +21,9 @@ void FlushLogs();
 // Returns true (probably) when you're (probably) in a forked subprocess.
 bool AmIInAForkedSubprocess();
 
+// Blocks until CTRLC+.
+void AwaitSigInt();
+
 }  // namespace base
 
 #endif  // #ifndef BASE_PROCESS_H_

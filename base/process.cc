@@ -32,6 +32,21 @@ using namespace base::raw_syscalls;
 namespace base {
 namespace {
 
+std::atomic<int64_t> global_sigint_generation{0};
+std::atomic<int64_t> global_sigint_waiters{0};
+
+void WaitForSigInt() {
+  global_sigint_waiters.fetch_add(1, std::memory_order_acq_rel);
+  const auto entry = global_sigint_generation.load(std::memory_order_acquire);
+  while (entry == global_sigint_generation.load(std::memory_order_acquire)) {
+    struct timespec ts;
+    ts.tv_sec = 0;
+    ts.tv_nsec = 10;
+    ::nanosleep(&ts, &ts);
+  }
+  global_sigint_waiters.fetch_add(-1, std::memory_order_acq_rel);
+}
+
 void PreForkHandler() {
   // we do nothing here
 }
@@ -131,8 +146,7 @@ int EnumerateOtherThreads(int* tids, int max_threads) {
 
 volatile int global_signal_depth = 0;
 
-[[noreturn]] void DeadlySignalHandler(int sig, siginfo_t* info,
-                                      void* ucontext) {
+void DeadlySignalHandler(int sig, siginfo_t* info, void* ucontext) {
   constexpr int kMaxThreads = 1024;
   int tids[kMaxThreads];
 
@@ -140,6 +154,13 @@ volatile int global_signal_depth = 0;
   global_signal_depth = global_signal_depth + 1;
   if (global_signal_depth > 1) {
     DeadlySignalHandlerReentered(sig);
+  }
+
+  // SIGINT is benign if a there are threads waiting for one.
+  if (SIGINT == sig &&
+      global_sigint_waiters.load(std::memory_order_acquire) > 0) {
+    global_sigint_generation.fetch_add(1, std::memory_order_acq_rel);
+    return;
   }
 
   const int thread_count = EnumerateOtherThreads(tids, kMaxThreads);
@@ -271,6 +292,8 @@ void FlushLogs() {
   }
 }
 
+void AwaitSigInt() { WaitForSigInt(); }
+
 void Initialize(int argc, char* argv[]) {
   if (!ValidateEnvironment()) {
     // TODO - switch to RAWLOG
@@ -292,6 +315,7 @@ void Initialize(int argc, char* argv[]) {
 
   BecomeBackgroundThread();
   RunStartupHooks();
+  atexit(&FlushLogs);
 }
 
 }  // namespace base
