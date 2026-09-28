@@ -53,7 +53,6 @@ Result Webdump() {
             Log(INFO) << "Connection from: " << sa.ToString();
             auto h = Dumper::Build();
             CHECK_OK(e->SetNonBlockingAndRegister(std::move(h), std::move(fd)));
-            //
           }));
   Log(INFO) << "Listener online on port [" << port << "].";
   base::AwaitSigInt();
