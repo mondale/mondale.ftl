@@ -36,6 +36,9 @@ class IoHandler {
   // to get another opportnity to write.
   virtual ResultOr<Outcome> HandleWrite(FdHandle h,
                                         const core::FileDescriptor& fd) = 0;
+
+  // Implementation may override if you want something besides closure for a
+  // long idle file descriptor.
   virtual Result HandleIdle(FdHandle h, const core::FileDescriptor& fd) {
     return Result(Code::kDeadline);
   }
