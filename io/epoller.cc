@@ -110,7 +110,7 @@ Result Epoller::Register(std::shared_ptr<IoHandler> h,
                          core::FileDescriptor&& fd) {
   core::InlinedVector<core::FileDescriptor, 2> fds;
   fds.emplace_back(std::move(fd));
-  Route({std::move(h), std::move(fds)});
+  Route({std::move(h), std::move(fds), []() {}});
   return Result::Ok();
 }
 
@@ -118,6 +118,12 @@ Result Epoller::SetNonBlockingAndRegister(std::shared_ptr<IoHandler> h,
                                           core::FileDescriptor&& fd) {
   TRY(core::idioms::SetNonBlocking(fd));
   return Register(std::move(h), std::move(fd));
+}
+
+Result Epoller::RunWithAffinity(std::shared_ptr<IoHandler> h,
+                                std::move_only_function<void()> fn) {
+  Route({std::move(h), {}, std::move(fn)});
+  return Result::Ok();
 }
 
 }  // namespace io

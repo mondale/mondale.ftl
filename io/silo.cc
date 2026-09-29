@@ -200,7 +200,15 @@ Result Silo::RunAdmission() {
       shed_(std::move(i));
       continue;
     }
-    TRY(Add(std::move(i)));
+
+    // This is either a request to run a function on this thread, or it's an
+    // inbound handle.
+    if (i.fds.empty()) {
+      // Request to run function.
+      i.fn();
+    } else {
+      TRY(Add(std::move(i)));
+    }
   }
   return Result::Ok();
 }

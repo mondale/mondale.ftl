@@ -22,6 +22,11 @@ class Epoller final {
   Result SetNonBlockingAndRegister(std::shared_ptr<IoHandler> h,
                                    core::FileDescriptor&& fd);
 
+  // Runs 'fn' in the thread silo associated with 'h'. 'fn' will not always be
+  // run at all if racing against destruction of 'h'.
+  Result RunWithAffinity(std::shared_ptr<IoHandler> h,
+                         std::move_only_function<void()> fn);
+
  private:
   int SelectSilo();
 

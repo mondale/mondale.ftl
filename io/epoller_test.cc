@@ -41,7 +41,9 @@ TEST_F(EpollerTest, BuildInvalidSilosFails) {
 
 TEST_F(EpollerTest, BuildAndTeardown) {
   auto epoller_res = Epoller::Build(2);
-  EXPECT_TRUE(epoller_res.IsOk());
+  ASSERT_TRUE(epoller_res.IsOk());
+  auto e = std::move(epoller_res.ValueOrDie());
+
   // Destruction of the unique_ptr here will test clean thread shutdown.
 }
 
@@ -63,6 +65,11 @@ TEST_F(EpollerTest, RegisterAndDispatch) {
 
   EXPECT_TRUE(Await([&]() { return stuff.BytesRead() >= msg.length(); }));
   EXPECT_EQ(stuff.BytesRead(), msg.length());
+
+  Notification n;
+  CHECK_OK(epoller->RunWithAffinity(handler, [&]() { n.Notify(); }));
+
+  n.WaitForNotification();
 }
 
 TEST_F(EpollerTest, CarlyHandlerAsyncRunDispatch) {

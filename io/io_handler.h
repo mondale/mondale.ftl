@@ -80,6 +80,7 @@ namespace internal {
 struct HFDs {
   std::shared_ptr<IoHandler> h;
   core::InlinedVector<core::FileDescriptor, 2> fds;
+  std::move_only_function<void()> fn;
 };
 }  // namespace internal
 

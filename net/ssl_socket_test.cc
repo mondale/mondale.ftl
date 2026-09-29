@@ -29,16 +29,20 @@ TEST_F(SslSocketTest, HelloWorldWithSsl) {
   // Post the response message.
   constexpr char kMessage[] = "You are thusly greeted.";
   Notification sent;  // Note that on a failure this test case can segfault.
-  ssl_socket->Post(
-      io::SourceBuffer(kMessage, sizeof(kMessage), [&]() { sent.Notify(); }));
+  CHECK_OK(e_->RunWithAffinity(ssl_socket, [&]() {
+    ssl_socket->Post(
+        io::SourceBuffer(kMessage, sizeof(kMessage), [&]() { sent.Notify(); }));
+  }));
 
   // Post the buffering for the inbound message;
   char inbound[64];
   std::atomic<size_t> bytes_received{0};
   Notification received;  // Note that on a failure this test case can segfault.
-  ssl_socket->Post(io::SinkBuffer(inbound, 64, [&](size_t bytes) {
-    bytes_received.store(bytes, std::memory_order_release);
-    received.Notify();
+  CHECK_OK(e_->RunWithAffinity(ssl_socket, [&]() {
+    ssl_socket->Post(io::SinkBuffer(inbound, 64, [&](size_t bytes) {
+      bytes_received.store(bytes, std::memory_order_release);
+      received.Notify();
+    }));
   }));
 
   // This test case uses synchronous syscalls/SSL calls to send "Hello, world!"
@@ -95,9 +99,11 @@ TEST_F(SslSocketTest, AbruptClientDisconnect) {
   char inbound[64];
   Notification received;  // Note that on a failure this test case can segfault.
   std::atomic<size_t> bytes_received{1};
-  ssl_socket->Post(io::SinkBuffer(inbound, 64, [&](size_t bytes) {
-    bytes_received.store(bytes, std::memory_order_release);
-    received.Notify();
+  CHECK_OK(e_->RunWithAffinity(ssl_socket, [&, s = ssl_socket]() {
+    s->Post(io::SinkBuffer(inbound, 64, [&](size_t bytes) {
+      bytes_received.store(bytes, std::memory_order_release);
+      received.Notify();
+    }));
   }));
 
   // Drop our ref on the socket.
@@ -125,9 +131,11 @@ TEST_F(SslSocketTest, HandshakeFailureProtocolMismatch) {
   char inbound[64];
   Notification received;
   std::atomic<size_t> bytes_received{1};
-  ssl_socket->Post(io::SinkBuffer(inbound, 64, [&](size_t bytes) {
-    bytes_received.store(bytes, std::memory_order_release);
-    received.Notify();
+  CHECK_OK(e_->RunWithAffinity(ssl_socket, [&, s = ssl_socket]() {
+    s->Post(io::SinkBuffer(inbound, 64, [&](size_t bytes) {
+      bytes_received.store(bytes, std::memory_order_release);
+      received.Notify();
+    }));
   }));
 
   // Send raw garbage bytes instead of a valid TLS ClientHello
@@ -158,8 +166,10 @@ TEST_F(SslSocketTest, LargeMultiPacketPayload) {
 
   std::string large_message(64 * 1024, 'X');
   Notification sent;
-  ssl_socket->Post(io::SourceBuffer(large_message.data(), large_message.size(),
-                                    [&]() { sent.Notify(); }));
+  CHECK_OK(e_->RunWithAffinity(ssl_socket, [&]() {
+    ssl_socket->Post(io::SourceBuffer(
+        large_message.data(), large_message.size(), [&]() { sent.Notify(); }));
+  }));
 
   // Establish synchronous client connection
   auto* client_ctx = SSL_CTX_new(TLS_client_method());
@@ -211,12 +221,14 @@ TEST_F(SslSocketTest, ChainedQueuedBuffers) {
   Notification n1;
   Notification n2;
   Notification n3;
-  ssl_socket->Post(
-      io::SourceBuffer(kMsg1, sizeof(kMsg1) - 1, [&]() { n1.Notify(); }));
-  ssl_socket->Post(
-      io::SourceBuffer(kMsg2, sizeof(kMsg2) - 1, [&]() { n2.Notify(); }));
-  ssl_socket->Post(
-      io::SourceBuffer(kMsg3, sizeof(kMsg3) - 1, [&]() { n3.Notify(); }));
+  CHECK_OK(e_->RunWithAffinity(ssl_socket, [&]() {
+    ssl_socket->Post(
+        io::SourceBuffer(kMsg1, sizeof(kMsg1) - 1, [&]() { n1.Notify(); }));
+    ssl_socket->Post(
+        io::SourceBuffer(kMsg2, sizeof(kMsg2) - 1, [&]() { n2.Notify(); }));
+    ssl_socket->Post(
+        io::SourceBuffer(kMsg3, sizeof(kMsg3) - 1, [&]() { n3.Notify(); }));
+  }));
 
   auto* client_ctx = SSL_CTX_new(TLS_client_method());
   auto* client_ssl = SSL_new(client_ctx);

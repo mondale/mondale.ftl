@@ -14,20 +14,21 @@ cc_binary(
 )
 
 cc_library(
-    name = "web_handler",
-    srcs = ["web_handler.cc"],
-    hdrs = ["web_handler.h"],
+    name = "web_socket",
+    srcs = ["web_socket.cc"],
+    hdrs = ["web_socket.h"],
     deps = [
         "//core",
         "//io",
+"//net:socket_address",
     ],
 )
 
 cc_test(
-    name = "web_handler_test",
-    srcs = ["web_handler_test.cc"],
+    name = "web_socket_test",
+    srcs = ["web_socket_test.cc"],
     deps = [
-        ":web_handler",
+        ":web_socket",
         "//testing",
     ],
 )
