@@ -2,7 +2,7 @@
 
 namespace testing {
 
-MatchResult HasSubstrMatcher::Match(const std::string& actual) const {
+MatchResult HasSubstrMatcher::Match(const std::string_view& actual) const {
   if (actual.find(substring_) != std::string::npos) {
     return {true, ""};
   }

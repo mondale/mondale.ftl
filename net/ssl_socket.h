@@ -23,8 +23,8 @@ class SslSocket final : public io::IoHandler {
                                                   net::SocketAddress sa,
                                                   SslHandshaker shs);
 
-  void Post(io::FdHandle h, io::SourceBuffer sb);
-  void Post(io::FdHandle h, io::SinkBuffer sb);
+  void Post(io::SourceBuffer sb);
+  void Post(io::SinkBuffer sb);
 
   ResultOr<Outcome> HandleRead(io::FdHandle h,
                                const core::FileDescriptor& fd) override;
@@ -32,14 +32,13 @@ class SslSocket final : public io::IoHandler {
                                 const core::FileDescriptor& fd) override;
 
  private:
-  ResultOr<Outcome> HandleReadEstablished(io::FdHandle h,
-                                          const core::FileDescriptor& fd);
-  ResultOr<Outcome> HandleWriteEstablished(io::FdHandle h,
-                                           const core::FileDescriptor& fd);
-  ResultOr<Outcome> AttemptRead(io::FdHandle h, const core::FileDescriptor& fd);
-  ResultOr<Outcome> AttemptWrite(io::FdHandle h,
-                                 const core::FileDescriptor& fd);
+  ResultOr<Outcome> HandleReadEstablished();
+  ResultOr<Outcome> HandleWriteEstablished();
+  ResultOr<Outcome> AttemptRead();
+  ResultOr<Outcome> AttemptWrite();
+
   void* const ssl_;
+  io::FdHandle h_ = io::FdHandle::kInvalid;
   bool read_wants_write_ = false;
   bool write_wants_read_ = false;
   SslHandshaker handshaker_;

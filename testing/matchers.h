@@ -66,7 +66,7 @@ class HasSubstrMatcher final {
   explicit HasSubstrMatcher(std::string substring)
       : substring_(std::move(substring)) {}
 
-  MatchResult Match(const std::string& actual) const;
+  MatchResult Match(const std::string_view& actual) const;
   void DescribeTo(std::ostream& os) const;
 
  private:

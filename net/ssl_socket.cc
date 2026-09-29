@@ -103,14 +103,13 @@ ResultOr<std::shared_ptr<SslSocket>> SslSocket::New(io::Epoller* e,
   return ret;
 }
 
-ResultOr<io::IoHandler::Outcome> SslSocket::AttemptRead(
-    io::FdHandle h, const core::FileDescriptor& fd) {
+ResultOr<io::IoHandler::Outcome> SslSocket::AttemptRead() {
   Outcome o = Outcome::kSuspend;
   if (sinks_.empty()) return o;
 
   auto& s = sinks_.front();
   SSL* const ssl = reinterpret_cast<SSL*>(ssl_);
-  TRY_ASSIGN(const auto n, NonBlockingSslRead(&o, h, ssl, &read_wants_write_,
+  TRY_ASSIGN(const auto n, NonBlockingSslRead(&o, h_, ssl, &read_wants_write_,
                                               s.data(), s.size()));
   if (n > 0) {
     static_cast<void>(s.Advance(n));
@@ -119,14 +118,13 @@ ResultOr<io::IoHandler::Outcome> SslSocket::AttemptRead(
   return o;
 }
 
-ResultOr<io::IoHandler::Outcome> SslSocket::AttemptWrite(
-    io::FdHandle h, const core::FileDescriptor& fd) {
+ResultOr<io::IoHandler::Outcome> SslSocket::AttemptWrite() {
   Outcome o = Outcome::kSuspend;
   if (sources_.empty()) return o;
 
   auto& s = sources_.front();
   SSL* const ssl = reinterpret_cast<SSL*>(ssl_);
-  TRY_ASSIGN(const auto n, NonBlockingSslWrite(&o, h, ssl, &write_wants_read_,
+  TRY_ASSIGN(const auto n, NonBlockingSslWrite(&o, h_, ssl, &write_wants_read_,
                                                s.data(), s.size()));
   if (s.Consume(n)) {
     sources_.pop();
@@ -134,38 +132,37 @@ ResultOr<io::IoHandler::Outcome> SslSocket::AttemptWrite(
   return o;
 }
 
-ResultOr<io::IoHandler::Outcome> SslSocket::HandleReadEstablished(
-    io::FdHandle h, const core::FileDescriptor& fd) {
+ResultOr<io::IoHandler::Outcome> SslSocket::HandleReadEstablished() {
   if (write_wants_read_) {
     write_wants_read_ = false;
-    io::Context::Current()->RequestWrite(h);
+    io::Context::Current()->RequestWrite(h_);
     // Repeat our last *write* operation. Return a read-yield so reads can
     // proceed. Request a write so that the write state machine in the epoller
     // resynchonizes with the fd.
-    TRY_ASSIGN(auto swallowed, AttemptWrite(h, fd));
+    TRY_ASSIGN(auto swallowed, AttemptWrite());
     static_cast<void>(swallowed);
     return Outcome::kYield;
   }
-  return AttemptRead(h, fd);
+  return AttemptRead();
 }
 
-ResultOr<io::IoHandler::Outcome> SslSocket::HandleWriteEstablished(
-    io::FdHandle h, const core::FileDescriptor& fd) {
+ResultOr<io::IoHandler::Outcome> SslSocket::HandleWriteEstablished() {
   if (read_wants_write_) {
     read_wants_write_ = false;
-    io::Context::Current()->RequestRead(h);
+    io::Context::Current()->RequestRead(h_);
     // Repeat our last *read* operation. Return a write-yield so reads can
     // proceed. Request a read so that the read state machine in the epoller
     // resynchronizes with the fd.
-    TRY_ASSIGN(auto swallowed, AttemptRead(h, fd));
+    TRY_ASSIGN(auto swallowed, AttemptRead());
     static_cast<void>(swallowed);
     return Outcome::kYield;
   }
-  return AttemptWrite(h, fd);
+  return AttemptWrite();
 }
 
 ResultOr<io::IoHandler::Outcome> SslSocket::HandleRead(
     io::FdHandle h, const core::FileDescriptor& fd) {
+  h_ = h;
   if (handshaker_.in_progress()) {
     if (!handshaker_.wants_read()) {
       return Outcome::kSuspend;
@@ -173,20 +170,21 @@ ResultOr<io::IoHandler::Outcome> SslSocket::HandleRead(
     TRY_ASSIGN(const auto vibe, handshaker_.RunAccept(ssl_));
     switch (vibe) {
       case SslHandshaker::Vibe::kComplete:
-        io::Context::Current()->RequestWrite(h);  // in case we suspended
+        io::Context::Current()->RequestWrite(h_);  // in case we suspended
         return Outcome::kYield;
       case SslHandshaker::Vibe::kWantedRead:
         return Outcome::kFdEagain;
       case SslHandshaker::Vibe::kWantedWrite:
-        io::Context::Current()->RequestWrite(h);
+        io::Context::Current()->RequestWrite(h_);
         return Outcome::kSuspend;
     }
   }
-  return HandleReadEstablished(h, fd);
+  return HandleReadEstablished();
 }
 
 ResultOr<io::IoHandler::Outcome> SslSocket::HandleWrite(
     io::FdHandle h, const core::FileDescriptor& fd) {
+  h_ = h;
   if (handshaker_.in_progress()) {
     if (!handshaker_.wants_write()) {
       return Outcome::kSuspend;
@@ -194,25 +192,29 @@ ResultOr<io::IoHandler::Outcome> SslSocket::HandleWrite(
     TRY_ASSIGN(const auto vibe, handshaker_.RunAccept(ssl_));
     switch (vibe) {
       case SslHandshaker::Vibe::kComplete:
-        io::Context::Current()->RequestRead(h);  // in case we suspended
+        io::Context::Current()->RequestRead(h_);  // in case we suspended
         return Outcome::kYield;
       case SslHandshaker::Vibe::kWantedRead:
-        io::Context::Current()->RequestRead(h);
+        io::Context::Current()->RequestRead(h_);
         return Outcome::kSuspend;
       case SslHandshaker::Vibe::kWantedWrite:
         return Outcome::kFdEagain;
     }
   }
-  return HandleWriteEstablished(h, fd);
+  return HandleWriteEstablished();
 }
 
-void SslSocket::Post(io::FdHandle h, io::SourceBuffer sb) {
-  if (sources_.empty()) io::Context::Current()->RequestWrite(h);
+void SslSocket::Post(io::SourceBuffer sb) {
+  if (sources_.empty() && h_ != io::FdHandle::kInvalid) {
+    io::Context::Current()->RequestWrite(h_);
+  }
   sources_.push(std::move(sb));
 }
 
-void SslSocket::Post(io::FdHandle h, io::SinkBuffer sb) {
-  if (sinks_.empty()) io::Context::Current()->RequestRead(h);
+void SslSocket::Post(io::SinkBuffer sb) {
+  if (sinks_.empty() && h_ != io::FdHandle::kInvalid) {
+    io::Context::Current()->RequestRead(h_);
+  }
   sinks_.push(std::move(sb));
 }
 

@@ -17,7 +17,7 @@ namespace io {
 // Subclasses may partially override.
 class DataHandler : public IoHandler,
                     public std::enable_shared_from_this<DataHandler> {
- private:
+ protected:
   struct PrivateTag {};
 
  public:
