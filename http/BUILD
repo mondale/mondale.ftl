@@ -7,6 +7,8 @@ cc_binary(
         "//core",
         "//io",
         "//net:listener",
+"//net:ssl_context",
+"//net:ssl_socket",
     ],
 )
 

@@ -56,6 +56,7 @@ cc_library(
         ":ssl_helpers",
         "//core",
     ],
+    visibility = ["//http/..."],
 )
 
 cc_test(
@@ -82,6 +83,7 @@ cc_library(
         "//core",
         "//io",
     ],
+    visibility = ["//http/..."],
 )
 
 cc_test(
