@@ -45,9 +45,6 @@ TEST_F(SslSocketTest, HelloWorldWithSsl) {
     }));
   }));
 
-  // This test case uses synchronous syscalls/SSL calls to send "Hello, world!"
-  // and then receive "You are thusly greeted." from the server.
-
   // Set up a synchronous client-side SSL connection over the other socket pair
   // end (s0)
   auto* client_ctx = SSL_CTX_new(TLS_client_method());

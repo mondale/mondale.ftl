@@ -1,8 +1,4 @@
-#include "base/flags.h"
 #include "http/web_socket.h"
-
-FLAG_COHORT(http);
-FLAG(int, initial_buffer_bytes, 8192).Ge(8).Lt(65536);
 
 namespace http {
 
@@ -15,25 +11,49 @@ ResultOr<std::shared_ptr<WebSocket>> WebSocket::New(io::Epoller* e,
   return ret;
 }
 
-WebSocket::WebSocket(PrivateTag) {
-  // buf_.resize(FLAG_LOOKUP(initial_buffer_bytes));
-}
+WebSocket::WebSocket(PrivateTag) {}
 
 ResultOr<io::IoHandler::Outcome> WebSocket::HandleRead(
     io::FdHandle h, const core::FileDescriptor& fd) {
+  h_ = h;
   Outcome o = Outcome::kSuspend;
-  /*
-    const auto remain = buf_.size() - bytes_;
-    TRY_ASSIGN(const auto n,
-               NonBlockingRead(&o, fd, buf_.data() + bytes_, remain));
-  */
+  if (sinks_.empty()) return o;
+
+  auto& s = sinks_.front();
+  TRY_ASSIGN(const auto n, NonBlockingRead(&o, fd, s.data(), s.size()));
+  if (n > 0) {
+    static_cast<void>(s.Advance(n));
+    sinks_.pop();  // Admit partial fills of the buffer.
+  }
   return o;
 }
 
 ResultOr<io::IoHandler::Outcome> WebSocket::HandleWrite(
     io::FdHandle h, const core::FileDescriptor& fd) {
+  h_ = h;
   Outcome o = Outcome::kSuspend;
+  if (sources_.empty()) return o;
+
+  auto& s = sources_.front();
+  TRY_ASSIGN(const auto n, NonBlockingWrite(&o, fd, s.data(), s.size()));
+  if (s.Consume(n)) {
+    sources_.pop();
+  }
   return o;
+}
+
+void WebSocket::Post(io::SourceBuffer sb) {
+  if (sources_.empty() && h_ != io::FdHandle::kInvalid) {
+    io::Context::Current()->RequestWrite(h_);
+  }
+  sources_.push(std::move(sb));
+}
+
+void WebSocket::Post(io::SinkBuffer sb) {
+  if (sinks_.empty() && h_ != io::FdHandle::kInvalid) {
+    io::Context::Current()->RequestRead(h_);
+  }
+  sinks_.push(std::move(sb));
 }
 
 }  // namespace http
