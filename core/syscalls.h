@@ -45,6 +45,8 @@ Result Madvise(void* p, size_t n, int advice);
 ResultOr<FileDescriptor> Open(std::string_view path, int flags, mode_t mode);
 ResultOr<std::pair<FileDescriptor, FileDescriptor>> Pipe2(int flags);
 ResultOr<size_t> Read(const FileDescriptor& fd, char* buf, size_t count);
+ResultOr<size_t> Recv(const FileDescriptor& sockfd, char* buf, size_t len,
+                      int flags);
 Result SetRLimit(int resource, const struct rlimit* l);
 Result SetSockOpt(const FileDescriptor& sockfd, int level, int optname,
                   const void* optval, socklen_t optlen);

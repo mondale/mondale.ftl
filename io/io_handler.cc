@@ -2,11 +2,10 @@
 #include "io/io_handler.h"
 
 namespace io {
+namespace {
 
-ResultOr<size_t> IoHandler::NonBlockingRead(IoHandler::Outcome* outcome,
-                                            const core::FileDescriptor& fd,
-                                            char* buf, size_t count) const {
-  auto r = core::syscalls::Read(fd, buf, count);
+ResultOr<size_t> ConvertReadResult(IoHandler::Outcome* outcome,
+                                   ResultOr<size_t> r) {
   if (r.IsOk()) {
     const auto bytes_read = r.ValueOrDie();
     if (0 == bytes_read) {
@@ -26,6 +25,23 @@ ResultOr<size_t> IoHandler::NonBlockingRead(IoHandler::Outcome* outcome,
 
   *outcome = IoHandler::Outcome::kClose;
   return r.result();
+}
+
+}  // namespace
+
+ResultOr<size_t> IoHandler::NonBlockingRead(IoHandler::Outcome* outcome,
+                                            const core::FileDescriptor& fd,
+                                            char* buf, size_t count) const {
+  auto r = core::syscalls::Read(fd, buf, count);
+  return ConvertReadResult(outcome, r);
+}
+
+ResultOr<size_t> IoHandler::NonBlockingRecv(IoHandler::Outcome* outcome,
+                                            const core::FileDescriptor& fd,
+                                            char* buf, size_t count,
+                                            int flags) const {
+  auto r = core::syscalls::Recv(fd, buf, count, flags);
+  return ConvertReadResult(outcome, r);
 }
 
 ResultOr<size_t> IoHandler::NonBlockingWrite(IoHandler::Outcome* outcome,

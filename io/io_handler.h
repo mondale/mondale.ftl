@@ -50,6 +50,9 @@ class IoHandler {
   ResultOr<size_t> NonBlockingRead(IoHandler::Outcome* outcome,
                                    const core::FileDescriptor& fd, char* buf,
                                    size_t count) const;
+  ResultOr<size_t> NonBlockingRecv(IoHandler::Outcome* outcome,
+                                   const core::FileDescriptor& fd, char* buf,
+                                   size_t count, int flags) const;
   ResultOr<size_t> NonBlockingWrite(IoHandler::Outcome* outcome,
                                     const core::FileDescriptor& fd,
                                     const char* buf, size_t count) const;

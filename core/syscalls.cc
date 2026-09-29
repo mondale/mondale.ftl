@@ -260,4 +260,14 @@ Result Connect(const FileDescriptor& sockfd, const struct sockaddr* addr,
   return NoReturnNonZero(ret, "Connect");
 }
 
+ResultOr<size_t> Recv(const FileDescriptor& sockfd, char* buf, size_t len,
+                      int flags) {
+  auto syscall = [&]() -> ssize_t {
+    return ::recv(sockfd.fd(), buf, len, flags);
+  };
+  auto accept = [](ssize_t ret) -> bool { return ret >= 0; };
+  TRY_ASSIGN(const ssize_t bytes, SyscallRetryEintr<ssize_t>(syscall, accept));
+  return static_cast<size_t>(bytes);
+}
+
 }  // namespace core::syscalls

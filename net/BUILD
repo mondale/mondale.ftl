@@ -139,3 +139,22 @@ cc_test(
         "//testing",
     ],
 )
+
+cc_library(
+  name = "tls_sniffer",
+  hdrs = ["tls_sniffer.h"],
+  srcs = ["tls_sniffer.cc"],
+  deps = ["//core",
+"//io",
+":socket_address",
+  ],
+    visibility = ["//http/..."],
+)
+
+cc_test(
+  name = "tls_sniffer_test",
+  srcs = ["tls_sniffer_test.cc"],
+  deps = [":tls_sniffer",
+          "//testing",
+  ],
+)

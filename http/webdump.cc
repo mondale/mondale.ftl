@@ -6,10 +6,10 @@
 #include "net/listener.h"
 #include "net/ssl_context.h"
 #include "net/ssl_socket.h"
+#include "net/tls_sniffer.h"
 
 FLAG_COHORT(webdump);
-FLAG(uint16_t, http_port, 8000).Ge(100).Le(65535);
-FLAG(uint16_t, https_port, 8080).Ge(100).Le(65535);
+FLAG(uint16_t, port, 8000).Ge(100).Le(65535);
 
 namespace {
 
@@ -51,39 +51,42 @@ class HttpDumper final : public io::IoHandler {
 };
 
 Result Webdump() {
-  TRY_ASSIGN(auto epoller, io::Epoller::Build(1));
-  const uint16_t http_port = FLAG_LOOKUP(http_port);
-  TRY_ASSIGN(
-      auto http_listner,
-      net::Listener::Build(
-          epoller.get(), http_port,
-          [e = epoller.get()](core::FileDescriptor fd, net::SocketAddress sa) {
-            Log(INFO) << "HTTP connection from: " << sa.ToString();
-            auto h = HttpDumper::Build();
-            CHECK_OK(e->SetNonBlockingAndRegister(std::move(h), std::move(fd)));
-          }));
-  Log(INFO) << "HTTP Listener online on port [" << http_port << "].";
-
-  TRY_ASSIGN(auto sc, net::SslContext::BuildServer());
-
-  const uint16_t https_port = FLAG_LOOKUP(https_port);
   std::unique_ptr<char[]> buf(new char[4096]);
-  TRY_ASSIGN(auto https_listner,
+  TRY_ASSIGN(auto sc, net::SslContext::BuildServer());
+  TRY_ASSIGN(auto epoller, io::Epoller::Build(1));
+  const uint16_t port = FLAG_LOOKUP(port);
+
+  auto classified = [&](bool is_tls, core::FileDescriptor fd,
+                        net::SocketAddress sa) {
+    if (is_tls) {
+      Log(INFO) << "Inbound connection from [" << sa.ToString()
+                << "] snoops as TLS.";
+      auto s = net::SslSocket::New(epoller.get(), sc.get(), std::move(fd),
+                                   std::move(sa), net::SslHandshaker{})
+                   .ValueOrDie();
+      s->Post(io::SinkBuffer(buf.get(), 4096, [&](size_t n) {
+        auto r = Dump(buf.get(), n);
+        Log(ERROR, If(!r.IsOk())) << r;
+      }));
+    } else {
+      Log(INFO) << "Inbound connection from [" << sa.ToString()
+                << "] snoops as non-TLS.";
+      auto h = HttpDumper::Build();
+      CHECK_OK(epoller->Register(std::move(h), std::move(fd)));
+    }
+  };
+
+  TRY_ASSIGN(auto http_listner,
              net::Listener::Build(
-                 epoller.get(), https_port,
-                 [&, e = epoller.get()](core::FileDescriptor fd,
-                                        net::SocketAddress sa) {
-                   Log(INFO) << "HTTPS connection from: " << sa.ToString();
-                   auto s =
-                       net::SslSocket::New(e, sc.get(), std::move(fd),
-                                           std::move(sa), net::SslHandshaker{})
-                           .ValueOrDie();
-                   s->Post(io::SinkBuffer(buf.get(), 4096, [&](size_t n) {
-                     auto r = Dump(buf.get(), n);
-                     Log(ERROR, If(!r.IsOk())) << r;
-                   }));
+                 epoller.get(), port,
+                 [&](core::FileDescriptor fd, net::SocketAddress sa) {
+                   Log(INFO) << "Inbound connection from: " << sa.ToString();
+                   auto snooper =
+                       net::TlsSniffer::New(sa, std::move(classified));
+                   CHECK_OK(epoller->SetNonBlockingAndRegister(
+                       std::move(snooper), std::move(fd)));
                  }));
-  Log(INFO) << "HTTPS Listener online on port [" << https_port << "].";
+  Log(INFO) << "HTTP/HTTPS Listener online on port [" << port << "].";
   base::AwaitSigInt();
   Log(INFO) << "CTRL+C'd, exiting.";
 

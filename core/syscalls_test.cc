@@ -136,7 +136,7 @@ TEST(SocketServerAndAccept) {
             msg.size());
 
   char buf[32] = {};
-  auto n = syscalls::Read(accepted_fd, buf, sizeof(buf)).ValueOrDie();
+  auto n = syscalls::Recv(accepted_fd, buf, sizeof(buf), 0).ValueOrDie();
   EXPECT_EQ(n, msg.size());
   EXPECT_EQ(std::string_view(buf, n), msg);
 }
