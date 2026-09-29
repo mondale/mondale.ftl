@@ -52,11 +52,11 @@ cc_library(
         "-lssl",
         "-lcrypto",
     ],
+    visibility = ["//http/..."],
     deps = [
         ":ssl_helpers",
         "//core",
     ],
-    visibility = ["//http/..."],
 )
 
 cc_test(
@@ -76,6 +76,7 @@ cc_library(
         "-lssl",
         "-lcrypto",
     ],
+    visibility = ["//http/..."],
     deps = [
         ":socket_address",
         ":ssl_context",
@@ -83,7 +84,6 @@ cc_library(
         "//core",
         "//io",
     ],
-    visibility = ["//http/..."],
 )
 
 cc_test(
