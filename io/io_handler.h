@@ -17,13 +17,23 @@ class IoHandler {
  public:
   enum class Outcome {
     kFdEagain,  // FD had an EAGAIN
-    kYield,     // Please call me again
+    kYield,     // Please call me again immediately-ish.
     kSuspend,   // Please don't call until I ask.
     kClose,     // Please close the FD and stop calling me.
   };
 
+  // Implementation should read from the file descriptor and report what
+  // happened as the Outcome, or return an error which will cause a close of the
+  // underlying fd.
   virtual ResultOr<Outcome> HandleRead(FdHandle h,
                                        const core::FileDescriptor& fd) = 0;
+
+  // Implementation should write to the file descriptor and report what
+  // happened as the Outcome, or return an error which will cause a close of
+  // the underlying fd.
+  //
+  // When there is nothing to write, return kSuspend and RequestWrite() later
+  // to get another opportnity to write.
   virtual ResultOr<Outcome> HandleWrite(FdHandle h,
                                         const core::FileDescriptor& fd) = 0;
   virtual Result HandleIdle(FdHandle h, const core::FileDescriptor& fd) {
