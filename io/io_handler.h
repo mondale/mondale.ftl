@@ -43,6 +43,9 @@ class IoHandler {
     return Result(Code::kDeadline);
   }
 
+  // Implementation may override to take ownership of an ejected FD.
+  virtual void HandleEject(core::FileDescriptor fd) {}
+
   // Helpers for subclasses to invoke.
   ResultOr<size_t> NonBlockingRead(IoHandler::Outcome* outcome,
                                    const core::FileDescriptor& fd, char* buf,

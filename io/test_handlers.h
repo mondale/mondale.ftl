@@ -22,12 +22,14 @@ struct Stuff final {
   int64_t BytesWritten() const {
     return bytes_written.load(std::memory_order_acquire);
   }
+  int64_t Ejects() const { return ejects.load(std::memory_order_acquire); }
 
   std::atomic<int> refs{0};
   std::atomic<int64_t> read_upcalls{0};
   std::atomic<int64_t> write_upcalls{0};
   std::atomic<int64_t> bytes_read{0};
   std::atomic<int64_t> bytes_written{0};
+  std::atomic<int64_t> ejects{0};
 };
 
 class HandlerBase {
@@ -47,6 +49,8 @@ class HandlerBase {
     s_->read_upcalls++;
     s_->bytes_read += bytes;
   }
+
+  void Ejected() { s_->ejects++; }
 
  private:
   Stuff* const s_;
@@ -155,6 +159,19 @@ class RapidIdleHandler final : public HandlerBase, public IoHandler {
                                 const core::FileDescriptor& fd) override;
 
  private:
+};
+
+// Ejects the FD after successfully writing a cute message to it.
+class TootAndScootHandler final : public HandlerBase, public IoHandler {
+ public:
+  explicit TootAndScootHandler(Stuff* s) : HandlerBase(s), IoHandler() {}
+  virtual ~TootAndScootHandler() {}
+
+  ResultOr<Outcome> HandleRead(FdHandle h,
+                               const core::FileDescriptor& fd) override;
+  ResultOr<Outcome> HandleWrite(FdHandle h,
+                                const core::FileDescriptor& fd) override;
+  void HandleEject(core::FileDescriptor fd) override;
 };
 
 }  // namespace io::testing

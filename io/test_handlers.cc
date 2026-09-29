@@ -158,4 +158,21 @@ ResultOr<io::IoHandler::Outcome> RapidIdleHandler::HandleWrite(
   return Outcome::kSuspend;
 }
 
+ResultOr<io::IoHandler::Outcome> TootAndScootHandler::HandleRead(
+    FdHandle h, const core::FileDescriptor& fd) {
+  HandledRead(0);
+  return Outcome::kSuspend;
+}
+
+ResultOr<io::IoHandler::Outcome> TootAndScootHandler::HandleWrite(
+    FdHandle h, const core::FileDescriptor& fd) {
+  Outcome o = Outcome::kSuspend;
+  TRY_ASSIGN(auto bytes, NonBlockingWrite(&o, fd, "Nope!", 5));
+  HandledWrite(bytes);
+  Context::Current()->Eject(h);
+  return Outcome::kYield;  // most annoying thing to return
+}
+
+void TootAndScootHandler::HandleEject(core::FileDescriptor fd) { Ejected(); }
+
 }  // namespace io::testing

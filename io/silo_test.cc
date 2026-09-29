@@ -17,6 +17,7 @@ using testing::GarbageFountainHandler;
 using testing::RapidIdleHandler;
 using testing::SquattingHandler;
 using testing::Stuff;
+using testing::TootAndScootHandler;
 
 class SiloTest : public ::testing::Test {
  protected:
@@ -40,6 +41,7 @@ class SiloTest : public ::testing::Test {
     eh_.reset();
     sh_.reset();
     rih_.reset();
+    tash_.reset();
     CHECK_EQ(expected_living_handlers_,
              stuff_.refs.load(std::memory_order_acquire));
   }
@@ -141,6 +143,8 @@ class SiloTest : public ::testing::Test {
   std::shared_ptr<IoHandler> eh_ = std::make_shared<EchoingHandler>(&stuff_);
   std::shared_ptr<IoHandler> sh_ = std::make_shared<SquattingHandler>(&stuff_);
   std::shared_ptr<IoHandler> rih_ = std::make_shared<RapidIdleHandler>(&stuff_);
+  std::shared_ptr<IoHandler> tash_ =
+      std::make_shared<TootAndScootHandler>(&stuff_);
 };
 
 TEST_F(SiloTest, SetupAndTeardownWorks) {}
@@ -274,6 +278,13 @@ TEST_F(SiloTest, SquattingHandlerCanCountIdleCalls) {
 
 TEST_F(SiloTest, RapidIdleHanlderClosesFd) {
   auto fd = InstallPipe(rih_);
+  ExpectEndOfFd(fd);
+}
+
+TEST_F(SiloTest, EjectionWorks) {
+  auto fd = InstallPipe(tash_);
+  EXPECT_TRUE(Await([&]() { return stuff_.Ejects() > 0; }));
+  EXPECT_EQ(1, stuff_.Ejects());
   ExpectEndOfFd(fd);
 }
 

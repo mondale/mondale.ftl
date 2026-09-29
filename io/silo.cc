@@ -22,6 +22,7 @@ class SiloContext final : public Context {
                          core::FileDescriptor fd) override {
     return s_->Add(std::move(h), std::move(fd));
   }
+  void Eject(FdHandle h) override { s_->Eject(h); }
 
  private:
   Silo* const s_;
@@ -141,6 +142,9 @@ Result Silo::ThreadMain2() {
       RunActives();
       RunRunners();
     }
+
+    // Eject Fds that have been removed.
+    RunEjecters();
 
     // Scan for idle descriptors that need to be closed.
     RunIdlers();
@@ -299,8 +303,31 @@ void Silo::Run(FdHandle h, std::move_only_function<void()> fn) {
   runners_.PushBack(perfd);
 }
 
+void Silo::Eject(FdHandle h) {
+  DCHECK_NE(FdHandle::kInvalid, current_);
+  auto* const perfd = ht_.Lookup(Coerce(h)).ValueOrDie();
+  if (ejects_.IsLinked(perfd)) {
+    return;
+  }
+  Expunge(perfd);
+  ejects_.PushBack(perfd);
+}
+
 bool Silo::ActivationsEmpty() const {
   return active_.Empty() && runners_.Empty();
+}
+
+void Silo::RunEjecters() {
+  while (!ejects_.Empty()) {
+    PerFd* const perfd = &*ejects_.begin();
+    core::IntrusiveList<PerFd, ActiveIdle>::Erase(perfd);
+    current_ = perfd->handle;
+
+    CHECK_OK(core::syscalls::EpollCtl(efd_, EPOLL_CTL_DEL, perfd->fd, nullptr));
+    perfd->handler->HandleEject(std::move(perfd->fd));
+    CHECK_OK(ht_.Free(Coerce(current_)));
+  }
+  current_ = FdHandle::kInvalid;
 }
 
 void Silo::RunActives() {

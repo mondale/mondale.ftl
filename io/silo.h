@@ -29,6 +29,7 @@ class Silo final {
   void RequestWrite(FdHandle h);
   void Run(FdHandle h, std::move_only_function<void()> fn);
   ResultOr<FdHandle> Add(std::shared_ptr<IoHandler> h, core::FileDescriptor fd);
+  void Eject(FdHandle h);
 
   void ThreadMain();
 
@@ -49,6 +50,7 @@ class Silo final {
   void RunIdlers();
   Result RunClosers();
   void RunShedders();
+  void RunEjecters();
 
   const int id_;
   Mutex* const inbound_mu_;
@@ -84,6 +86,7 @@ class Silo final {
   core::FileDescriptor efd_;
   core::IntrusiveList<PerFd, ActiveIdle> active_;
   core::IntrusiveList<PerFd, ActiveIdle> idlers_;
+  core::IntrusiveList<PerFd, ActiveIdle> ejects_;
   core::IntrusiveList<PerFd, Shared> runners_;
   core::IntrusiveList<PerFd, Shared> closers_;
   core::IntrusiveList<PerFd, Shared> shedders_;

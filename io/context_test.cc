@@ -13,6 +13,7 @@ class TestContext : public Context {
                          core::FileDescriptor fd) override {
     return FdHandle(7);
   }
+  void Eject(FdHandle h) override {}
 };
 
 TEST(SimpleTest) {

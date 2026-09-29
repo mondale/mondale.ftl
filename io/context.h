@@ -18,6 +18,7 @@ class Context {
   virtual void Run(FdHandle h, std::move_only_function<void()> fn) = 0;
   virtual ResultOr<FdHandle> Add(std::shared_ptr<IoHandler> h,
                                  core::FileDescriptor fd) = 0;
+  virtual void Eject(FdHandle h) = 0;
 
   base::MonotonicTime loop_start() const { return loop_start_; }
 
