@@ -67,7 +67,7 @@ cc_test(
     srcs = ["http_stream_test.cc"],
     deps = [
         ":http_stream",
+        "//io",
         "//testing",
-"//io",
     ],
 )
