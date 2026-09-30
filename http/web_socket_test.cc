@@ -55,6 +55,8 @@ TEST_F(WebSocketTest, HelloWorld) {
   CHECK_OK(core::idioms::ReadExactly(s0, client_response, sizeof(kMessage)));
 
   // Wait for the server's send operation completion notification
+  CHECK_OK(e_->RunWithAffinity(web_socket,
+                               [w = web_socket]() { w->GracefulClose(); }));
   sent.WaitForNotification();
 
   // Verify the response matches what the server posted

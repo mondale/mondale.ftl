@@ -28,9 +28,11 @@ class WebSocket final : public io::IoHandler {
 
   void Post(io::SourceBuffer sb);
   void Post(io::SinkBuffer sb);
+  void GracefulClose();
 
  private:
   io::FdHandle h_ = io::FdHandle::kInvalid;
+  bool close_requested_;
   std::queue<io::SourceBuffer> sources_;
   std::queue<io::SinkBuffer> sinks_;
 };

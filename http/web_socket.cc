@@ -39,10 +39,15 @@ ResultOr<io::IoHandler::Outcome> WebSocket::HandleWrite(
   if (s.Consume(n)) {
     sources_.pop();
   }
+
+  if (sources_.empty() && close_requested_) {
+    o = Outcome::kClose;
+  }
   return o;
 }
 
 void WebSocket::Post(io::SourceBuffer sb) {
+  if (close_requested_) return;
   if (sources_.empty() && h_ != io::FdHandle::kInvalid) {
     io::Context::Current()->RequestWrite(h_);
   }
@@ -54,6 +59,13 @@ void WebSocket::Post(io::SinkBuffer sb) {
     io::Context::Current()->RequestRead(h_);
   }
   sinks_.push(std::move(sb));
+}
+
+void WebSocket::GracefulClose() {
+  close_requested_ = true;
+  if (sources_.empty() && h_ != io::FdHandle::kInvalid) {
+    io::Context::Current()->RequestWrite(h_);
+  }
 }
 
 }  // namespace http
