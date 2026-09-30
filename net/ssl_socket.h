@@ -25,6 +25,7 @@ class SslSocket final : public io::IoHandler {
 
   void Post(io::SourceBuffer sb);
   void Post(io::SinkBuffer sb);
+  void GracefulClose();
 
   ResultOr<Outcome> HandleRead(io::FdHandle h,
                                const core::FileDescriptor& fd) override;
@@ -41,6 +42,7 @@ class SslSocket final : public io::IoHandler {
   io::FdHandle h_ = io::FdHandle::kInvalid;
   bool read_wants_write_ = false;
   bool write_wants_read_ = false;
+  bool close_requested_ = false;
   SslHandshaker handshaker_;
   std::queue<io::SourceBuffer> sources_;
   std::queue<io::SinkBuffer> sinks_;

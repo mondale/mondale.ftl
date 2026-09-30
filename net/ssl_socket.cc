@@ -129,6 +129,10 @@ ResultOr<io::IoHandler::Outcome> SslSocket::AttemptWrite() {
   if (s.Consume(n)) {
     sources_.pop();
   }
+
+  if (sources_.empty() && close_requested_) {
+    o = Outcome::kClose;
+  }
   return o;
 }
 
@@ -205,6 +209,7 @@ ResultOr<io::IoHandler::Outcome> SslSocket::HandleWrite(
 }
 
 void SslSocket::Post(io::SourceBuffer sb) {
+  if (close_requested_) return;
   if (sources_.empty() && h_ != io::FdHandle::kInvalid) {
     io::Context::Current()->RequestWrite(h_);
   }
@@ -216,6 +221,13 @@ void SslSocket::Post(io::SinkBuffer sb) {
     io::Context::Current()->RequestRead(h_);
   }
   sinks_.push(std::move(sb));
+}
+
+void SslSocket::GracefulClose() {
+  close_requested_ = true;
+  if (sources_.empty() && h_ != io::FdHandle::kInvalid) {
+    io::Context::Current()->RequestWrite(h_);
+  }
 }
 
 }  // namespace net

@@ -205,12 +205,23 @@ Result Silo::RunAdmission() {
     // inbound handle.
     if (i.fds.empty()) {
       // Request to run function.
-      i.fn();
+      RunWithAffinity(i.h, std::move(i.fn));
     } else {
       TRY(Add(std::move(i)));
     }
   }
   return Result::Ok();
+}
+
+void Silo::RunWithAffinity(std::shared_ptr<IoHandler> h,
+                           std::move_only_function<void()> fn) {
+  if (h->handles_.empty()) {
+    Log(WARNING) << "Abandoning affinitized function due to lack of FdHandles.";
+    return;
+  }
+  current_ = h->handles_.front();
+  fn();
+  current_ = FdHandle::kInvalid;
 }
 
 Result Silo::Add(internal::HFDs&& i) {

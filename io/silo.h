@@ -51,6 +51,8 @@ class Silo final {
   Result RunClosers();
   void RunShedders();
   void RunEjecters();
+  void RunWithAffinity(std::shared_ptr<IoHandler> h,
+                       std::move_only_function<void()> fn);
 
   const int id_;
   Mutex* const inbound_mu_;
