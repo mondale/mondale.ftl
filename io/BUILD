@@ -8,6 +8,7 @@ cc_library(
         ":data_handler",
         ":epoller",
         ":io_handler",
+        ":poster",
         ":sink_buffer",
         ":source_buffer",
     ],
@@ -197,5 +198,16 @@ cc_test(
     deps = [
         ":sink_buffer",
         "//testing",
+    ],
+)
+
+cc_library(
+    name = "poster",
+    srcs = [],
+    hdrs = ["poster.h"],
+    deps = [
+        ":sink_buffer",
+        ":source_buffer",
+        "//core",
     ],
 )

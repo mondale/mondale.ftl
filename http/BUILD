@@ -20,7 +20,7 @@ cc_library(
     deps = [
         "//core",
         "//io",
-"//net:socket_address",
+        "//net:socket_address",
     ],
 )
 
@@ -47,6 +47,26 @@ cc_test(
     srcs = ["request_parser_test.cc"],
     deps = [
         ":request_parser",
+        "//testing",
+    ],
+)
+
+cc_library(
+    name = "http_stream",
+    srcs = ["http_stream.cc"],
+    hdrs = ["http_stream.h"],
+    deps = [
+        ":request_parser",
+        "//core",
+        "//io",
+    ],
+)
+
+cc_test(
+    name = "http_stream_test",
+    srcs = ["http_stream_test.cc"],
+    deps = [
+        ":http_stream",
         "//testing",
     ],
 )

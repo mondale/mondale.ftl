@@ -9,7 +9,7 @@
 
 namespace net {
 
-class SslSocket final : public io::IoHandler {
+class SslSocket final : public io::IoHandler, public io::Poster {
  private:
   struct PrivateTag {};
 
@@ -23,9 +23,9 @@ class SslSocket final : public io::IoHandler {
                                                   net::SocketAddress sa,
                                                   SslHandshaker shs);
 
-  void Post(io::SourceBuffer sb);
-  void Post(io::SinkBuffer sb);
-  void PostClose();
+  void Post(io::SourceBuffer sb) override;
+  void Post(io::SinkBuffer sb) override;
+  void PostClose() override;
 
   ResultOr<Outcome> HandleRead(io::FdHandle h,
                                const core::FileDescriptor& fd) override;

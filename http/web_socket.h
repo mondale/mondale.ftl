@@ -9,7 +9,7 @@
 
 namespace http {
 
-class WebSocket final : public io::IoHandler {
+class WebSocket final : public io::IoHandler, public io::Poster {
  private:
   struct PrivateTag {};
 
@@ -26,9 +26,9 @@ class WebSocket final : public io::IoHandler {
   ResultOr<Outcome> HandleWrite(io::FdHandle h,
                                 const core::FileDescriptor& fd) override;
 
-  void Post(io::SourceBuffer sb);
-  void Post(io::SinkBuffer sb);
-  void PostClose();
+  void Post(io::SourceBuffer sb) override;
+  void Post(io::SinkBuffer sb) override;
+  void PostClose() override;
 
  private:
   io::FdHandle h_ = io::FdHandle::kInvalid;
