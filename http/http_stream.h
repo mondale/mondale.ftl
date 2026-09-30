@@ -11,8 +11,7 @@ class HttpStream final {
  public:
   using Fn =
       std::move_only_function<void(Result, const RequestParser&, io::Poster*)>;
-  HttpStream(std::shared_ptr<io::Poster> p, Fn fn)
-      : p_(std::move(p)), fn_(std::move(fn)) {}
+  HttpStream(io::Poster* p, Fn fn) : p_(p), fn_(std::move(fn)) {}
 
   void Prime();
 
@@ -25,7 +24,7 @@ class HttpStream final {
   void TrimVectorIfNeeded();
 
   Result r_ = Result::Ok();
-  std::shared_ptr<io::Poster> p_;
+  io::Poster* const p_;
   Fn fn_;
   std::vector<char> buf_;
   size_t bytes_ = 0;

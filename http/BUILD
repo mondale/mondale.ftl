@@ -68,5 +68,6 @@ cc_test(
     deps = [
         ":http_stream",
         "//testing",
+"//io",
     ],
 )

@@ -1,6 +1,8 @@
 #ifndef CORE_VOCABULARY_H_
 #define CORE_VOCABULARY_H_
 
+#include <cstring>
+
 #include "base/flags.h"
 #include "base/sleep.h"
 using base::SleepFor;
