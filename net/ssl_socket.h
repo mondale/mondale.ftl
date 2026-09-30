@@ -25,7 +25,7 @@ class SslSocket final : public io::IoHandler {
 
   void Post(io::SourceBuffer sb);
   void Post(io::SinkBuffer sb);
-  void GracefulClose();
+  void PostClose();
 
   ResultOr<Outcome> HandleRead(io::FdHandle h,
                                const core::FileDescriptor& fd) override;

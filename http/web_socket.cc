@@ -61,7 +61,7 @@ void WebSocket::Post(io::SinkBuffer sb) {
   sinks_.push(std::move(sb));
 }
 
-void WebSocket::GracefulClose() {
+void WebSocket::PostClose() {
   close_requested_ = true;
   if (sources_.empty() && h_ != io::FdHandle::kInvalid) {
     io::Context::Current()->RequestWrite(h_);

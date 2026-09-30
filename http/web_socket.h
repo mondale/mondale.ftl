@@ -28,7 +28,7 @@ class WebSocket final : public io::IoHandler {
 
   void Post(io::SourceBuffer sb);
   void Post(io::SinkBuffer sb);
-  void GracefulClose();
+  void PostClose();
 
  private:
   io::FdHandle h_ = io::FdHandle::kInvalid;
