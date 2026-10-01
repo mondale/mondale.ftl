@@ -73,17 +73,19 @@ cc_test(
 )
 
 cc_library(
-  name = "response_builder",
-  hdrs = ["response_builder.h"],
-  srcs = ["response_builder.cc"],
-  deps = ["//core",
-  ],
+    name = "response_builder",
+    srcs = ["response_builder.cc"],
+    hdrs = ["response_builder.h"],
+    deps = [
+        "//core",
+    ],
 )
 
 cc_test(
-  name = "response_builder_test",
-  srcs = ["response_builder_test.cc"],
-  deps = [":response_builder",
-          "//testing",
-  ],
+    name = "response_builder_test",
+    srcs = ["response_builder_test.cc"],
+    deps = [
+        ":response_builder",
+        "//testing",
+    ],
 )
