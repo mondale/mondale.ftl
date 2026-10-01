@@ -42,6 +42,9 @@ class RequestParser final {
   Version version() const { return version_; }
   const std::string& uri() const { return uri_; }
   const std::string& body() const { return body_; }
+  const std::string& host() const { return host_; }
+  const std::string& user_agent() const { return user_agent_; }
+  const std::string& accept() const { return accept_; }
   const auto& keyvals() const { return keyvals_; }
 
  private:
@@ -49,6 +52,9 @@ class RequestParser final {
   Version version_ = Version::kHttp1point1;
   std::string uri_;
   std::string body_;
+  std::string host_;
+  std::string user_agent_;
+  std::string accept_;
   std::unordered_map<std::string, std::string> keyvals_;
 };
 

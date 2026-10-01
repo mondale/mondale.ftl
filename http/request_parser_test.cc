@@ -14,7 +14,8 @@ class RequestParserTest : public ::testing::Test {
 
 TEST_F(RequestParserTest, ParsesSimpleGetRequest) {
   std::string_view raw_request =
-      "GET /index.html HTTP/1.1\r\nHost: localhost\r\n\r\n";
+      "GET /index.html HTTP/1.1\r\nHost: localhost\r\nUser-agent: "
+      "derp\r\nFoo: Bar\r\nAccept: text/idk\r\n\r\n";
 
   ResultOr<size_t> result = parser_.Parse(raw_request);
   ASSERT_TRUE(result.IsOk());
@@ -25,9 +26,13 @@ TEST_F(RequestParserTest, ParsesSimpleGetRequest) {
   EXPECT_EQ(parser_.uri(), "/index.html");
   EXPECT_TRUE(parser_.body().empty());
 
-  auto it = parser_.keyvals().find("Host");
+  EXPECT_EQ(parser_.host(), "localhost");
+  EXPECT_EQ(parser_.user_agent(), "derp");
+  EXPECT_EQ(parser_.accept(), "text/idk");
+
+  auto it = parser_.keyvals().find("Foo");
   ASSERT_TRUE(it != parser_.keyvals().end());
-  EXPECT_EQ(it->second, "localhost");
+  EXPECT_EQ(it->second, "Bar");
 }
 
 TEST_F(RequestParserTest, ParsesPostRequestWithBody) {

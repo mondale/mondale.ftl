@@ -129,7 +129,17 @@ ResultOr<size_t> RequestParser::Parse(std::string_view s) {
         val.remove_suffix(1);
       }
 
-      keyvals_[std::string(key)] = std::string(val);
+      // Peel off the common & expected headers.
+      auto k = std::string(key);
+      if (EqualsIgnoreCase(k, "Host")) {
+        host_ = std::string(val);
+      } else if (EqualsIgnoreCase(k, "User-Agent")) {
+        user_agent_ = std::string(val);
+      } else if (EqualsIgnoreCase(k, "Accept")) {
+        accept_ = std::string(val);
+      } else {
+        keyvals_[k] = std::string(val);
+      }
     }
 
     line_start = line_end + 2;
