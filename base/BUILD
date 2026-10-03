@@ -186,6 +186,14 @@ cc_test(
 )
 
 cc_library(
+    name = "macros",
+    srcs = [],
+    hdrs = ["macros.h"],
+    visibility = ["//..."],
+    deps = [],
+)
+
+cc_library(
     name = "mpsc_queue",
     hdrs = ["mpsc_queue.h"],
     deps = [],

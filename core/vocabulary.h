@@ -37,6 +37,9 @@ using base::CreateThread;
 using base::GetCachedTid;
 using base::Thread;
 
+#include "base/macros.h"
+// No specific usings.
+
 #include "base/mutex.h"
 using base::Mutex;
 using base::MutexLock;

@@ -11,6 +11,7 @@ cc_library(
         ":util",
         "//base:flags",
         "//base:logging",
+        "//base:macros",
         "//base:mutex",
         "//base:notification",
         "//base:sleep",
