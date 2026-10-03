@@ -12,10 +12,10 @@
 
 namespace http {
 
-class HttpResponseBuilder final {
+class ResponseBuilder final {
  public:
-  HttpResponseBuilder();
-  ~HttpResponseBuilder();
+  ResponseBuilder();
+  ~ResponseBuilder();
 
   // HTTP Protocol Configuration
   void SetStatus(int code, std::string_view message);
@@ -25,8 +25,12 @@ class HttpResponseBuilder final {
   // Body).
   std::string ToString() const;
 
-  // Structural and container elements
+  // Document Structure
+  void Doctype(std::string_view type = "html");
   void Html(std::move_only_function<void()> cb);
+  void Html(
+      std::initializer_list<std::pair<std::string_view, std::string_view>> a,
+      std::move_only_function<void()> cb);
   void Head(std::move_only_function<void()> cb);
   void Body(std::move_only_function<void()> cb);
   void Header(std::move_only_function<void()> cb);
@@ -40,10 +44,15 @@ class HttpResponseBuilder final {
   void H2(std::string_view t);
   void H3(std::string_view t);
   void P(std::move_only_function<void()> cb);
+  void P(std::string_view t);
   void Span(std::string_view t);
   void Span(
       std::initializer_list<std::pair<std::string_view, std::string_view>> a,
       std::string_view t);
+  void A(std::initializer_list<std::pair<std::string_view, std::string_view>> a,
+         std::string_view t);
+  void A(std::initializer_list<std::pair<std::string_view, std::string_view>> a,
+         std::move_only_function<void()> cb);
 
   // Lists
   void Ul(std::move_only_function<void()> cb);
@@ -75,10 +84,13 @@ class HttpResponseBuilder final {
       std::string_view t);
   void Button(std::string_view t);
 
-  // Head metadata, inline text, and raw injection
+  // Head metadata, inline text, styles, and raw injection
   void Title(std::string_view t);
   void Link(
       std::initializer_list<std::pair<std::string_view, std::string_view>> a);
+  void Meta(
+      std::initializer_list<std::pair<std::string_view, std::string_view>> a);
+  void Style(std::string_view css);
   void Text(std::string_view t);
   void Raw(std::string_view html);
 

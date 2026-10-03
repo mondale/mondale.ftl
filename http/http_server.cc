@@ -1,3 +1,4 @@
+#include "http/canned_responses.h"
 #include "http/http_server.h"
 #include "http/http_stream.h"
 #include "http/web_socket.h"
@@ -92,14 +93,7 @@ Result HttpServer::Serve(Result r, const RequestParser& rp, io::Poster* p) {
 
 Result HttpServer::Serve(const Package& package, const RequestParser& rp,
                          io::Poster* p) {
-  static constexpr char k404[] =
-      "HTTP/1.1 404 Not Found\r\n"
-      "Content-Type: text/plain; charset=utf-8\r\n"
-      "Content-Length: 9\r\n"
-      "Connection: close\r\n"
-      "\r\n"
-      "Not Found";
-  p->Post(io::SourceBuffer(k404, sizeof(k404), []() {}));
+  p->Post(CannedResponses::Instance()->NotFound404(rp));
   return Result::Ok();
 }
 

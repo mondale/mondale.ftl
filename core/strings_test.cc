@@ -215,4 +215,30 @@ TEST(HexdumpTest_MultiRowInput) {
   EXPECT_THAT(result, HasSubstr("00000014\n"));
 }
 
+TEST(StartsWithTest_BasicMatches) {
+  EXPECT_TRUE(StartsWith("hello world", "hello"));
+  EXPECT_TRUE(StartsWith("hello world", "h"));
+  EXPECT_TRUE(StartsWith("hello world", "hello world"));
+  EXPECT_TRUE(StartsWith("hello world", ""));
+  EXPECT_TRUE(StartsWith("", ""));
+}
+
+TEST(StartsWithTest_Mismatches) {
+  EXPECT_FALSE(StartsWith("hello world", "world"));
+  EXPECT_FALSE(StartsWith("hello world", "hello world extra"));
+  EXPECT_FALSE(StartsWith("", "a"));
+}
+
+TEST(StartsWithTest_MixedStringTypes) {
+  std::string s = "foobar";
+  std::string_view sv = "foo";
+  const char* raw = "foobar";
+
+  EXPECT_TRUE(StartsWith(s, sv));
+  EXPECT_TRUE(StartsWith(s, "foo"));
+  EXPECT_TRUE(StartsWith(sv, "foo"));
+  EXPECT_TRUE(StartsWith(raw, sv));
+  EXPECT_TRUE(StartsWith(s, s));
+}
+
 }  // namespace core::strings

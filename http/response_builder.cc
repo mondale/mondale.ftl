@@ -21,7 +21,7 @@ void WriteAttributes(
 
 namespace http {
 
-class HttpResponseBuilder::Impl {
+class ResponseBuilder::Impl {
  public:
   int status_code = 200;
   std::string status_message = "OK";
@@ -79,21 +79,20 @@ class HttpResponseBuilder::Impl {
   }
 };
 
-HttpResponseBuilder::HttpResponseBuilder() : impl_(std::make_unique<Impl>()) {}
+ResponseBuilder::ResponseBuilder() : impl_(std::make_unique<Impl>()) {}
 
-HttpResponseBuilder::~HttpResponseBuilder() = default;
+ResponseBuilder::~ResponseBuilder() = default;
 
-void HttpResponseBuilder::SetStatus(int code, std::string_view message) {
+void ResponseBuilder::SetStatus(int code, std::string_view message) {
   impl_->status_code = code;
   impl_->status_message = message;
 }
 
-void HttpResponseBuilder::SetHeader(std::string_view name,
-                                    std::string_view value) {
+void ResponseBuilder::SetHeader(std::string_view name, std::string_view value) {
   impl_->headers.emplace_back(std::string(name), std::string(value));
 }
 
-std::string HttpResponseBuilder::ToString() const {
+std::string ResponseBuilder::ToString() const {
   std::string response;
 
   // 1. Status line
@@ -122,37 +121,50 @@ std::string HttpResponseBuilder::ToString() const {
   return response;
 }
 
-void HttpResponseBuilder::Html(std::move_only_function<void()> cb) {
-  impl_->OpenTag("html", {});
+void ResponseBuilder::Doctype(std::string_view type) {
+  impl_->WriteIndent();
+  impl_->html_buffer.append("<!DOCTYPE ");
+  impl_->html_buffer.append(type);
+  impl_->html_buffer.append(">\n");
+}
+
+void ResponseBuilder::Html(std::move_only_function<void()> cb) {
+  Html({}, std::move(cb));
+}
+
+void ResponseBuilder::Html(
+    std::initializer_list<std::pair<std::string_view, std::string_view>> a,
+    std::move_only_function<void()> cb) {
+  impl_->OpenTag("html", a);
   cb();
   impl_->CloseTag("html");
 }
 
-void HttpResponseBuilder::Head(std::move_only_function<void()> cb) {
+void ResponseBuilder::Head(std::move_only_function<void()> cb) {
   impl_->OpenTag("head", {});
   cb();
   impl_->CloseTag("head");
 }
 
-void HttpResponseBuilder::Body(std::move_only_function<void()> cb) {
+void ResponseBuilder::Body(std::move_only_function<void()> cb) {
   impl_->OpenTag("body", {});
   cb();
   impl_->CloseTag("body");
 }
 
-void HttpResponseBuilder::Header(std::move_only_function<void()> cb) {
+void ResponseBuilder::Header(std::move_only_function<void()> cb) {
   impl_->OpenTag("header", {});
   cb();
   impl_->CloseTag("header");
 }
 
-void HttpResponseBuilder::Div(std::move_only_function<void()> cb) {
+void ResponseBuilder::Div(std::move_only_function<void()> cb) {
   impl_->OpenTag("div", {});
   cb();
   impl_->CloseTag("div");
 }
 
-void HttpResponseBuilder::Div(
+void ResponseBuilder::Div(
     std::initializer_list<std::pair<std::string_view, std::string_view>> a,
     std::move_only_function<void()> cb) {
   impl_->OpenTag("div", a);
@@ -160,48 +172,56 @@ void HttpResponseBuilder::Div(
   impl_->CloseTag("div");
 }
 
-void HttpResponseBuilder::H1(std::string_view t) {
-  impl_->WriteLeaf("h1", t, {});
-}
-void HttpResponseBuilder::H2(std::string_view t) {
-  impl_->WriteLeaf("h2", t, {});
-}
-void HttpResponseBuilder::H3(std::string_view t) {
-  impl_->WriteLeaf("h3", t, {});
-}
+void ResponseBuilder::H1(std::string_view t) { impl_->WriteLeaf("h1", t, {}); }
+void ResponseBuilder::H2(std::string_view t) { impl_->WriteLeaf("h2", t, {}); }
+void ResponseBuilder::H3(std::string_view t) { impl_->WriteLeaf("h3", t, {}); }
 
-void HttpResponseBuilder::P(std::move_only_function<void()> cb) {
+void ResponseBuilder::P(std::move_only_function<void()> cb) {
   impl_->OpenTag("p", {});
   cb();
   impl_->CloseTag("p");
 }
 
-void HttpResponseBuilder::Span(std::string_view t) {
+void ResponseBuilder::P(std::string_view t) { impl_->WriteLeaf("p", t, {}); }
+
+void ResponseBuilder::Span(std::string_view t) {
   impl_->WriteLeaf("span", t, {});
 }
-void HttpResponseBuilder::Span(
+void ResponseBuilder::Span(
     std::initializer_list<std::pair<std::string_view, std::string_view>> a,
     std::string_view t) {
   impl_->WriteLeaf("span", t, a);
 }
 
-void HttpResponseBuilder::Ul(std::move_only_function<void()> cb) {
+void ResponseBuilder::A(
+    std::initializer_list<std::pair<std::string_view, std::string_view>> a,
+    std::string_view t) {
+  impl_->WriteLeaf("a", t, a);
+}
+
+void ResponseBuilder::A(
+    std::initializer_list<std::pair<std::string_view, std::string_view>> a,
+    std::move_only_function<void()> cb) {
+  impl_->OpenTag("a", a);
+  cb();
+  impl_->CloseTag("a");
+}
+
+void ResponseBuilder::Ul(std::move_only_function<void()> cb) {
   impl_->OpenTag("ul", {});
   cb();
   impl_->CloseTag("ul");
 }
 
-void HttpResponseBuilder::Li(std::string_view t) {
-  impl_->WriteLeaf("li", t, {});
-}
+void ResponseBuilder::Li(std::string_view t) { impl_->WriteLeaf("li", t, {}); }
 
-void HttpResponseBuilder::Table(std::move_only_function<void()> cb) {
+void ResponseBuilder::Table(std::move_only_function<void()> cb) {
   impl_->OpenTag("table", {});
   cb();
   impl_->CloseTag("table");
 }
 
-void HttpResponseBuilder::Table(
+void ResponseBuilder::Table(
     std::initializer_list<std::pair<std::string_view, std::string_view>> a,
     std::move_only_function<void()> cb) {
   impl_->OpenTag("table", a);
@@ -209,25 +229,21 @@ void HttpResponseBuilder::Table(
   impl_->CloseTag("table");
 }
 
-void HttpResponseBuilder::Tr(std::move_only_function<void()> cb) {
+void ResponseBuilder::Tr(std::move_only_function<void()> cb) {
   impl_->OpenTag("tr", {});
   cb();
   impl_->CloseTag("tr");
 }
 
-void HttpResponseBuilder::Th(std::string_view t) {
-  impl_->WriteLeaf("th", t, {});
-}
-void HttpResponseBuilder::Td(std::string_view t) {
-  impl_->WriteLeaf("td", t, {});
-}
-void HttpResponseBuilder::Td(
+void ResponseBuilder::Th(std::string_view t) { impl_->WriteLeaf("th", t, {}); }
+void ResponseBuilder::Td(std::string_view t) { impl_->WriteLeaf("td", t, {}); }
+void ResponseBuilder::Td(
     std::initializer_list<std::pair<std::string_view, std::string_view>> a,
     std::string_view t) {
   impl_->WriteLeaf("td", t, a);
 }
 
-void HttpResponseBuilder::Form(
+void ResponseBuilder::Form(
     std::initializer_list<std::pair<std::string_view, std::string_view>> a,
     std::move_only_function<void()> cb) {
   impl_->OpenTag("form", a);
@@ -235,43 +251,52 @@ void HttpResponseBuilder::Form(
   impl_->CloseTag("form");
 }
 
-void HttpResponseBuilder::Label(
+void ResponseBuilder::Label(
     std::initializer_list<std::pair<std::string_view, std::string_view>> a,
     std::string_view t) {
   impl_->WriteLeaf("label", t, a);
 }
 
-void HttpResponseBuilder::Input(
+void ResponseBuilder::Input(
     std::initializer_list<std::pair<std::string_view, std::string_view>> a) {
   impl_->WriteSelfClosing("input", a);
 }
 
-void HttpResponseBuilder::Button(
+void ResponseBuilder::Button(
     std::initializer_list<std::pair<std::string_view, std::string_view>> a,
     std::string_view t) {
   impl_->WriteLeaf("button", t, a);
 }
 
-void HttpResponseBuilder::Button(std::string_view t) {
+void ResponseBuilder::Button(std::string_view t) {
   impl_->WriteLeaf("button", t, {});
 }
 
-void HttpResponseBuilder::Title(std::string_view t) {
+void ResponseBuilder::Title(std::string_view t) {
   impl_->WriteLeaf("title", t, {});
 }
 
-void HttpResponseBuilder::Link(
+void ResponseBuilder::Link(
     std::initializer_list<std::pair<std::string_view, std::string_view>> a) {
   impl_->WriteSelfClosing("link", a);
 }
 
-void HttpResponseBuilder::Text(std::string_view t) {
+void ResponseBuilder::Meta(
+    std::initializer_list<std::pair<std::string_view, std::string_view>> a) {
+  impl_->WriteSelfClosing("meta", a);
+}
+
+void ResponseBuilder::Style(std::string_view css) {
+  impl_->WriteLeaf("style", css, {});
+}
+
+void ResponseBuilder::Text(std::string_view t) {
   impl_->WriteIndent();
   impl_->html_buffer.append(t);
   impl_->html_buffer.push_back('\n');
 }
 
-void HttpResponseBuilder::Raw(std::string_view html) {
+void ResponseBuilder::Raw(std::string_view html) {
   impl_->WriteIndent();
   impl_->html_buffer.append(html);
   impl_->html_buffer.push_back('\n');

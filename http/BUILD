@@ -105,6 +105,7 @@ cc_library(
     srcs = ["http_server.cc"],
     hdrs = ["http_server.h"],
     deps = [
+        ":canned_responses",
         ":http_stream",
         ":request_parser",
         ":web_socket",
@@ -123,6 +124,27 @@ cc_test(
     srcs = ["http_server_test.cc"],
     deps = [
         ":http_server",
+        "//testing",
+    ],
+)
+
+cc_library(
+    name = "canned_responses",
+    srcs = ["canned_responses.cc"],
+    hdrs = ["canned_responses.h"],
+    deps = [
+        ":request_parser",
+        ":response_builder",
+        "//core",
+        "//io",
+    ],
+)
+
+cc_test(
+    name = "canned_responses_test",
+    srcs = ["canned_responses_test.cc"],
+    deps = [
+        ":canned_responses",
         "//testing",
     ],
 )

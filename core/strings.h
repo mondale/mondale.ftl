@@ -31,6 +31,8 @@ namespace core::strings {
 //
 // auto Split(String, Delimiter);
 //
+// bool StartsWith(String, Prefix);
+//
 // Horrible template details follow.
 
 template <typename... Args>
@@ -89,6 +91,23 @@ std::string Join(const Container& c, std::string_view delimiter) {
 inline std::string Join(std::initializer_list<std::string_view> il,
                         std::string_view delimiter) {
   return Join<std::initializer_list<std::string_view>>(il, delimiter);
+}
+
+// Returns true if `str` starts with `prefix`.
+// Accepts std::string_view, std::string, const char*, or any type convertible
+// to std::string_view.
+constexpr bool StartsWith(std::string_view str,
+                          std::string_view prefix) noexcept {
+  return str.starts_with(prefix);
+}
+
+template <typename S1, typename S2>
+  requires(std::convertible_to<const S1&, std::string_view> ||
+           std::convertible_to<const S2&, std::string_view>) &&
+          (!std::same_as<S1, std::string_view> &&
+           !std::same_as<S2, std::string_view>)
+constexpr bool StartsWith(const S1& str, const S2& prefix) {
+  return StartsWith(std::string_view(str), std::string_view(prefix));
 }
 
 template <typename T>
