@@ -9,8 +9,8 @@ namespace http {
 
 class HttpStream final {
  public:
-  using Fn =
-      std::move_only_function<void(Result, const RequestParser&, io::Poster*)>;
+  using Fn = std::move_only_function<Result(Result, const RequestParser&,
+                                            io::Poster*)>;
   HttpStream(io::Poster* p, Fn fn) : p_(p), fn_(std::move(fn)) {}
 
   void Prime();

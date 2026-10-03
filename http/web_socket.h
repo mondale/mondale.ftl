@@ -9,7 +9,9 @@
 
 namespace http {
 
-class WebSocket final : public io::IoHandler, public io::Poster {
+class WebSocket final : public io::IoHandler,
+                        public io::Poster,
+                        public core::util::Encumbered {
  private:
   struct PrivateTag {};
 

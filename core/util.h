@@ -5,6 +5,7 @@
 #include <type_traits>
 #include <utility>
 
+#include "base/mutex.h"
 #include "base/source_location.h"
 #include "core/result.h"
 
@@ -65,6 +66,19 @@ template <typename F>
 [[nodiscard]] auto MakeCleanup(F&& func) {
   return internal::CleanupGuard<std::decay_t<F>>(std::forward<F>(func));
 }
+
+// Inherit from this to allow RAII functions to be installed into the type.
+class Encumbered {
+ public:
+  Encumbered() = default;
+  virtual ~Encumbered();
+
+  void Encumber(std::move_only_function<void()> fn);
+
+ private:
+  base::Mutex mu_;
+  std::list<std::move_only_function<void()>> encumbered_ GUARDED_BY(mu_);
+};
 
 // Helper to terminate the process elegantly while complaining about 'r' if
 // necessary.

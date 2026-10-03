@@ -28,7 +28,7 @@ Result HttpStream::TryParse() {
   RequestParser rp;
   TRY_ASSIGN(auto n, rp.Parse(std::string_view(buf_.data(), bytes_)));
   if (n > 0) {
-    fn_(r_, rp, p_);
+    TRY(fn_(r_, rp, p_));
     TRY(ShiftVector(n));
   }
 
@@ -90,7 +90,7 @@ Result HttpStream::GrowVectorIfNeeded() {
 void HttpStream::ReportSadIfNeeded() {
   if (r_.IsOk()) return;
   RequestParser rp;
-  fn_(r_, rp, p_);
+  static_cast<void>(fn_(r_, rp, p_));
   p_->PostClose();
 }
 

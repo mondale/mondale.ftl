@@ -19,13 +19,15 @@ class HttpStreamTest : public ::testing::Test, public io::Poster {
 TEST_F(HttpStreamTest, BasicParse) {
   constexpr char kMinimal[] = "GET /hola HTTP/1.1\r\nHost: localhost\r\n\r\n";
   bool called = false;
-  HttpStream hs(this, [&](Result r, const RequestParser& rp, io::Poster* p) {
-    EXPECT_THAT(r, IsOk());
-    EXPECT_EQ(p, this);
-    EXPECT_EQ(RequestParser::Method::kGet, rp.method());
-    EXPECT_EQ(RequestParser::Version::kHttp1point1, rp.version());
-    called = true;
-  });
+  HttpStream hs(
+      this, [&](Result r, const RequestParser& rp, io::Poster* p) -> Result {
+        EXPECT_THAT(r, IsOk());
+        EXPECT_EQ(p, this);
+        EXPECT_EQ(RequestParser::Method::kGet, rp.method());
+        EXPECT_EQ(RequestParser::Version::kHttp1point1, rp.version());
+        called = true;
+        return Result::Ok();
+      });
   hs.Prime();
   EXPECT_FALSE(close_requested_);
   ASSERT_TRUE(!sinks_.empty());

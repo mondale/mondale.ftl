@@ -13,6 +13,16 @@ cc_binary(
     ],
 )
 
+cc_binary(
+    name = "webserver",
+    srcs = ["webserver_main.cc"],
+    deps = [
+        ":http_server",
+        "//base:process",
+        "//core",
+    ],
+)
+
 cc_library(
     name = "web_socket",
     srcs = ["web_socket.cc"],
@@ -88,4 +98,29 @@ cc_test(
         ":response_builder",
         "//testing",
     ],
+)
+
+cc_library(
+  name = "http_server",
+  hdrs = ["http_server.h"],
+  srcs = ["http_server.cc"],
+  deps = ["//core",
+":request_parser",
+"//io",
+"//net:socket_address",
+"//net:listener",
+"//net:tls_sniffer",
+"//net:ssl_context",
+":http_stream",
+":web_socket",
+"//net:ssl_socket",
+  ],
+)
+
+cc_test(
+  name = "http_server_test",
+  srcs = ["http_server_test.cc"],
+  deps = [":http_server",
+          "//testing",
+  ],
 )

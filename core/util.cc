@@ -15,4 +15,21 @@ void DieElegantlyIfNotOk(Result r, base::SourceLocation loc) {
   exit(1);
 }
 
+Encumbered::~Encumbered() {
+  std::list<std::move_only_function<void()>> e;
+  {
+    base::MutexLock l(&mu_);
+    encumbered_.swap(e);
+  }
+  for (auto& fn : e) {
+    fn();
+  }
+}
+
+void Encumbered::Encumber(std::move_only_function<void()> fn) {
+  // Add at front for LIFO.
+  base::MutexLock l(&mu_);
+  encumbered_.emplace_front(std::move(fn));
+}
+
 }  // namespace core::util

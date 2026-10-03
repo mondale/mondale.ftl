@@ -52,4 +52,17 @@ TEST(ElegantDeathEmbraced) {
       testing::StderrContains("I cannot go on"));
 }
 
+class Foo : public core::util::Encumbered {
+ public:
+};
+
+TEST(EncumbranceTest) {
+  auto f = std::make_unique<Foo>();
+  bool b = false;
+  f->Encumber([&]() { b = true; });
+  EXPECT_FALSE(b);
+  f.reset();
+  EXPECT_TRUE(b);
+}
+
 }  // namespace

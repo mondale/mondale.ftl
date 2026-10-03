@@ -9,7 +9,9 @@
 
 namespace net {
 
-class SslSocket final : public io::IoHandler, public io::Poster {
+class SslSocket final : public io::IoHandler,
+                        public io::Poster,
+                        public core::util::Encumbered {
  private:
   struct PrivateTag {};
 

@@ -23,12 +23,11 @@ ResultOr<std::unique_ptr<Epoller>> Epoller::Build(int silos) {
   }
 
   auto ret = std::make_unique<Epoller>();
+  ret->threads_.resize(silos);
 
-  std::vector<std::unique_ptr<PerThread>> threads;
-  threads.resize(silos);
   for (int i = 0; i < silos; ++i) {
-    threads[i] = std::make_unique<PerThread>();
-    auto& s = *threads[i];
+    ret->threads_[i] = std::make_unique<PerThread>();
+    auto& s = *ret->threads_[i];
     TRY_ASSIGN(s.event_fd,
                core::syscalls::EventFd(0, EFD_CLOEXEC | EFD_NONBLOCK));
 
@@ -46,7 +45,6 @@ ResultOr<std::unique_ptr<Epoller>> Epoller::Build(int silos) {
     });
   }
 
-  ret->threads_ = std::move(threads);
   return ret;
 }
 
