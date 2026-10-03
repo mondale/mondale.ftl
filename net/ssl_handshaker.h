@@ -15,9 +15,7 @@ class SslHandshaker final {
 
   static std::move_only_function<int(void*)> RealAcceptor();
 
-  // TODO need a macro for this
-  SslHandshaker(SslHandshaker&&) noexcept = default;
-  SslHandshaker& operator=(SslHandshaker&&) noexcept = default;
+  ALLOW_DEFAULT_MOVE(SslHandshaker);
 
   enum class Vibe { kComplete, kWantedRead, kWantedWrite };
 
