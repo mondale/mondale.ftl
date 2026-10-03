@@ -22,11 +22,12 @@ ResultOr<std::shared_ptr<HttpServer>> HttpServer::Create(uint16_t port) {
   auto* const e = ret->epoller_.get();
 
   // Fire up a listen socket.
-  TRY_ASSIGN(ret->listener_,
-             net::Listener::Build(
-                 e, port, [&](core::FileDescriptor fd, net::SocketAddress sa) {
-                   r->OnInboundConnection(std::move(fd), sa);
-                 }));
+  TRY_ASSIGN(
+      ret->listener_,
+      net::Listener::Build(
+          e, port, [r = r](core::FileDescriptor fd, net::SocketAddress sa) {
+            r->OnInboundConnection(std::move(fd), sa);
+          }));
   return ret;
 }
 
@@ -91,8 +92,7 @@ Result HttpServer::Serve(Result r, const RequestParser& rp, io::Poster* p) {
 
 Result HttpServer::Serve(const Package& package, const RequestParser& rp,
                          io::Poster* p) {
-  //
-  constexpr char k404[] =
+  static constexpr char k404[] =
       "HTTP/1.1 404 Not Found\r\n"
       "Content-Type: text/plain; charset=utf-8\r\n"
       "Content-Length: 9\r\n"
@@ -100,7 +100,6 @@ Result HttpServer::Serve(const Package& package, const RequestParser& rp,
       "\r\n"
       "Not Found";
   p->Post(io::SourceBuffer(k404, sizeof(k404), []() {}));
-  p->PostClose();
   return Result::Ok();
 }
 

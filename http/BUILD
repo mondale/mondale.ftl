@@ -101,26 +101,28 @@ cc_test(
 )
 
 cc_library(
-  name = "http_server",
-  hdrs = ["http_server.h"],
-  srcs = ["http_server.cc"],
-  deps = ["//core",
-":request_parser",
-"//io",
-"//net:socket_address",
-"//net:listener",
-"//net:tls_sniffer",
-"//net:ssl_context",
-":http_stream",
-":web_socket",
-"//net:ssl_socket",
-  ],
+    name = "http_server",
+    srcs = ["http_server.cc"],
+    hdrs = ["http_server.h"],
+    deps = [
+        ":http_stream",
+        ":request_parser",
+        ":web_socket",
+        "//core",
+        "//io",
+        "//net:listener",
+        "//net:socket_address",
+        "//net:ssl_context",
+        "//net:ssl_socket",
+        "//net:tls_sniffer",
+    ],
 )
 
 cc_test(
-  name = "http_server_test",
-  srcs = ["http_server_test.cc"],
-  deps = [":http_server",
-          "//testing",
-  ],
+    name = "http_server_test",
+    srcs = ["http_server_test.cc"],
+    deps = [
+        ":http_server",
+        "//testing",
+    ],
 )
