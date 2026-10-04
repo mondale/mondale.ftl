@@ -3,6 +3,8 @@
 
 #include <functional>
 
+#include "base/time.h"
+
 namespace base {
 
 // Initialize process-wide common behaviors.
@@ -23,6 +25,13 @@ bool AmIInAForkedSubprocess();
 
 // Blocks until CTRLC+.
 void AwaitSigInt();
+
+// Returns the WallTime at which the process began. Well, Initialize()d. What
+// do you want from me anyway?
+WallTime ProcessStartTime();
+
+// Return the uptime of the process.
+Duration ProcessUptime();
 
 }  // namespace base
 

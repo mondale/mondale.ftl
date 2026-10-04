@@ -32,6 +32,9 @@ using namespace base::raw_syscalls;
 namespace base {
 namespace {
 
+WallTime global_process_start_walltime{};
+MonotonicTime global_process_start_monotonic{};
+
 std::atomic<int64_t> global_sigint_generation{0};
 std::atomic<int64_t> global_sigint_waiters{0};
 
@@ -262,6 +265,12 @@ FlushHook* global_flush_hook = nullptr;
 
 }  // namespace
 
+WallTime ProcessStartTime() { return global_process_start_walltime; }
+
+Duration ProcessUptime() {
+  return MonotonicTime::Now() - global_process_start_monotonic;
+}
+
 bool AmIInAForkedSubprocess() {
   return global_has_forked.load(std::memory_order_acquire);
 }
@@ -300,6 +309,8 @@ void Initialize(int argc, char* argv[]) {
     std::cerr << "Unsuitable environment. Exiting." << std::endl;
     exit(1);
   }
+  global_process_start_walltime = WallTime::Now();
+  global_process_start_monotonic = MonotonicTime::Now();
 
   RegisterMainThread();
   SetupForkDetector();
