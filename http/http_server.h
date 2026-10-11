@@ -46,6 +46,11 @@ class HttpServer final {
   void Update(Package* p) LOCKS_EXCLUDED(mu_);
 };
 
+// The returned bool is meaningless but provided to enable static
+// initialization. HttpServers built after this method is invoked will not
+// properly serve global handlers.
+bool RegisterGlobalUriHandler(std::string_view uri, HttpServer::HandlerFn fn);
+
 }  // namespace http
 
 #endif  // #ifndef HTTP_HTTP_SERVER_H_

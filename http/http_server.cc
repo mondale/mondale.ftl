@@ -7,6 +7,45 @@
 #include "net/tls_sniffer.h"
 
 namespace http {
+namespace {
+
+class GlobalHandlers final {
+ public:
+  static GlobalHandlers* Instance() {
+    static GlobalHandlers* gh = new GlobalHandlers();
+    return gh;
+  }
+
+  Result Populate(HttpServer* s);
+  void Register(std::string_view uri, HttpServer::HandlerFn fn);
+
+ private:
+  GlobalHandlers() = default;
+
+  Mutex mu_;
+  std::unordered_map<std::string_view, HttpServer::HandlerFn> uri_map_
+      GUARDED_BY(mu_);
+};
+
+Result GlobalHandlers::Populate(HttpServer* s) {
+  MutexLock l(&mu_);
+  for (const auto& [uri, fn] : uri_map_) {
+    TRY(s->RegisterUriHandler(uri, fn));
+  }
+  return Result::Ok();
+}
+
+void GlobalHandlers::Register(std::string_view uri, HttpServer::HandlerFn fn) {
+  MutexLock l(&mu_);
+  uri_map_.emplace(std::make_pair(uri, fn));
+}
+
+}  // namespace
+
+bool RegisterGlobalUriHandler(std::string_view uri, HttpServer::HandlerFn fn) {
+  GlobalHandlers::Instance()->Register(uri, fn);
+  return true;
+}
 
 HttpServer::HttpServer(PrivateTag) {}
 
@@ -14,6 +53,9 @@ HttpServer::HttpServer(PrivateTag) {}
 ResultOr<std::shared_ptr<HttpServer>> HttpServer::Create(uint16_t port) {
   auto ret = std::make_shared<HttpServer>(PrivateTag{});
   auto* const r = ret.get();
+
+  // Hook up global handlers.
+  TRY(GlobalHandlers::Instance()->Populate(r));
 
   // Fire up SSL.
   TRY_ASSIGN(ret->ssl_context_, net::SslContext::BuildServer());
