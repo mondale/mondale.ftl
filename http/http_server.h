@@ -18,7 +18,7 @@ class HttpServer final {
 
   static ResultOr<std::shared_ptr<HttpServer>> Create(uint16_t port);
 
-  using HandlerFn = std::function<std::string(const RequestParser&)>;
+  using HandlerFn = std::function<ResultOr<std::string>(const RequestParser&)>;
   Result RegisterUriHandler(std::string_view uri, HandlerFn fn);
 
  private:

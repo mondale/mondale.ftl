@@ -18,6 +18,7 @@ cc_binary(
     srcs = ["webserver_main.cc"],
     deps = [
         ":http_server",
+"//http/handlers:statusz",
         "//base:process",
         "//core",
     ],
@@ -50,6 +51,7 @@ cc_library(
     deps = [
         "//core",
     ],
+    visibility = ["//http/...",],
 )
 
 cc_test(
@@ -89,6 +91,7 @@ cc_library(
     deps = [
         "//core",
     ],
+    visibility = ["//http/...",],
 )
 
 cc_test(
@@ -117,6 +120,7 @@ cc_library(
         "//net:ssl_socket",
         "//net:tls_sniffer",
     ],
+visibility = ["//..."],
 )
 
 cc_test(

@@ -17,6 +17,12 @@ class SourceBuffer final {
 
   ~SourceBuffer() { cleanup_(); }
 
+  static io::SourceBuffer FromString(std::string s) {
+    auto* const d = s.data();
+    const size_t n = s.length();
+    return io::SourceBuffer(d, n, [x = std::move(s)]() {});
+  }
+
   SourceBuffer(const SourceBuffer&) = delete;
   SourceBuffer& operator=(const SourceBuffer&) = delete;
 
