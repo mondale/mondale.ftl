@@ -18,9 +18,9 @@ cc_binary(
     srcs = ["webserver_main.cc"],
     deps = [
         ":http_server",
-"//http/handlers:statusz",
         "//base:process",
         "//core",
+        "//http/handlers:statusz",
     ],
 )
 
@@ -48,10 +48,10 @@ cc_library(
     name = "request_parser",
     srcs = ["request_parser.cc"],
     hdrs = ["request_parser.h"],
+    visibility = ["//http/..."],
     deps = [
         "//core",
     ],
-    visibility = ["//http/...",],
 )
 
 cc_test(
@@ -88,10 +88,10 @@ cc_library(
     name = "response_builder",
     srcs = ["response_builder.cc"],
     hdrs = ["response_builder.h"],
+    visibility = ["//http/..."],
     deps = [
         "//core",
     ],
-    visibility = ["//http/...",],
 )
 
 cc_test(
@@ -107,6 +107,7 @@ cc_library(
     name = "http_server",
     srcs = ["http_server.cc"],
     hdrs = ["http_server.h"],
+    visibility = ["//..."],
     deps = [
         ":canned_responses",
         ":http_stream",
@@ -120,7 +121,6 @@ cc_library(
         "//net:ssl_socket",
         "//net:tls_sniffer",
     ],
-visibility = ["//..."],
 )
 
 cc_test(
