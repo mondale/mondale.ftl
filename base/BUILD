@@ -278,16 +278,21 @@ cc_library(
         ":flags",
         ":raw_syscalls",
         ":stacktrace",
-":time",
         ":thread",
         ":thread_registry",
+        ":time",
     ],
 )
 
 cc_test(
-   name = "process_test",
-   srcs = ["process_test.cc"],
-   deps = [":process", ":sleep", "//testing"], )
+    name = "process_test",
+    srcs = ["process_test.cc"],
+    deps = [
+        ":process",
+        ":sleep",
+        "//testing",
+    ],
+)
 
 cc_library(
     name = "rawlog",
