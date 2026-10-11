@@ -11,6 +11,43 @@
 namespace core::strings {
 namespace {
 
+struct UnitInfo {
+  int64_t nanos;
+  std::string_view suffix;
+};
+
+constexpr std::array<UnitInfo, 8> kUnits = {{
+    {31536000ULL * 1000ULL * 1000ULL * 1000ULL, "y"},
+    {86400ULL * 1000ULL * 1000ULL * 1000ULL, "d"},
+    {3600ULL * 1000ULL * 1000ULL * 1000ULL, "h"},
+    {60ULL * 1000ULL * 1000ULL * 1000ULL, "m"},
+    {1000ULL * 1000ULL * 1000ULL, "s"},
+    {1000ULL * 1000ULL, "ms"},
+    {1000ULL, "us"},
+    {1ULL, "ns"},
+}};
+
+struct ActiveUnit {
+  size_t unit_index;
+  int64_t count;
+};
+
+std::vector<ActiveUnit> GetNonZeroUnits(int64_t ns) {
+  std::vector<ActiveUnit> result;
+  int64_t rem = ns;
+  for (size_t i = 0; i < kUnits.size(); ++i) {
+    if (kUnits[i].suffix == "y" && rem < kUnits[i].nanos) {
+      continue;
+    }
+    int64_t count = rem / kUnits[i].nanos;
+    if (count > 0) {
+      result.push_back({i, count});
+      rem %= kUnits[i].nanos;
+    }
+  }
+  return result;
+}
+
 // Check standard feature-test macro along with GCC/Clang and MSVC flags
 #if defined(__cpp_exceptions) || defined(__EXCEPTIONS) || defined(_CPPUNWIND)
 constexpr bool kExceptionsEnabled = true;
@@ -79,6 +116,51 @@ int HexDigitValue(char c) {
 }
 
 }  // namespace
+
+std::string HumanReadable(base::Duration d) {
+  int64_t ns = d.ToNanoseconds();
+  if (ns == 0) {
+    return "0ns";
+  }
+
+  std::string prefix;
+  if (ns < 0) {
+    prefix = "-";
+    ns = -ns;
+  }
+
+  // Get initial non-zero units
+  auto non_zero = GetNonZeroUnits(ns);
+  if (non_zero.empty()) {
+    return "0ns";
+  }
+
+  // If there are more than 4 non-zero units, round to the 4th unit's precision
+  if (non_zero.size() > 4) {
+    size_t cutoff_unit_idx = non_zero[3].unit_index;
+    int64_t cutoff_nanos = kUnits[cutoff_unit_idx].nanos;
+    ns = (ns + cutoff_nanos / 2) / cutoff_nanos * cutoff_nanos;
+    if (ns == 0) {
+      return "0ns";
+    }
+    // Re-evaluate non-zero units after rounding and carry-over
+    non_zero = GetNonZeroUnits(ns);
+  }
+
+  // Print at most 4 units
+  size_t count_to_print = std::min(non_zero.size(), size_t{4});
+
+  std::string result = prefix;
+  for (size_t i = 0; i < count_to_print; ++i) {
+    if (i > 0) {
+      result += " ";
+    }
+    result += std::to_string(non_zero[i].count);
+    result.append(kUnits[non_zero[i].unit_index].suffix);
+  }
+
+  return result;
+}
 
 std::string EscapeString(std::string_view s) {
   std::string out;

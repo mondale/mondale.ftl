@@ -241,4 +241,68 @@ TEST(StartsWithTest_MixedStringTypes) {
   EXPECT_TRUE(StartsWith(s, s));
 }
 
+using base::Days;
+using base::Duration;
+using base::Hours;
+using base::Microseconds;
+using base::Milliseconds;
+using base::Minutes;
+using base::Nanoseconds;
+using base::Seconds;
+using core::strings::HumanReadable;
+
+TEST(TimeFormattingTest_ZeroDuration) {
+  EXPECT_EQ(HumanReadable(Duration::Zero()), "0ns");
+  EXPECT_EQ(HumanReadable(Nanoseconds(0)), "0ns");
+}
+
+TEST(TimeFormattingTest_SingleSmallUnit) {
+  EXPECT_EQ(HumanReadable(Nanoseconds(8)), "8ns");
+  EXPECT_EQ(HumanReadable(Microseconds(5)), "5us");
+  EXPECT_EQ(HumanReadable(Milliseconds(42)), "42ms");
+  EXPECT_EQ(HumanReadable(Seconds(15)), "15s");
+}
+
+TEST(TimeFormattingTest_ExactMultipleUnits) {
+  Duration d = Days(3) + Hours(18) + Minutes(22) + Seconds(14);
+  EXPECT_EQ(HumanReadable(d), "3d 18h 22m 14s");
+}
+
+TEST(TimeFormattingTest_YearsUsedOnlyWhenNonzero) {
+  // Less than a year: should NOT include years
+  Duration d_short = Days(364) + Hours(23);
+  EXPECT_EQ(HumanReadable(d_short), "364d 23h");
+
+  // Exactly or more than a year: should include years
+  Duration d_with_years = Days(365) + Hours(5);
+  // 365 days = 1y (approx year definition or handled via division)
+  // Let's check how many nanoseconds are in 1y: 31536000ULL seconds
+  // 365 days * 24 * 3600 = 31536000s, which matches kUnits[0].
+  EXPECT_EQ(HumanReadable(d_with_years), "1y 5h");
+}
+
+TEST(TimeFormattingTest_MaxFourSignificantUnits) {
+  // 5 units provided: y, d, h, m, s -> should truncate or round to top 4 (y, d,
+  // h, m) Let's test with hours, minutes, seconds, milliseconds, microseconds
+  Duration d = Hours(2) + Minutes(30) + Seconds(45) + Milliseconds(500) +
+               Microseconds(123);
+  // Top 4 are hours, minutes, seconds, milliseconds
+  EXPECT_EQ(HumanReadable(d), "2h 30m 45s 500ms");
+}
+
+TEST(TimeFormattingTest_RoundingUpAndDown) {
+  Duration d_round_up = Hours(1) + Minutes(1) + Seconds(1) + Milliseconds(500) +
+                        Microseconds(600);
+  EXPECT_EQ(HumanReadable(d_round_up), "1h 1m 1s 501ms");
+
+  Duration d_round_down = Hours(1) + Minutes(1) + Seconds(1) +
+                          Milliseconds(500) + Microseconds(400);
+  EXPECT_EQ(HumanReadable(d_round_down), "1h 1m 1s 500ms");
+}
+
+TEST(TimeFormattingTest_NegativeDurations) {
+  EXPECT_EQ(HumanReadable(Seconds(-5)), "-5s");
+  EXPECT_EQ(HumanReadable((Hours(-1) + Minutes(-30))), "-1h 30m");
+}
+
 }  // namespace core::strings

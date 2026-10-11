@@ -12,6 +12,7 @@
 #include <type_traits>
 #include <utility>
 
+#include "base/time.h"
 #include "core/result.h"
 
 namespace core::strings {
@@ -32,6 +33,9 @@ namespace core::strings {
 // auto Split(String, Delimiter);
 //
 // bool StartsWith(String, Prefix);
+
+std::string HumanReadable(base::Duration d);
+
 //
 // Horrible template details follow.
 
