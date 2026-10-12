@@ -17,6 +17,28 @@ cc_test(
     srcs = ["statusz_test.cc"],
     deps = [
         ":statusz",
+        ":test_fixture",
+        "//testing",
+    ],
+)
+
+cc_library(
+    name = "test_fixture",
+    srcs = ["test_fixture.cc"],
+    hdrs = ["test_fixture.h"],
+    deps = [
+        "//core",
+        "//http:request_parser",
+        "//testing",
+    ],
+)
+
+cc_test(
+    name = "test_fixture_test",
+    srcs = ["test_fixture_test.cc"],
+    deps = [
+        ":test_fixture",
+        "//http:response_builder",
         "//testing",
     ],
 )
