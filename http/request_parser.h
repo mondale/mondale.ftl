@@ -46,12 +46,16 @@ class RequestParser final {
   const std::string& user_agent() const { return user_agent_; }
   const std::string& accept() const { return accept_; }
   const auto& keyvals() const { return keyvals_; }
+  const std::string& path() const { return path_; }
+  const auto& query_params() const { return query_params_; }
 
  private:
   Method method_ = Method::kGet;
   Version version_ = Version::kHttp1point1;
   std::string uri_;
   std::string body_;
+  std::string path_;
+  std::unordered_map<std::string, std::string> query_params_;
   std::string host_;
   std::string user_agent_;
   std::string accept_;

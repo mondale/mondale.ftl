@@ -101,6 +101,39 @@ ResultOr<size_t> RequestParser::Parse(std::string_view s) {
   version_ = parsed_version;
   uri_ = std::string(uri_token);
   keyvals_.clear();
+  query_params_.clear();
+
+  // Separate path from query parameters
+  const size_t query_pos = uri_token.find('?');
+  if (query_pos != std::string_view::npos) {
+    path_ = std::string(uri_token.substr(0, query_pos));
+    std::string_view query_string = uri_token.substr(query_pos + 1);
+
+    size_t param_start = 0;
+    while (param_start < query_string.size()) {
+      size_t param_end = query_string.find('&', param_start);
+      if (param_end == std::string_view::npos) {
+        param_end = query_string.size();
+      }
+
+      std::string_view param_pair =
+          query_string.substr(param_start, param_end - param_start);
+      if (!param_pair.empty()) {
+        size_t eq_pos = param_pair.find('=');
+        if (eq_pos != std::string_view::npos) {
+          std::string_view q_key = param_pair.substr(0, eq_pos);
+          std::string_view q_val = param_pair.substr(eq_pos + 1);
+          query_params_[std::string(q_key)] = std::string(q_val);
+        } else {
+          query_params_[std::string(param_pair)] = "";
+        }
+      }
+
+      param_start = param_end + 1;
+    }
+  } else {
+    path_ = uri_;
+  }
 
   // Parse headers
   size_t line_start = 0;

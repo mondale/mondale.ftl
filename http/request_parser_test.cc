@@ -116,4 +116,23 @@ TEST(RequestParserFormattingTest_VersionStreamOperator) {
   EXPECT_EQ(oss.str(), "HTTP/1.1");
 }
 
+TEST_F(RequestParserTest, ParsesRequestWithQueryParameters) {
+  std::string_view raw_request =
+      "GET /procz?file=cpuinfo&foo=bar HTTP/1.1\r\nHost: localhost\r\n\r\n";
+
+  ResultOr<size_t> result = parser_.Parse(raw_request);
+  ASSERT_TRUE(result.IsOk());
+
+  EXPECT_EQ(parser_.uri(), "/procz?file=cpuinfo&foo=bar");
+  EXPECT_EQ(parser_.path(), "/procz");
+
+  auto file_it = parser_.query_params().find("file");
+  ASSERT_TRUE(file_it != parser_.query_params().end());
+  EXPECT_EQ(file_it->second, "cpuinfo");
+
+  auto foo_it = parser_.query_params().find("foo");
+  ASSERT_TRUE(foo_it != parser_.query_params().end());
+  EXPECT_EQ(foo_it->second, "bar");
+}
+
 }  // namespace
