@@ -138,13 +138,13 @@ cc_library(
     name = "canned_responses",
     srcs = ["canned_responses.cc"],
     hdrs = ["canned_responses.h"],
+    visibility = ["//http/..."],
     deps = [
         ":request_parser",
         ":response_builder",
         "//core",
         "//io",
     ],
-    visibility = ["//http/...",],
 )
 
 cc_test(

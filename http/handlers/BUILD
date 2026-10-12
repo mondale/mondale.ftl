@@ -44,23 +44,26 @@ cc_test(
 )
 
 cc_library(
-  name = "procz",
-  hdrs = ["procz.h"],
-  srcs = ["procz.cc"],
-  deps = ["//core",
-"//core:file",
+    name = "procz",
+    srcs = ["procz.cc"],
+    hdrs = ["procz.h"],
+    visibility = ["//http/..."],
+    deps = [
+        "//core",
+        "//core:file",
         "//http:http_server",
         "//http:request_parser",
         "//http:response_builder",
-  ],
-    visibility = ["//http/..."],
+    ],
     alwayslink = True,
 )
 
 cc_test(
-  name = "procz_test",
-  srcs = ["procz_test.cc"],
-  deps = [":procz",
-          "//testing",
-  ],
+    name = "procz_test",
+    srcs = ["procz_test.cc"],
+    deps = [
+        ":procz",
+        ":test_fixture",
+        "//testing",
+    ],
 )
