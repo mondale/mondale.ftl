@@ -4,6 +4,47 @@
 
 namespace {
 
+constexpr char kBrowserStyle[] =
+    "\n        body {\n"
+    "            background-color: #1e1e1e;\n"
+    "            color: #ffffff;\n"
+    "            font-family: monospace;\n"
+    "            display: flex;\n"
+    "            flex-direction: column;\n"
+    "            align-items: center;\n"
+    "            justify-content: center;\n"
+    "            height: 100vh;\n"
+    "            margin: 0;\n"
+    "        }\n"
+    "        .container {\n"
+    "            text-align: center;\n"
+    "            padding: 2.5rem;\n"
+    "            border: 1px solid #333333;\n"
+    "            border-radius: 4px;\n"
+    "            background-color: #252526;\n"
+    "            max-width: 400px;\n"
+    "        }\n"
+    "        h1 {\n"
+    "            font-size: 1.8rem;\n"
+    "            margin-top: 0;\n"
+    "            margin-bottom: 0.5rem;\n"
+    "            color: #569cd6;\n"
+    "        }\n"
+    "        p {\n"
+    "            color: #cccccc;\n"
+    "            margin-bottom: 1.5rem;\n"
+    "            line-height: 1.4;\n"
+    "        }\n"
+    "        a {\n"
+    "            color: #569cd6;\n"
+    "            text-decoration: none;\n"
+    "            border-bottom: 1px dotted #569cd6;\n"
+    "        }\n"
+    "        a:hover {\n"
+    "            color: #ffffff;\n"
+    "            border-bottom: 1px solid #ffffff;\n"
+    "        }\n";
+
 void WriteAttributes(
     std::string& buf,
     std::initializer_list<std::pair<std::string_view, std::string_view>>
@@ -17,6 +58,10 @@ void WriteAttributes(
   }
 }
 
+bool IsBrowser(const http::RequestParser& rp) {
+  return strings::StartsWith(rp.user_agent(), "Mozilla");
+}
+
 }  // namespace
 
 namespace http {
@@ -25,6 +70,7 @@ class ResponseBuilder::Impl {
  public:
   int status_code = 200;
   std::string status_message = "OK";
+  std::string style = "";
   std::vector<std::pair<std::string, std::string>> headers;
 
   std::string html_buffer;
@@ -82,6 +128,12 @@ class ResponseBuilder::Impl {
 ResponseBuilder::ResponseBuilder() : impl_(std::make_unique<Impl>()) {}
 
 ResponseBuilder::~ResponseBuilder() = default;
+
+void ResponseBuilder::RespondingTo(const RequestParser& rp) {
+  if (IsBrowser(rp)) {
+    impl_->style = kBrowserStyle;
+  }
+}
 
 void ResponseBuilder::SetStatus(int code, std::string_view message) {
   impl_->status_code = code;
@@ -143,6 +195,9 @@ void ResponseBuilder::Html(
 void ResponseBuilder::Head(std::move_only_function<void()> cb) {
   impl_->OpenTag("head", {});
   cb();
+  if (!impl_->style.empty()) {
+    impl_->WriteLeaf("style", impl_->style, {});
+  }
   impl_->CloseTag("head");
 }
 
@@ -287,6 +342,9 @@ void ResponseBuilder::Meta(
 }
 
 void ResponseBuilder::Style(std::string_view css) {
+  if (!impl_->style.empty()) {
+    impl_->style.clear();
+  }
   impl_->WriteLeaf("style", css, {});
 }
 

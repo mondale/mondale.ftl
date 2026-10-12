@@ -9,12 +9,12 @@ ResultOr<std::string> ServeStatusz(const RequestParser& rp) {
   ResponseBuilder rb;
   rb.SetStatus(200, "OK");
   rb.SetHeader("Content-Type", "text/html; charset=utf-8");
+  rb.RespondingTo(rp);
   rb.Doctype();
   rb.Html({{"lang", "en"}}, [&] {
     rb.Head([&] {
       rb.Meta({{"charset", "UTF-8"}});
       rb.Title("statusz");
-      // TODO - style
     });
     rb.Body([&] {
       rb.H1("statusz");

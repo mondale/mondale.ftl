@@ -9,6 +9,7 @@
 #include <utility>
 
 #include "core/vocabulary.h"
+#include "http/request_parser.h"
 
 namespace http {
 
@@ -16,6 +17,8 @@ class ResponseBuilder final {
  public:
   ResponseBuilder();
   ~ResponseBuilder();
+
+  void RespondingTo(const RequestParser& rp);
 
   // HTTP Protocol Configuration
   void SetStatus(int code, std::string_view message);

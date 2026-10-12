@@ -11,46 +11,6 @@ constexpr char k404TextResponse[] =
     "Connection: close\r\n"
     "\r\n"
     "Not Found";
-constexpr char kBrowserStyle[] =
-    "\n        body {\n"
-    "            background-color: #1e1e1e;\n"
-    "            color: #ffffff;\n"
-    "            font-family: monospace;\n"
-    "            display: flex;\n"
-    "            flex-direction: column;\n"
-    "            align-items: center;\n"
-    "            justify-content: center;\n"
-    "            height: 100vh;\n"
-    "            margin: 0;\n"
-    "        }\n"
-    "        .container {\n"
-    "            text-align: center;\n"
-    "            padding: 2.5rem;\n"
-    "            border: 1px solid #333333;\n"
-    "            border-radius: 4px;\n"
-    "            background-color: #252526;\n"
-    "            max-width: 400px;\n"
-    "        }\n"
-    "        h1 {\n"
-    "            font-size: 1.8rem;\n"
-    "            margin-top: 0;\n"
-    "            margin-bottom: 0.5rem;\n"
-    "            color: #569cd6;\n"
-    "        }\n"
-    "        p {\n"
-    "            color: #cccccc;\n"
-    "            margin-bottom: 1.5rem;\n"
-    "            line-height: 1.4;\n"
-    "        }\n"
-    "        a {\n"
-    "            color: #569cd6;\n"
-    "            text-decoration: none;\n"
-    "            border-bottom: 1px dotted #569cd6;\n"
-    "        }\n"
-    "        a:hover {\n"
-    "            color: #ffffff;\n"
-    "            border-bottom: 1px solid #ffffff;\n"
-    "        }\n";
 
 bool IsBrowser(const RequestParser& rp) {
   return strings::StartsWith(rp.user_agent(), "Mozilla");
@@ -62,9 +22,10 @@ io::SourceBuffer FromString(std::string s) {
   return io::SourceBuffer(d, n, [x = std::move(s)]() {});
 }
 
-io::SourceBuffer Browser404() {
+io::SourceBuffer Browser404(const RequestParser& rp) {
   ResponseBuilder hrb;
   hrb.SetStatus(404, "Not Found");
+  hrb.RespondingTo(rp);
   hrb.SetHeader("Content-Type", "text/html; charset=UTF-8");
   hrb.SetHeader("Connection", "close");
 
@@ -73,7 +34,6 @@ io::SourceBuffer Browser404() {
     hrb.Head([&] {
       hrb.Meta({{"charset", "UTF-8"}});
       hrb.Title("404 - Not Found");
-      hrb.Style(kBrowserStyle);
     });
     hrb.Body([&] {
       hrb.Div({{"class", "container"}}, [&] {
@@ -98,7 +58,7 @@ CannedResponses* CannedResponses::Instance() {
 }
 
 io::SourceBuffer CannedResponses::NotFound404(const RequestParser& rp) const {
-  if (IsBrowser(rp)) return Browser404();
+  if (IsBrowser(rp)) return Browser404(rp);
   return io::SourceBuffer(k404TextResponse, sizeof(k404TextResponse), []() {});
 }
 

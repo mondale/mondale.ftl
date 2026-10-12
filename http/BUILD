@@ -90,6 +90,7 @@ cc_library(
     hdrs = ["response_builder.h"],
     visibility = ["//http/..."],
     deps = [
+":request_parser",
         "//core",
     ],
 )
