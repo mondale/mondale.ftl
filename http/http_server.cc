@@ -135,9 +135,9 @@ Result HttpServer::Serve(Result r, const RequestParser& rp, io::Poster* p) {
 
 Result HttpServer::Serve(const Package& package, const RequestParser& rp,
                          io::Poster* p) {
-  const auto f = package.uri_map.find(rp.uri());
+  const auto f = package.uri_map.find(rp.path());
   if (f == package.uri_map.end()) {
-    Log(ERROR) << "404 for URI[" << rp.uri() << "].";
+    Log(ERROR) << "404 for [" << rp.path() << "].";
     p->Post(CannedResponses::Instance()->NotFound404(rp));
     return Result::Ok();
   }

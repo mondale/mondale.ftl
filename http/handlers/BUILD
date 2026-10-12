@@ -2,7 +2,7 @@ cc_library(
     name = "statusz",
     srcs = ["statusz.cc"],
     hdrs = ["statusz.h"],
-    visibility = ["//..."],
+    visibility = ["//http/..."],
     deps = [
         "//core",
         "//http:http_server",
@@ -41,4 +41,26 @@ cc_test(
         "//http:response_builder",
         "//testing",
     ],
+)
+
+cc_library(
+  name = "procz",
+  hdrs = ["procz.h"],
+  srcs = ["procz.cc"],
+  deps = ["//core",
+"//core:file",
+        "//http:http_server",
+        "//http:request_parser",
+        "//http:response_builder",
+  ],
+    visibility = ["//http/..."],
+    alwayslink = True,
+)
+
+cc_test(
+  name = "procz_test",
+  srcs = ["procz_test.cc"],
+  deps = [":procz",
+          "//testing",
+  ],
 )

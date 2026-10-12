@@ -50,7 +50,7 @@ TEST(CannedResponsesTest_NotFound404ReturnsHtmlForBrowser) {
 
   EXPECT_THAT(content, HasSubstr("404 - Not Found"));
   EXPECT_THAT(content, HasSubstr("Content-Type: text/html; charset=UTF-8"));
-  EXPECT_THAT(content, HasSubstr("No such page."));
+  EXPECT_THAT(content, HasSubstr("nonexistent"));
   EXPECT_THAT(content, HasSubstr("<div class=\"container\">"));
 }
 

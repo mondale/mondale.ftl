@@ -20,6 +20,7 @@ cc_binary(
         ":http_server",
         "//base:process",
         "//core",
+        "//http/handlers:procz",
         "//http/handlers:statusz",
     ],
 )
@@ -143,6 +144,7 @@ cc_library(
         "//core",
         "//io",
     ],
+    visibility = ["//http/...",],
 )
 
 cc_test(

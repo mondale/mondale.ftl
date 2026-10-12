@@ -210,4 +210,14 @@ TEST_F(ResponseBuilderTest, RendersCompleteDashboardExample) {
   EXPECT_EQ(response, kExpectedResponse);
 }
 
+TEST_F(ResponseBuilderTest, RendersPreformattedBlock) {
+  std::string response = Render([](ResponseBuilder& rb) {
+    rb.Div([&] { rb.Pre("LOG_ENTRY: System initialized."); });
+  });
+
+  EXPECT_THAT(
+      response,
+      HasSubstr("<div>\n  <pre>LOG_ENTRY: System initialized.</pre>\n</div>"));
+}
+
 }  // namespace

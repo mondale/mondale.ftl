@@ -13,8 +13,9 @@ constexpr char kBrowserStyle[] =
     "            flex-direction: column;\n"
     "            align-items: center;\n"
     "            justify-content: center;\n"
-    "            height: 100vh;\n"
+    "            min-height: 100vh;\n"
     "            margin: 0;\n"
+    "            padding: 2rem 0;\n"
     "        }\n"
     "        .container {\n"
     "            text-align: center;\n"
@@ -34,6 +35,15 @@ constexpr char kBrowserStyle[] =
     "            color: #cccccc;\n"
     "            margin-bottom: 1.5rem;\n"
     "            line-height: 1.4;\n"
+    "        }\n"
+    "        pre {\n"
+    "            text-align: left;\n"
+    "            align-self: flex-start;\n"
+    "            overflow-y: auto;\n"
+    "            overflow-x: auto;\n"
+    "            padding: 1rem;\n"
+    "            width: 100%;\n"
+    "            box-sizing: border-box;\n"
     "        }\n"
     "        a {\n"
     "            color: #569cd6;\n"
@@ -238,6 +248,16 @@ void ResponseBuilder::P(std::move_only_function<void()> cb) {
 }
 
 void ResponseBuilder::P(std::string_view t) { impl_->WriteLeaf("p", t, {}); }
+
+void ResponseBuilder::Pre(std::move_only_function<void()> cb) {
+  impl_->OpenTag("pre", {});
+  cb();
+  impl_->CloseTag("pre");
+}
+
+void ResponseBuilder::Pre(std::string_view t) {
+  impl_->WriteLeaf("pre", t, {});
+}
 
 void ResponseBuilder::Span(std::string_view t) {
   impl_->WriteLeaf("span", t, {});

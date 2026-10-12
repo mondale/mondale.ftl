@@ -48,6 +48,8 @@ class ResponseBuilder final {
   void H3(std::string_view t);
   void P(std::move_only_function<void()> cb);
   void P(std::string_view t);
+  void Pre(std::move_only_function<void()> cb);
+  void Pre(std::string_view t);
   void Span(std::string_view t);
   void Span(
       std::initializer_list<std::pair<std::string_view, std::string_view>> a,

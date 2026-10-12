@@ -22,28 +22,35 @@ io::SourceBuffer FromString(std::string s) {
   return io::SourceBuffer(d, n, [x = std::move(s)]() {});
 }
 
-io::SourceBuffer Browser404(const RequestParser& rp) {
-  ResponseBuilder hrb;
-  hrb.SetStatus(404, "Not Found");
-  hrb.RespondingTo(rp);
-  hrb.SetHeader("Content-Type", "text/html; charset=UTF-8");
-  hrb.SetHeader("Connection", "close");
-
-  hrb.Doctype();
-  hrb.Html({{"lang", "en"}}, [&] {
-    hrb.Head([&] {
-      hrb.Meta({{"charset", "UTF-8"}});
-      hrb.Title("404 - Not Found");
+void Common404(ResponseBuilder& rb, std::string_view hint) {
+  rb.SetStatus(404, "Not Found");
+  rb.SetHeader("Content-Type", "text/html; charset=UTF-8");
+  rb.SetHeader("Connection", "close");
+  rb.Doctype();
+  rb.Html({{"lang", "en"}}, [&] {
+    rb.Head([&] {
+      rb.Meta({{"charset", "UTF-8"}});
+      rb.Title("404 - Not Found");
     });
-    hrb.Body([&] {
-      hrb.Div({{"class", "container"}}, [&] {
-        hrb.H1("404");
-        hrb.P("No such page.");
-        hrb.A({{"href", "/"}}, "Back");
+    rb.Body([&] {
+      rb.Div({{"class", "container"}}, [&] {
+        rb.H1("404");
+        if (hint.empty()) {
+          rb.P("No such page.");
+        } else {
+          rb.P(strings::Format("The requested page [{}] could not be found.",
+                               hint));
+        }
+        rb.A({{"href", "/"}}, "Back");
       });
     });
   });
+}
 
+io::SourceBuffer Browser404(const RequestParser& rp) {
+  ResponseBuilder hrb;
+  hrb.RespondingTo(rp);
+  Common404(hrb, rp.path());
   return FromString(hrb.ToString());
 }
 
@@ -55,6 +62,11 @@ CannedResponses::CannedResponses(PrivateTag) {}
 CannedResponses* CannedResponses::Instance() {
   static CannedResponses* cr = new CannedResponses(PrivateTag{});
   return cr;
+}
+
+void CannedResponses::NotFound404(ResponseBuilder& rb,
+                                  std::string_view hint) const {
+  Common404(rb, hint);
 }
 
 io::SourceBuffer CannedResponses::NotFound404(const RequestParser& rp) const {

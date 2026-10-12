@@ -16,4 +16,9 @@ TEST(GetAndSetContents) {
   ASSERT_TRUE(FileIsReadable(kFile));
 }
 
+TEST(GetContentsFromProc) {
+  const auto contents = ReadContentsFromFile("/proc/loadavg").ValueOrDie();
+  EXPECT_FALSE(contents.empty());
+}
+
 }  // namespace

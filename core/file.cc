@@ -5,6 +5,35 @@
 
 namespace core {
 
+namespace {
+
+constexpr size_t kCowardiceThreshold = 1024 * 1024;
+
+ResultOr<std::string> FallbackReadContents(std::string_view file_name,
+                                           const FileDescriptor& fd) {
+  std::string ret;
+  char buffer[4096];
+  while (true) {
+    TRY_ASSIGN(size_t bytes_read, syscalls::Read(fd, buffer, sizeof(buffer)));
+    if (bytes_read == 0) {
+      break;  // EOF reached
+    }
+
+    // Enforce cowardice threshold dynamically during streaming
+    if (ret.size() + bytes_read > kCowardiceThreshold) {
+      return Result(
+          Code::kExhausted,
+          strings::Format(
+              "File [{0}] exceeded the reasonable upper bound of [{1}] bytes.",
+              file_name, kCowardiceThreshold));
+    }
+    ret.append(buffer, bytes_read);
+  }
+  return ret;
+}
+
+}  // namespace
+
 bool FileExists(std::string_view file_name) {
   return syscalls::Stat(file_name).IsOk();
 }
@@ -35,7 +64,6 @@ ResultOr<std::string> ReadContentsFromFile(std::string_view file_name) {
   auto fd = std::move(fd_or).ValueOrDie();
 
   // Stat file and size the output buffer.
-  constexpr size_t kCowardiceThreshold = 1024 * 1024;
   TRY_ASSIGN(const auto statbuf, syscalls::FStat(fd));
   const size_t file_size_bytes = statbuf.st_size;
   if (file_size_bytes > kCowardiceThreshold) {
@@ -45,9 +73,13 @@ ResultOr<std::string> ReadContentsFromFile(std::string_view file_name) {
                         "reasonable upper bound of [{2}] bytes.",
                         file_name, file_size_bytes, kCowardiceThreshold));
   }
-  std::string ret(file_size_bytes, '\0');
+
+  if (file_size_bytes == 0) {
+    return FallbackReadContents(file_name, fd);
+  }
 
   // Read the file.
+  std::string ret(file_size_bytes, '\0');
   TRY(idioms::ReadExactly(fd, ret.data(), file_size_bytes));
   return ret;
 }

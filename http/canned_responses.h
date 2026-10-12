@@ -3,6 +3,7 @@
 
 #include "core/vocabulary.h"
 #include "http/request_parser.h"
+#include "http/response_builder.h"
 #include "io/io.h"
 
 namespace http {
@@ -18,6 +19,7 @@ class CannedResponses final {
   static CannedResponses* Instance();
 
   io::SourceBuffer NotFound404(const RequestParser& rp) const;
+  void NotFound404(ResponseBuilder& rb, std::string_view hint = "") const;
 
  private:
 };
