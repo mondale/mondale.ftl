@@ -26,6 +26,11 @@ jobs:
             curl \
             git
 
+      - name: Set Clang as System Default Compiler
+        run: |
+          sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
+          sudo update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100
+
       - name: Dump Compilation Version
         run : |
           g++ -v
