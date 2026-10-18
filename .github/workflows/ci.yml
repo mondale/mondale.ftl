@@ -1,0 +1,38 @@
+name: CI & Test Pipeline
+
+# Trigger the workflow on every push to any branch
+on:
+  push:
+
+jobs:
+  run-tests:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Pull the repository source code onto the runner
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # 2. Install required system development libraries and tools
+      - name: Install System Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            libnuma-dev \
+            libssl-dev \
+            curl \
+            git
+
+      # 3. Install the Please build system and add it to the system PATH
+      - name: Install Please Build System
+        run: |
+          curl https://get.please.build | bash
+          echo "$HOME/.please" >> $GITHUB_PATH
+
+      # 4. Invoke your custom test orchestration script
+      - name: Run All Tests
+        run: |
+          chmod +x ./tools/run_all_tests.sh
+          ./tools/run_all_tests.sh
