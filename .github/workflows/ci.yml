@@ -23,6 +23,7 @@ jobs:
             libssl-dev \
             clang \
             lld \
+            llvm \
             curl \
             git
 
@@ -34,6 +35,16 @@ jobs:
       - name: Dump Compilation Version
         run : |
           g++ -v
+
+      - name: Ensure llvm-cov is Symlinked
+        run: |
+          # Finds any versioned llvm-cov binary on the system and links it to standard PATH if needed
+          if ! command -v llvm-cov &> /dev/null; then
+            LLVM_COV_PATH=$(ls /usr/bin/llvm-cov-* | head -n 1)
+            if [ -n "$LLVM_COV_PATH" ]; then
+              sudo ln -s "$LLVM_COV_PATH" /usr/bin/llvm-cov
+            fi
+          fi
 
       # 2. Explicitly point Please/environment to Clang
       - name: Configure Compiler Environment
