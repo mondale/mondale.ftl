@@ -12,8 +12,8 @@ namespace {
 class GlobalHandlers final {
  public:
   static GlobalHandlers* Instance() {
-    static GlobalHandlers* gh = new GlobalHandlers();
-    return gh;
+    static GlobalHandlers gh;
+    return &gh;
   }
 
   Result Populate(HttpServer* s);
