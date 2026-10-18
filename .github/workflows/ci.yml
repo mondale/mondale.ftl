@@ -26,6 +26,10 @@ jobs:
             curl \
             git
 
+      - name: Dump Compilation Version
+        run : |
+          g++ -v
+
       # 2. Explicitly point Please/environment to Clang
       - name: Configure Compiler Environment
         run: |
