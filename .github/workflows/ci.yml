@@ -53,6 +53,8 @@ jobs:
         run: |
           echo "CC=clang" >> $GITHUB_ENV
           echo "CXX=clang++" >> $GITHUB_ENV
+          echo "CXXFLAGS=-stdlib=libc++" >> $GITHUB_ENV
+          echo "LDFLAGS=-stdlib=libc++" >> $GITHUB_ENV
 
       # 3. Install the Please build system and add it to the system PATH
       - name: Install Please Build System
