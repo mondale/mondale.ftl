@@ -14,7 +14,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 2. Install required system development libraries and tools
       - name: Install System Dependencies
         run: |
           sudo apt-get update
@@ -22,8 +21,16 @@ jobs:
             build-essential \
             libnuma-dev \
             libssl-dev \
+            clang \
+            lld \
             curl \
             git
+
+      # 2. Explicitly point Please/environment to Clang
+      - name: Configure Compiler Environment
+        run: |
+          echo "CC=clang" >> $GITHUB_ENV
+          echo "CXX=clang++" >> $GITHUB_ENV
 
       # 3. Install the Please build system and add it to the system PATH
       - name: Install Please Build System
