@@ -22,6 +22,8 @@ jobs:
             libnuma-dev \
             libssl-dev \
             clang \
+            libc++-dev \
+            libc++abi-dev \
             lld \
             llvm \
             curl \
