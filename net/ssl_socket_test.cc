@@ -68,7 +68,8 @@ TEST_F(SslSocketTest, HelloWorldWithSsl) {
             sizeof(kClientHello));
   EXPECT_THAT(inbound, testing::HasSubstr("Hello, world!"));
 
-  CHECK_OK(e_->RunWithAffinity(ssl_socket, [&]() { ssl_socket->PostClose(); }));
+  CHECK_OK(
+      e_->RunWithAffinity(ssl_socket, [s = ssl_socket]() { s->PostClose(); }));
 
   // Client reads the response sent by the server
   char client_response[64];
