@@ -1,0 +1,6 @@
+namespace capsule_test
+
+capsule TestCapsule {
+  u32 code
+  string message
+}
