@@ -1,0 +1,36 @@
+#!/bin/sh
+
+# ANSI Color Codes & Styles
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+NC='\033[0m' # No Color
+
+printf "${BOLD}${CYAN}==> Running pre-flight checks for main branch...${NC}\n"
+
+# 1. Check for untracked .h or .cc files
+printf "${CYAN}--> Checking for untracked C++ source/header files...${NC}\n"
+untracked_cpp_files=$(git ls-files --others --exclude-standard | grep -E '\.(h|cc)$' | grep -v '^plz-out/')
+
+if [ -n "$untracked_cpp_files" ]; then
+    echo ""
+    printf "${RED}${BOLD}ERROR: Push aborted. Found untracked C++ files in the working tree:${NC}\n"
+    echo "$untracked_cpp_files" | sed "s/^/  - /"
+    echo ""
+    printf "${YELLOW}Please git add them or add them to .gitignore before pushing to main.${NC}\n"
+    exit 1
+fi
+
+# 2. Execute test suite
+printf "${CYAN}--> Executing test suite: ./tools/run_all_tests.sh...${NC}\n"
+if ! ./tools/run_all_tests.sh; then
+    echo ""
+    printf "${RED}${BOLD}ERROR: Test suite failed. Push to main aborted.${NC}\n"
+    exit 1
+fi
+
+printf "${GREEN}${BOLD}==> All pre-flight checks passed successfully.${NC}\n"
+
+exit 0
