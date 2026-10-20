@@ -30,7 +30,6 @@ jobs:
             libc++abi-21-dev \
             lld-21 \
             llvm-21 \
-            llvm-21-cov \
             git \
             curl
 
