@@ -128,9 +128,9 @@ Result HttpServer::FireUpHttps(core::FileDescriptor fd, net::SocketAddress sa) {
 
 Result HttpServer::Serve(Result r, const RequestParser& rp, io::Poster* p) {
   Log(ERROR, If(!r.IsOk())) << r;
-  thread_local static Package* package = new Package;
-  UpdateIfNeeded(package);
-  return Serve(*package, rp, p);
+  thread_local static Package package;
+  UpdateIfNeeded(&package);
+  return Serve(package, rp, p);
 }
 
 Result HttpServer::Serve(const Package& package, const RequestParser& rp,

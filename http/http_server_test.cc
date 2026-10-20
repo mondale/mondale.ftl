@@ -41,7 +41,7 @@ TEST_F(HttpServerTest, FireUp) {
   ASSERT_TRUE(write_res.IsOk());
 
   // Read the response
-  char buf[4096];
+  char buf[1024] = {};
   ResultOr<size_t> recv_res =
       core::syscalls::Recv(sock, buf, sizeof(buf) - 1, 0);
   ASSERT_TRUE(recv_res.IsOk());
