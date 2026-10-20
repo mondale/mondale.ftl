@@ -16,23 +16,28 @@ jobs:
 
       - name: Install System Dependencies
         run: |
-          sudo apt-get update
+          # Download and run the official LLVM installation script, specifying version 21
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 21
+
+          # Install the matching LLVM/Clang standard library and tooling packages
           sudo apt-get install -y \
-            build-essential \
             libnuma-dev \
             libssl-dev \
-            clang \
-            libc++-dev \
-            libc++abi-dev \
-            lld \
-            llvm \
-            curl \
-            git
+            clang-21 \
+            libc++-21-dev \
+            libc++abi-21-dev \
+            lld-21 \
+            llvm-21 \
+            llvm-21-cov \
+            git \
+            curl
 
       - name: Set Clang as System Default Compiler
         run: |
-          sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
-          sudo update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100
+          sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++-21 100
+          sudo update-alternatives --install /usr/bin/cc cc /usr/bin/clang-21 100
 
       - name: Dump Compilation Version
         run : |
@@ -40,11 +45,13 @@ jobs:
 
       - name: Ensure llvm-cov is Symlinked
         run: |
-          # Finds any versioned llvm-cov binary on the system and links it to standard PATH if needed
+          # Dynamically link llvm-cov-21 to standard path as llvm-cov
           if ! command -v llvm-cov &> /dev/null; then
-            LLVM_COV_PATH=$(ls /usr/bin/llvm-cov-* | head -n 1)
-            if [ -n "$LLVM_COV_PATH" ]; then
-              sudo ln -s "$LLVM_COV_PATH" /usr/bin/llvm-cov
+            if [ -f /usr/bin/llvm-cov-21 ]; then
+              sudo ln -s /usr/bin/llvm-cov-21 /usr/bin/llvm-cov
+            else
+              LLVM_COV_PATH=$(ls /usr/bin/llvm-cov-* | head -n 1)
+              [ -n "$LLVM_COV_PATH" ] && sudo ln -s "$LLVM_COV_PATH" /usr/bin/llvm-cov
             fi
           fi
 

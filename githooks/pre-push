@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Install this hook with:
+# git config core.hooksPath githooks
+
 # ANSI Color Codes & Styles
 RED='\033[0;31m'
 GREEN='\033[0;32m'
