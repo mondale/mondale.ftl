@@ -1,10 +1,9 @@
 #ifndef CAPSULE_VIEW_MAPPER_H_
 #define CAPSULE_VIEW_MAPPER_H_
 
-#include <flat_map>
-
 #include "capsule/abi.h"
 #include "core/crc32c.h"
+#include "core/flat_map.h"
 #include "core/vocabulary.h"
 
 namespace capsule {
@@ -37,7 +36,7 @@ class ViewMapper final {
                                     size_t num_entries);
 
  private:
-  std::flat_map<core::CRC32C, uint32_t> map_;
+  core::FlatMap<core::CRC32C, uint32_t> map_;
 };
 
 }  // namespace capsule

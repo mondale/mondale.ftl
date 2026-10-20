@@ -195,6 +195,7 @@ cc_library(
         ":abi",
         "//core",
         "//core:crc32c",
+        "//core:flat_map",
     ],
 )
 

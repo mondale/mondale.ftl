@@ -295,3 +295,20 @@ cc_test(
         "//testing",
     ],
 )
+
+cc_library(
+  name = "flat_map",
+  hdrs = ["flat_map.h"],
+  srcs = [],
+  deps = ["//core",
+  ],
+visibility = ["//..."],
+)
+
+cc_test(
+  name = "flat_map_test",
+  srcs = ["flat_map_test.cc"],
+  deps = [":flat_map",
+          "//testing",
+  ],
+)
