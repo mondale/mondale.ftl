@@ -60,6 +60,12 @@ jobs:
           curl https://get.please.build | bash
           echo "$HOME/.please" >> $GITHUB_PATH
 
+      # Initialize logging directory
+      - name: Initialize Logging Directory
+        run: |
+          sudo mkdir /var/log/mondale
+          sudo chmod 777 /var/log/mondale
+
       # 4. Invoke your custom test orchestration script
       - name: Run All Tests
         run: |
