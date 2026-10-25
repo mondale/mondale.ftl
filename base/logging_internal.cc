@@ -49,8 +49,9 @@ std::string LogEntry::ToString() const {
       },
       message);
 
-  // Header format: "S<tid> HH:MM:SS.uuuuu <file>:<line>] " (~60-80 bytes)
-  constexpr size_t kEstimatedHeaderLen = 80;
+  // Header format: "S<tid> YYYY-MM-DD HH:MM:SS.uuuuu <file>:<line>] " (~90
+  // bytes)
+  constexpr size_t kEstimatedHeaderLen = 96;
   std::string result;
   result.reserve(kEstimatedHeaderLen + msg_len + 1);
 
@@ -58,17 +59,21 @@ std::string LogEntry::ToString() const {
   result.resize(header_capacity);
 
   int written = std::snprintf(
-      result.data(), header_capacity + 1, "%c%d %02d:%02d:%02d.%05d %s:%d] ",
-      severity_char, static_cast<int>(tid), tm_time.tm_hour, tm_time.tm_min,
-      tm_time.tm_sec, sub_second_10us, file ? file : "unknown", line);
+      result.data(), header_capacity + 1,
+      "%c%d %04d-%02d-%02d %02d:%02d:%02d.%05d %s:%d] ", severity_char,
+      static_cast<int>(tid), tm_time.tm_year + 1900, tm_time.tm_mon + 1,
+      tm_time.tm_mday, tm_time.tm_hour, tm_time.tm_min, tm_time.tm_sec,
+      sub_second_10us, file ? file : "unknown", line);
 
   if (written > static_cast<int>(header_capacity)) {
     header_capacity = static_cast<size_t>(written);
     result.resize(header_capacity);
-    std::snprintf(
-        result.data(), header_capacity + 1, "%c%d %02d:%02d:%02d.%05d %s:%d] ",
-        severity_char, static_cast<int>(tid), tm_time.tm_hour, tm_time.tm_min,
-        tm_time.tm_sec, sub_second_10us, file ? file : "unknown", line);
+    std::snprintf(result.data(), header_capacity + 1,
+                  "%c%d %04d-%02d-%02d %02d:%02d:%02d.%05d %s:%d] ",
+                  severity_char, static_cast<int>(tid), tm_time.tm_year + 1900,
+                  tm_time.tm_mon + 1, tm_time.tm_mday, tm_time.tm_hour,
+                  tm_time.tm_min, tm_time.tm_sec, sub_second_10us,
+                  file ? file : "unknown", line);
   } else if (written >= 0) {
     result.resize(static_cast<size_t>(written));
   }

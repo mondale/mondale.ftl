@@ -398,23 +398,27 @@ class [[nodiscard]] ResultOr final {
     return std::get<Result>(std::move(storage_));
   }
 
-  [[nodiscard]] const T& ValueOrDie() const& {
-    CheckOk();
+  [[nodiscard]] const T& ValueOrDie(
+      base::SourceLocation loc = base::SourceLocation::Current()) const& {
+    CheckOk(loc);
     return std::get<T>(storage_);
   }
 
-  [[nodiscard]] T& ValueOrDie() & {
-    CheckOk();
+  [[nodiscard]] T& ValueOrDie(
+      base::SourceLocation loc = base::SourceLocation::Current()) & {
+    CheckOk(loc);
     return std::get<T>(storage_);
   }
 
-  [[nodiscard]] const T&& ValueOrDie() const&& {
-    CheckOk();
+  [[nodiscard]] const T&& ValueOrDie(
+      base::SourceLocation loc = base::SourceLocation::Current()) const&& {
+    CheckOk(loc);
     return std::get<T>(std::move(storage_));
   }
 
-  [[nodiscard]] T&& ValueOrDie() && {
-    CheckOk();
+  [[nodiscard]] T&& ValueOrDie(
+      base::SourceLocation loc = base::SourceLocation::Current()) && {
+    CheckOk(loc);
     return std::get<T>(std::move(storage_));
   }
 
@@ -435,8 +439,10 @@ class [[nodiscard]] ResultOr final {
   }
 
  private:
-  void CheckOk() const {
-    CHECK(ok()) << "Attempted to access value of non-OK ResultOr " << result();
+  void CheckOk(base::SourceLocation loc) const {
+    CHECK(ok()) << "At[" << loc.file() << ":" << loc.line()
+                << "]: Attempted to access value of non-OK ResultOr "
+                << result();
   }
 
   std::variant<Result, T> storage_;

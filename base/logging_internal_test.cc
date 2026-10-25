@@ -36,8 +36,7 @@ TEST(LogEntryFormatsStringLiteralPayloadCorrectly) {
 
   std::string formatted = entry.ToString();
 
-  // Exactly matches: E90 10:02:14.31351 foo.cc:71] Nope!\n
-  EXPECT_EQ(formatted, "E90 10:02:14.31351 foo.cc:71] Nope!\n");
+  EXPECT_EQ(formatted, "E90 2026-08-25 10:02:14.31351 foo.cc:71] Nope!\n");
 }
 
 TEST(LogEntryFormatsDynamicStringPayloadCorrectly) {
@@ -53,7 +52,8 @@ TEST(LogEntryFormatsDynamicStringPayloadCorrectly) {
   std::string formatted = entry.ToString();
 
   EXPECT_EQ(formatted,
-            "I1234 09:05:01.98765 main.cc:100] Dynamic error count: 404\n");
+            "I1234 2026-08-25 09:05:01.98765 main.cc:100] Dynamic error count: "
+            "404\n");
 }
 
 TEST(LogEntryFormatsSubSecondZeroPadding) {
@@ -68,7 +68,8 @@ TEST(LogEntryFormatsSubSecondZeroPadding) {
 
   std::string formatted = entry.ToString();
 
-  EXPECT_EQ(formatted, "W42 10:00:00.00005 test.cc:1] Padding test\n");
+  EXPECT_EQ(formatted,
+            "W42 2026-08-25 10:00:00.00005 test.cc:1] Padding test\n");
 }
 
 }  // namespace
