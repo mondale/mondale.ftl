@@ -2,6 +2,8 @@
 #include <cctype>
 #include <cstddef>
 #include <cstdint>
+#include <cstdio>
+#include <ctime>
 #include <memory>
 #include <string>
 #include <string_view>
@@ -22,9 +24,8 @@
 namespace http::handlers {
 namespace {
 
-constexpr size_t kMemTarget = 64 * 1024;      // 64 KiB nominal memory target
-constexpr size_t kMemMax = 2 * 1024 * 1024;   // 2 MiB hard heap limit
-constexpr size_t kReadChunkSize = 64 * 1024;  // 64 KiB read buffer size
+constexpr size_t kMemTarget = 64 * 1024;     // 64 KiB nominal memory target
+constexpr size_t kMemMax = 2 * 1024 * 1024;  // 2 MiB hard heap limit
 
 enum class FilterMode { kShowAll, kFilterOnly, kSuppressOnly };
 
@@ -42,6 +43,8 @@ struct FilterParams {
   size_t page = 1;
   int64_t time_start_sec = 0;
   int64_t time_end_sec = 0;
+  std::string time_start_raw;
+  std::string time_end_raw;
 
   // Key: severity char ('I', 'W', 'E', 'F') -> mode
   std::unordered_map<char, std::string> severity_modes;
@@ -70,6 +73,46 @@ bool IsBrowserUserAgent(const RequestParser& rp) {
   return strings::StartsWith(rp.user_agent(), "Mozilla");
 }
 
+int64_t ParseDateTimeLocal(std::string_view s) {
+  if (s.size() < 16) return 0;
+  int y = 0, m = 0, d = 0, h = 0, min = 0;
+  if (std::sscanf(s.data(), "%d-%d-%dT%d:%d", &y, &m, &d, &h, &min) >= 5) {
+    if (y < 2000 || y > 2100 || m < 1 || m > 12 || d < 1 || d > 31) return 0;
+    struct tm tm = {};
+    tm.tm_year = y - 1900;
+    tm.tm_mon = m - 1;
+    tm.tm_mday = d;
+    tm.tm_hour = h;
+    tm.tm_min = min;
+    tm.tm_sec = 0;
+    if (s.size() >= 19 && s[16] == ':') {
+      int s_sec = 0;
+      if (std::sscanf(s.data() + 17, "%d", &s_sec) == 1) {
+        tm.tm_sec = s_sec;
+      }
+    }
+    return static_cast<int64_t>(std::mktime(&tm));
+  }
+  return 0;
+}
+
+int64_t ParseLogTimestamp(std::string_view ts_str) {
+  if (ts_str.size() < 19) return 0;
+  int y = 0, m = 0, d = 0, h = 0, min = 0, s = 0;
+  if (std::sscanf(ts_str.data(), "%d-%d-%d %d:%d:%d", &y, &m, &d, &h, &min,
+                  &s) >= 6) {
+    struct tm tm = {};
+    tm.tm_year = y - 1900;
+    tm.tm_mon = m - 1;
+    tm.tm_mday = d;
+    tm.tm_hour = h;
+    tm.tm_min = min;
+    tm.tm_sec = s;
+    return static_cast<int64_t>(std::mktime(&tm));
+  }
+  return 0;
+}
+
 FilterParams ParseFilterParams(const RequestParser& rp) {
   FilterParams p;
   p.raw_query = rp.query_params();
@@ -84,18 +127,20 @@ FilterParams ParseFilterParams(const RequestParser& rp) {
 
   auto it_tstart = p.raw_query.find("ts");
   if (it_tstart != p.raw_query.end()) {
-    auto parsed = strings::ParseAs<int64_t>(it_tstart->second, 10);
-    if (parsed.IsOk()) {
-      p.time_start_sec = parsed.ValueOrDie();
-    }
+    p.time_start_raw = it_tstart->second;
+    p.time_start_sec = ParseDateTimeLocal(it_tstart->second);
   }
 
   auto it_tend = p.raw_query.find("te");
   if (it_tend != p.raw_query.end()) {
-    auto parsed = strings::ParseAs<int64_t>(it_tend->second, 10);
-    if (parsed.IsOk()) {
-      p.time_end_sec = parsed.ValueOrDie();
-    }
+    p.time_end_raw = it_tend->second;
+    p.time_end_sec = ParseDateTimeLocal(it_tend->second);
+  }
+
+  if (p.time_start_sec > 0 && p.time_end_sec > 0 &&
+      p.time_start_sec > p.time_end_sec) {
+    std::swap(p.time_start_sec, p.time_end_sec);
+    std::swap(p.time_start_raw, p.time_end_raw);
   }
 
   for (const auto& [k, v] : p.raw_query) {
@@ -166,6 +211,18 @@ LogEntry ParseLogEntry(std::string_view line) {
 }
 
 bool MatchesFilters(const LogEntry& entry, const FilterParams& params) {
+  if (params.time_start_sec > 0 || params.time_end_sec > 0) {
+    int64_t entry_sec = ParseLogTimestamp(entry.timestamp);
+    if (entry_sec > 0) {
+      if (params.time_start_sec > 0 && entry_sec < params.time_start_sec) {
+        return false;
+      }
+      if (params.time_end_sec > 0 && entry_sec > params.time_end_sec) {
+        return false;
+      }
+    }
+  }
+
   bool has_sev_filter = false;
   bool sev_matched = false;
 
@@ -215,29 +272,9 @@ std::vector<LogEntry> ReadLogPagesBackward(const core::FileDescriptor& fd,
     return page_entries;
   }
 
-  off_t curr_pos = file_size;
-  std::string remainder = "";
-  std::vector<std::string> raw_entries;
   size_t current_heap_bytes = 0;
   size_t current_page = 1;
 
-  while (curr_pos > 0) {
-    size_t bytes_to_read =
-        std::min(static_cast<off_t>(kReadChunkSize), curr_pos);
-    curr_pos -= bytes_to_read;
-
-    // Seek/read using syscalls Fcntl or reading via chunks. Since
-    // core::syscalls::Read reads sequentially, we can load the file or read
-    // chunks. Alternatively, read the file contents via
-    // core::ReadContentsFromFile if appropriate, or perform chunked reads using
-    // core::syscalls::Read. Given core::syscalls doesn't have pread directly
-    // exposed, we can read the full contents or use core::ReadContentsFromFile.
-    // Let's use core::ReadContentsFromFile for robust cross-platform safety
-    // given core::syscalls API surface.
-    break;
-  }
-
-  // Fallback to safe file content reader via vocabulary file utility
   ResultOr<std::string> file_contents =
       core::ReadContentsFromFile(base::internal::GetLogPath());
   if (!file_contents.IsOk()) {
@@ -246,7 +283,6 @@ std::vector<LogEntry> ReadLogPagesBackward(const core::FileDescriptor& fd,
   }
 
   std::string_view content = file_contents.ValueOrDie();
-  // Parse lines backwards from content view
   size_t end_idx = content.size();
   while (end_idx > 0) {
     size_t newline_pos = content.rfind('\n', end_idx - 1);
@@ -379,10 +415,16 @@ constexpr char kCustomLogzStyle[] = R"(
     background-color: #1a2733;
   }
   .log-cell {
-    padding: 0.25rem 0.5rem;
+    padding: 0.25rem 0.75rem;
     vertical-align: top;
+  }
+  .log-cell-meta {
+    white-space: nowrap;
+  }
+  .log-cell-msg {
     white-space: pre-wrap;
-    word-break: break-all;
+    word-break: break-word;
+    width: 100%;
   }
   .sev-I { color: #569cd6; font-weight: bold; }
   .sev-W { color: #ce9178; font-weight: bold; }
@@ -432,19 +474,45 @@ ResultOr<std::string> RenderHtmlView(const RequestParser& rp,
           rb.Span({{"class", "topbar-label"}}, "Time:");
           rb.A({{"class", "btn"},
                 {"href", BuildQueryUrl(params, 1, {{"ts", ""}, {"te", ""}})}},
-               "Now");
+               "All");
           int64_t now_sec =
               base::WallTime::Now().UnixNanoseconds() / 1'000'000'000;
           rb.A({{"class", "btn"},
                 {"href",
                  BuildQueryUrl(params, 1,
                                {{"ts", std::to_string(now_sec - 3600)}})}},
-               "Last Hour");
+               "1h");
           rb.A({{"class", "btn"},
                 {"href",
                  BuildQueryUrl(params, 1,
                                {{"ts", std::to_string(now_sec - 86400)}})}},
-               "Last Day");
+               "24h");
+
+          rb.Form(
+              {{"method", "GET"},
+               {"action", "/logz"},
+               {"style",
+                "display:inline; display:flex; gap:0.3rem; align-items:center; "
+                "margin:0;"}},
+              [&] {
+                for (const auto& [k, v] : params.raw_query) {
+                  if (k != "ts" && k != "te" && k != "p") {
+                    rb.Input({{"type", "hidden"}, {"name", k}, {"value", v}});
+                  }
+                }
+                rb.Input({{"type", "datetime-local"},
+                          {"name", "ts"},
+                          {"value", params.time_start_raw},
+                          {"class", "btn"},
+                          {"style", "font-family:inherit;"}});
+                rb.Span("to");
+                rb.Input({{"type", "datetime-local"},
+                          {"name", "te"},
+                          {"value", params.time_end_raw},
+                          {"class", "btn"},
+                          {"style", "font-family:inherit;"}});
+                rb.Button({{"class", "btn"}, {"type", "submit"}}, "Filter");
+              });
         });
 
         rb.Div({{"class", "topbar-section"}}, [&] {
@@ -492,12 +560,12 @@ ResultOr<std::string> RenderHtmlView(const RequestParser& rp,
                 highlight ? "log-row log-row-highlight" : "log-row";
             rb.Tr({{"class", row_cls}}, [&] {
               std::string sev_cls =
-                  std::string("log-cell sev-") + entry.severity;
+                  std::string("log-cell log-cell-meta sev-") + entry.severity;
               rb.Td({{"class", sev_cls}}, std::string(1, entry.severity));
-              rb.Td({{"class", "log-cell"}}, entry.thread_id);
-              rb.Td({{"class", "log-cell"}}, entry.timestamp);
-              rb.Td({{"class", "log-cell"}}, entry.source_loc);
-              rb.Td({{"class", "log-cell"}}, entry.message);
+              rb.Td({{"class", "log-cell log-cell-meta"}}, entry.thread_id);
+              rb.Td({{"class", "log-cell log-cell-meta"}}, entry.timestamp);
+              rb.Td({{"class", "log-cell log-cell-meta"}}, entry.source_loc);
+              rb.Td({{"class", "log-cell log-cell-msg"}}, entry.message);
             });
           }
         });
