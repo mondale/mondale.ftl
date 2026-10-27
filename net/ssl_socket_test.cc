@@ -68,8 +68,11 @@ TEST_F(SslSocketTest, HelloWorldWithSsl) {
             sizeof(kClientHello));
   EXPECT_THAT(inbound, testing::HasSubstr("Hello, world!"));
 
-  CHECK_OK(
-      e_->RunWithAffinity(ssl_socket, [s = ssl_socket]() { s->PostClose(); }));
+  Notification closed;
+  CHECK_OK(e_->RunWithAffinity(ssl_socket, [&closed, s = ssl_socket]() {
+    s->PostClose();
+    closed.Notify();
+  }));
 
   // Client reads the response sent by the server
   char client_response[64];
@@ -79,6 +82,9 @@ TEST_F(SslSocketTest, HelloWorldWithSsl) {
 
   // Wait for the server's send operation completion notification
   sent.WaitForNotification();
+
+  // Wait for the PostClose() to finish.
+  closed.WaitForNotification();
 
   // Verify the response matches what the server posted
   std::string_view response_view(client_response, read_bytes);
