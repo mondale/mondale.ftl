@@ -67,3 +67,19 @@ cc_test(
         "//testing",
     ],
 )
+
+cc_library(
+  name = "logz",
+  srcs = ["logz.cc"],
+  hdrs = ["logz.h"],
+  visibility = ["//http/..."],
+alwayslink = True,
+deps = [
+        "//core",
+        "//core:file",
+        "//core:syscalls",
+        "//http:http_server",
+        "//http:request_parser",
+        "//http:response_builder",
+],
+)

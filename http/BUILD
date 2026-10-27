@@ -21,6 +21,7 @@ cc_binary(
         "//base:process",
         "//core",
         "//http/handlers:procz",
+        "//http/handlers:logz",
         "//http/handlers:statusz",
     ],
 )

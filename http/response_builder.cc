@@ -304,6 +304,14 @@ void ResponseBuilder::Table(
   impl_->CloseTag("table");
 }
 
+void ResponseBuilder::Tr(
+    std::initializer_list<std::pair<std::string_view, std::string_view>> a,
+    std::move_only_function<void()> cb) {
+  impl_->OpenTag("tr", a);
+  cb();
+  impl_->CloseTag("tr");
+}
+
 void ResponseBuilder::Tr(std::move_only_function<void()> cb) {
   impl_->OpenTag("tr", {});
   cb();

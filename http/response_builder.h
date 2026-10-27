@@ -69,6 +69,9 @@ class ResponseBuilder final {
       std::initializer_list<std::pair<std::string_view, std::string_view>> a,
       std::move_only_function<void()> cb);
   void Tr(std::move_only_function<void()> cb);
+  void Tr(
+      std::initializer_list<std::pair<std::string_view, std::string_view>> a,
+      std::move_only_function<void()> cb);
   void Th(std::string_view t);
   void Td(std::string_view t);
   void Td(
