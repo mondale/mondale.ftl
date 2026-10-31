@@ -21,8 +21,17 @@
 #include "http/http_server.h"
 #include "http/response_builder.h"
 
+FLAG_COHORT(logz);
+FLAG(std::string, log_file_name_override, "");
+
 namespace http::handlers {
 namespace {
+
+std::string GetLogFileName() {
+  const std::string o = FLAG_LOOKUP(log_file_name_override);
+  if (!o.empty()) return o;
+  return base::internal::GetLogPath();
+}
 
 constexpr size_t kMemTarget = 64 * 1024;     // 64 KiB nominal memory target
 constexpr size_t kMemMax = 2 * 1024 * 1024;  // 2 MiB hard heap limit
@@ -276,7 +285,7 @@ std::vector<LogEntry> ReadLogPagesBackward(const core::FileDescriptor& fd,
   size_t current_page = 1;
 
   ResultOr<std::string> file_contents =
-      core::ReadContentsFromFile(base::internal::GetLogPath());
+      core::ReadContentsFromFile(GetLogFileName());
   if (!file_contents.IsOk()) {
     *total_pages = 1;
     return page_entries;

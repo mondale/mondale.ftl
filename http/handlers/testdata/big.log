@@ -1,0 +1,6368 @@
+I29393 2026-10-25 12:36:07.96364 capsule/by_hand_test.cc:820] Seed is 4
+I29393 2026-10-25 12:36:07.96365 capsule/by_hand_test.cc:770] Capsule reports own size as: 56
+I29393 2026-10-25 12:36:07.96365 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96365 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96366 capsule/by_hand_test.cc:806] b1: 1
+i1: -198299738
+s1: "2G2T1PQMCD@WM?8WOT>X"
+
+I29393 2026-10-25 12:36:07.96581 capsule/by_hand_test.cc:820] Seed is 4
+I29393 2026-10-25 12:36:07.96582 capsule/by_hand_test.cc:770] Capsule reports own size as: 344
+I29393 2026-10-25 12:36:07.96583 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96583 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96585 capsule/by_hand_test.cc:806] u64a: 14490808261858112199
+sub1 {
+  b1: 0
+  i1: 404803372
+  s1: "G2"
+}
+vsub1[] {
+  b1: 0
+  i1: 1101946178
+  s1: "MCD@WM?8WOT>XC;:VW4<;94RQ1"
+} {
+  b1: 1
+  i1: -903119708
+  s1: "95GY7XWJAQANHEI52E<:ZPY6VT@R4?"
+} {
+  b1: 0
+  i1: 352672730
+  s1: "LVBD6Y==@DOGZANC@:VV"
+} {
+  b1: 0
+  i1: 335751683
+  s1: "8M2<>7DB0>70Y<C@I0>7RS@1:F"
+}
+
+I29393 2026-10-25 12:36:07.96700 capsule/by_hand_test.cc:820] Seed is 4
+I29393 2026-10-25 12:36:07.96702 capsule/by_hand_test.cc:770] Capsule reports own size as: 392
+I29393 2026-10-25 12:36:07.96702 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96702 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96707 capsule/by_hand_test.cc:806] u64a: 14490808261858112199
+i64a: -851690886662571060
+u32a: 2552287020
+i32a: -1879864810
+u16a: 35912
+i16a: -29073
+u8a: 215
+i8a: -119
+b1: 1
+vs1[] {
+  "CD@WM?8WOT>XC;:VW4<;94",
+  "Q1M<V95GY7XWJAQANHEI52E<:ZP",
+  "6VT@R4?0IJLVBD6Y==@DOGZANC@:VVBH",
+}
+sub1 {
+  u64a: 14427099710105400472
+  sub1 {
+    b1: 0
+    i1: 782659776
+    s1: "<"
+  }
+  vsub1[] {
+    b1: 0
+    i1: -110332978
+    s1: "0>70Y<C@I0>7RS"
+  }
+}
+f32a: -24.2896
+f64a: -9129.66
+
+I29393 2026-10-25 12:36:07.96841 capsule/by_hand_test.cc:820] Seed is 65054
+I29393 2026-10-25 12:36:07.96841 capsule/by_hand_test.cc:770] Capsule reports own size as: 56
+I29393 2026-10-25 12:36:07.96841 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96841 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96842 capsule/by_hand_test.cc:806] b1: 1
+i1: 291719838
+s1: "TAZ92ULX7VSVOHMMJHM;"
+
+I29393 2026-10-25 12:36:07.96843 capsule/by_hand_test.cc:820] Seed is 9878
+I29393 2026-10-25 12:36:07.96843 capsule/by_hand_test.cc:770] Capsule reports own size as: 56
+I29393 2026-10-25 12:36:07.96843 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96843 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96843 capsule/by_hand_test.cc:806] b1: 0
+i1: 72465477
+s1: "Z?GIJE8SLNZUE"
+
+I29393 2026-10-25 12:36:07.96843 capsule/by_hand_test.cc:820] Seed is 33740
+I29393 2026-10-25 12:36:07.96843 capsule/by_hand_test.cc:770] Capsule reports own size as: 48
+I29393 2026-10-25 12:36:07.96843 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96843 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96844 capsule/by_hand_test.cc:806] b1: 0
+i1: -529376924
+s1: "@U@P<T"
+
+I29393 2026-10-25 12:36:07.96844 capsule/by_hand_test.cc:820] Seed is 53968
+I29393 2026-10-25 12:36:07.96844 capsule/by_hand_test.cc:770] Capsule reports own size as: 40
+I29393 2026-10-25 12:36:07.96844 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96844 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96844 capsule/by_hand_test.cc:806] b1: 1
+i1: 1606035566
+s1: "X?HL"
+
+I29393 2026-10-25 12:36:07.96844 capsule/by_hand_test.cc:820] Seed is 7570
+I29393 2026-10-25 12:36:07.96844 capsule/by_hand_test.cc:770] Capsule reports own size as: 72
+I29393 2026-10-25 12:36:07.96844 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96844 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96845 capsule/by_hand_test.cc:806] b1: 1
+i1: -1580123506
+s1: "B;241GH<BFZ:ID26=GX<:FJK:CV4I<CM"
+
+I29393 2026-10-25 12:36:07.96845 capsule/by_hand_test.cc:820] Seed is 28314
+I29393 2026-10-25 12:36:07.96845 capsule/by_hand_test.cc:770] Capsule reports own size as: 40
+I29393 2026-10-25 12:36:07.96845 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96845 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96845 capsule/by_hand_test.cc:806] b1: 0
+i1: 1090046322
+s1: "P"
+
+I29393 2026-10-25 12:36:07.96845 capsule/by_hand_test.cc:820] Seed is 48002
+I29393 2026-10-25 12:36:07.96845 capsule/by_hand_test.cc:770] Capsule reports own size as: 72
+I29393 2026-10-25 12:36:07.96846 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96846 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96846 capsule/by_hand_test.cc:806] b1: 1
+i1: 284426193
+s1: "S:GA49PGUFDV5CG>ELG4YT@:8Q13BLZ"
+
+I29393 2026-10-25 12:36:07.96846 capsule/by_hand_test.cc:820] Seed is 2004
+I29393 2026-10-25 12:36:07.96846 capsule/by_hand_test.cc:770] Capsule reports own size as: 56
+I29393 2026-10-25 12:36:07.96846 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96846 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96846 capsule/by_hand_test.cc:806] b1: 0
+i1: -305995594
+s1: "5P1JUTVI4KYL7@>F"
+
+I29393 2026-10-25 12:36:07.96846 capsule/by_hand_test.cc:820] Seed is 21092
+I29393 2026-10-25 12:36:07.96847 capsule/by_hand_test.cc:770] Capsule reports own size as: 56
+I29393 2026-10-25 12:36:07.96847 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96847 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96847 capsule/by_hand_test.cc:806] b1: 1
+i1: -2010259175
+s1: "VG292<R1204>CW=6"
+
+I29393 2026-10-25 12:36:07.96847 capsule/by_hand_test.cc:820] Seed is 39138
+I29393 2026-10-25 12:36:07.96847 capsule/by_hand_test.cc:770] Capsule reports own size as: 64
+I29393 2026-10-25 12:36:07.96847 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96847 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96847 capsule/by_hand_test.cc:806] b1: 0
+i1: 1440548473
+s1: "8YIF4:T4U4?CZ<MWWN106I:0KS"
+
+I29393 2026-10-25 12:36:07.96848 capsule/by_hand_test.cc:820] Seed is 61732
+I29393 2026-10-25 12:36:07.96848 capsule/by_hand_test.cc:770] Capsule reports own size as: 40
+I29393 2026-10-25 12:36:07.96848 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96848 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96848 capsule/by_hand_test.cc:806] b1: 0
+i1: 1488713146
+s1: ""
+
+I29393 2026-10-25 12:36:07.96848 capsule/by_hand_test.cc:820] Seed is 14898
+I29393 2026-10-25 12:36:07.96848 capsule/by_hand_test.cc:770] Capsule reports own size as: 64
+I29393 2026-10-25 12:36:07.96848 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96848 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96849 capsule/by_hand_test.cc:806] b1: 0
+i1: 467650076
+s1: "GNUA=QIZDSOGSS5SG9JY5ETOH"
+
+I29393 2026-10-25 12:36:07.96849 capsule/by_hand_test.cc:820] Seed is 37914
+I29393 2026-10-25 12:36:07.96849 capsule/by_hand_test.cc:770] Capsule reports own size as: 48
+I29393 2026-10-25 12:36:07.96849 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96849 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96849 capsule/by_hand_test.cc:806] b1: 0
+i1: 527178081
+s1: "W<75N7EJ6>5"
+
+I29393 2026-10-25 12:36:07.96849 capsule/by_hand_test.cc:820] Seed is 56446
+I29393 2026-10-25 12:36:07.96849 capsule/by_hand_test.cc:770] Capsule reports own size as: 64
+I29393 2026-10-25 12:36:07.96849 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96849 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96850 capsule/by_hand_test.cc:806] b1: 0
+i1: -233034270
+s1: ">ZTJ6U@<JPP;2A03JDR@R68"
+
+I29393 2026-10-25 12:36:07.96850 capsule/by_hand_test.cc:820] Seed is 9268
+I29393 2026-10-25 12:36:07.96850 capsule/by_hand_test.cc:770] Capsule reports own size as: 64
+I29393 2026-10-25 12:36:07.96850 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96850 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96850 capsule/by_hand_test.cc:806] b1: 1
+i1: 1263456625
+s1: "?6OEZREVCF7CA5MS6PZX@IG:ER"
+
+I29393 2026-10-25 12:36:07.96850 capsule/by_hand_test.cc:820] Seed is 31030
+I29393 2026-10-25 12:36:07.96850 capsule/by_hand_test.cc:770] Capsule reports own size as: 48
+I29393 2026-10-25 12:36:07.96850 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96850 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96851 capsule/by_hand_test.cc:806] b1: 1
+i1: -1632842362
+s1: "7S1>DMEL8SN"
+
+I29393 2026-10-25 12:36:07.96851 capsule/by_hand_test.cc:820] Seed is 50200
+I29393 2026-10-25 12:36:07.96851 capsule/by_hand_test.cc:770] Capsule reports own size as: 56
+I29393 2026-10-25 12:36:07.96851 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96851 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96851 capsule/by_hand_test.cc:806] b1: 1
+i1: 659078516
+s1: "PVJ14LP9F9=MY2E@1@"
+
+I29393 2026-10-25 12:36:07.96851 capsule/by_hand_test.cc:820] Seed is 6366
+I29393 2026-10-25 12:36:07.96851 capsule/by_hand_test.cc:770] Capsule reports own size as: 64
+I29393 2026-10-25 12:36:07.96852 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96852 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96852 capsule/by_hand_test.cc:806] b1: 1
+i1: 651200168
+s1: "V89HAC5UU<ZIQK2<O1HNWAMX"
+
+I29393 2026-10-25 12:36:07.96852 capsule/by_hand_test.cc:820] Seed is 24482
+I29393 2026-10-25 12:36:07.96852 capsule/by_hand_test.cc:770] Capsule reports own size as: 56
+I29393 2026-10-25 12:36:07.96852 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96852 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96852 capsule/by_hand_test.cc:806] b1: 0
+i1: 242151182
+s1: "=KTREYNHQ>WDASG532LG"
+
+I29393 2026-10-25 12:36:07.96852 capsule/by_hand_test.cc:820] Seed is 42470
+I29393 2026-10-25 12:36:07.96852 capsule/by_hand_test.cc:770] Capsule reports own size as: 48
+I29393 2026-10-25 12:36:07.96853 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96853 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96853 capsule/by_hand_test.cc:806] b1: 1
+i1: -2062516762
+s1: "6BL:XEJ1"
+
+I29393 2026-10-25 12:36:07.96853 capsule/by_hand_test.cc:820] Seed is 64276
+I29393 2026-10-25 12:36:07.96853 capsule/by_hand_test.cc:770] Capsule reports own size as: 40
+I29393 2026-10-25 12:36:07.96853 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96853 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96853 capsule/by_hand_test.cc:806] b1: 0
+i1: 744761804
+s1: "6ZGW"
+
+I29393 2026-10-25 12:36:07.96853 capsule/by_hand_test.cc:820] Seed is 17160
+I29393 2026-10-25 12:36:07.96854 capsule/by_hand_test.cc:770] Capsule reports own size as: 72
+I29393 2026-10-25 12:36:07.96854 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96854 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96854 capsule/by_hand_test.cc:806] b1: 1
+i1: 471331341
+s1: "3Z2;4TZMGGO0?1HS7PYL7Z662YS47M"
+
+I29393 2026-10-25 12:36:07.96854 capsule/by_hand_test.cc:820] Seed is 35836
+I29393 2026-10-25 12:36:07.96854 capsule/by_hand_test.cc:770] Capsule reports own size as: 48
+I29393 2026-10-25 12:36:07.96854 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96854 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96854 capsule/by_hand_test.cc:806] b1: 0
+i1: 1822786486
+s1: "49ZKK814ALU"
+
+I29393 2026-10-25 12:36:07.96855 capsule/by_hand_test.cc:820] Seed is 59622
+I29393 2026-10-25 12:36:07.96855 capsule/by_hand_test.cc:770] Capsule reports own size as: 72
+I29393 2026-10-25 12:36:07.96855 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96855 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96855 capsule/by_hand_test.cc:806] b1: 0
+i1: 334061526
+s1: ">AXIHKOA85JYSCR;S55<LDF6ZXDC0U"
+
+I29393 2026-10-25 12:36:07.96855 capsule/by_hand_test.cc:820] Seed is 12584
+I29393 2026-10-25 12:36:07.96855 capsule/by_hand_test.cc:770] Capsule reports own size as: 72
+I29393 2026-10-25 12:36:07.96855 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96855 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96856 capsule/by_hand_test.cc:806] b1: 1
+i1: 919421376
+s1: "6D:<X=FG=>QZG5ZKGX4K<JEXZYHIYUKV"
+
+I29393 2026-10-25 12:36:07.96856 capsule/by_hand_test.cc:820] Seed is 35464
+I29393 2026-10-25 12:36:07.96856 capsule/by_hand_test.cc:770] Capsule reports own size as: 72
+I29393 2026-10-25 12:36:07.96856 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96856 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96856 capsule/by_hand_test.cc:806] b1: 1
+i1: 88798875
+s1: "NB16KVNPF30XO811QFGQRDSW2>HAACM8S"
+
+I29393 2026-10-25 12:36:07.96856 capsule/by_hand_test.cc:820] Seed is 54366
+I29393 2026-10-25 12:36:07.96856 capsule/by_hand_test.cc:770] Capsule reports own size as: 40
+I29393 2026-10-25 12:36:07.96856 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96856 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96857 capsule/by_hand_test.cc:806] b1: 1
+i1: 2045280541
+s1: "L"
+
+I29393 2026-10-25 12:36:07.96857 capsule/by_hand_test.cc:820] Seed is 7174
+I29393 2026-10-25 12:36:07.96857 capsule/by_hand_test.cc:770] Capsule reports own size as: 48
+I29393 2026-10-25 12:36:07.96857 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96857 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96858 capsule/by_hand_test.cc:806] b1: 0
+i1: 39615987
+s1: "WNNVXU"
+
+I29393 2026-10-25 12:36:07.96858 capsule/by_hand_test.cc:820] Seed is 41922
+I29393 2026-10-25 12:36:07.96858 capsule/by_hand_test.cc:770] Capsule reports own size as: 56
+I29393 2026-10-25 12:36:07.96858 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96858 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96858 capsule/by_hand_test.cc:806] b1: 0
+i1: 897345140
+s1: "2YK=<M3T8MWFD:FN"
+
+I29393 2026-10-25 12:36:07.96858 capsule/by_hand_test.cc:820] Seed is 60316
+I29393 2026-10-25 12:36:07.96858 capsule/by_hand_test.cc:770] Capsule reports own size as: 48
+I29393 2026-10-25 12:36:07.96858 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96858 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96859 capsule/by_hand_test.cc:806] b1: 1
+i1: -464276886
+s1: "CANU>H?35"
+
+I29393 2026-10-25 12:36:07.96859 capsule/by_hand_test.cc:820] Seed is 16616
+I29393 2026-10-25 12:36:07.96859 capsule/by_hand_test.cc:770] Capsule reports own size as: 56
+I29393 2026-10-25 12:36:07.96859 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96859 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96859 capsule/by_hand_test.cc:806] b1: 1
+i1: -357607071
+s1: "X@=ACMT6AL>?R<B"
+
+I29393 2026-10-25 12:36:07.96859 capsule/by_hand_test.cc:820] Seed is 35680
+I29393 2026-10-25 12:36:07.96859 capsule/by_hand_test.cc:770] Capsule reports own size as: 64
+I29393 2026-10-25 12:36:07.96859 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96859 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96860 capsule/by_hand_test.cc:806] b1: 0
+i1: -5356044
+s1: "6<IVG6DK@90M>4OS>9LF5M2W"
+
+I29393 2026-10-25 12:36:07.96860 capsule/by_hand_test.cc:820] Seed is 54778
+I29393 2026-10-25 12:36:07.96860 capsule/by_hand_test.cc:770] Capsule reports own size as: 64
+I29393 2026-10-25 12:36:07.96860 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96860 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96860 capsule/by_hand_test.cc:806] b1: 0
+i1: 459881935
+s1: ";X@3<J0V4>VPSUT;BSJ?V"
+
+I29393 2026-10-25 12:36:07.96860 capsule/by_hand_test.cc:820] Seed is 11190
+I29393 2026-10-25 12:36:07.96860 capsule/by_hand_test.cc:770] Capsule reports own size as: 64
+I29393 2026-10-25 12:36:07.96861 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96861 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96861 capsule/by_hand_test.cc:806] b1: 0
+i1: 611379029
+s1: "ID6A0CO4RKYQOALHNNTO5SK"
+
+I29393 2026-10-25 12:36:07.96861 capsule/by_hand_test.cc:820] Seed is 29640
+I29393 2026-10-25 12:36:07.96861 capsule/by_hand_test.cc:770] Capsule reports own size as: 56
+I29393 2026-10-25 12:36:07.96861 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96861 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96861 capsule/by_hand_test.cc:806] b1: 1
+i1: 1079740827
+s1: "3N98XX@S3VGGEQ"
+
+I29393 2026-10-25 12:36:07.96862 capsule/by_hand_test.cc:820] Seed is 51524
+I29393 2026-10-25 12:36:07.96862 capsule/by_hand_test.cc:770] Capsule reports own size as: 40
+I29393 2026-10-25 12:36:07.96862 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96862 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96862 capsule/by_hand_test.cc:806] b1: 0
+i1: -2120896061
+s1: "0<S"
+
+I29393 2026-10-25 12:36:07.96862 capsule/by_hand_test.cc:820] Seed is 4958
+I29393 2026-10-25 12:36:07.96862 capsule/by_hand_test.cc:770] Capsule reports own size as: 56
+I29393 2026-10-25 12:36:07.96862 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96862 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96862 capsule/by_hand_test.cc:806] b1: 0
+i1: -1602538900
+s1: "GV0;><3ZHX7QM6>C?"
+
+I29393 2026-10-25 12:36:07.96863 capsule/by_hand_test.cc:820] Seed is 23350
+I29393 2026-10-25 12:36:07.96863 capsule/by_hand_test.cc:770] Capsule reports own size as: 48
+I29393 2026-10-25 12:36:07.96863 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96863 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96863 capsule/by_hand_test.cc:806] b1: 1
+i1: 752023835
+s1: "L5QAQDEC"
+
+I29393 2026-10-25 12:36:07.96863 capsule/by_hand_test.cc:820] Seed is 46036
+I29393 2026-10-25 12:36:07.96863 capsule/by_hand_test.cc:770] Capsule reports own size as: 48
+I29393 2026-10-25 12:36:07.96863 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96863 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96863 capsule/by_hand_test.cc:806] b1: 1
+i1: -1487709222
+s1: ":@?R40P:4K"
+
+I29393 2026-10-25 12:36:07.96864 capsule/by_hand_test.cc:820] Seed is 64294
+I29393 2026-10-25 12:36:07.96864 capsule/by_hand_test.cc:770] Capsule reports own size as: 40
+I29393 2026-10-25 12:36:07.96864 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96864 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96864 capsule/by_hand_test.cc:806] b1: 0
+i1: 893169296
+s1: ":W"
+
+I29393 2026-10-25 12:36:07.96864 capsule/by_hand_test.cc:820] Seed is 17166
+I29393 2026-10-25 12:36:07.96864 capsule/by_hand_test.cc:770] Capsule reports own size as: 72
+I29393 2026-10-25 12:36:07.96864 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96864 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96865 capsule/by_hand_test.cc:806] b1: 1
+i1: -1993231450
+s1: "UUQ0H4<D7R9O6@J;E=EFMUP4SB0IEL"
+
+I29393 2026-10-25 12:36:07.96865 capsule/by_hand_test.cc:820] Seed is 39612
+I29393 2026-10-25 12:36:07.96865 capsule/by_hand_test.cc:770] Capsule reports own size as: 64
+I29393 2026-10-25 12:36:07.96865 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96865 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96865 capsule/by_hand_test.cc:806] b1: 0
+i1: 510915305
+s1: "1VTYX=6:JK:04:JI66G;U3;"
+
+I29393 2026-10-25 12:36:07.96865 capsule/by_hand_test.cc:820] Seed is 57550
+I29393 2026-10-25 12:36:07.96865 capsule/by_hand_test.cc:770] Capsule reports own size as: 48
+I29393 2026-10-25 12:36:07.96865 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96865 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96866 capsule/by_hand_test.cc:806] b1: 1
+i1: 1750914408
+s1: "RMDVCUFAJUE"
+
+I29393 2026-10-25 12:36:07.96866 capsule/by_hand_test.cc:820] Seed is 13426
+I29393 2026-10-25 12:36:07.96866 capsule/by_hand_test.cc:770] Capsule reports own size as: 40
+I29393 2026-10-25 12:36:07.96866 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96866 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96866 capsule/by_hand_test.cc:806] b1: 1
+i1: 1204714040
+s1: "LW>7"
+
+I29393 2026-10-25 12:36:07.96866 capsule/by_hand_test.cc:820] Seed is 31854
+I29393 2026-10-25 12:36:07.96866 capsule/by_hand_test.cc:770] Capsule reports own size as: 72
+I29393 2026-10-25 12:36:07.96866 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96866 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96867 capsule/by_hand_test.cc:806] b1: 0
+i1: 1576573917
+s1: "C6M:OGB7N1AT490JOGZLIM=3>LNTH2U="
+
+I29393 2026-10-25 12:36:07.96867 capsule/by_hand_test.cc:820] Seed is 50956
+I29393 2026-10-25 12:36:07.96867 capsule/by_hand_test.cc:770] Capsule reports own size as: 56
+I29393 2026-10-25 12:36:07.96867 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96867 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96867 capsule/by_hand_test.cc:806] b1: 1
+i1: 48705985
+s1: "DU8LVJ@538J4LWIY:6ML"
+
+I29393 2026-10-25 12:36:07.96867 capsule/by_hand_test.cc:820] Seed is 7642
+I29393 2026-10-25 12:36:07.96867 capsule/by_hand_test.cc:770] Capsule reports own size as: 64
+I29393 2026-10-25 12:36:07.96868 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96868 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96868 capsule/by_hand_test.cc:806] b1: 0
+i1: 1544342426
+s1: "03KJ<;H6?8>BAI70JI:9Z;5I9P"
+
+I29393 2026-10-25 12:36:07.96868 capsule/by_hand_test.cc:820] Seed is 26086
+I29393 2026-10-25 12:36:07.96868 capsule/by_hand_test.cc:770] Capsule reports own size as: 48
+I29393 2026-10-25 12:36:07.96868 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96868 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96868 capsule/by_hand_test.cc:806] b1: 0
+i1: 1195712993
+s1: "OKL?3B"
+
+I29393 2026-10-25 12:36:07.96869 capsule/by_hand_test.cc:820] Seed is 47928
+I29393 2026-10-25 12:36:07.96869 capsule/by_hand_test.cc:770] Capsule reports own size as: 56
+I29393 2026-10-25 12:36:07.96869 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96869 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96869 capsule/by_hand_test.cc:806] b1: 1
+i1: -516283945
+s1: "M6AL86Y6CY7D30M<CF:"
+
+I29393 2026-10-25 12:36:07.96869 capsule/by_hand_test.cc:820] Seed is 832
+I29393 2026-10-25 12:36:07.96869 capsule/by_hand_test.cc:770] Capsule reports own size as: 64
+I29393 2026-10-25 12:36:07.96869 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96869 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96869 capsule/by_hand_test.cc:806] b1: 0
+i1: -2023096642
+s1: "SZ>Q2K>;P@4ELI=JO0OU0L"
+
+I29393 2026-10-25 12:36:07.96870 capsule/by_hand_test.cc:820] Seed is 19280
+I29393 2026-10-25 12:36:07.96870 capsule/by_hand_test.cc:770] Capsule reports own size as: 48
+I29393 2026-10-25 12:36:07.96870 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96870 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96870 capsule/by_hand_test.cc:806] b1: 1
+i1: 916222597
+s1: "OVV5?06AILO"
+
+I29393 2026-10-25 12:36:07.96870 capsule/by_hand_test.cc:820] Seed is 41190
+I29393 2026-10-25 12:36:07.96870 capsule/by_hand_test.cc:770] Capsule reports own size as: 64
+I29393 2026-10-25 12:36:07.96870 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96870 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96870 capsule/by_hand_test.cc:806] b1: 0
+i1: -1374760011
+s1: "4=LBH=Q6<R=N>D;TWGIQ8"
+
+I29393 2026-10-25 12:36:07.96871 capsule/by_hand_test.cc:820] Seed is 59366
+I29393 2026-10-25 12:36:07.96871 capsule/by_hand_test.cc:770] Capsule reports own size as: 56
+I29393 2026-10-25 12:36:07.96871 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96871 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96871 capsule/by_hand_test.cc:806] b1: 0
+i1: -1419682358
+s1: "76DA=3=0EQ5:SU"
+
+I29393 2026-10-25 12:36:07.96871 capsule/by_hand_test.cc:820] Seed is 11754
+I29393 2026-10-25 12:36:07.96871 capsule/by_hand_test.cc:770] Capsule reports own size as: 56
+I29393 2026-10-25 12:36:07.96871 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96871 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96872 capsule/by_hand_test.cc:806] b1: 1
+i1: 924570418
+s1: "E>WX7N2137VR050J@E5E"
+
+I29393 2026-10-25 12:36:07.96872 capsule/by_hand_test.cc:820] Seed is 33772
+I29393 2026-10-25 12:36:07.96872 capsule/by_hand_test.cc:770] Capsule reports own size as: 56
+I29393 2026-10-25 12:36:07.96872 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96872 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96872 capsule/by_hand_test.cc:806] b1: 1
+i1: 709551255
+s1: "MF7HA@MUVORUV"
+
+I29393 2026-10-25 12:36:07.96872 capsule/by_hand_test.cc:820] Seed is 51688
+I29393 2026-10-25 12:36:07.96872 capsule/by_hand_test.cc:770] Capsule reports own size as: 48
+I29393 2026-10-25 12:36:07.96872 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96872 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96873 capsule/by_hand_test.cc:806] b1: 0
+i1: 818522751
+s1: ":BJ2@L@1H3LT"
+
+I29393 2026-10-25 12:36:07.96873 capsule/by_hand_test.cc:820] Seed is 8128
+I29393 2026-10-25 12:36:07.96873 capsule/by_hand_test.cc:770] Capsule reports own size as: 72
+I29393 2026-10-25 12:36:07.96873 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96873 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96873 capsule/by_hand_test.cc:806] b1: 1
+i1: 1486164370
+s1: "A6U>S2?K<G;86B2T?E6>WFKXHXVMMU1S0"
+
+I29393 2026-10-25 12:36:07.96873 capsule/by_hand_test.cc:820] Seed is 27392
+I29393 2026-10-25 12:36:07.96873 capsule/by_hand_test.cc:770] Capsule reports own size as: 72
+I29393 2026-10-25 12:36:07.96873 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96873 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96874 capsule/by_hand_test.cc:806] b1: 0
+i1: -1567575918
+s1: "7=?<ARV;UGC2KUGRALFA?7LMJMP@R"
+
+I29393 2026-10-25 12:36:07.96874 capsule/by_hand_test.cc:820] Seed is 45478
+I29393 2026-10-25 12:36:07.96874 capsule/by_hand_test.cc:770] Capsule reports own size as: 40
+I29393 2026-10-25 12:36:07.96874 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96874 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96874 capsule/by_hand_test.cc:806] b1: 1
+i1: 2007081554
+s1: "D6Y6"
+
+I29393 2026-10-25 12:36:07.96874 capsule/by_hand_test.cc:820] Seed is 1556
+I29393 2026-10-25 12:36:07.96874 capsule/by_hand_test.cc:770] Capsule reports own size as: 72
+I29393 2026-10-25 12:36:07.96874 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96874 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96875 capsule/by_hand_test.cc:806] b1: 1
+i1: 605112533
+s1: "J7B62IATXS=?QNQU:F7UYXV?65Q;FIA"
+
+I29393 2026-10-25 12:36:07.96875 capsule/by_hand_test.cc:820] Seed is 20062
+I29393 2026-10-25 12:36:07.96875 capsule/by_hand_test.cc:770] Capsule reports own size as: 40
+I29393 2026-10-25 12:36:07.96875 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96875 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96875 capsule/by_hand_test.cc:806] b1: 1
+i1: -342149326
+s1: "@"
+
+I29393 2026-10-25 12:36:07.96875 capsule/by_hand_test.cc:820] Seed is 41972
+I29393 2026-10-25 12:36:07.96876 capsule/by_hand_test.cc:770] Capsule reports own size as: 40
+I29393 2026-10-25 12:36:07.96876 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96876 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96876 capsule/by_hand_test.cc:806] b1: 0
+i1: 1093922353
+s1: ""
+
+I29393 2026-10-25 12:36:07.96876 capsule/by_hand_test.cc:820] Seed is 60520
+I29393 2026-10-25 12:36:07.96876 capsule/by_hand_test.cc:770] Capsule reports own size as: 56
+I29393 2026-10-25 12:36:07.96876 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96876 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96876 capsule/by_hand_test.cc:806] b1: 1
+i1: -1645040284
+s1: "LJ?5:4N>ZXRD7:;YJ"
+
+I29393 2026-10-25 12:36:07.96876 capsule/by_hand_test.cc:820] Seed is 13102
+I29393 2026-10-25 12:36:07.96877 capsule/by_hand_test.cc:770] Capsule reports own size as: 40
+I29393 2026-10-25 12:36:07.96877 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96877 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96877 capsule/by_hand_test.cc:806] b1: 1
+i1: -1037532925
+s1: "9AID"
+
+I29393 2026-10-25 12:36:07.96877 capsule/by_hand_test.cc:820] Seed is 35300
+I29393 2026-10-25 12:36:07.96877 capsule/by_hand_test.cc:770] Capsule reports own size as: 40
+I29393 2026-10-25 12:36:07.96877 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96877 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96877 capsule/by_hand_test.cc:806] b1: 1
+i1: 1909012817
+s1: "H@;L"
+
+I29393 2026-10-25 12:36:07.96878 capsule/by_hand_test.cc:820] Seed is 53030
+I29393 2026-10-25 12:36:07.96878 capsule/by_hand_test.cc:770] Capsule reports own size as: 56
+I29393 2026-10-25 12:36:07.96878 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96878 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96878 capsule/by_hand_test.cc:806] b1: 0
+i1: -741531411
+s1: "L504ES0BP?<PPN=A7T3:"
+
+I29393 2026-10-25 12:36:07.96878 capsule/by_hand_test.cc:820] Seed is 9370
+I29393 2026-10-25 12:36:07.96878 capsule/by_hand_test.cc:770] Capsule reports own size as: 48
+I29393 2026-10-25 12:36:07.96878 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96878 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96878 capsule/by_hand_test.cc:806] b1: 1
+i1: 804648988
+s1: "DW<59B?GES7X"
+
+I29393 2026-10-25 12:36:07.96879 capsule/by_hand_test.cc:820] Seed is 27360
+I29393 2026-10-25 12:36:07.96879 capsule/by_hand_test.cc:770] Capsule reports own size as: 48
+I29393 2026-10-25 12:36:07.96879 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96879 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96879 capsule/by_hand_test.cc:806] b1: 1
+i1: 1432117620
+s1: "OX2DNHRKLT9"
+
+I29393 2026-10-25 12:36:07.96879 capsule/by_hand_test.cc:820] Seed is 45448
+I29393 2026-10-25 12:36:07.96879 capsule/by_hand_test.cc:770] Capsule reports own size as: 56
+I29393 2026-10-25 12:36:07.96879 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96879 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96880 capsule/by_hand_test.cc:806] b1: 1
+i1: -672960271
+s1: "HW<XM5II=<R=M87Q"
+
+I29393 2026-10-25 12:36:07.96880 capsule/by_hand_test.cc:820] Seed is 1678
+I29393 2026-10-25 12:36:07.96880 capsule/by_hand_test.cc:770] Capsule reports own size as: 64
+I29393 2026-10-25 12:36:07.96880 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96880 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96880 capsule/by_hand_test.cc:806] b1: 1
+i1: 617427521
+s1: "MEJJAGQD1RE9>=?=O96HCS"
+
+I29393 2026-10-25 12:36:07.96880 capsule/by_hand_test.cc:820] Seed is 20422
+I29393 2026-10-25 12:36:07.96880 capsule/by_hand_test.cc:770] Capsule reports own size as: 48
+I29393 2026-10-25 12:36:07.96880 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96880 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96881 capsule/by_hand_test.cc:806] b1: 1
+i1: 55744996
+s1: "MED39VLX"
+
+I29393 2026-10-25 12:36:07.96881 capsule/by_hand_test.cc:820] Seed is 38102
+I29393 2026-10-25 12:36:07.96882 capsule/by_hand_test.cc:770] Capsule reports own size as: 48
+I29393 2026-10-25 12:36:07.96882 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96882 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96882 capsule/by_hand_test.cc:806] b1: 0
+i1: -2034748722
+s1: "A<0GYWEZ811"
+
+I29393 2026-10-25 12:36:07.96882 capsule/by_hand_test.cc:820] Seed is 37492
+I29393 2026-10-25 12:36:07.96883 capsule/by_hand_test.cc:770] Capsule reports own size as: 56
+I29393 2026-10-25 12:36:07.96883 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96883 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96883 capsule/by_hand_test.cc:806] b1: 1
+i1: -699231128
+s1: "7>@GWA1SP0@<5"
+
+I29393 2026-10-25 12:36:07.96883 capsule/by_hand_test.cc:820] Seed is 55594
+I29393 2026-10-25 12:36:07.96883 capsule/by_hand_test.cc:770] Capsule reports own size as: 56
+I29393 2026-10-25 12:36:07.96883 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96883 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96883 capsule/by_hand_test.cc:806] b1: 1
+i1: 1683893963
+s1: "=EQ93V8ND?73<C"
+
+I29393 2026-10-25 12:36:07.96884 capsule/by_hand_test.cc:820] Seed is 11612
+I29393 2026-10-25 12:36:07.96884 capsule/by_hand_test.cc:770] Capsule reports own size as: 64
+I29393 2026-10-25 12:36:07.96884 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96884 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96884 capsule/by_hand_test.cc:806] b1: 0
+i1: -626538286
+s1: "?1LFIJA0NPR1G8LY;8=CQH"
+
+I29393 2026-10-25 12:36:07.96884 capsule/by_hand_test.cc:820] Seed is 30182
+I29393 2026-10-25 12:36:07.96884 capsule/by_hand_test.cc:770] Capsule reports own size as: 64
+I29393 2026-10-25 12:36:07.96884 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96884 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96884 capsule/by_hand_test.cc:806] b1: 1
+i1: -1346515081
+s1: "6FR0OIN7SQ<RA60>TPHIX7;WBJ"
+
+I29393 2026-10-25 12:36:07.96885 capsule/by_hand_test.cc:820] Seed is 49098
+I29393 2026-10-25 12:36:07.96885 capsule/by_hand_test.cc:770] Capsule reports own size as: 64
+I29393 2026-10-25 12:36:07.96885 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96885 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96885 capsule/by_hand_test.cc:806] b1: 0
+i1: 804540900
+s1: "GA4XW19E0LGG:KSEFJM;I81MM"
+
+I29393 2026-10-25 12:36:07.96885 capsule/by_hand_test.cc:820] Seed is 5948
+I29393 2026-10-25 12:36:07.96885 capsule/by_hand_test.cc:770] Capsule reports own size as: 48
+I29393 2026-10-25 12:36:07.96885 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96885 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96885 capsule/by_hand_test.cc:806] b1: 0
+i1: 1561159419
+s1: "J8:EZG9O7"
+
+I29393 2026-10-25 12:36:07.96886 capsule/by_hand_test.cc:820] Seed is 23980
+I29393 2026-10-25 12:36:07.96886 capsule/by_hand_test.cc:770] Capsule reports own size as: 48
+I29393 2026-10-25 12:36:07.96886 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96886 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96886 capsule/by_hand_test.cc:806] b1: 0
+i1: 1761704809
+s1: "H21X@S1B"
+
+I29393 2026-10-25 12:36:07.96886 capsule/by_hand_test.cc:820] Seed is 45680
+I29393 2026-10-25 12:36:07.96886 capsule/by_hand_test.cc:770] Capsule reports own size as: 64
+I29393 2026-10-25 12:36:07.96886 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96886 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96887 capsule/by_hand_test.cc:806] b1: 0
+i1: 2020336787
+s1: "RC?78N20XTWF1>?R4>LQKRCR"
+
+I29393 2026-10-25 12:36:07.96887 capsule/by_hand_test.cc:820] Seed is 63982
+I29393 2026-10-25 12:36:07.96887 capsule/by_hand_test.cc:770] Capsule reports own size as: 72
+I29393 2026-10-25 12:36:07.96887 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96887 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96887 capsule/by_hand_test.cc:806] b1: 0
+i1: -734308872
+s1: "7HPQ?BEVFSBY@SY371CX3OY<86595:B8"
+
+I29393 2026-10-25 12:36:07.96887 capsule/by_hand_test.cc:820] Seed is 17272
+I29393 2026-10-25 12:36:07.96887 capsule/by_hand_test.cc:770] Capsule reports own size as: 64
+I29393 2026-10-25 12:36:07.96887 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96887 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96888 capsule/by_hand_test.cc:806] b1: 1
+i1: 2031610942
+s1: "7=1@<KIRZ31AJA;3O9P:KOR"
+
+I29393 2026-10-25 12:36:07.96888 capsule/by_hand_test.cc:820] Seed is 39086
+I29393 2026-10-25 12:36:07.96888 capsule/by_hand_test.cc:770] Capsule reports own size as: 64
+I29393 2026-10-25 12:36:07.96888 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96888 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96888 capsule/by_hand_test.cc:806] b1: 1
+i1: -1787181492
+s1: "@PZY@KJ2VR=JX<PYC63<T3P1DW?"
+
+I29393 2026-10-25 12:36:07.96888 capsule/by_hand_test.cc:820] Seed is 57592
+I29393 2026-10-25 12:36:07.96888 capsule/by_hand_test.cc:770] Capsule reports own size as: 64
+I29393 2026-10-25 12:36:07.96888 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96888 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96889 capsule/by_hand_test.cc:806] b1: 1
+i1: -1084362132
+s1: "C9DFRR95OY;NF4JLO47LP?7T"
+
+I29393 2026-10-25 12:36:07.96889 capsule/by_hand_test.cc:820] Seed is 10526
+I29393 2026-10-25 12:36:07.96889 capsule/by_hand_test.cc:770] Capsule reports own size as: 56
+I29393 2026-10-25 12:36:07.96889 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96889 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96889 capsule/by_hand_test.cc:806] b1: 0
+i1: 1126564247
+s1: "8IWXSG8@V3DRS;"
+
+I29393 2026-10-25 12:36:07.96889 capsule/by_hand_test.cc:820] Seed is 32080
+I29393 2026-10-25 12:36:07.96889 capsule/by_hand_test.cc:770] Capsule reports own size as: 56
+I29393 2026-10-25 12:36:07.96890 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96890 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96890 capsule/by_hand_test.cc:806] b1: 0
+i1: -723566611
+s1: "0F7BAI4F4XT:7>YTSTR"
+
+I29393 2026-10-25 12:36:07.96890 capsule/by_hand_test.cc:820] Seed is 50328
+I29393 2026-10-25 12:36:07.96890 capsule/by_hand_test.cc:770] Capsule reports own size as: 48
+I29393 2026-10-25 12:36:07.96890 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96890 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96890 capsule/by_hand_test.cc:806] b1: 0
+i1: 1115949087
+s1: "D;J3;M@GDWDI"
+
+I29393 2026-10-25 12:36:07.96891 capsule/by_hand_test.cc:820] Seed is 5720
+I29393 2026-10-25 12:36:07.96891 capsule/by_hand_test.cc:770] Capsule reports own size as: 40
+I29393 2026-10-25 12:36:07.96891 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96891 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96891 capsule/by_hand_test.cc:806] b1: 0
+i1: -313025696
+s1: "R"
+
+I29393 2026-10-25 12:36:07.96891 capsule/by_hand_test.cc:820] Seed is 24010
+I29393 2026-10-25 12:36:07.96891 capsule/by_hand_test.cc:770] Capsule reports own size as: 72
+I29393 2026-10-25 12:36:07.96891 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96891 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96891 capsule/by_hand_test.cc:806] b1: 1
+i1: -1861363994
+s1: "PWZV0B>89RAXKDMOWMHUE3@G5Z=NH"
+
+I29393 2026-10-25 12:36:07.96892 capsule/by_hand_test.cc:820] Seed is 42370
+I29393 2026-10-25 12:36:07.96892 capsule/by_hand_test.cc:770] Capsule reports own size as: 64
+I29393 2026-10-25 12:36:07.96892 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96892 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96892 capsule/by_hand_test.cc:806] b1: 0
+i1: -306562571
+s1: "APJVLCW5<J=X1TJ?KABO:GX3"
+
+I29393 2026-10-25 12:36:07.96892 capsule/by_hand_test.cc:820] Seed is 64270
+I29393 2026-10-25 12:36:07.96892 capsule/by_hand_test.cc:770] Capsule reports own size as: 72
+I29393 2026-10-25 12:36:07.96892 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96892 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96892 capsule/by_hand_test.cc:806] b1: 1
+i1: 796509271
+s1: "T47KW@6P@A6I:?130AYJYNT5O;UL=P"
+
+I29393 2026-10-25 12:36:07.96893 capsule/by_hand_test.cc:820] Seed is 16948
+I29393 2026-10-25 12:36:07.96893 capsule/by_hand_test.cc:770] Capsule reports own size as: 40
+I29393 2026-10-25 12:36:07.96893 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96893 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96893 capsule/by_hand_test.cc:806] b1: 1
+i1: -1413087764
+s1: ">EHR"
+
+I29393 2026-10-25 12:36:07.96893 capsule/by_hand_test.cc:820] Seed is 39534
+I29393 2026-10-25 12:36:07.96893 capsule/by_hand_test.cc:770] Capsule reports own size as: 64
+I29393 2026-10-25 12:36:07.96893 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96893 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96894 capsule/by_hand_test.cc:806] b1: 0
+i1: -1005635914
+s1: "EIFI@8Q?726Z:A0WTXXW<VRZ=B"
+
+I29393 2026-10-25 12:36:07.96894 capsule/by_hand_test.cc:820] Seed is 57832
+I29393 2026-10-25 12:36:07.96894 capsule/by_hand_test.cc:770] Capsule reports own size as: 56
+I29393 2026-10-25 12:36:07.96894 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96894 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96894 capsule/by_hand_test.cc:806] b1: 0
+i1: 902588770
+s1: "IQ97KDSZSOLD@PC9U2"
+
+I29393 2026-10-25 12:36:07.96894 capsule/by_hand_test.cc:820] Seed is 10782
+I29393 2026-10-25 12:36:07.96894 capsule/by_hand_test.cc:770] Capsule reports own size as: 48
+I29393 2026-10-25 12:36:07.96894 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96894 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96895 capsule/by_hand_test.cc:806] b1: 1
+i1: -1405198074
+s1: "YCT9XQV8L;C"
+
+I29393 2026-10-25 12:36:07.96895 capsule/by_hand_test.cc:820] Seed is 32178
+I29393 2026-10-25 12:36:07.96895 capsule/by_hand_test.cc:770] Capsule reports own size as: 56
+I29393 2026-10-25 12:36:07.96895 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96895 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96895 capsule/by_hand_test.cc:806] b1: 1
+i1: -1832523330
+s1: "BA04GICW0Z0:<:"
+
+I29393 2026-10-25 12:36:07.96895 capsule/by_hand_test.cc:820] Seed is 49952
+I29393 2026-10-25 12:36:07.96895 capsule/by_hand_test.cc:770] Capsule reports own size as: 56
+I29393 2026-10-25 12:36:07.96895 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96895 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96896 capsule/by_hand_test.cc:806] b1: 1
+i1: -829437868
+s1: ":BM1>LI64Y>GCOJDW"
+
+I29393 2026-10-25 12:36:07.96896 capsule/by_hand_test.cc:820] Seed is 2916
+I29393 2026-10-25 12:36:07.96896 capsule/by_hand_test.cc:770] Capsule reports own size as: 64
+I29393 2026-10-25 12:36:07.96896 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96896 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96896 capsule/by_hand_test.cc:806] b1: 0
+i1: 626313407
+s1: "HTT?HU61@8OX2LDP?7H76"
+
+I29393 2026-10-25 12:36:07.96896 capsule/by_hand_test.cc:820] Seed is 25164
+I29393 2026-10-25 12:36:07.96896 capsule/by_hand_test.cc:770] Capsule reports own size as: 48
+I29393 2026-10-25 12:36:07.96896 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96896 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96897 capsule/by_hand_test.cc:806] b1: 1
+i1: 362419333
+s1: "17?KL"
+
+I29393 2026-10-25 12:36:07.96897 capsule/by_hand_test.cc:820] Seed is 44032
+I29393 2026-10-25 12:36:07.96897 capsule/by_hand_test.cc:770] Capsule reports own size as: 48
+I29393 2026-10-25 12:36:07.96897 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.96897 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.96897 capsule/by_hand_test.cc:806] b1: 0
+i1: 71457081
+s1: "YB30DS"
+
+I29393 2026-10-25 12:36:07.97208 capsule/by_hand_test.cc:820] Seed is 40442
+I29393 2026-10-25 12:36:07.97208 capsule/by_hand_test.cc:770] Capsule reports own size as: 240
+I29393 2026-10-25 12:36:07.97209 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97209 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97210 capsule/by_hand_test.cc:806] u64a: 17110905564558211618
+sub1 {
+  b1: 1
+  i1: 377291328
+  s1: ">L="
+}
+vsub1[] {
+  b1: 0
+  i1: 1939653106
+  s1: "4UNA7F65@977QCKKLR7YE=58M66"
+} {
+  b1: 0
+  i1: -1545396843
+  s1: ""
+} {
+  b1: 1
+  i1: -930346721
+  s1: "OV>AF0"
+}
+
+I29393 2026-10-25 12:36:07.97212 capsule/by_hand_test.cc:820] Seed is 416
+I29393 2026-10-25 12:36:07.97212 capsule/by_hand_test.cc:770] Capsule reports own size as: 384
+I29393 2026-10-25 12:36:07.97212 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97212 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97214 capsule/by_hand_test.cc:806] u64a: 16212859139634671797
+sub1 {
+  b1: 1
+  i1: -704947395
+  s1: "T4SY?35TH2Y?8F2<PCFFYDV55Z8<>EOJ"
+}
+vsub1[] {
+  b1: 0
+  i1: 36365664
+  s1: "WKV@KF>=TQ1Z3GDKO1ICDF"
+} {
+  b1: 0
+  i1: 20644132
+  s1: "D3C;:QPQ9>SZ15PF=S24=:M6TGO6"
+} {
+  b1: 1
+  i1: 362880122
+  s1: "XRM8GN;<IWH2;:>:QMI8VOFEGY"
+} {
+  b1: 1
+  i1: -1966971332
+  s1: "38WKY@B22Y:H4@4DH6N8TA4L3LD:T"
+}
+
+I29393 2026-10-25 12:36:07.97215 capsule/by_hand_test.cc:820] Seed is 23136
+I29393 2026-10-25 12:36:07.97215 capsule/by_hand_test.cc:770] Capsule reports own size as: 288
+I29393 2026-10-25 12:36:07.97215 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97215 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97216 capsule/by_hand_test.cc:806] u64a: 9988947957678082428
+sub1 {
+  b1: 1
+  i1: 1143864183
+  s1: "L9N0GP?@Z?UVNFK@024Q@0X"
+}
+vsub1[] {
+  b1: 1
+  i1: -2080451315
+  s1: "YHO9:XWV>7H>A:D05"
+} {
+  b1: 1
+  i1: 1619267781
+  s1: "KYGQXUC6X3=5ZDD1<JV4>4<"
+} {
+  b1: 0
+  i1: 1657447197
+  s1: "87=?LSCZL>IM4?C:O:"
+}
+
+I29393 2026-10-25 12:36:07.97216 capsule/by_hand_test.cc:820] Seed is 23852
+I29393 2026-10-25 12:36:07.97216 capsule/by_hand_test.cc:770] Capsule reports own size as: 152
+I29393 2026-10-25 12:36:07.97216 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97216 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97217 capsule/by_hand_test.cc:806] u64a: 1401537716134901759
+sub1 {
+  b1: 0
+  i1: -1679371613
+  s1: "U"
+}
+vsub1[] {
+  b1: 0
+  i1: 719998229
+  s1: "M4K@FGLNMNNX74><I4R>;ZU=WILD"
+}
+
+I29393 2026-10-25 12:36:07.97217 capsule/by_hand_test.cc:820] Seed is 178
+I29393 2026-10-25 12:36:07.97218 capsule/by_hand_test.cc:770] Capsule reports own size as: 344
+I29393 2026-10-25 12:36:07.97219 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97219 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97220 capsule/by_hand_test.cc:806] u64a: 13481139921004799606
+sub1 {
+  b1: 1
+  i1: -1320340390
+  s1: "Y25BY<6?QXESMB7LVZI3IY1:"
+}
+vsub1[] {
+  b1: 0
+  i1: -1852627503
+  s1: "7:>E3VZT:2;16;Y9LQI"
+} {
+  b1: 1
+  i1: -975012625
+  s1: "MWLLD9HHQNB001?3<>WK0OGBK>FI"
+} {
+  b1: 1
+  i1: 1451009235
+  s1: "VVO0>T:F4"
+} {
+  b1: 0
+  i1: -1777382948
+  s1: ";932A>0D3RJXPHIFI5@V;WP"
+}
+
+I29393 2026-10-25 12:36:07.97221 capsule/by_hand_test.cc:820] Seed is 8260
+I29393 2026-10-25 12:36:07.97221 capsule/by_hand_test.cc:770] Capsule reports own size as: 336
+I29393 2026-10-25 12:36:07.97221 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97221 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97223 capsule/by_hand_test.cc:806] u64a: 5524315983608739200
+sub1 {
+  b1: 1
+  i1: -396901316
+  s1: ">NZZRQJ21=YSJOS9M;7M"
+}
+vsub1[] {
+  b1: 0
+  i1: 1009766704
+  s1: "SIU2OZQHPA"
+} {
+  b1: 0
+  i1: -586702625
+  s1: "9;4M2JJLXK9A7JNKYJ6Z=WM=L=:MEYD3?"
+} {
+  b1: 1
+  i1: 880597735
+  s1: "N1RGXPU>?H"
+} {
+  b1: 1
+  i1: -555839462
+  s1: "9VAAZ71K55@?U?4AIO4J=VDH4A"
+}
+
+I29393 2026-10-25 12:36:07.97223 capsule/by_hand_test.cc:820] Seed is 25538
+I29393 2026-10-25 12:36:07.97224 capsule/by_hand_test.cc:770] Capsule reports own size as: 192
+I29393 2026-10-25 12:36:07.97224 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97224 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97225 capsule/by_hand_test.cc:806] u64a: 7653816491773785122
+sub1 {
+  b1: 0
+  i1: 709078931
+  s1: "79S<TB7U@:A"
+}
+vsub1[] {
+  b1: 0
+  i1: 2035696707
+  s1: "RPG>=1;75GELNQ?=Z;"
+} {
+  b1: 0
+  i1: 13873466
+  s1: "4"
+}
+
+I29393 2026-10-25 12:36:07.97225 capsule/by_hand_test.cc:820] Seed is 15124
+I29393 2026-10-25 12:36:07.97225 capsule/by_hand_test.cc:770] Capsule reports own size as: 280
+I29393 2026-10-25 12:36:07.97225 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97225 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97226 capsule/by_hand_test.cc:806] u64a: 1155434800091402879
+sub1 {
+  b1: 0
+  i1: 449215162
+  s1: "HRPWTB;KNQ1QC@8HAE"
+}
+vsub1[] {
+  b1: 1
+  i1: 797032726
+  s1: "U9<Z2C=2"
+} {
+  b1: 0
+  i1: -960410813
+  s1: "93"
+} {
+  b1: 0
+  i1: -373377857
+  s1: ">?51@J4"
+} {
+  b1: 0
+  i1: -414790662
+  s1: "XVS"
+}
+
+I29393 2026-10-25 12:36:07.97227 capsule/by_hand_test.cc:820] Seed is 25532
+I29393 2026-10-25 12:36:07.97227 capsule/by_hand_test.cc:770] Capsule reports own size as: 288
+I29393 2026-10-25 12:36:07.97227 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97227 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97228 capsule/by_hand_test.cc:806] u64a: 9053667275421052784
+sub1 {
+  b1: 1
+  i1: -1396799468
+  s1: "Q?LA0J@==7TTBO6=:@UQ1WPRV9XUK?8"
+}
+vsub1[] {
+  b1: 1
+  i1: 615641352
+  s1: "I<OF?87W2:1U0"
+} {
+  b1: 0
+  i1: 829070175
+  s1: "9Z4EDTFZIBP=OFLZTVL8U=<ZFBR"
+} {
+  b1: 0
+  i1: 2066833541
+  s1: "=8?0LRGRF"
+}
+
+I29393 2026-10-25 12:36:07.97229 capsule/by_hand_test.cc:820] Seed is 26454
+I29393 2026-10-25 12:36:07.97229 capsule/by_hand_test.cc:770] Capsule reports own size as: 256
+I29393 2026-10-25 12:36:07.97229 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97229 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97230 capsule/by_hand_test.cc:806] u64a: 12948084679123907580
+sub1 {
+  b1: 0
+  i1: 1962746103
+  s1: "4GESBJM6SF"
+}
+vsub1[] {
+  b1: 0
+  i1: 1838236682
+  s1: "HTAEE2I5SM?IPHX<"
+} {
+  b1: 1
+  i1: -353689255
+  s1: "C7K=L2OI;S?3==HRS;GF1:Q"
+} {
+  b1: 1
+  i1: 1273926719
+  s1: "2@H"
+}
+
+I29393 2026-10-25 12:36:07.97231 capsule/by_hand_test.cc:820] Seed is 25774
+I29393 2026-10-25 12:36:07.97231 capsule/by_hand_test.cc:770] Capsule reports own size as: 96
+I29393 2026-10-25 12:36:07.97231 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97231 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97231 capsule/by_hand_test.cc:806] u64a: 6175285582772328206
+sub1 {
+  b1: 1
+  i1: 447522350
+  s1: "=E8VC>R;"
+}
+
+I29393 2026-10-25 12:36:07.97231 capsule/by_hand_test.cc:820] Seed is 54302
+I29393 2026-10-25 12:36:07.97231 capsule/by_hand_test.cc:770] Capsule reports own size as: 192
+I29393 2026-10-25 12:36:07.97232 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97232 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97232 capsule/by_hand_test.cc:806] u64a: 306962430622456088
+sub1 {
+  b1: 1
+  i1: 2096774511
+  s1: ""
+}
+vsub1[] {
+  b1: 0
+  i1: -296397410
+  s1: "5:9MPY?>OY9MHIXM5>:4JM<"
+} {
+  b1: 1
+  i1: 668064181
+  s1: "CAIM"
+}
+
+I29393 2026-10-25 12:36:07.97233 capsule/by_hand_test.cc:820] Seed is 41786
+I29393 2026-10-25 12:36:07.97233 capsule/by_hand_test.cc:770] Capsule reports own size as: 272
+I29393 2026-10-25 12:36:07.97233 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97233 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97234 capsule/by_hand_test.cc:806] u64a: 15096130254400179928
+sub1 {
+  b1: 1
+  i1: 490386792
+  s1: "54:S3D"
+}
+vsub1[] {
+  b1: 0
+  i1: -822392532
+  s1: ":9E6@2G>BS0"
+} {
+  b1: 0
+  i1: 643031783
+  s1: "LDXXD50Z>3MXYAOV83GLQ0:Q<VOP"
+} {
+  b1: 0
+  i1: 463154809
+  s1: "A5Y1LDW4CKD1K=4IGRYDW2"
+}
+
+I29393 2026-10-25 12:36:07.97235 capsule/by_hand_test.cc:820] Seed is 40832
+I29393 2026-10-25 12:36:07.97235 capsule/by_hand_test.cc:770] Capsule reports own size as: 112
+I29393 2026-10-25 12:36:07.97235 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97235 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97235 capsule/by_hand_test.cc:806] u64a: 14537221449268532281
+sub1 {
+  b1: 1
+  i1: -2047747871
+  s1: "2XCMMHIAZPUXAONI8:G19O<"
+}
+
+I29393 2026-10-25 12:36:07.97235 capsule/by_hand_test.cc:820] Seed is 3186
+I29393 2026-10-25 12:36:07.97235 capsule/by_hand_test.cc:770] Capsule reports own size as: 160
+I29393 2026-10-25 12:36:07.97235 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97235 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97236 capsule/by_hand_test.cc:806] u64a: 2763775727891053248
+sub1 {
+  b1: 1
+  i1: 1693770155
+  s1: "3WW;FNTDWLZK@AO"
+}
+vsub1[] {
+  b1: 0
+  i1: 1803423764
+  s1: "?<S<BM0DOHX0U51T"
+}
+
+I29393 2026-10-25 12:36:07.97236 capsule/by_hand_test.cc:820] Seed is 43000
+I29393 2026-10-25 12:36:07.97236 capsule/by_hand_test.cc:770] Capsule reports own size as: 256
+I29393 2026-10-25 12:36:07.97237 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97237 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97238 capsule/by_hand_test.cc:806] u64a: 1574064658823423178
+sub1 {
+  b1: 1
+  i1: 1183435293
+  s1: "RK1@:=KLR=PLS3?YB"
+}
+vsub1[] {
+  b1: 1
+  i1: 1273106601
+  s1: "YF=>FX"
+} {
+  b1: 1
+  i1: -2065057716
+  s1: "?EJJ7VMANA=274J<VHZJT0O4NVN"
+} {
+  b1: 0
+  i1: -1231591947
+  s1: ""
+}
+
+I29393 2026-10-25 12:36:07.97238 capsule/by_hand_test.cc:820] Seed is 40498
+I29393 2026-10-25 12:36:07.97238 capsule/by_hand_test.cc:770] Capsule reports own size as: 320
+I29393 2026-10-25 12:36:07.97238 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97238 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97239 capsule/by_hand_test.cc:806] u64a: 17403392921057081011
+sub1 {
+  b1: 1
+  i1: 1553661998
+  s1: "UCW7KD6BA21@16UK7OAYM9"
+}
+vsub1[] {
+  b1: 0
+  i1: -865448744
+  s1: "FDO585WAO@K:"
+} {
+  b1: 0
+  i1: 1199034973
+  s1: "TCKBNBAN?MH"
+} {
+  b1: 1
+  i1: 630835266
+  s1: "2=VP"
+} {
+  b1: 1
+  i1: 1342263859
+  s1: "XX9X?XK<<U6<?2Z0Q@84XY3TCHYG13MA"
+}
+
+I29393 2026-10-25 12:36:07.97240 capsule/by_hand_test.cc:820] Seed is 50384
+I29393 2026-10-25 12:36:07.97240 capsule/by_hand_test.cc:770] Capsule reports own size as: 192
+I29393 2026-10-25 12:36:07.97240 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97240 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97241 capsule/by_hand_test.cc:806] u64a: 13184334645229006920
+sub1 {
+  b1: 1
+  i1: -1907262775
+  s1: "VAR?RH82WVCPGV946=6EK7V<9TJ57B"
+}
+vsub1[] {
+  b1: 0
+  i1: 527061157
+  s1: "TCAN3SV?M:=C>5@42PEMDDK<K5Q6L0?"
+}
+
+I29393 2026-10-25 12:36:07.97241 capsule/by_hand_test.cc:820] Seed is 24550
+I29393 2026-10-25 12:36:07.97241 capsule/by_hand_test.cc:770] Capsule reports own size as: 312
+I29393 2026-10-25 12:36:07.97241 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97241 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97242 capsule/by_hand_test.cc:806] u64a: 3650752127757858925
+sub1 {
+  b1: 1
+  i1: 2016615883
+  s1: "2BFCE18IR=3@N5SA0Z;7NT@10S:PN22W>"
+}
+vsub1[] {
+  b1: 1
+  i1: 1602738694
+  s1: "GX0QSV21C4U<H70;1RUW@A5XIK7AWO"
+} {
+  b1: 0
+  i1: -567466249
+  s1: "T9PT<"
+} {
+  b1: 1
+  i1: -1119975322
+  s1: "O3D15@31YDOQOAYW=I@?NJ;8Q5T:@XM?0"
+}
+
+I29393 2026-10-25 12:36:07.97243 capsule/by_hand_test.cc:820] Seed is 22464
+I29393 2026-10-25 12:36:07.97243 capsule/by_hand_test.cc:770] Capsule reports own size as: 368
+I29393 2026-10-25 12:36:07.97243 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97243 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97244 capsule/by_hand_test.cc:806] u64a: 2579541654232767562
+sub1 {
+  b1: 0
+  i1: 1388825915
+  s1: "A>DCAI=7H0FE=NB<LW"
+}
+vsub1[] {
+  b1: 0
+  i1: 2046526111
+  s1: ";3B6@DN8U:<N56R3U3C2V3;;ZIKTZS:"
+} {
+  b1: 0
+  i1: -1916246704
+  s1: "0Z=>V8C3JSZ@78D@3V6B>9AO?E;UHQP"
+} {
+  b1: 1
+  i1: -1099739241
+  s1: "Q3=X20HKZSN;ESWX"
+} {
+  b1: 1
+  i1: 1391582989
+  s1: "54NI39:9HF5?PNF@EN;@92JDO"
+}
+
+I29393 2026-10-25 12:36:07.97245 capsule/by_hand_test.cc:820] Seed is 33020
+I29393 2026-10-25 12:36:07.97245 capsule/by_hand_test.cc:770] Capsule reports own size as: 200
+I29393 2026-10-25 12:36:07.97245 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97245 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97246 capsule/by_hand_test.cc:806] u64a: 18138632821780049070
+sub1 {
+  b1: 1
+  i1: -1993890616
+  s1: "JNBT?0?P75"
+}
+vsub1[] {
+  b1: 0
+  i1: 437360809
+  s1: "APSV48F"
+} {
+  b1: 0
+  i1: -501127570
+  s1: "8Y:L;;W8>CBM50O"
+}
+
+I29393 2026-10-25 12:36:07.97246 capsule/by_hand_test.cc:820] Seed is 19278
+I29393 2026-10-25 12:36:07.97246 capsule/by_hand_test.cc:770] Capsule reports own size as: 112
+I29393 2026-10-25 12:36:07.97247 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97247 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97247 capsule/by_hand_test.cc:806] u64a: 827880698294941468
+sub1 {
+  b1: 0
+  i1: -1156747007
+  s1: "C@95IEY3<>:ZDADY6=K:LBZ<CE"
+}
+
+I29393 2026-10-25 12:36:07.97247 capsule/by_hand_test.cc:820] Seed is 46002
+I29393 2026-10-25 12:36:07.97247 capsule/by_hand_test.cc:770] Capsule reports own size as: 184
+I29393 2026-10-25 12:36:07.97247 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97247 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97248 capsule/by_hand_test.cc:806] u64a: 11796747659583750953
+sub1 {
+  b1: 0
+  i1: 562852935
+  s1: "LC0"
+}
+vsub1[] {
+  b1: 0
+  i1: -1575528622
+  s1: "=K"
+} {
+  b1: 1
+  i1: -1293405491
+  s1: "I7VF6:=BCYG>WXB"
+}
+
+I29393 2026-10-25 12:36:07.97249 capsule/by_hand_test.cc:820] Seed is 31348
+I29393 2026-10-25 12:36:07.97249 capsule/by_hand_test.cc:770] Capsule reports own size as: 104
+I29393 2026-10-25 12:36:07.97249 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97249 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97249 capsule/by_hand_test.cc:806] u64a: 15785581756555144225
+sub1 {
+  b1: 1
+  i1: 712885118
+  s1: "ZOCD7BFY@637YBST"
+}
+
+I29393 2026-10-25 12:36:07.97249 capsule/by_hand_test.cc:820] Seed is 58340
+I29393 2026-10-25 12:36:07.97249 capsule/by_hand_test.cc:770] Capsule reports own size as: 144
+I29393 2026-10-25 12:36:07.97249 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97249 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97250 capsule/by_hand_test.cc:806] u64a: 18109332434405509320
+sub1 {
+  b1: 1
+  i1: -1880556786
+  s1: "FXLOM8MX"
+}
+vsub1[] {
+  b1: 0
+  i1: 1967266543
+  s1: "E6YXQ:H"
+}
+
+I29393 2026-10-25 12:36:07.97250 capsule/by_hand_test.cc:820] Seed is 31126
+I29393 2026-10-25 12:36:07.97250 capsule/by_hand_test.cc:770] Capsule reports own size as: 184
+I29393 2026-10-25 12:36:07.97250 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97250 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97251 capsule/by_hand_test.cc:806] u64a: 11960416299476508922
+sub1 {
+  b1: 1
+  i1: 1667333017
+  s1: "O2Z66YF@DQGP=KO?3P5Y1LS"
+}
+vsub1[] {
+  b1: 0
+  i1: 137444434
+  s1: "IQ;8JQ33BN2AFJB8PL0F4IDW4MII6J559"
+}
+
+I29393 2026-10-25 12:36:07.97251 capsule/by_hand_test.cc:820] Seed is 4902
+I29393 2026-10-25 12:36:07.97251 capsule/by_hand_test.cc:770] Capsule reports own size as: 120
+I29393 2026-10-25 12:36:07.97251 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97251 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97252 capsule/by_hand_test.cc:806] u64a: 7884525428240504627
+sub1 {
+  b1: 1
+  i1: -1582796515
+  s1: "E8L;<0?DL4YIFX8>HEG5OE?N8<DELK"
+}
+
+I29393 2026-10-25 12:36:07.97252 capsule/by_hand_test.cc:820] Seed is 31754
+I29393 2026-10-25 12:36:07.97252 capsule/by_hand_test.cc:770] Capsule reports own size as: 280
+I29393 2026-10-25 12:36:07.97252 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97252 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97253 capsule/by_hand_test.cc:806] u64a: 4633260478756055407
+sub1 {
+  b1: 1
+  i1: -1654329344
+  s1: "KNQRPEV"
+}
+vsub1[] {
+  b1: 1
+  i1: 2009446876
+  s1: "VVAM15>UT>BEHWYLHGST1140K"
+} {
+  b1: 1
+  i1: 2106167443
+  s1: "WCM@X7YJUX1@GP1ATG;I"
+} {
+  b1: 1
+  i1: 2075606899
+  s1: "3XKW@RV0RMTQ?5QMOWDAH7R"
+}
+
+I29393 2026-10-25 12:36:07.97254 capsule/by_hand_test.cc:820] Seed is 28760
+I29393 2026-10-25 12:36:07.97254 capsule/by_hand_test.cc:770] Capsule reports own size as: 96
+I29393 2026-10-25 12:36:07.97254 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97254 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97254 capsule/by_hand_test.cc:806] u64a: 11850616418289810961
+sub1 {
+  b1: 1
+  i1: -271095316
+  s1: "R;NS3"
+}
+
+I29393 2026-10-25 12:36:07.97255 capsule/by_hand_test.cc:820] Seed is 55680
+I29393 2026-10-25 12:36:07.97255 capsule/by_hand_test.cc:770] Capsule reports own size as: 336
+I29393 2026-10-25 12:36:07.97255 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97255 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97256 capsule/by_hand_test.cc:806] u64a: 10046372110534236515
+sub1 {
+  b1: 0
+  i1: 1322439419
+  s1: "VYSN0>D=5524M05X<0UWWMZ"
+}
+vsub1[] {
+  b1: 1
+  i1: 969077411
+  s1: "TU8LPQVR23CC48XGJU"
+} {
+  b1: 0
+  i1: 2069863271
+  s1: "W5Q:T"
+} {
+  b1: 0
+  i1: -757893432
+  s1: "@IL@EG6;36C54;>X8OHG"
+} {
+  b1: 1
+  i1: -865038029
+  s1: "JZA@8TYMUJ80NS5J7GIDTC"
+}
+
+I29393 2026-10-25 12:36:07.97257 capsule/by_hand_test.cc:820] Seed is 64452
+I29393 2026-10-25 12:36:07.97257 capsule/by_hand_test.cc:770] Capsule reports own size as: 104
+I29393 2026-10-25 12:36:07.97257 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97257 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97257 capsule/by_hand_test.cc:806] u64a: 6127762084522054135
+sub1 {
+  b1: 0
+  i1: -1524124125
+  s1: "NWTY6KIPHLQX4"
+}
+
+I29393 2026-10-25 12:36:07.97257 capsule/by_hand_test.cc:820] Seed is 26256
+I29393 2026-10-25 12:36:07.97257 capsule/by_hand_test.cc:770] Capsule reports own size as: 112
+I29393 2026-10-25 12:36:07.97257 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97257 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97258 capsule/by_hand_test.cc:806] u64a: 13118804286658485513
+sub1 {
+  b1: 1
+  i1: -2103862406
+  s1: "YZP>0PE06T0H@CY6K=CEMJ"
+}
+
+I29393 2026-10-25 12:36:07.97258 capsule/by_hand_test.cc:820] Seed is 52504
+I29393 2026-10-25 12:36:07.97258 capsule/by_hand_test.cc:770] Capsule reports own size as: 304
+I29393 2026-10-25 12:36:07.97258 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97258 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97259 capsule/by_hand_test.cc:806] u64a: 208263845954519066
+sub1 {
+  b1: 1
+  i1: 665648857
+  s1: "3TRPQQFU5:V;ESIWP;B3X"
+}
+vsub1[] {
+  b1: 1
+  i1: -52612857
+  s1: "84C38"
+} {
+  b1: 1
+  i1: 308195477
+  s1: "G;PLM2A?D"
+} {
+  b1: 1
+  i1: 1895485134
+  s1: ">A8JS>P8PE"
+} {
+  b1: 1
+  i1: 1549792412
+  s1: "0W87ZY?9X55R"
+}
+
+I29393 2026-10-25 12:36:07.97260 capsule/by_hand_test.cc:820] Seed is 61186
+I29393 2026-10-25 12:36:07.97260 capsule/by_hand_test.cc:770] Capsule reports own size as: 176
+I29393 2026-10-25 12:36:07.97260 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97260 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97261 capsule/by_hand_test.cc:806] u64a: 18000907803860309530
+sub1 {
+  b1: 0
+  i1: -1535386869
+  s1: "A1"
+}
+vsub1[] {
+  b1: 1
+  i1: -1603247855
+  s1: "SCWU>"
+} {
+  b1: 0
+  i1: 253336837
+  s1: "G8"
+}
+
+I29393 2026-10-25 12:36:07.97261 capsule/by_hand_test.cc:820] Seed is 46486
+I29393 2026-10-25 12:36:07.97261 capsule/by_hand_test.cc:770] Capsule reports own size as: 368
+I29393 2026-10-25 12:36:07.97262 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97262 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97263 capsule/by_hand_test.cc:806] u64a: 9911242040987244225
+sub1 {
+  b1: 1
+  i1: -364071849
+  s1: "N02Q4M?@<<YPAT9UH?>QNE@9<"
+}
+vsub1[] {
+  b1: 1
+  i1: -2655369
+  s1: "3T6B>4P2V"
+} {
+  b1: 0
+  i1: 1784714171
+  s1: "S6855JTWR9=B679ODSIBP"
+} {
+  b1: 1
+  i1: -247512397
+  s1: "4Y0V=>1O:?QCHGHZAQFN1ESF2PZTS50Z"
+} {
+  b1: 0
+  i1: 367362212
+  s1: "X?8939IP:X51XGBDI>QR3X3Z<CWWK0X"
+}
+
+I29393 2026-10-25 12:36:07.97263 capsule/by_hand_test.cc:820] Seed is 56874
+I29393 2026-10-25 12:36:07.97263 capsule/by_hand_test.cc:770] Capsule reports own size as: 88
+I29393 2026-10-25 12:36:07.97264 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97264 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97264 capsule/by_hand_test.cc:806] u64a: 278472505182502802
+sub1 {
+  b1: 1
+  i1: -76876438
+  s1: ""
+}
+
+I29393 2026-10-25 12:36:07.97264 capsule/by_hand_test.cc:820] Seed is 18170
+I29393 2026-10-25 12:36:07.97264 capsule/by_hand_test.cc:770] Capsule reports own size as: 216
+I29393 2026-10-25 12:36:07.97264 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97264 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97265 capsule/by_hand_test.cc:806] u64a: 8434113444662147699
+sub1 {
+  b1: 0
+  i1: -1954339076
+  s1: "AG"
+}
+vsub1[] {
+  b1: 0
+  i1: 972830752
+  s1: ">>HPJO?Q=S8D;CE=W:?0;TTDGZ"
+} {
+  b1: 0
+  i1: -708581500
+  s1: "HP0VGXM93RYF3D9AK83YU7"
+}
+
+I29393 2026-10-25 12:36:07.97266 capsule/by_hand_test.cc:820] Seed is 4366
+I29393 2026-10-25 12:36:07.97266 capsule/by_hand_test.cc:770] Capsule reports own size as: 152
+I29393 2026-10-25 12:36:07.97266 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97266 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97266 capsule/by_hand_test.cc:806] u64a: 15235627607444270225
+sub1 {
+  b1: 1
+  i1: 107431146
+  s1: "D6=5A33@<5>?KE<<="
+}
+vsub1[] {
+  b1: 1
+  i1: -968542633
+  s1: "GA18CXXP9K"
+}
+
+I29393 2026-10-25 12:36:07.97267 capsule/by_hand_test.cc:820] Seed is 43838
+I29393 2026-10-25 12:36:07.97267 capsule/by_hand_test.cc:770] Capsule reports own size as: 104
+I29393 2026-10-25 12:36:07.97267 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97267 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97267 capsule/by_hand_test.cc:806] u64a: 9902292628513747097
+sub1 {
+  b1: 1
+  i1: -1294382444
+  s1: "B6B55JH?HC8PPK?"
+}
+
+I29393 2026-10-25 12:36:07.97267 capsule/by_hand_test.cc:820] Seed is 4886
+I29393 2026-10-25 12:36:07.97267 capsule/by_hand_test.cc:770] Capsule reports own size as: 112
+I29393 2026-10-25 12:36:07.97267 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97267 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97268 capsule/by_hand_test.cc:806] u64a: 14673823960309365829
+sub1 {
+  b1: 0
+  i1: 1809528795
+  s1: "09N5I3EZ=DO60K3T8=0HV"
+}
+
+I29393 2026-10-25 12:36:07.97268 capsule/by_hand_test.cc:820] Seed is 31442
+I29393 2026-10-25 12:36:07.97268 capsule/by_hand_test.cc:770] Capsule reports own size as: 128
+I29393 2026-10-25 12:36:07.97268 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97268 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97269 capsule/by_hand_test.cc:806] u64a: 15505729981454523918
+sub1 {
+  b1: 1
+  i1: 1109387292
+  s1: "BY?"
+}
+vsub1[] {
+  b1: 0
+  i1: -1983456151
+  s1: ""
+}
+
+I29393 2026-10-25 12:36:07.97269 capsule/by_hand_test.cc:820] Seed is 4622
+I29393 2026-10-25 12:36:07.97269 capsule/by_hand_test.cc:770] Capsule reports own size as: 184
+I29393 2026-10-25 12:36:07.97269 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97269 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97270 capsule/by_hand_test.cc:806] u64a: 3198389057278226194
+sub1 {
+  b1: 0
+  i1: 849403079
+  s1: ":4X@>A@ISC1YJ1YNVU@BD"
+}
+vsub1[] {
+  b1: 1
+  i1: -408673022
+  s1: "Z>=<9X2J2W63:<W:1TEV1SR1ZBBY64=T="
+}
+
+I29393 2026-10-25 12:36:07.97270 capsule/by_hand_test.cc:820] Seed is 44016
+I29393 2026-10-25 12:36:07.97270 capsule/by_hand_test.cc:770] Capsule reports own size as: 176
+I29393 2026-10-25 12:36:07.97270 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97270 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97271 capsule/by_hand_test.cc:806] u64a: 18403304594545867360
+sub1 {
+  b1: 0
+  i1: -1361178059
+  s1: "0JKG7>1KKBQ@M9DS3AM;K;ZDW?"
+}
+vsub1[] {
+  b1: 1
+  i1: 948323644
+  s1: "SB>:WEI<U7@O6S1E>2Y63:Z8"
+}
+
+I29393 2026-10-25 12:36:07.97271 capsule/by_hand_test.cc:820] Seed is 17166
+I29393 2026-10-25 12:36:07.97271 capsule/by_hand_test.cc:770] Capsule reports own size as: 360
+I29393 2026-10-25 12:36:07.97271 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97271 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97273 capsule/by_hand_test.cc:806] u64a: 13994119383336418619
+sub1 {
+  b1: 0
+  i1: 1663235019
+  s1: "UQ0H4<D7R9O6@J;E=EFMUP4SB0IEL"
+}
+vsub1[] {
+  b1: 1
+  i1: 2037777574
+  s1: "VN3H:DVRU1RJ=;6J7HVF"
+} {
+  b1: 0
+  i1: 1373284479
+  s1: "GZ9TFQH81Q27M:DCRP@EZ@"
+} {
+  b1: 0
+  i1: -430197138
+  s1: "2MH3:P4;ISZ8B6PRHG:QE"
+} {
+  b1: 1
+  i1: -695301457
+  s1: "38LA5N@ME734P=9P6FHP"
+}
+
+I29393 2026-10-25 12:36:07.97273 capsule/by_hand_test.cc:820] Seed is 25798
+I29393 2026-10-25 12:36:07.97273 capsule/by_hand_test.cc:770] Capsule reports own size as: 328
+I29393 2026-10-25 12:36:07.97273 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97273 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97275 capsule/by_hand_test.cc:806] u64a: 12108670546354716358
+sub1 {
+  b1: 0
+  i1: 1235537856
+  s1: "GB8458DZ4YP8>9<:DP2TX>K6O"
+}
+vsub1[] {
+  b1: 0
+  i1: 1571792807
+  s1: "L>M3EK0<0JG0A0RP2O"
+} {
+  b1: 0
+  i1: -1642152838
+  s1: "J"
+} {
+  b1: 1
+  i1: -1795777377
+  s1: "6KV9>57HF;S9X;UKHIB"
+} {
+  b1: 1
+  i1: -78082581
+  s1: "BR4X6Z04FQ8K4MYB=TBKA>QN8>3Z"
+}
+
+I29393 2026-10-25 12:36:07.97275 capsule/by_hand_test.cc:820] Seed is 34766
+I29393 2026-10-25 12:36:07.97275 capsule/by_hand_test.cc:770] Capsule reports own size as: 120
+I29393 2026-10-25 12:36:07.97275 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97275 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97276 capsule/by_hand_test.cc:806] u64a: 7538966347469451483
+sub1 {
+  b1: 1
+  i1: -564508055
+  s1: "6SO?ZQBT:9HX4=I4CYI>=5WC==I8QU026"
+}
+
+I29393 2026-10-25 12:36:07.97276 capsule/by_hand_test.cc:820] Seed is 61772
+I29393 2026-10-25 12:36:07.97276 capsule/by_hand_test.cc:770] Capsule reports own size as: 240
+I29393 2026-10-25 12:36:07.97276 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97276 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97277 capsule/by_hand_test.cc:806] u64a: 158577624292350377
+sub1 {
+  b1: 0
+  i1: 1349192054
+  s1: "D?:ANU@EU7F>;FA:7QIRQN;3ZGPHQ"
+}
+vsub1[] {
+  b1: 1
+  i1: -1630008847
+  s1: "XP?6YLLGCOT67YQF>R?V82L?;GKPL62O"
+} {
+  b1: 1
+  i1: -1982169699
+  s1: "D;QPKK86LLZ0"
+}
+
+I29393 2026-10-25 12:36:07.97277 capsule/by_hand_test.cc:820] Seed is 47700
+I29393 2026-10-25 12:36:07.97277 capsule/by_hand_test.cc:770] Capsule reports own size as: 104
+I29393 2026-10-25 12:36:07.97278 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97278 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97278 capsule/by_hand_test.cc:806] u64a: 16781762820471398834
+sub1 {
+  b1: 0
+  i1: 32376070
+  s1: ";WNMK15YLR5OS4V"
+}
+
+I29393 2026-10-25 12:36:07.97278 capsule/by_hand_test.cc:820] Seed is 8662
+I29393 2026-10-25 12:36:07.97278 capsule/by_hand_test.cc:770] Capsule reports own size as: 176
+I29393 2026-10-25 12:36:07.97278 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97278 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97279 capsule/by_hand_test.cc:806] u64a: 12466908870494567694
+sub1 {
+  b1: 1
+  i1: 987711088
+  s1: "QT6M7X7PFHPTEW4H>DB<=?"
+}
+vsub1[] {
+  b1: 0
+  i1: -312571408
+  s1: "R:V11@9R<4R@@Z6VTS1VE39G"
+}
+
+I29393 2026-10-25 12:36:07.97279 capsule/by_hand_test.cc:820] Seed is 47310
+I29393 2026-10-25 12:36:07.97279 capsule/by_hand_test.cc:770] Capsule reports own size as: 104
+I29393 2026-10-25 12:36:07.97279 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97279 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97280 capsule/by_hand_test.cc:806] u64a: 15072145510726911474
+sub1 {
+  b1: 0
+  i1: 1092070915
+  s1: ";;H>8L@MLXPJ2;:KA"
+}
+
+I29393 2026-10-25 12:36:07.97280 capsule/by_hand_test.cc:820] Seed is 7518
+I29393 2026-10-25 12:36:07.97280 capsule/by_hand_test.cc:770] Capsule reports own size as: 120
+I29393 2026-10-25 12:36:07.97280 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97280 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97280 capsule/by_hand_test.cc:806] u64a: 586502585993954322
+sub1 {
+  b1: 0
+  i1: 334129913
+  s1: "55<F=75OQ3V1PK75DY6740Z@WI6JT>M?"
+}
+
+I29393 2026-10-25 12:36:07.97281 capsule/by_hand_test.cc:820] Seed is 34678
+I29393 2026-10-25 12:36:07.97281 capsule/by_hand_test.cc:770] Capsule reports own size as: 144
+I29393 2026-10-25 12:36:07.97281 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97281 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97281 capsule/by_hand_test.cc:806] u64a: 17985983819900104677
+sub1 {
+  b1: 0
+  i1: 961603574
+  s1: "L8HO59;B>9;WB1EZT=W"
+}
+vsub1[] {
+  b1: 1
+  i1: -668276769
+  s1: ":7"
+}
+
+I29393 2026-10-25 12:36:07.97282 capsule/by_hand_test.cc:820] Seed is 7792
+I29393 2026-10-25 12:36:07.97282 capsule/by_hand_test.cc:770] Capsule reports own size as: 304
+I29393 2026-10-25 12:36:07.97282 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97282 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97283 capsule/by_hand_test.cc:806] u64a: 12897918466352725322
+sub1 {
+  b1: 0
+  i1: 1819931948
+  s1: "II4:JER290C1KB?JMIV"
+}
+vsub1[] {
+  b1: 0
+  i1: -73740599
+  s1: "XICU>12USK4"
+} {
+  b1: 1
+  i1: 688909952
+  s1: "N6:>NPR@X7KDYPL;A6TXB4US1Q1W?"
+} {
+  b1: 1
+  i1: 512655615
+  s1: "H"
+} {
+  b1: 1
+  i1: 545624078
+  s1: ""
+}
+
+I29393 2026-10-25 12:36:07.97284 capsule/by_hand_test.cc:820] Seed is 16306
+I29393 2026-10-25 12:36:07.97284 capsule/by_hand_test.cc:770] Capsule reports own size as: 264
+I29393 2026-10-25 12:36:07.97284 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97284 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97285 capsule/by_hand_test.cc:806] u64a: 14953372421173401727
+sub1 {
+  b1: 1
+  i1: -285225888
+  s1: "5:<>ULCRPVHV;Z"
+}
+vsub1[] {
+  b1: 1
+  i1: 621967894
+  s1: "LQZLS:V9Z9KDEU@H=LPB"
+} {
+  b1: 0
+  i1: -979331895
+  s1: "PU6PIRBECR2D3Y8"
+} {
+  b1: 0
+  i1: -684175872
+  s1: "0K;OW;9V"
+}
+
+I29393 2026-10-25 12:36:07.97285 capsule/by_hand_test.cc:820] Seed is 14814
+I29393 2026-10-25 12:36:07.97285 capsule/by_hand_test.cc:770] Capsule reports own size as: 328
+I29393 2026-10-25 12:36:07.97286 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97286 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97287 capsule/by_hand_test.cc:806] u64a: 18192256651031698768
+sub1 {
+  b1: 0
+  i1: 2068638178
+  s1: "QOIGKOS5"
+}
+vsub1[] {
+  b1: 1
+  i1: -13714545
+  s1: "<40U4NYWKPKH2B;R9XW2IO73>5V3;EM"
+} {
+  b1: 1
+  i1: -1180556775
+  s1: ":XLNKF6YNO1UTDAYLFTY>P;?ILC4TR"
+} {
+  b1: 0
+  i1: 1292707885
+  s1: "1B6>LW;"
+} {
+  b1: 1
+  i1: -1606019458
+  s1: "Y<"
+}
+
+I29393 2026-10-25 12:36:07.97287 capsule/by_hand_test.cc:820] Seed is 23316
+I29393 2026-10-25 12:36:07.97287 capsule/by_hand_test.cc:770] Capsule reports own size as: 136
+I29393 2026-10-25 12:36:07.97288 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97288 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97288 capsule/by_hand_test.cc:806] u64a: 411775728912986091
+sub1 {
+  b1: 1
+  i1: 2072330282
+  s1: "="
+}
+vsub1[] {
+  b1: 1
+  i1: 1683874407
+  s1: "D>XD@U7Q1A3"
+}
+
+I29393 2026-10-25 12:36:07.97288 capsule/by_hand_test.cc:820] Seed is 62132
+I29393 2026-10-25 12:36:07.97289 capsule/by_hand_test.cc:770] Capsule reports own size as: 96
+I29393 2026-10-25 12:36:07.97289 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97289 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97289 capsule/by_hand_test.cc:806] u64a: 3857487181633943124
+sub1 {
+  b1: 0
+  i1: -283360907
+  s1: "LMIENKS;E5>"
+}
+
+I29393 2026-10-25 12:36:07.97289 capsule/by_hand_test.cc:820] Seed is 22876
+I29393 2026-10-25 12:36:07.97289 capsule/by_hand_test.cc:770] Capsule reports own size as: 264
+I29393 2026-10-25 12:36:07.97289 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97289 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97290 capsule/by_hand_test.cc:806] u64a: 5603534357657619711
+sub1 {
+  b1: 1
+  i1: -1349711953
+  s1: "1AZ1@7=1HN3BJ1?V7K@EKBAW<"
+}
+vsub1[] {
+  b1: 1
+  i1: -149946414
+  s1: "G2JA3?@JF"
+} {
+  b1: 1
+  i1: -1227394390
+  s1: "JK"
+} {
+  b1: 1
+  i1: -67891224
+  s1: "6AM@PHR4?E5GOQ55KC:NX2MF>F2G"
+}
+
+I29393 2026-10-25 12:36:07.97291 capsule/by_hand_test.cc:820] Seed is 19388
+I29393 2026-10-25 12:36:07.97291 capsule/by_hand_test.cc:770] Capsule reports own size as: 232
+I29393 2026-10-25 12:36:07.97291 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97291 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97292 capsule/by_hand_test.cc:806] u64a: 648504967884221514
+sub1 {
+  b1: 1
+  i1: 1347679986
+  s1: ";88YQ6EMINO=>3;RTJCB=ZR8"
+}
+vsub1[] {
+  b1: 1
+  i1: -380087139
+  s1: "TX6IGH9GQ<8RNAD2"
+} {
+  b1: 0
+  i1: 59646386
+  s1: "DN>V6Q2XX4V><AS;?BXMCW7KSWF"
+}
+
+I29393 2026-10-25 12:36:07.97292 capsule/by_hand_test.cc:820] Seed is 5124
+I29393 2026-10-25 12:36:07.97292 capsule/by_hand_test.cc:770] Capsule reports own size as: 280
+I29393 2026-10-25 12:36:07.97292 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97292 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97293 capsule/by_hand_test.cc:806] u64a: 17337712024385988311
+sub1 {
+  b1: 1
+  i1: -657588552
+  s1: "TW<CWZY?UDY780?DBF;G3YHUP"
+}
+vsub1[] {
+  b1: 1
+  i1: 10372485
+  s1: "UB6<YREB2BX2A2G0SW9"
+} {
+  b1: 1
+  i1: 6228168
+  s1: "SL6FZYYV6:W?QFQTSK08"
+} {
+  b1: 1
+  i1: 1451072464
+  s1: "T2J7WDCOSUOX=V=ND;K"
+}
+
+I29393 2026-10-25 12:36:07.97294 capsule/by_hand_test.cc:820] Seed is 1438
+I29393 2026-10-25 12:36:07.97294 capsule/by_hand_test.cc:770] Capsule reports own size as: 280
+I29393 2026-10-25 12:36:07.97294 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97294 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97295 capsule/by_hand_test.cc:806] u64a: 12667404868496130770
+sub1 {
+  b1: 1
+  i1: 631478277
+  s1: "78IAGWSNX9@E;"
+}
+vsub1[] {
+  b1: 1
+  i1: -1458682994
+  s1: "51Z"
+} {
+  b1: 0
+  i1: -1759980969
+  s1: "==N;QAKH8Q85A9::M@H?B<CMOJTE9LR"
+} {
+  b1: 1
+  i1: 1836196664
+  s1: "C@72ZN3X2O2RU54RDAZDDHKQ6RZ6"
+}
+
+I29393 2026-10-25 12:36:07.97296 capsule/by_hand_test.cc:820] Seed is 63664
+I29393 2026-10-25 12:36:07.97296 capsule/by_hand_test.cc:770] Capsule reports own size as: 344
+I29393 2026-10-25 12:36:07.97296 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97296 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97297 capsule/by_hand_test.cc:806] u64a: 7246583714288100726
+sub1 {
+  b1: 0
+  i1: -987409808
+  s1: "8LZ90W<GUCB47REKH:RY7LZ"
+}
+vsub1[] {
+  b1: 1
+  i1: -653042957
+  s1: "OQ=4QGDM7F:A>849XD4LB8O61Y72IUSJ"
+} {
+  b1: 0
+  i1: -1258456839
+  s1: "I1G"
+} {
+  b1: 1
+  i1: -408731995
+  s1: "GQD?<?2V9HF;I2B0?"
+} {
+  b1: 0
+  i1: 1358174427
+  s1: "9C<?93:56M@DG8UFPZ6D9"
+}
+
+I29393 2026-10-25 12:36:07.97298 capsule/by_hand_test.cc:820] Seed is 5784
+I29393 2026-10-25 12:36:07.97298 capsule/by_hand_test.cc:770] Capsule reports own size as: 280
+I29393 2026-10-25 12:36:07.97298 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97298 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97299 capsule/by_hand_test.cc:806] u64a: 2293922414855160146
+sub1 {
+  b1: 0
+  i1: 2041410412
+  s1: "609D>R@F;N658M<N:ZF3M3"
+}
+vsub1[] {
+  b1: 0
+  i1: -1674011824
+  s1: "N4HC249L@"
+} {
+  b1: 1
+  i1: -1173698384
+  s1: "RCQ:U1WTYWKA3M>3:1S9M3"
+} {
+  b1: 0
+  i1: 608627807
+  s1: "7KF>?ZVE8YW5?L91X;>"
+}
+
+I29393 2026-10-25 12:36:07.97299 capsule/by_hand_test.cc:820] Seed is 1404
+I29393 2026-10-25 12:36:07.97299 capsule/by_hand_test.cc:770] Capsule reports own size as: 104
+I29393 2026-10-25 12:36:07.97299 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97299 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97300 capsule/by_hand_test.cc:806] u64a: 10958093842012220983
+sub1 {
+  b1: 1
+  i1: -419029987
+  s1: ";9Q07MQ;S5G34K:"
+}
+
+I29393 2026-10-25 12:36:07.97300 capsule/by_hand_test.cc:820] Seed is 27588
+I29393 2026-10-25 12:36:07.97300 capsule/by_hand_test.cc:770] Capsule reports own size as: 120
+I29393 2026-10-25 12:36:07.97300 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97300 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97300 capsule/by_hand_test.cc:806] u64a: 3605239922000894853
+sub1 {
+  b1: 0
+  i1: 1066607900
+  s1: "MR7TPZBS9FIH3C@PIC8K?4L7O17CXF"
+}
+
+I29393 2026-10-25 12:36:07.97301 capsule/by_hand_test.cc:820] Seed is 54232
+I29393 2026-10-25 12:36:07.97301 capsule/by_hand_test.cc:770] Capsule reports own size as: 120
+I29393 2026-10-25 12:36:07.97301 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97301 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97301 capsule/by_hand_test.cc:806] u64a: 8390125722457001117
+sub1 {
+  b1: 0
+  i1: -10115637
+  s1: "5UCWEFW;=K8@08VKEEBYI6PCTL?QR<A8"
+}
+
+I29393 2026-10-25 12:36:07.97301 capsule/by_hand_test.cc:820] Seed is 15458
+I29393 2026-10-25 12:36:07.97301 capsule/by_hand_test.cc:770] Capsule reports own size as: 152
+I29393 2026-10-25 12:36:07.97302 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97302 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97302 capsule/by_hand_test.cc:806] u64a: 5987069456199168073
+sub1 {
+  b1: 0
+  i1: -844609234
+  s1: "7CV3A@8C"
+}
+vsub1[] {
+  b1: 1
+  i1: 1894631568
+  s1: ";@>U2U7Y5YZH@XVIZE"
+}
+
+I29393 2026-10-25 12:36:07.97302 capsule/by_hand_test.cc:820] Seed is 54088
+I29393 2026-10-25 12:36:07.97303 capsule/by_hand_test.cc:770] Capsule reports own size as: 232
+I29393 2026-10-25 12:36:07.97303 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97303 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97303 capsule/by_hand_test.cc:806] u64a: 10306230417482934176
+sub1 {
+  b1: 0
+  i1: 1551241631
+  s1: "I=7@5LHGZM7QW?RHQ;SY"
+}
+vsub1[] {
+  b1: 1
+  i1: -697722856
+  s1: "KU2:;UEA<3<H8?Z@KKCJ>"
+} {
+  b1: 1
+  i1: 1008198327
+  s1: "9SRZ5TCQOAHWE4YIKPA=<IVZ2O"
+}
+
+I29393 2026-10-25 12:36:07.97304 capsule/by_hand_test.cc:820] Seed is 38846
+I29393 2026-10-25 12:36:07.97304 capsule/by_hand_test.cc:770] Capsule reports own size as: 160
+I29393 2026-10-25 12:36:07.97304 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97304 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97305 capsule/by_hand_test.cc:806] u64a: 7987842283614736866
+sub1 {
+  b1: 1
+  i1: 1978528399
+  s1: "4JNEKS08S=042D"
+}
+vsub1[] {
+  b1: 1
+  i1: 1926230587
+  s1: "B6FER2UJ44W62:P9IP"
+}
+
+I29393 2026-10-25 12:36:07.97305 capsule/by_hand_test.cc:820] Seed is 11730
+I29393 2026-10-25 12:36:07.97305 capsule/by_hand_test.cc:770] Capsule reports own size as: 336
+I29393 2026-10-25 12:36:07.97305 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97305 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97306 capsule/by_hand_test.cc:806] u64a: 8489074179498033989
+sub1 {
+  b1: 0
+  i1: -943071838
+  s1: "DDK8LR3@;16H:XQN8XAO4RWB"
+}
+vsub1[] {
+  b1: 1
+  i1: -1397508798
+  s1: ""
+} {
+  b1: 0
+  i1: 902159096
+  s1: "GL>PDZU7084FK1=DQY=1DDN:;AS3S8="
+} {
+  b1: 0
+  i1: 1238401782
+  s1: "NPH<==5BT3SEP="
+} {
+  b1: 0
+  i1: -611228023
+  s1: "QM>6Y<JM8YAL=;XBADHI"
+}
+
+I29393 2026-10-25 12:36:07.97307 capsule/by_hand_test.cc:820] Seed is 19666
+I29393 2026-10-25 12:36:07.97307 capsule/by_hand_test.cc:770] Capsule reports own size as: 312
+I29393 2026-10-25 12:36:07.97307 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97307 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97308 capsule/by_hand_test.cc:806] u64a: 18349814219511146422
+sub1 {
+  b1: 0
+  i1: 1073880944
+  s1: "V76QN5F30X@2JHCKEF@@PKTZLG8:J47QX"
+}
+vsub1[] {
+  b1: 1
+  i1: 1697747029
+  s1: "STPMJ2:?8K<AP8UG53LEF6024C75H;"
+} {
+  b1: 1
+  i1: 1391249224
+  s1: "ETI=MY7HYDW>;X2=NLD0>QL?FAJ4"
+} {
+  b1: 0
+  i1: -1574361989
+  s1: "B>LW1:J8IK7N852RTF5"
+}
+
+I29393 2026-10-25 12:36:07.97622 capsule/by_hand_test.cc:820] Seed is 16908
+I29393 2026-10-25 12:36:07.97622 capsule/by_hand_test.cc:770] Capsule reports own size as: 160
+I29393 2026-10-25 12:36:07.97623 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97623 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97624 capsule/by_hand_test.cc:806] u64a: 8766139136236613237
+sub1 {
+  b1: 0
+  i1: -1133833186
+  s1: "G6CF8HF"
+}
+vsub1[] {
+  b1: 1
+  i1: 50864961
+  s1: "RB?UWEWOTCEK5WST<Z1KXZGJHI5="
+}
+
+I29393 2026-10-25 12:36:07.97625 capsule/by_hand_test.cc:820] Seed is 30932
+I29393 2026-10-25 12:36:07.97625 capsule/by_hand_test.cc:770] Capsule reports own size as: 152
+I29393 2026-10-25 12:36:07.97626 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97626 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97626 capsule/by_hand_test.cc:806] u64a: 16432801856443344668
+sub1 {
+  b1: 1
+  i1: -2100943836
+  s1: ""
+}
+vsub1[] {
+  b1: 1
+  i1: -873162971
+  s1: "L8N>LBFWVAW14ZCEF:0HK8THI"
+}
+
+I29393 2026-10-25 12:36:07.97627 capsule/by_hand_test.cc:820] Seed is 18618
+I29393 2026-10-25 12:36:07.97627 capsule/by_hand_test.cc:770] Capsule reports own size as: 304
+I29393 2026-10-25 12:36:07.97627 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97627 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97628 capsule/by_hand_test.cc:806] u64a: 11398983919225410517
+sub1 {
+  b1: 0
+  i1: 1665132912
+  s1: "D=JQ7M8AV8"
+}
+vsub1[] {
+  b1: 1
+  i1: 1495894743
+  s1: "OGLWH;BHWN;>"
+} {
+  b1: 1
+  i1: -1502005605
+  s1: "NB4<XOW"
+} {
+  b1: 1
+  i1: -2028153475
+  s1: "?@76MWIK>OD8"
+} {
+  b1: 0
+  i1: 491364721
+  s1: "V0O7>T>H:U<NQRJYNHQMX6QP0GZT"
+}
+
+I29393 2026-10-25 12:36:07.97629 capsule/by_hand_test.cc:820] Seed is 32412
+I29393 2026-10-25 12:36:07.97629 capsule/by_hand_test.cc:770] Capsule reports own size as: 112
+I29393 2026-10-25 12:36:07.97629 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97629 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97630 capsule/by_hand_test.cc:806] u64a: 8988166644987563667
+sub1 {
+  b1: 0
+  i1: 986386813
+  s1: "D3:I<NKAWU<Y5A<?UQXV?2<;>"
+}
+
+I29393 2026-10-25 12:36:07.97630 capsule/by_hand_test.cc:820] Seed is 61374
+I29393 2026-10-25 12:36:07.97630 capsule/by_hand_test.cc:770] Capsule reports own size as: 296
+I29393 2026-10-25 12:36:07.97630 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97630 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97631 capsule/by_hand_test.cc:806] u64a: 1060199697428735375
+sub1 {
+  b1: 0
+  i1: -823525204
+  s1: "GZ=R:EI262OOV"
+}
+vsub1[] {
+  b1: 0
+  i1: 253719678
+  s1: "EBD?T8T:=0H3LSF9S3"
+} {
+  b1: 0
+  i1: 1136294649
+  s1: "=4P9JN9TE7AWB@0;GPK"
+} {
+  b1: 1
+  i1: -250267712
+  s1: ":0T"
+} {
+  b1: 1
+  i1: -2094507646
+  s1: "TO@"
+}
+
+I29393 2026-10-25 12:36:07.97632 capsule/by_hand_test.cc:820] Seed is 6136
+I29393 2026-10-25 12:36:07.97632 capsule/by_hand_test.cc:770] Capsule reports own size as: 192
+I29393 2026-10-25 12:36:07.97632 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97632 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97633 capsule/by_hand_test.cc:806] u64a: 10024936836815136240
+sub1 {
+  b1: 1
+  i1: -1734694778
+  s1: "NOF"
+}
+vsub1[] {
+  b1: 0
+  i1: 1660120740
+  s1: ""
+} {
+  b1: 1
+  i1: 1473164256
+  s1: "JY0UE@8T3@9WZW2398S>C@19B"
+}
+
+I29393 2026-10-25 12:36:07.97633 capsule/by_hand_test.cc:820] Seed is 59068
+I29393 2026-10-25 12:36:07.97633 capsule/by_hand_test.cc:770] Capsule reports own size as: 136
+I29393 2026-10-25 12:36:07.97633 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97633 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97634 capsule/by_hand_test.cc:806] u64a: 11283573565274240883
+sub1 {
+  b1: 1
+  i1: -1532713167
+  s1: "60?9M6YUWRKO"
+}
+vsub1[] {
+  b1: 1
+  i1: -1093984810
+  s1: "1HX<"
+}
+
+I29393 2026-10-25 12:36:07.97634 capsule/by_hand_test.cc:820] Seed is 32520
+I29393 2026-10-25 12:36:07.97634 capsule/by_hand_test.cc:770] Capsule reports own size as: 344
+I29393 2026-10-25 12:36:07.97634 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97634 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97636 capsule/by_hand_test.cc:806] u64a: 18281696158301469891
+sub1 {
+  b1: 0
+  i1: -1161538474
+  s1: "8QQU7:LUTPGX??SJ"
+}
+vsub1[] {
+  b1: 1
+  i1: 802657725
+  s1: "CY38OXHTQZNA5F8@J@HK7<;Q"
+} {
+  b1: 0
+  i1: -1888787653
+  s1: ":W=TKJ568IE20YFGV5=ORS?8QQRYYIT8"
+} {
+  b1: 1
+  i1: -3576280
+  s1: "6MH=MU=8LKZGV"
+} {
+  b1: 0
+  i1: -399096186
+  s1: "4@BJL24"
+}
+
+I29393 2026-10-25 12:36:07.97636 capsule/by_hand_test.cc:820] Seed is 44774
+I29393 2026-10-25 12:36:07.97636 capsule/by_hand_test.cc:770] Capsule reports own size as: 112
+I29393 2026-10-25 12:36:07.97637 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97637 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97637 capsule/by_hand_test.cc:806] u64a: 13920183182999190542
+sub1 {
+  b1: 1
+  i1: -676585456
+  s1: "7AF16NG4O;26D@B0LT6LSSTO>;SG"
+}
+
+I29393 2026-10-25 12:36:07.97637 capsule/by_hand_test.cc:820] Seed is 6448
+I29393 2026-10-25 12:36:07.97637 capsule/by_hand_test.cc:770] Capsule reports own size as: 144
+I29393 2026-10-25 12:36:07.97637 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97637 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97638 capsule/by_hand_test.cc:806] u64a: 10836611445734551577
+sub1 {
+  b1: 0
+  i1: -1165717970
+  s1: "0V9:BX<ZPL65<O"
+}
+vsub1[] {
+  b1: 0
+  i1: -747337832
+  s1: "GI"
+}
+
+I29393 2026-10-25 12:36:07.97638 capsule/by_hand_test.cc:820] Seed is 45362
+I29393 2026-10-25 12:36:07.97638 capsule/by_hand_test.cc:770] Capsule reports own size as: 264
+I29393 2026-10-25 12:36:07.97638 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97638 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97639 capsule/by_hand_test.cc:806] u64a: 6592356639242144307
+sub1 {
+  b1: 1
+  i1: 1997077002
+  s1: "0Y"
+}
+vsub1[] {
+  b1: 1
+  i1: 1155641031
+  s1: ">5<OE"
+} {
+  b1: 1
+  i1: -1485092614
+  s1: "R7KV78R<??4DLU4P?I0NRL480KY<KTRB?"
+} {
+  b1: 1
+  i1: 407894436
+  s1: "TWOC<U2QVXE;JW"
+}
+
+I29393 2026-10-25 12:36:07.97640 capsule/by_hand_test.cc:820] Seed is 43232
+I29393 2026-10-25 12:36:07.97640 capsule/by_hand_test.cc:770] Capsule reports own size as: 120
+I29393 2026-10-25 12:36:07.97640 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97640 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97640 capsule/by_hand_test.cc:806] u64a: 11630574728880031439
+sub1 {
+  b1: 0
+  i1: 2132164941
+  s1: "<W=@DV;KOXPI@::51PWI?9XSYO1KPCI5B"
+}
+
+I29393 2026-10-25 12:36:07.97641 capsule/by_hand_test.cc:820] Seed is 5038
+I29393 2026-10-25 12:36:07.97641 capsule/by_hand_test.cc:770] Capsule reports own size as: 168
+I29393 2026-10-25 12:36:07.97641 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97641 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97641 capsule/by_hand_test.cc:806] u64a: 11923481136525023715
+sub1 {
+  b1: 0
+  i1: -627054398
+  s1: "@YF@9:1EL>5"
+}
+vsub1[] {
+  b1: 1
+  i1: -2046506216
+  s1: "K4=1WZP0<XSN8QY:0UCH2AV7CSR5404Q"
+}
+
+I29393 2026-10-25 12:36:07.97642 capsule/by_hand_test.cc:820] Seed is 44388
+I29393 2026-10-25 12:36:07.97642 capsule/by_hand_test.cc:770] Capsule reports own size as: 208
+I29393 2026-10-25 12:36:07.97642 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97642 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97644 capsule/by_hand_test.cc:806] u64a: 935750405660969799
+sub1 {
+  b1: 0
+  i1: -1490389286
+  s1: "L7R:?AZ="
+}
+vsub1[] {
+  b1: 0
+  i1: 975278957
+  s1: "NLJDQH>LW5:EII0"
+} {
+  b1: 0
+  i1: -1798492777
+  s1: "4;;OFCNFXE6=@6PQU"
+}
+
+I29393 2026-10-25 12:36:07.97644 capsule/by_hand_test.cc:820] Seed is 3504
+I29393 2026-10-25 12:36:07.97644 capsule/by_hand_test.cc:770] Capsule reports own size as: 224
+I29393 2026-10-25 12:36:07.97644 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97644 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97645 capsule/by_hand_test.cc:806] u64a: 15473710869315876675
+sub1 {
+  b1: 0
+  i1: -26533531
+  s1: "E>?V<L:A<<VT3CKA5JR??BMWD:"
+}
+vsub1[] {
+  b1: 1
+  i1: -1211499249
+  s1: "?UYNHHNEUE<JMGZ4"
+} {
+  b1: 1
+  i1: -1768195078
+  s1: "HW@A@7NDC<8=UODSIEIM"
+}
+
+I29393 2026-10-25 12:36:07.97646 capsule/by_hand_test.cc:820] Seed is 62114
+I29393 2026-10-25 12:36:07.97646 capsule/by_hand_test.cc:770] Capsule reports own size as: 152
+I29393 2026-10-25 12:36:07.97646 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97646 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97647 capsule/by_hand_test.cc:806] u64a: 1895372234976422800
+sub1 {
+  b1: 0
+  i1: -142394823
+  s1: ":;HI;0OZ<<J5SI<MYBV8BI"
+}
+vsub1[] {
+  b1: 1
+  i1: 264192491
+  s1: ""
+}
+
+I29393 2026-10-25 12:36:07.97647 capsule/by_hand_test.cc:820] Seed is 37832
+I29393 2026-10-25 12:36:07.97647 capsule/by_hand_test.cc:770] Capsule reports own size as: 168
+I29393 2026-10-25 12:36:07.97647 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97647 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97648 capsule/by_hand_test.cc:806] u64a: 13703728468001685197
+sub1 {
+  b1: 1
+  i1: 79826307
+  s1: "BVW;0T1?2MGP>>0>PAU7:JYC?7@"
+}
+vsub1[] {
+  b1: 0
+  i1: -1322740119
+  s1: ">EEI9:0LF0FG1H0S"
+}
+
+I29393 2026-10-25 12:36:07.97648 capsule/by_hand_test.cc:820] Seed is 11964
+I29393 2026-10-25 12:36:07.97648 capsule/by_hand_test.cc:770] Capsule reports own size as: 280
+I29393 2026-10-25 12:36:07.97648 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97648 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97649 capsule/by_hand_test.cc:806] u64a: 12892474117101562822
+sub1 {
+  b1: 1
+  i1: 2060896377
+  s1: "7<MMR?>OCL=?9"
+}
+vsub1[] {
+  b1: 0
+  i1: -1674703961
+  s1: "DEYRJ=TTIVAWL>:OCUI9PR;I9F6PXCI"
+} {
+  b1: 0
+  i1: 1524456002
+  s1: "0B2QN@JRUK56I"
+} {
+  b1: 1
+  i1: -740849272
+  s1: "XH?LUWK=P"
+}
+
+I29393 2026-10-25 12:36:07.97650 capsule/by_hand_test.cc:820] Seed is 12112
+I29393 2026-10-25 12:36:07.97650 capsule/by_hand_test.cc:770] Capsule reports own size as: 96
+I29393 2026-10-25 12:36:07.97650 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97650 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97650 capsule/by_hand_test.cc:806] u64a: 15516141112994659184
+sub1 {
+  b1: 0
+  i1: -303508860
+  s1: "NV859"
+}
+
+I29393 2026-10-25 12:36:07.97651 capsule/by_hand_test.cc:820] Seed is 39710
+I29393 2026-10-25 12:36:07.97651 capsule/by_hand_test.cc:770] Capsule reports own size as: 152
+I29393 2026-10-25 12:36:07.97651 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97651 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97651 capsule/by_hand_test.cc:806] u64a: 9002469344020032191
+sub1 {
+  b1: 0
+  i1: 662126269
+  s1: "8K398V7@;YE66"
+}
+vsub1[] {
+  b1: 1
+  i1: 490423631
+  s1: "IRH;T>H8"
+}
+
+I29393 2026-10-25 12:36:07.97652 capsule/by_hand_test.cc:820] Seed is 13392
+I29393 2026-10-25 12:36:07.97652 capsule/by_hand_test.cc:770] Capsule reports own size as: 216
+I29393 2026-10-25 12:36:07.97652 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97652 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97653 capsule/by_hand_test.cc:806] u64a: 14466571492488950065
+sub1 {
+  b1: 1
+  i1: 388196905
+  s1: "B>0I7LU8=G"
+}
+vsub1[] {
+  b1: 0
+  i1: 1281760756
+  s1: "1A49AXOGZ5@S@QU?5NKYV"
+} {
+  b1: 0
+  i1: 1908511345
+  s1: "CIJEBC36P6TWJY2"
+}
+
+I29393 2026-10-25 12:36:07.97653 capsule/by_hand_test.cc:820] Seed is 63978
+I29393 2026-10-25 12:36:07.97653 capsule/by_hand_test.cc:770] Capsule reports own size as: 352
+I29393 2026-10-25 12:36:07.97653 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97653 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97654 capsule/by_hand_test.cc:806] u64a: 3702074765796520755
+sub1 {
+  b1: 1
+  i1: 1398321374
+  s1: ":VU6OC"
+}
+vsub1[] {
+  b1: 0
+  i1: 339278998
+  s1: "SC6@QPIC?K2;R@NJRRYA>DPQPK8CW"
+} {
+  b1: 1
+  i1: 1209687300
+  s1: "UK:R09B62S7Z5<WXDFV:513:CTU3T9:"
+} {
+  b1: 1
+  i1: -951352794
+  s1: "DA;43F"
+} {
+  b1: 0
+  i1: -496469848
+  s1: "J:G3;<QRX3X3::WGJEUFK"
+}
+
+I29393 2026-10-25 12:36:07.97655 capsule/by_hand_test.cc:820] Seed is 8850
+I29393 2026-10-25 12:36:07.97655 capsule/by_hand_test.cc:770] Capsule reports own size as: 160
+I29393 2026-10-25 12:36:07.97655 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97655 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97656 capsule/by_hand_test.cc:806] u64a: 14980933775903713153
+sub1 {
+  b1: 0
+  i1: -2017344289
+  s1: "?6353CWASG7EUK>"
+}
+vsub1[] {
+  b1: 0
+  i1: -1853694650
+  s1: "NNM1HWA5QR6X<2"
+}
+
+I29393 2026-10-25 12:36:07.97656 capsule/by_hand_test.cc:820] Seed is 47454
+I29393 2026-10-25 12:36:07.97656 capsule/by_hand_test.cc:770] Capsule reports own size as: 208
+I29393 2026-10-25 12:36:07.97656 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97656 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97657 capsule/by_hand_test.cc:806] u64a: 14946960208301571182
+sub1 {
+  b1: 1
+  i1: 1036339115
+  s1: "N;3KYXFC5F5F;YGN7PVC:;"
+}
+vsub1[] {
+  b1: 0
+  i1: 106654737
+  s1: "Y@QZ"
+} {
+  b1: 0
+  i1: -235730687
+  s1: "3BD06NGE:T6Q18Q"
+}
+
+I29393 2026-10-25 12:36:07.97657 capsule/by_hand_test.cc:820] Seed is 32784
+I29393 2026-10-25 12:36:07.97658 capsule/by_hand_test.cc:770] Capsule reports own size as: 216
+I29393 2026-10-25 12:36:07.97658 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97658 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97658 capsule/by_hand_test.cc:806] u64a: 8309158873668324490
+sub1 {
+  b1: 0
+  i1: -1714942438
+  s1: "YWWP7XM0HNZ;@"
+}
+vsub1[] {
+  b1: 1
+  i1: 1135682592
+  s1: "GRACB<SY7<BL;2>;OVZ:SSR7@4F9;MWZG"
+} {
+  b1: 1
+  i1: -1012987835
+  s1: "0"
+}
+
+I29393 2026-10-25 12:36:07.97659 capsule/by_hand_test.cc:820] Seed is 18328
+I29393 2026-10-25 12:36:07.97659 capsule/by_hand_test.cc:770] Capsule reports own size as: 120
+I29393 2026-10-25 12:36:07.97659 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97659 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97659 capsule/by_hand_test.cc:806] u64a: 64098092123248974
+sub1 {
+  b1: 0
+  i1: -694986557
+  s1: "PGJFR940FSVVC<I:<LYE5D5VJDWWAK@LV"
+}
+
+I29393 2026-10-25 12:36:07.97660 capsule/by_hand_test.cc:820] Seed is 46718
+I29393 2026-10-25 12:36:07.97660 capsule/by_hand_test.cc:770] Capsule reports own size as: 104
+I29393 2026-10-25 12:36:07.97660 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97660 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97660 capsule/by_hand_test.cc:806] u64a: 17129026331524213461
+sub1 {
+  b1: 0
+  i1: -2137490178
+  s1: "4ZYFBER9MCOVI"
+}
+
+I29393 2026-10-25 12:36:07.97660 capsule/by_hand_test.cc:820] Seed is 7030
+I29393 2026-10-25 12:36:07.97660 capsule/by_hand_test.cc:770] Capsule reports own size as: 136
+I29393 2026-10-25 12:36:07.97660 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97660 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97661 capsule/by_hand_test.cc:806] u64a: 14262824342262101512
+sub1 {
+  b1: 0
+  i1: -2025124760
+  s1: ""
+}
+vsub1[] {
+  b1: 0
+  i1: 1967594602
+  s1: "8O0U1BANR"
+}
+
+I29393 2026-10-25 12:36:07.97661 capsule/by_hand_test.cc:820] Seed is 45370
+I29393 2026-10-25 12:36:07.97661 capsule/by_hand_test.cc:770] Capsule reports own size as: 312
+I29393 2026-10-25 12:36:07.97661 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97661 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97663 capsule/by_hand_test.cc:806] u64a: 11859368526431119195
+sub1 {
+  b1: 0
+  i1: -432419592
+  s1: "FRLV"
+}
+vsub1[] {
+  b1: 1
+  i1: 2100615404
+  s1: "CHHXJ3YBO<JTNZCXX9Q;8DVE"
+} {
+  b1: 0
+  i1: -1550918460
+  s1: "LP<2NAXHTNRUJNMJARHU@TB"
+} {
+  b1: 1
+  i1: 750064025
+  s1: ""
+} {
+  b1: 1
+  i1: 596850668
+  s1: "ZXFC2>NCRDY3W"
+}
+
+I29393 2026-10-25 12:36:07.97882 capsule/by_hand_test.cc:820] Seed is 35366
+I29393 2026-10-25 12:36:07.97882 capsule/by_hand_test.cc:770] Capsule reports own size as: 416
+I29393 2026-10-25 12:36:07.97883 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97883 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97886 capsule/by_hand_test.cc:806] u64a: 5132107838484043710
+i64a: -3077673453446695273
+u32a: 2493007304
+i32a: -1702757197
+u16a: 52740
+i16a: -31241
+u8a: 107
+i8a: 52
+b1: 0
+vs1[] {
+  "SD:N",
+  "V>VV81JHC;;54",
+}
+sub1 {
+  u64a: 16978853242701175852
+  sub1 {
+    b1: 0
+    i1: 1061866775
+    s1: "04Z:BO6<UXQ9MTVG<:AK3ENB"
+  }
+  vsub1[] {
+    b1: 1
+    i1: 1982847637
+    s1: "OKD9R>VBD<Y5?8BH"
+  } {
+    b1: 1
+    i1: -59734579
+    s1: "KWKCCXP64BQTC3YT;WGA9?A=I5RCDOV>T"
+  }
+}
+f32a: 75.7186
+f64a: -5948.96
+
+I29393 2026-10-25 12:36:07.97889 capsule/by_hand_test.cc:820] Seed is 39472
+I29393 2026-10-25 12:36:07.97889 capsule/by_hand_test.cc:770] Capsule reports own size as: 552
+I29393 2026-10-25 12:36:07.97889 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97889 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97892 capsule/by_hand_test.cc:806] u64a: 13317321106834636383
+i64a: -7423099025740637490
+u32a: 3425014106
+i32a: -618173106
+u16a: 45171
+i16a: 18586
+u8a: 85
+i8a: -2
+b1: 0
+vs1[] {
+  "5MTED8",
+  "61EHHW>GMTFYGK?S4KO1",
+  "ALPH5JI:FC16X=FJI>F<OT=C5VDCC@@S",
+  "N==768",
+}
+sub1 {
+  u64a: 12499536631656650726
+  sub1 {
+    b1: 0
+    i1: 443434176
+    s1: "H7GK:GUJH"
+  }
+  vsub1[] {
+    b1: 0
+    i1: -379359141
+    s1: "PFO3:LN48QCIM>756G??"
+  } {
+    b1: 1
+    i1: 1293718965
+    s1: "NTYY??J?N556G07Q0"
+  } {
+    b1: 1
+    i1: 1358593911
+    s1: "16GBFD3H=HXHLO=GF7LRJUSR"
+  } {
+    b1: 1
+    i1: 307174960
+    s1: "4;Y"
+  }
+}
+f32a: 76.5755
+f64a: -2783.19
+
+I29393 2026-10-25 12:36:07.97893 capsule/by_hand_test.cc:820] Seed is 1652
+I29393 2026-10-25 12:36:07.97893 capsule/by_hand_test.cc:770] Capsule reports own size as: 528
+I29393 2026-10-25 12:36:07.97893 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97893 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97895 capsule/by_hand_test.cc:806] u64a: 12820253871209226329
+i64a: 415269794895859420
+u32a: 981167771
+i32a: -1352328442
+u16a: 44153
+i16a: -6012
+u8a: 48
+i8a: -77
+b1: 1
+vs1[] {
+  "=2WOUK@YO?UQ3MCID",
+  "X6Z;?Q;4T45YTCIJZPGTXS",
+  "W0R05DVWWK4B8UM?F",
+  "LQDUD2?LDVBFU>;:EX1CD2X",
+}
+sub1 {
+  u64a: 17406485938940779372
+  sub1 {
+    b1: 0
+    i1: 1948895171
+    s1: "7XLG>H055I3FGT16D<M6@X:"
+  }
+  vsub1[] {
+    b1: 0
+    i1: -904322726
+    s1: "O4>8HVNO;Y3REX4WQF8O<31PLK"
+  } {
+    b1: 0
+    i1: -820231018
+    s1: "2:65BKIF"
+  } {
+    b1: 1
+    i1: 988597527
+    s1: "E@AMHYTZN"
+  }
+}
+f32a: 76.7548
+f64a: -1840.96
+
+I29393 2026-10-25 12:36:07.97897 capsule/by_hand_test.cc:820] Seed is 3802
+I29393 2026-10-25 12:36:07.97897 capsule/by_hand_test.cc:770] Capsule reports own size as: 280
+I29393 2026-10-25 12:36:07.97897 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97897 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97898 capsule/by_hand_test.cc:806] u64a: 4095837837859446835
+i64a: -1252745316384422384
+u32a: 1941905165
+i32a: 1917958957
+u16a: 54338
+i16a: 13387
+u8a: 185
+i8a: -125
+b1: 0
+vs1[] {
+  "CE3;SI@41<ZGCIJ5",
+}
+sub1 {
+  u64a: 5844250840531983644
+  sub1 {
+    b1: 0
+    i1: -699556813
+    s1: "4=F<V0L06>NZE;GPFL>MBOH"
+  }
+}
+f32a: 23.5343
+f64a: 3647.82
+
+I29393 2026-10-25 12:36:07.97899 capsule/by_hand_test.cc:820] Seed is 20600
+I29393 2026-10-25 12:36:07.97899 capsule/by_hand_test.cc:770] Capsule reports own size as: 336
+I29393 2026-10-25 12:36:07.97899 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97899 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97900 capsule/by_hand_test.cc:806] u64a: 15128275155563241803
+i64a: -7407853227369649947
+u32a: 821031116
+i32a: -886356461
+u16a: 26815
+i16a: -21095
+u8a: 199
+i8a: 111
+b1: 0
+vs1[] {
+  "ZC0YZMXP;808J?YQTCEKV8=G?OCGXD?JO",
+  "5BN<HDYBT4O0JM<TIM:S4EK?@2",
+  "PYYABD257:VYRS8",
+}
+sub1 {
+  u64a: 17795180442528874004
+  sub1 {
+    b1: 0
+    i1: -390204455
+    s1: "NC0SVBS0TJ"
+  }
+}
+f32a: 89.2417
+f64a: 8115.32
+
+I29393 2026-10-25 12:36:07.97901 capsule/by_hand_test.cc:820] Seed is 36836
+I29393 2026-10-25 12:36:07.97901 capsule/by_hand_test.cc:770] Capsule reports own size as: 360
+I29393 2026-10-25 12:36:07.97901 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97901 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97903 capsule/by_hand_test.cc:806] u64a: 4249262228568500781
+i64a: -6419809503659415295
+u32a: 3000770199
+i32a: -53056348
+u16a: 51563
+i16a: 31360
+u8a: 104
+i8a: -52
+b1: 1
+vs1[] {
+  "AYZDSSJXR4PC0>LSURT1N;P2KL98V<6B7",
+  "BEPY70OJXE7K8BS64O1P",
+  "?L",
+  "T4R<739QBTQLX=XB8F3V9IMJO6S2A",
+}
+sub1 {
+  u64a: 15207117306926939631
+  sub1 {
+    b1: 0
+    i1: -880386574
+    s1: "SP>KTP1ZQO0T89"
+  }
+}
+f32a: 24.0513
+f64a: -6429.17
+
+I29393 2026-10-25 12:36:07.97903 capsule/by_hand_test.cc:820] Seed is 53400
+I29393 2026-10-25 12:36:07.97903 capsule/by_hand_test.cc:770] Capsule reports own size as: 464
+I29393 2026-10-25 12:36:07.97904 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97904 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97905 capsule/by_hand_test.cc:806] u64a: 2703679941732195908
+i64a: -4656063921502591572
+u32a: 1875201909
+i32a: -417733825
+u16a: 38612
+i16a: 8062
+u8a: 178
+i8a: 55
+b1: 0
+vs1[] {
+  "?A90CKM9GCT;P@NJUDSLDX2@",
+  "8MPK73@5HLE49VDV>8XPJ9X",
+  "EH",
+  "U><",
+}
+sub1 {
+  u64a: 14594302657254370591
+  sub1 {
+    b1: 0
+    i1: -858612820
+    s1: "G<W41Y7PDG5UHM<R9IPKICSZ3H"
+  }
+  vsub1[] {
+    b1: 0
+    i1: -2082474727
+    s1: "V1UZ8?KU;W@533A?W"
+  } {
+    b1: 1
+    i1: -877949116
+    s1: ">OEQO>LEGY0I;Z8MARLVPC<VGY1MO@N"
+  }
+}
+f32a: -86.7236
+f64a: 3767.47
+
+I29393 2026-10-25 12:36:07.97906 capsule/by_hand_test.cc:820] Seed is 34352
+I29393 2026-10-25 12:36:07.97906 capsule/by_hand_test.cc:770] Capsule reports own size as: 312
+I29393 2026-10-25 12:36:07.97907 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97907 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97908 capsule/by_hand_test.cc:806] u64a: 13207634921413227609
+i64a: 8191136581025181168
+u32a: 2458807794
+i32a: 1993115375
+u16a: 49736
+i16a: -3822
+u8a: 228
+i8a: -66
+b1: 0
+sub1 {
+  u64a: 8045199377032284992
+  sub1 {
+    b1: 1
+    i1: 819063315
+    s1: "KCNMXVFC<QZMW5Q6GLGDX8U@B@LXE7G"
+  }
+  vsub1[] {
+    b1: 1
+    i1: 1761976390
+    s1: "X44=N<0F8KJ"
+  }
+}
+f32a: -17.0695
+f64a: 8983.64
+
+I29393 2026-10-25 12:36:07.97913 capsule/by_hand_test.cc:820] Seed is 3366
+I29393 2026-10-25 12:36:07.97913 capsule/by_hand_test.cc:770] Capsule reports own size as: 432
+I29393 2026-10-25 12:36:07.97913 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97913 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97915 capsule/by_hand_test.cc:806] u64a: 11892633830902891578
+i64a: 8481207110135774093
+u32a: 4239113273
+i32a: 2084301504
+u16a: 4536
+i16a: 25024
+u8a: 42
+i8a: 2
+b1: 1
+vs1[] {
+  "7R=ZZ80V985NYU4FR",
+  "B<0==LJ8ZZAULWC<8VTS=6G:0",
+  "QFBODPX=HDKN3",
+  ">DUUZUBNUBY28I?@N9Y>B",
+}
+sub1 {
+  u64a: 9296273314647317529
+  sub1 {
+    b1: 1
+    i1: 1265863483
+    s1: "55VE0AK0>9A@8QS62@21ZFL6OTZ"
+  }
+  vsub1[] {
+    b1: 1
+    i1: -1880824831
+    s1: "2H8NORMJX;QU<AD31=W@?UMWQ0"
+  }
+}
+f32a: -24.1559
+f64a: 315.256
+
+I29393 2026-10-25 12:36:07.97916 capsule/by_hand_test.cc:820] Seed is 45620
+I29393 2026-10-25 12:36:07.97916 capsule/by_hand_test.cc:770] Capsule reports own size as: 440
+I29393 2026-10-25 12:36:07.97916 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97916 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97919 capsule/by_hand_test.cc:806] u64a: 1816012869405255533
+i64a: -68970254966310030
+u32a: 3121693955
+i32a: 1074825229
+u16a: 62107
+i16a: 25942
+u8a: 122
+i8a: -73
+b1: 1
+vs1[] {
+  "VCR5",
+  "P4Z=>LH",
+}
+sub1 {
+  u64a: 11611698579006901659
+  sub1 {
+    b1: 1
+    i1: 1101357914
+    s1: "B>CYKERY7XGLN<0"
+  }
+  vsub1[] {
+    b1: 0
+    i1: 1301021923
+    s1: "BZ5QUIB;UW>F:JJQOCR48LCEK9I85W8"
+  } {
+    b1: 0
+    i1: 25982439
+    s1: "0JNG7SLMQQI2F?"
+  } {
+    b1: 1
+    i1: -139831393
+    s1: "LW:Y"
+  }
+}
+f32a: 49.5723
+f64a: 2128.13
+
+I29393 2026-10-25 12:36:07.97921 capsule/by_hand_test.cc:820] Seed is 65006
+I29393 2026-10-25 12:36:07.97922 capsule/by_hand_test.cc:770] Capsule reports own size as: 408
+I29393 2026-10-25 12:36:07.97922 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97922 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97924 capsule/by_hand_test.cc:806] u64a: 13721019190456901242
+i64a: -1010703825236260231
+u32a: 2722397020
+i32a: -929156889
+u16a: 48056
+i16a: -17824
+u8a: 79
+i8a: -3
+b1: 1
+sub1 {
+  u64a: 10856974230654951159
+  sub1 {
+    b1: 1
+    i1: 1481848601
+    s1: "YV9XXWM"
+  }
+  vsub1[] {
+    b1: 0
+    i1: -582039929
+    s1: "TZ8P@839723O9B1@R"
+  } {
+    b1: 0
+    i1: 1658634194
+    s1: "EB19@750535J2H2FONPUED"
+  } {
+    b1: 0
+    i1: -896296617
+    s1: "ZIE3WSEXSNYF"
+  }
+}
+f32a: -13.9512
+f64a: -5376.1
+
+I29393 2026-10-25 12:36:07.97925 capsule/by_hand_test.cc:820] Seed is 7728
+I29393 2026-10-25 12:36:07.97925 capsule/by_hand_test.cc:770] Capsule reports own size as: 344
+I29393 2026-10-25 12:36:07.97925 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97925 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97927 capsule/by_hand_test.cc:806] u64a: 12494305934959535614
+i64a: -5491367043786868943
+u32a: 1763005737
+i32a: 348504031
+u16a: 17402
+i16a: 2128
+u8a: 132
+i8a: -86
+b1: 0
+vs1[] {
+  "RY4<PDBW88YRIUJ",
+  "1YBGKY;38P<ZI8@OGIYWNLA",
+  "23O6LG",
+  "IEX;VZ",
+}
+sub1 {
+  u64a: 14589138985744729981
+  sub1 {
+    b1: 1
+    i1: -1998685836
+    s1: "XNCWONJVR0GNYTT:H8;:P"
+  }
+}
+f32a: 49.3608
+f64a: -3048.12
+
+I29393 2026-10-25 12:36:07.97928 capsule/by_hand_test.cc:820] Seed is 34298
+I29393 2026-10-25 12:36:07.97928 capsule/by_hand_test.cc:770] Capsule reports own size as: 496
+I29393 2026-10-25 12:36:07.97928 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97928 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97930 capsule/by_hand_test.cc:806] u64a: 11501103923143731884
+i64a: -5360223344768540812
+u32a: 152770806
+i32a: -1932526070
+u16a: 60043
+i16a: -29648
+u8a: 111
+i8a: 110
+b1: 0
+vs1[] {
+  "1=;V3IDLYQ1<",
+  ":T9HYQ5QG1J=QPV9WX;=5GY=9:@JJBY2U",
+  "1",
+  "O:SU09WF",
+}
+sub1 {
+  u64a: 8680285293467373374
+  sub1 {
+    b1: 1
+    i1: -1906794671
+    s1: "2BUI:QI:P:40140CNCH=OI8TI?Y05X"
+  }
+  vsub1[] {
+    b1: 0
+    i1: 1659899862
+    s1: "IL"
+  } {
+    b1: 0
+    i1: -749665220
+    s1: "<@DPEYQ9:1@2H"
+  } {
+    b1: 1
+    i1: 669739753
+    s1: "FV:K=;BV;U81DC@5"
+  }
+}
+f32a: 64.8072
+f64a: -853.133
+
+I29393 2026-10-25 12:36:07.97931 capsule/by_hand_test.cc:820] Seed is 33620
+I29393 2026-10-25 12:36:07.97931 capsule/by_hand_test.cc:770] Capsule reports own size as: 344
+I29393 2026-10-25 12:36:07.97931 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97931 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97933 capsule/by_hand_test.cc:806] u64a: 18199959740380430566
+i64a: 3622567766996890187
+u32a: 1277359156
+i32a: 62931164
+u16a: 16061
+i16a: -22046
+u8a: 25
+i8a: 65
+b1: 1
+vs1[] {
+  "I005=8DZO7A5PX9KT",
+}
+sub1 {
+  u64a: 7524862375674401237
+  sub1 {
+    b1: 0
+    i1: -1442969432
+    s1: "FK5;ZH<CL:P:764HAO:>;<LT6J:"
+  }
+  vsub1[] {
+    b1: 0
+    i1: 1200271723
+    s1: "M=>7RI40Q61SPBXC8VZDB1W2<TDL"
+  }
+}
+f32a: -51.1557
+f64a: -4083.68
+
+I29393 2026-10-25 12:36:07.97934 capsule/by_hand_test.cc:820] Seed is 61878
+I29393 2026-10-25 12:36:07.97934 capsule/by_hand_test.cc:770] Capsule reports own size as: 336
+I29393 2026-10-25 12:36:07.97934 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97934 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97935 capsule/by_hand_test.cc:806] u64a: 10293868432658892225
+i64a: -5072987268878753731
+u32a: 968901966
+i32a: -1372955162
+u16a: 4401
+i16a: -8495
+u8a: 255
+i8a: 1
+b1: 0
+vs1[] {
+  "1H=FJPX2O",
+  "8NJST27OI3S2U6LAGQYBI:RKVUS",
+}
+sub1 {
+  u64a: 6422535705562170827
+  sub1 {
+    b1: 1
+    i1: 1984285331
+    s1: "W0FKNRTM46?MRD:;OG=@"
+  }
+  vsub1[] {
+    b1: 1
+    i1: -1038918938
+    s1: ">"
+  }
+}
+f32a: 34.2995
+f64a: 4640
+
+I29393 2026-10-25 12:36:07.97936 capsule/by_hand_test.cc:820] Seed is 24990
+I29393 2026-10-25 12:36:07.97936 capsule/by_hand_test.cc:770] Capsule reports own size as: 464
+I29393 2026-10-25 12:36:07.97937 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97937 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97939 capsule/by_hand_test.cc:806] u64a: 13092948745154331280
+i64a: 6196621927294723726
+u32a: 1980757243
+i32a: 1415382566
+u16a: 40254
+i16a: -605
+u8a: 51
+i8a: 97
+b1: 1
+vs1[] {
+  "XX?TM",
+  "9CQWX",
+  "2:1P",
+  "4JR;;E2<<",
+}
+sub1 {
+  u64a: 7674671845809746342
+  sub1 {
+    b1: 0
+    i1: 913424070
+    s1: "1F1H3VB7SG4U6UR"
+  }
+  vsub1[] {
+    b1: 1
+    i1: -349549730
+    s1: "=P07:MD13V;RMIPLRX1R@>CQDR5:Q1="
+  } {
+    b1: 1
+    i1: -1615608378
+    s1: "M"
+  } {
+    b1: 1
+    i1: -417623101
+    s1: "8M2HY?S"
+  }
+}
+f32a: -89.3289
+f64a: -9592.16
+
+I29393 2026-10-25 12:36:07.97940 capsule/by_hand_test.cc:820] Seed is 16452
+I29393 2026-10-25 12:36:07.97940 capsule/by_hand_test.cc:770] Capsule reports own size as: 544
+I29393 2026-10-25 12:36:07.97940 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97940 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97942 capsule/by_hand_test.cc:806] u64a: 6928455366843729784
+i64a: -6728192574670855697
+u32a: 3497142451
+i32a: 792945304
+u16a: 57558
+i16a: 7662
+u8a: 28
+i8a: -45
+b1: 1
+vs1[] {
+  "@BA7=XKDVK:ZB>DBA0DKX",
+  ":3UW",
+}
+sub1 {
+  u64a: 1991592848393401835
+  sub1 {
+    b1: 0
+    i1: 1240744297
+    s1: "EGCQ=R3TRFBQY04:VIX@0NF<S;5JLQ:P"
+  }
+  vsub1[] {
+    b1: 0
+    i1: -1935143159
+    s1: "UV2SDD:Q:B<GE36>@2T4W"
+  } {
+    b1: 1
+    i1: -2138633328
+    s1: "@GE0CX"
+  } {
+    b1: 1
+    i1: 1825382761
+    s1: "90V4W7SW0;B4WIOLXV"
+  } {
+    b1: 0
+    i1: -929605352
+    s1: "M4?QC8DX86X;9?S<8HB9RCHA?716A"
+  }
+}
+f32a: 88.6814
+f64a: -7023.05
+
+I29393 2026-10-25 12:36:07.97943 capsule/by_hand_test.cc:820] Seed is 18124
+I29393 2026-10-25 12:36:07.97943 capsule/by_hand_test.cc:770] Capsule reports own size as: 568
+I29393 2026-10-25 12:36:07.97943 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97944 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97946 capsule/by_hand_test.cc:806] u64a: 12309315341618239242
+i64a: -1348532104159164358
+u32a: 3004772781
+i32a: -1416204611
+u16a: 51066
+i16a: -16947
+u8a: 17
+i8a: -35
+b1: 0
+vs1[] {
+  "UZ2IN>1?58S2X=1RB1VZ9H5WDPTNW@",
+  "8T5V?0L==FK6<WFG6LZY31AWZ44;DD",
+}
+sub1 {
+  u64a: 11223724246071915756
+  sub1 {
+    b1: 1
+    i1: -767055925
+    s1: ":AJ1S?E?7M9750VUJNVHPTTC0I:FL>O0"
+  }
+  vsub1[] {
+    b1: 0
+    i1: 331140282
+    s1: "WS<8AKMC6JIAWZ>S;U03GB<7JP=R7"
+  } {
+    b1: 0
+    i1: -790838558
+    s1: "AM"
+  } {
+    b1: 1
+    i1: -1498549887
+    s1: "9F5M0WAMBOL;ROBER6O"
+  } {
+    b1: 1
+    i1: -1636689934
+    s1: "<7U@43QFISLH<>DCA0"
+  }
+}
+f32a: -62.0501
+f64a: 8132.48
+
+I29393 2026-10-25 12:36:07.97947 capsule/by_hand_test.cc:820] Seed is 21998
+I29393 2026-10-25 12:36:07.97947 capsule/by_hand_test.cc:770] Capsule reports own size as: 296
+I29393 2026-10-25 12:36:07.97947 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97947 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97949 capsule/by_hand_test.cc:806] u64a: 13923098847433944711
+i64a: -2950083592364906403
+u32a: 3603723694
+i32a: 593222424
+u16a: 64355
+i16a: -17671
+u8a: 246
+i8a: -114
+b1: 1
+sub1 {
+  u64a: 12765422239457747592
+  sub1 {
+    b1: 1
+    i1: -1226067188
+    s1: ">5?BKREJTWCYV@4PTPWLI3YI@ZS"
+  }
+  vsub1[] {
+    b1: 1
+    i1: 491684527
+    s1: "Z:"
+  }
+}
+f32a: -64.9709
+f64a: -2269.63
+
+I29393 2026-10-25 12:36:07.97949 capsule/by_hand_test.cc:820] Seed is 42878
+I29393 2026-10-25 12:36:07.97949 capsule/by_hand_test.cc:770] Capsule reports own size as: 504
+I29393 2026-10-25 12:36:07.97949 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97949 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97951 capsule/by_hand_test.cc:806] u64a: 6683412666578462084
+i64a: 6651706754866893463
+u32a: 2929488008
+i32a: -2004312447
+u16a: 36312
+i16a: -3383
+u8a: 139
+i8a: -2
+b1: 1
+sub1 {
+  u64a: 9280393290724138399
+  sub1 {
+    b1: 1
+    i1: 2124115232
+    s1: "C<==:;V=AX=@?VSYS7B6NRB7LJ;66<?N"
+  }
+  vsub1[] {
+    b1: 1
+    i1: -339204147
+    s1: "I1KSNVH<J3:LIRD6ZE3@JRXLRS0ID>G"
+  } {
+    b1: 0
+    i1: -986347094
+    s1: "IN>50:U<297"
+  } {
+    b1: 0
+    i1: -645202843
+    s1: "E2JMCC:DVB8E@:"
+  } {
+    b1: 1
+    i1: 568511421
+    s1: "S72QIS1=E;0<IUO09SJ6I;C"
+  }
+}
+f32a: -70.8375
+f64a: -7625.39
+
+I29393 2026-10-25 12:36:07.97953 capsule/by_hand_test.cc:820] Seed is 34408
+I29393 2026-10-25 12:36:07.97953 capsule/by_hand_test.cc:770] Capsule reports own size as: 504
+I29393 2026-10-25 12:36:07.97953 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97953 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97955 capsule/by_hand_test.cc:806] u64a: 9200158665955508054
+i64a: -5479543809338885438
+u32a: 1388792598
+i32a: 1654683184
+u16a: 29335
+i16a: 14126
+u8a: 176
+i8a: -62
+b1: 1
+sub1 {
+  u64a: 15124518918482255648
+  sub1 {
+    b1: 0
+    i1: 1056396970
+    s1: "R3ZB0CF5"
+  }
+  vsub1[] {
+    b1: 0
+    i1: -40903784
+    s1: "ZN426MG1M5A75OJWUT0OLCI5HC9GA4"
+  } {
+    b1: 0
+    i1: -1529082481
+    s1: "R7ON8RPEC;=:HHTX2NNXCJWK5O"
+  } {
+    b1: 1
+    i1: 1262441113
+    s1: ">X5A1CU@9WD91XMS?8X=L8LGCO9"
+  } {
+    b1: 0
+    i1: 141613458
+    s1: "O2<YPGRAQU71:L7?>GDQU"
+  }
+}
+f32a: -60.9053
+f64a: -3330.11
+
+I29393 2026-10-25 12:36:07.97956 capsule/by_hand_test.cc:820] Seed is 26836
+I29393 2026-10-25 12:36:07.97956 capsule/by_hand_test.cc:770] Capsule reports own size as: 280
+I29393 2026-10-25 12:36:07.97956 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97956 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97957 capsule/by_hand_test.cc:806] u64a: 18442582380411061118
+i64a: 6723719854554033834
+u32a: 3754160403
+i32a: -136928040
+u16a: 15376
+i16a: 850
+u8a: 96
+i8a: 122
+b1: 0
+vs1[] {
+  "A2L53=QHMCO",
+  "N4KH9G8TM@50MT:FE",
+}
+sub1 {
+  u64a: 8535249061876148278
+  sub1 {
+    b1: 0
+    i1: 421781114
+    s1: "L8?NCQ?@1GE"
+  }
+}
+f32a: -62.5813
+f64a: -6974.53
+
+I29393 2026-10-25 12:36:07.97958 capsule/by_hand_test.cc:820] Seed is 39330
+I29393 2026-10-25 12:36:07.97958 capsule/by_hand_test.cc:770] Capsule reports own size as: 384
+I29393 2026-10-25 12:36:07.97958 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97958 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97960 capsule/by_hand_test.cc:806] u64a: 91455808941600177
+i64a: -8994852251608167259
+u32a: 3421251847
+i32a: 1606707703
+u16a: 21647
+i16a: 1406
+u8a: 25
+i8a: 23
+b1: 0
+vs1[] {
+  "O",
+}
+sub1 {
+  u64a: 2370742873887576926
+  sub1 {
+    b1: 1
+    i1: 326282816
+    s1: "GC2;<3L"
+  }
+  vsub1[] {
+    b1: 0
+    i1: 289446701
+    s1: "NT6OU>3EX<;<E9PQK@7FD3J8=0SGG@"
+  } {
+    b1: 1
+    i1: -1015546669
+    s1: "3KOG68UEYO?YY@1;5DMD7L06"
+  }
+}
+f32a: -12.1915
+f64a: -8970.81
+
+I29393 2026-10-25 12:36:07.97961 capsule/by_hand_test.cc:820] Seed is 10542
+I29393 2026-10-25 12:36:07.97961 capsule/by_hand_test.cc:770] Capsule reports own size as: 400
+I29393 2026-10-25 12:36:07.97961 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97961 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97963 capsule/by_hand_test.cc:806] u64a: 17018388129169879455
+i64a: 2141427083339337930
+u32a: 1468842298
+i32a: -939847688
+u16a: 15564
+i16a: 30955
+u8a: 206
+i8a: 116
+b1: 0
+vs1[] {
+  "0MBZDB",
+  "O:L=?A85TFB8Z",
+}
+sub1 {
+  u64a: 17796088780286590281
+  sub1 {
+    b1: 0
+    i1: 831772384
+    s1: "GCD6V88W9WG0S1>H0RCH:@8ZIWZX"
+  }
+  vsub1[] {
+    b1: 0
+    i1: 2135738268
+    s1: "557@I8G"
+  } {
+    b1: 0
+    i1: 1348124699
+    s1: ";JYVL>HD:QV:;"
+  }
+}
+f32a: -13.0676
+f64a: 4671.44
+
+I29393 2026-10-25 12:36:07.97964 capsule/by_hand_test.cc:820] Seed is 47188
+I29393 2026-10-25 12:36:07.97964 capsule/by_hand_test.cc:770] Capsule reports own size as: 464
+I29393 2026-10-25 12:36:07.97964 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97964 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97966 capsule/by_hand_test.cc:806] u64a: 16554419005718665182
+i64a: -3003340374725571314
+u32a: 967714649
+i32a: -90078330
+u16a: 23653
+i16a: 31564
+u8a: 1
+i8a: 30
+b1: 0
+vs1[] {
+  "17L36H0@2HC865D7N",
+}
+sub1 {
+  u64a: 16887055016273212445
+  sub1 {
+    b1: 1
+    i1: -83826888
+    s1: "O9<ZM;IEMGGJW"
+  }
+  vsub1[] {
+    b1: 0
+    i1: 615538478
+    s1: "AE;@@S@QQL0K5SN6XW8EG@P"
+  } {
+    b1: 1
+    i1: -315221189
+    s1: "NEC"
+  } {
+    b1: 1
+    i1: -1979133956
+    s1: "@X6DFS0;J="
+  } {
+    b1: 1
+    i1: -780490326
+    s1: "<BC"
+  }
+}
+f32a: 76.3181
+f64a: -265.648
+
+I29393 2026-10-25 12:36:07.97967 capsule/by_hand_test.cc:820] Seed is 44142
+I29393 2026-10-25 12:36:07.97967 capsule/by_hand_test.cc:770] Capsule reports own size as: 280
+I29393 2026-10-25 12:36:07.97967 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97967 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97968 capsule/by_hand_test.cc:806] u64a: 6513390096544755446
+i64a: -627801813040500494
+u32a: 938343165
+i32a: 1290677532
+u16a: 57032
+i16a: 3001
+u8a: 122
+i8a: 102
+b1: 0
+vs1[] {
+  "9GMD@VJTGTS4Q0",
+}
+sub1 {
+  u64a: 8917064544294405096
+  sub1 {
+    b1: 1
+    i1: -210596542
+    s1: "ZFVEM0BMEKI1DN0Y<8:4A4ZI"
+  }
+}
+f32a: -3.57921
+f64a: -8153.56
+
+I29393 2026-10-25 12:36:07.97969 capsule/by_hand_test.cc:820] Seed is 54828
+I29393 2026-10-25 12:36:07.97969 capsule/by_hand_test.cc:770] Capsule reports own size as: 272
+I29393 2026-10-25 12:36:07.97969 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97969 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97971 capsule/by_hand_test.cc:806] u64a: 3053100567210961656
+i64a: -1486167490666122940
+u32a: 1829543569
+i32a: -33490328
+u16a: 5683
+i16a: 1359
+u8a: 38
+i8a: -74
+b1: 1
+vs1[] {
+  "U9J",
+}
+sub1 {
+  u64a: 6471557162840798990
+  sub1 {
+    b1: 1
+    i1: 1176817459
+    s1: "=A?DNT<N2I0G;ILNJR9YEOO2IE8G1X"
+  }
+}
+f32a: 34.646
+f64a: 6269.58
+
+I29393 2026-10-25 12:36:07.97971 capsule/by_hand_test.cc:820] Seed is 65074
+I29393 2026-10-25 12:36:07.97971 capsule/by_hand_test.cc:770] Capsule reports own size as: 320
+I29393 2026-10-25 12:36:07.97971 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97971 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97973 capsule/by_hand_test.cc:806] u64a: 7501041177655301888
+i64a: -8189287995941946725
+u32a: 3431742110
+i32a: -1261846160
+u16a: 53515
+i16a: -12871
+u8a: 98
+i8a: 30
+b1: 0
+vs1[] {
+  "U?>F3QGT?;AM0ENP",
+}
+sub1 {
+  u64a: 7543234044099999027
+  sub1 {
+    b1: 0
+    i1: -1941186891
+    s1: "FMI39MT8B7F1EAM>YUCMXMJL"
+  }
+  vsub1[] {
+    b1: 1
+    i1: 417584401
+    s1: "WA"
+  }
+}
+f32a: -68.4864
+f64a: -3037.89
+
+I29393 2026-10-25 12:36:07.97974 capsule/by_hand_test.cc:820] Seed is 21082
+I29393 2026-10-25 12:36:07.97974 capsule/by_hand_test.cc:770] Capsule reports own size as: 432
+I29393 2026-10-25 12:36:07.97974 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97974 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97976 capsule/by_hand_test.cc:806] u64a: 894098970601282156
+i64a: 2213741981901271189
+u32a: 4037345241
+i32a: -48582627
+u16a: 27385
+i16a: 26467
+u8a: 204
+i8a: -105
+b1: 1
+sub1 {
+  u64a: 9639997284245505795
+  sub1 {
+    b1: 1
+    i1: 1315903304
+    s1: "NK0NQK9QMD4MQQ8"
+  }
+  vsub1[] {
+    b1: 0
+    i1: 272044142
+    s1: "<@63L51?CZXR7I4H8:C"
+  } {
+    b1: 1
+    i1: 1140309783
+    s1: "L:NG<H>5PII=EPEQ932B<4@2HZ;C"
+  } {
+    b1: 0
+    i1: -1798207672
+    s1: "YG0PD>4P3UV?3LWDCEB2R:6"
+  }
+}
+f32a: 7.85791
+f64a: -6451.56
+
+I29393 2026-10-25 12:36:07.97977 capsule/by_hand_test.cc:820] Seed is 64932
+I29393 2026-10-25 12:36:07.97977 capsule/by_hand_test.cc:770] Capsule reports own size as: 560
+I29393 2026-10-25 12:36:07.97977 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97977 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97979 capsule/by_hand_test.cc:806] u64a: 7347604659455586899
+i64a: -2911729635511690412
+u32a: 1039197205
+i32a: 641990166
+u16a: 64766
+i16a: 19057
+u8a: 125
+i8a: -45
+b1: 0
+vs1[] {
+  "3B65FBCOMHSKO3X8OZE947088@",
+  "DULY6?I@W9M9I>RD>QVG5CPMLHY",
+  "0WRI1P@VKMQ==JUUCL2V>U9X6D<",
+  "F8G<0QS9?8GHF6I81?H",
+}
+sub1 {
+  u64a: 3514221084875330412
+  sub1 {
+    b1: 0
+    i1: -474453674
+    s1: "=O:W;TVHGQMQX;FK@NB3G?71"
+  }
+  vsub1[] {
+    b1: 0
+    i1: -223734636
+    s1: "4;SAXU@A?D<Q7"
+  } {
+    b1: 0
+    i1: 59463977
+    s1: "8Z0FIKYJP?MQMCPMSV"
+  } {
+    b1: 1
+    i1: 191629243
+    s1: "C:4:5QG3PWHRDD<XR5:L6LDT4KPLGP:"
+  }
+}
+f32a: 5.69198
+f64a: 180.761
+
+I29393 2026-10-25 12:36:07.97980 capsule/by_hand_test.cc:820] Seed is 59472
+I29393 2026-10-25 12:36:07.97980 capsule/by_hand_test.cc:770] Capsule reports own size as: 352
+I29393 2026-10-25 12:36:07.97980 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97980 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97981 capsule/by_hand_test.cc:806] u64a: 10251488952202670413
+i64a: 3299185424962847460
+u32a: 2687756320
+i32a: -1594866990
+u16a: 95
+i16a: 5338
+u8a: 219
+i8a: 11
+b1: 1
+vs1[] {
+  "?CFI634;N<IKR=3<9:0OY8;X2ZZS3EXN4",
+  "JO0XCI7J710W>@4FU>B;R9@02MUY",
+  "LTE7PR4FGNLRBD=",
+}
+sub1 {
+  u64a: 3007895527232223386
+  sub1 {
+    b1: 0
+    i1: 934860403
+    s1: "LAF8=TQ4NJOL=S5YA?YLME"
+  }
+}
+f32a: -45.4642
+f64a: -5139.35
+
+I29393 2026-10-25 12:36:07.97982 capsule/by_hand_test.cc:820] Seed is 11946
+I29393 2026-10-25 12:36:07.97982 capsule/by_hand_test.cc:770] Capsule reports own size as: 504
+I29393 2026-10-25 12:36:07.97982 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97982 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97985 capsule/by_hand_test.cc:806] u64a: 17007237578244749240
+i64a: 3382416964985912032
+u32a: 3359467306
+i32a: 871353287
+u16a: 22991
+i16a: 21112
+u8a: 131
+i8a: -63
+b1: 0
+vs1[] {
+  "4C4GC52SY9I8CJ<S:8OL58XXL;W1@52@",
+}
+sub1 {
+  u64a: 6946607269333848033
+  sub1 {
+    b1: 0
+    i1: 442764747
+    s1: "7@AID3:Q79BCHW5UCD?IB"
+  }
+  vsub1[] {
+    b1: 1
+    i1: 1850543023
+    s1: "VT8Z818J4"
+  } {
+    b1: 0
+    i1: 2044897239
+    s1: "J;?I8ABZD6="
+  } {
+    b1: 0
+    i1: 2106437641
+    s1: "LTXEH0BXLTRNUV2KHLE1WHR4G"
+  } {
+    b1: 0
+    i1: 695262525
+    s1: "?2L>ZT1XP5JE"
+  }
+}
+f32a: 62.0128
+f64a: -4759.68
+
+I29393 2026-10-25 12:36:07.97986 capsule/by_hand_test.cc:820] Seed is 32180
+I29393 2026-10-25 12:36:07.97986 capsule/by_hand_test.cc:770] Capsule reports own size as: 264
+I29393 2026-10-25 12:36:07.97986 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97987 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97988 capsule/by_hand_test.cc:806] u64a: 12364881254844481135
+i64a: -8364290791117072680
+u32a: 2867554819
+i32a: -226403640
+u16a: 22415
+i16a: -24237
+u8a: 43
+i8a: -47
+b1: 0
+vs1[] {
+  "6L9N3IHWJH:OM3DKW",
+}
+sub1 {
+  u64a: 11236521875808624452
+  sub1 {
+    b1: 0
+    i1: -1179430639
+    s1: "<<=G@5H>"
+  }
+}
+f32a: 82.9479
+f64a: 8339.24
+
+I29393 2026-10-25 12:36:07.97989 capsule/by_hand_test.cc:820] Seed is 47312
+I29393 2026-10-25 12:36:07.97989 capsule/by_hand_test.cc:770] Capsule reports own size as: 280
+I29393 2026-10-25 12:36:07.97989 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97989 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97990 capsule/by_hand_test.cc:806] u64a: 16828287494019183707
+i64a: -46331056848022388
+u32a: 1799940288
+i32a: 350493868
+u16a: 21501
+i16a: 28529
+u8a: 212
+i8a: 60
+b1: 1
+vs1[] {
+  "2QN5EG0ECRI2HI>I331;>C",
+}
+sub1 {
+  u64a: 12842813151130980123
+  sub1 {
+    b1: 1
+    i1: -1553468354
+    s1: ";DDHW7SP6=EAK>P>8="
+  }
+}
+f32a: -99.8473
+f64a: 8949.37
+
+I29393 2026-10-25 12:36:07.97991 capsule/by_hand_test.cc:820] Seed is 55930
+I29393 2026-10-25 12:36:07.97991 capsule/by_hand_test.cc:770] Capsule reports own size as: 320
+I29393 2026-10-25 12:36:07.97991 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97991 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97992 capsule/by_hand_test.cc:806] u64a: 9158639408650977322
+i64a: 5078287002111186136
+u32a: 4105658107
+i32a: -1772344420
+u16a: 47022
+i16a: 29776
+u8a: 95
+i8a: 5
+b1: 0
+vs1[] {
+  "6XNIFFR3?>E6IBRZ6837>ZBQR5BW",
+  "G07DP62FCSLY",
+  "Y@CB7@:F4<TC3JQQHBHEOIU",
+}
+sub1 {
+  u64a: 16420461656374022806
+  sub1 {
+    b1: 0
+    i1: -527648503
+    s1: "K9SU1?=BZ>"
+  }
+}
+f32a: -37.273
+f64a: 4437.57
+
+I29393 2026-10-25 12:36:07.97993 capsule/by_hand_test.cc:820] Seed is 4266
+I29393 2026-10-25 12:36:07.97993 capsule/by_hand_test.cc:770] Capsule reports own size as: 400
+I29393 2026-10-25 12:36:07.97993 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97993 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97995 capsule/by_hand_test.cc:806] u64a: 14691489008544999231
+i64a: 3067464112002697888
+u32a: 2174617870
+i32a: -572338201
+u16a: 24108
+i16a: -23583
+u8a: 208
+i8a: -53
+b1: 1
+sub1 {
+  u64a: 9305371906442750596
+  sub1 {
+    b1: 1
+    i1: 1075478012
+    s1: "YNB5FX<7G8NV9XB>"
+  }
+  vsub1[] {
+    b1: 0
+    i1: 1503517943
+    s1: "K="
+  } {
+    b1: 1
+    i1: 1840132640
+    s1: "0X6N@><XJ7EN17<IFHY78NSFLS0>"
+  } {
+    b1: 0
+    i1: -1975336475
+    s1: "JPGKOUBBJA"
+  }
+}
+f32a: 45.4624
+f64a: 4096.12
+
+I29393 2026-10-25 12:36:07.97996 capsule/by_hand_test.cc:820] Seed is 49534
+I29393 2026-10-25 12:36:07.97996 capsule/by_hand_test.cc:770] Capsule reports own size as: 416
+I29393 2026-10-25 12:36:07.97996 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97996 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.97998 capsule/by_hand_test.cc:806] u64a: 3706264207697555771
+i64a: -1916109450462396398
+u32a: 1588576284
+i32a: 1076952503
+u16a: 6048
+i16a: -28311
+u8a: 63
+i8a: 60
+b1: 0
+vs1[] {
+  "K=UFO",
+  "KXWS7WHW6B62A:38F6MQDIZCU:F3",
+  "",
+}
+sub1 {
+  u64a: 16018217923268518619
+  sub1 {
+    b1: 1
+    i1: -1663447556
+    s1: "QB66IY;6>;IH84=Z?1NBC6VEALM0"
+  }
+  vsub1[] {
+    b1: 1
+    i1: 1517714052
+    s1: ":Q=ZYDJSEF>Z"
+  } {
+    b1: 0
+    i1: -2071096618
+    s1: "?FJC3655MP1BN"
+  }
+}
+f32a: -64.7584
+f64a: 1307.67
+
+I29393 2026-10-25 12:36:07.97999 capsule/by_hand_test.cc:820] Seed is 23224
+I29393 2026-10-25 12:36:07.97999 capsule/by_hand_test.cc:770] Capsule reports own size as: 368
+I29393 2026-10-25 12:36:07.97999 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.97999 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98000 capsule/by_hand_test.cc:806] u64a: 136571845800608946
+i64a: 3084087537297259831
+u32a: 4027132982
+i32a: -984237316
+u16a: 53378
+i16a: -5626
+u8a: 65
+i8a: 59
+b1: 0
+vs1[] {
+  "PUOPQD?C4AQ<KXVI7?7WHZVA0W@5WBL",
+  "?TU",
+  "UGZC2<HPM7PY<2I8RZA@NO;;E",
+  "G9G3R2",
+}
+sub1 {
+  u64a: 16986059354544593825
+  sub1 {
+    b1: 0
+    i1: 317834088
+    s1: "X"
+  }
+  vsub1[] {
+    b1: 0
+    i1: 906569373
+    s1: "Q"
+  }
+}
+f32a: -44.0175
+f64a: 4166.8
+
+I29393 2026-10-25 12:36:07.98001 capsule/by_hand_test.cc:820] Seed is 54228
+I29393 2026-10-25 12:36:07.98001 capsule/by_hand_test.cc:770] Capsule reports own size as: 488
+I29393 2026-10-25 12:36:07.98001 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98001 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98003 capsule/by_hand_test.cc:806] u64a: 8691945569147853414
+i64a: 3573545672448947444
+u32a: 2819364065
+i32a: -877927746
+u16a: 12236
+i16a: -1589
+u8a: 245
+i8a: 123
+b1: 0
+vs1[] {
+  "S1C05IDOXWVSH<F;RZUJYWT",
+  "3J;61C=DVMRSIW0DRRPVB:KAL06L5",
+}
+sub1 {
+  u64a: 16565148957302406357
+  sub1 {
+    b1: 0
+    i1: -1283054339
+    s1: "8QZK???QI3<R::HECA?E"
+  }
+  vsub1[] {
+    b1: 1
+    i1: -1096734941
+    s1: "=DI0SC??8ZAAU4ZJIYRG>QNN"
+  } {
+    b1: 1
+    i1: 392391026
+    s1: ":WI>RD2?M1QV07R1<U"
+  } {
+    b1: 1
+    i1: 674599962
+    s1: "<XN18FW"
+  }
+}
+f32a: 60.3895
+f64a: 8036.83
+
+I29393 2026-10-25 12:36:07.98004 capsule/by_hand_test.cc:820] Seed is 41488
+I29393 2026-10-25 12:36:07.98004 capsule/by_hand_test.cc:770] Capsule reports own size as: 296
+I29393 2026-10-25 12:36:07.98005 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98005 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98006 capsule/by_hand_test.cc:806] u64a: 5851286264133569602
+i64a: 778513075544408086
+u32a: 3437421580
+i32a: 138577880
+u16a: 7860
+i16a: -14371
+u8a: 54
+i8a: -117
+b1: 0
+vs1[] {
+  ">AB;?C",
+  "1BJ=E3DZ6B6C:6",
+}
+sub1 {
+  u64a: 250559605146101633
+  sub1 {
+    b1: 0
+    i1: 113820861
+    s1: "5OXMMDLEHL11QDHWKUYQTNMZVA3O"
+  }
+}
+f32a: 97.9008
+f64a: 3824.19
+
+I29393 2026-10-25 12:36:07.98006 capsule/by_hand_test.cc:820] Seed is 54248
+I29393 2026-10-25 12:36:07.98007 capsule/by_hand_test.cc:770] Capsule reports own size as: 456
+I29393 2026-10-25 12:36:07.98007 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98007 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98008 capsule/by_hand_test.cc:806] u64a: 5570051989464538078
+i64a: 7594737054399944513
+u32a: 1177101052
+i32a: 1971845146
+u16a: 51809
+i16a: -21391
+u8a: 63
+i8a: -107
+b1: 0
+vs1[] {
+  "ZBCU0?I8LVT",
+  "IF4HDVRJQVA",
+  "L5Z0W6:TUU1@H;T2ZD",
+  "1T;RNU:Q8460<KD2Q?Y:<G3C4AAF",
+}
+sub1 {
+  u64a: 1173555225716828326
+  sub1 {
+    b1: 1
+    i1: 347334146
+    s1: "D6@ZMW37L:YRDM0N@LA@28VM7@="
+  }
+  vsub1[] {
+    b1: 0
+    i1: 77310637
+    s1: "C=HMW<"
+  } {
+    b1: 1
+    i1: -710169250
+    s1: "I14GCTL8<VZUTGKQEB9<G5D4>9"
+  }
+}
+f32a: 7.64402
+f64a: -871.983
+
+I29393 2026-10-25 12:36:07.98009 capsule/by_hand_test.cc:820] Seed is 32920
+I29393 2026-10-25 12:36:07.98010 capsule/by_hand_test.cc:770] Capsule reports own size as: 264
+I29393 2026-10-25 12:36:07.98010 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98010 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98011 capsule/by_hand_test.cc:806] u64a: 13898960427065193617
+i64a: 4585190216510380685
+u32a: 3314688574
+i32a: -1605062945
+u16a: 9944
+i16a: 25732
+u8a: 206
+i8a: 100
+b1: 0
+vs1[] {
+  "?LF1O;LW2IFP6UZ8MHS7>9",
+}
+sub1 {
+  u64a: 517468116822186560
+  sub1 {
+    b1: 1
+    i1: -2032806757
+    s1: ""
+  }
+}
+f32a: 4.89822
+f64a: 4685.6
+
+I29393 2026-10-25 12:36:07.98011 capsule/by_hand_test.cc:820] Seed is 41560
+I29393 2026-10-25 12:36:07.98012 capsule/by_hand_test.cc:770] Capsule reports own size as: 288
+I29393 2026-10-25 12:36:07.98012 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98012 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98013 capsule/by_hand_test.cc:806] u64a: 4306790574867970392
+i64a: -4230503225871901734
+u32a: 69284662
+i32a: -2052104661
+u16a: 43865
+i16a: 22648
+u8a: 221
+i8a: -25
+b1: 0
+sub1 {
+  u64a: 12920086614782342022
+  sub1 {
+    b1: 1
+    i1: -1554338366
+    s1: ""
+  }
+  vsub1[] {
+    b1: 0
+    i1: 1396770936
+    s1: "SZ0=9L:VEAY;FX@NEH5"
+  }
+}
+f32a: -6.22359
+f64a: 817.328
+
+I29393 2026-10-25 12:36:07.98014 capsule/by_hand_test.cc:820] Seed is 60076
+I29393 2026-10-25 12:36:07.98014 capsule/by_hand_test.cc:770] Capsule reports own size as: 488
+I29393 2026-10-25 12:36:07.98014 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98014 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98016 capsule/by_hand_test.cc:806] u64a: 10546986849899743203
+i64a: 2517372718540194861
+u32a: 2222333567
+i32a: -1011087266
+u16a: 64245
+i16a: -1000
+u8a: 48
+i8a: -62
+b1: 1
+vs1[] {
+  ":LVJVTPHD453=",
+  "TI",
+  "J7H1W;F0E0S7CIHK;>A1W6",
+}
+sub1 {
+  u64a: 5517543420967421791
+  sub1 {
+    b1: 1
+    i1: -188257789
+    s1: "=LY9Z6V683KS>V>BQS98A>"
+  }
+  vsub1[] {
+    b1: 0
+    i1: -1262276741
+    s1: "IWU;OA1KL1DVCYEN0N0M8S"
+  } {
+    b1: 0
+    i1: -1893262461
+    s1: ">04V7UH6KTMDJ243KTVVR<Y"
+  } {
+    b1: 0
+    i1: 1648591097
+    s1: "4K?E"
+  }
+}
+f32a: -24.3628
+f64a: 5212.64
+
+I29393 2026-10-25 12:36:07.98017 capsule/by_hand_test.cc:820] Seed is 46398
+I29393 2026-10-25 12:36:07.98017 capsule/by_hand_test.cc:770] Capsule reports own size as: 352
+I29393 2026-10-25 12:36:07.98017 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98017 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98020 capsule/by_hand_test.cc:806] u64a: 15685077041615193135
+i64a: -7471072208458916305
+u32a: 2040720518
+i32a: -1302401459
+u16a: 42480
+i16a: 1252
+u8a: 82
+i8a: -65
+b1: 1
+vs1[] {
+  "M@8CZ4RFDB:>U@G",
+  "K5UJ4E1G4RR5HQSXK?A3P@SSS6PJ",
+  ";VG;9SLS?:GCUH",
+  "S2OGW1B",
+}
+sub1 {
+  u64a: 533684131507773044
+  sub1 {
+    b1: 0
+    i1: 573087103
+    s1: "NF8>7IUY9F7EM>U@KUX1SH"
+  }
+}
+f32a: 76.5393
+f64a: -1730.04
+
+I29393 2026-10-25 12:36:07.98021 capsule/by_hand_test.cc:820] Seed is 49092
+I29393 2026-10-25 12:36:07.98021 capsule/by_hand_test.cc:770] Capsule reports own size as: 472
+I29393 2026-10-25 12:36:07.98021 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98021 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98023 capsule/by_hand_test.cc:806] u64a: 22527003904941933
+i64a: -20243634211577850
+u32a: 857114726
+i32a: 371483888
+u16a: 54920
+i16a: -1825
+u8a: 163
+i8a: 66
+b1: 0
+vs1[] {
+  "YDQY7CS7Z5YD3P5K3BR:>@K;X:T3;",
+  "S>1QJQEB@0ZIHC9086<Q",
+  "B09UOOO3XT30OKFMB>D",
+  "14LHQ4J1F",
+}
+sub1 {
+  u64a: 12396023744067027160
+  sub1 {
+    b1: 0
+    i1: 762981443
+    s1: "6PPS;AZLS=WEZ>Z@BTOZWRZN0C"
+  }
+  vsub1[] {
+    b1: 1
+    i1: 1766240343
+    s1: "IO8RWUE7R1SQB"
+  } {
+    b1: 1
+    i1: 2027934671
+    s1: "QTDCN5EE@S80V0<<AT4"
+  }
+}
+f32a: -2.01752
+f64a: -3111.02
+
+I29393 2026-10-25 12:36:07.98024 capsule/by_hand_test.cc:820] Seed is 42998
+I29393 2026-10-25 12:36:07.98024 capsule/by_hand_test.cc:770] Capsule reports own size as: 416
+I29393 2026-10-25 12:36:07.98024 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98024 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98026 capsule/by_hand_test.cc:806] u64a: 3205653884098857333
+i64a: -1918332705955010156
+u32a: 3781453784
+i32a: 1497136645
+u16a: 6609
+i16a: -20627
+u8a: 168
+i8a: -8
+b1: 1
+sub1 {
+  u64a: 8879753807467058747
+  sub1 {
+    b1: 1
+    i1: 1098025117
+    s1: "1RDVSUVM=DYBXKS;KA2FVSQ"
+  }
+  vsub1[] {
+    b1: 0
+    i1: -1355021884
+    s1: ""
+  } {
+    b1: 0
+    i1: 1167893687
+    s1: "KX0@>@2@1P0KLC9C68PF7K6<4T@6PEZ"
+  } {
+    b1: 0
+    i1: -1725966196
+    s1: "LA:V>LY1"
+  }
+}
+f32a: -53.6897
+f64a: 4607.19
+
+I29393 2026-10-25 12:36:07.98027 capsule/by_hand_test.cc:820] Seed is 27636
+I29393 2026-10-25 12:36:07.98027 capsule/by_hand_test.cc:770] Capsule reports own size as: 288
+I29393 2026-10-25 12:36:07.98027 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98027 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98029 capsule/by_hand_test.cc:806] u64a: 4445722219996373821
+i64a: -1722433388865949769
+u32a: 3503546454
+i32a: 29932704
+u16a: 23598
+i16a: -21695
+u8a: 204
+i8a: 16
+b1: 0
+sub1 {
+  u64a: 6608782104285579545
+  sub1 {
+    b1: 1
+    i1: 1220061518
+    s1: "GJB"
+  }
+  vsub1[] {
+    b1: 0
+    i1: 463310245
+    s1: "4@XQI=XQNZ5ZDE"
+  }
+}
+f32a: 55.4311
+f64a: -6105.91
+
+I29393 2026-10-25 12:36:07.98029 capsule/by_hand_test.cc:820] Seed is 48962
+I29393 2026-10-25 12:36:07.98030 capsule/by_hand_test.cc:770] Capsule reports own size as: 416
+I29393 2026-10-25 12:36:07.98030 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98030 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98031 capsule/by_hand_test.cc:806] u64a: 14041822937506360097
+i64a: -3184817163743995872
+u32a: 2782652325
+i32a: -1293313903
+u16a: 23379
+i16a: -23018
+u8a: 113
+i8a: -4
+b1: 1
+vs1[] {
+  "MPBCLNUHA;6",
+  "MJ9M5WV2GN",
+  ">;IU<98?G3>RV?1N8MA2>WTJ7?U7D:H",
+  "70YOW0BQ04?TZLLF=GU6SA8R",
+}
+sub1 {
+  u64a: 17970088493683160044
+  sub1 {
+    b1: 0
+    i1: -2046213054
+    s1: "=HNT7F?LSAUXM>B;6QGMOU"
+  }
+  vsub1[] {
+    b1: 1
+    i1: 333747693
+    s1: ":HWNZ6<J4IPZ:;:"
+  }
+}
+f32a: 70.3265
+f64a: -1466
+
+I29393 2026-10-25 12:36:07.98032 capsule/by_hand_test.cc:820] Seed is 15932
+I29393 2026-10-25 12:36:07.98032 capsule/by_hand_test.cc:770] Capsule reports own size as: 384
+I29393 2026-10-25 12:36:07.98032 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98032 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98034 capsule/by_hand_test.cc:806] u64a: 10989352625778339672
+i64a: -3286984877862053571
+u32a: 2830054303
+i32a: -851832845
+u16a: 44039
+i16a: 25285
+u8a: 182
+i8a: 121
+b1: 1
+vs1[] {
+  "D8MN2Q5@K>IJ:ZT@G<",
+}
+sub1 {
+  u64a: 5322121764921974337
+  sub1 {
+    b1: 0
+    i1: -921225663
+    s1: "FTZ4MCZRJVUVLUOJU7I><QHES7"
+  }
+  vsub1[] {
+    b1: 0
+    i1: 63320889
+    s1: "F0Z><ER=N<PJIPEDW=M>1>3I"
+  } {
+    b1: 1
+    i1: 1246224484
+    s1: "JN8="
+  }
+}
+f32a: 22.9927
+f64a: -6381.16
+
+I29393 2026-10-25 12:36:07.98035 capsule/by_hand_test.cc:820] Seed is 53048
+I29393 2026-10-25 12:36:07.98035 capsule/by_hand_test.cc:770] Capsule reports own size as: 384
+I29393 2026-10-25 12:36:07.98035 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98035 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98037 capsule/by_hand_test.cc:806] u64a: 2272786852215285363
+i64a: 2818716853280625408
+u32a: 539871254
+i32a: 29874503
+u16a: 37342
+i16a: 31228
+u8a: 25
+i8a: 11
+b1: 0
+vs1[] {
+  "YR=C@OI1U6D9:INJ?;??=IX=PB",
+  "V9QWEOHX;BQRZGI<N:QR5:IRWVLM:TXT",
+  "V8Q@4IAEXZD5T9G1OFKOXY3F2:",
+}
+sub1 {
+  u64a: 578784060868382675
+  sub1 {
+    b1: 0
+    i1: -1629289267
+    s1: ""
+  }
+  vsub1[] {
+    b1: 0
+    i1: -1948618751
+    s1: "8YW6W436L2TN"
+  }
+}
+f32a: -74.3009
+f64a: -8728.92
+
+I29393 2026-10-25 12:36:07.98037 capsule/by_hand_test.cc:820] Seed is 17596
+I29393 2026-10-25 12:36:07.98038 capsule/by_hand_test.cc:770] Capsule reports own size as: 328
+I29393 2026-10-25 12:36:07.98038 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98038 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98039 capsule/by_hand_test.cc:806] u64a: 16643049640593242327
+i64a: 1755236010382821850
+u32a: 1072079284
+i32a: -1809925650
+u16a: 20080
+i16a: -6221
+u8a: 14
+i8a: -94
+b1: 1
+vs1[] {
+  "RC>0Y2JG>P>OSKKLXM7@>6T<O:",
+}
+sub1 {
+  u64a: 6426405512213035752
+  sub1 {
+    b1: 1
+    i1: 114223527
+    s1: ">I5ILIYAC=V;P@QQ34=E"
+  }
+  vsub1[] {
+    b1: 0
+    i1: -1627634876
+    s1: "9LB9K"
+  }
+}
+f32a: -6.89118
+f64a: 3688.82
+
+I29393 2026-10-25 12:36:07.98040 capsule/by_hand_test.cc:820] Seed is 40258
+I29393 2026-10-25 12:36:07.98040 capsule/by_hand_test.cc:770] Capsule reports own size as: 248
+I29393 2026-10-25 12:36:07.98040 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98040 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98041 capsule/by_hand_test.cc:806] u64a: 1256784279023108641
+i64a: 7421585916288029001
+u32a: 2447648769
+i32a: -933299277
+u16a: 19187
+i16a: 11751
+u8a: 105
+i8a: -108
+b1: 1
+sub1 {
+  u64a: 6483316696271083128
+  sub1 {
+    b1: 0
+    i1: -1367091808
+    s1: "IEO?H6Y:SZVA8VOQR9EO"
+  }
+}
+f32a: 49.3521
+f64a: -9228.7
+
+I29393 2026-10-25 12:36:07.98042 capsule/by_hand_test.cc:820] Seed is 46478
+I29393 2026-10-25 12:36:07.98042 capsule/by_hand_test.cc:770] Capsule reports own size as: 504
+I29393 2026-10-25 12:36:07.98042 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98042 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98044 capsule/by_hand_test.cc:806] u64a: 16593402038571857341
+i64a: -2096009515338141748
+u32a: 2291924997
+i32a: -1386075046
+u16a: 37500
+i16a: 26397
+u8a: 43
+i8a: -49
+b1: 0
+vs1[] {
+  "5VZ4P",
+  "4Y1Q2L50M6>IR?KY:PQQBYG",
+}
+sub1 {
+  u64a: 8913913025206681319
+  sub1 {
+    b1: 1
+    i1: 2069798508
+    s1: "WSH"
+  }
+  vsub1[] {
+    b1: 0
+    i1: -1747013237
+    s1: "NWI<S72TJZTCP2HNP?U"
+  } {
+    b1: 0
+    i1: 1058501838
+    s1: "H"
+  } {
+    b1: 1
+    i1: 1042242039
+    s1: "?DYHPGE7>9J69@<"
+  } {
+    b1: 1
+    i1: -42093272
+    s1: "TCZ=ERC82TF?W3CR<S<CYTB675CTI"
+  }
+}
+f32a: 21.4602
+f64a: 9701.35
+
+I29393 2026-10-25 12:36:07.98045 capsule/by_hand_test.cc:820] Seed is 45380
+I29393 2026-10-25 12:36:07.98045 capsule/by_hand_test.cc:770] Capsule reports own size as: 448
+I29393 2026-10-25 12:36:07.98046 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98046 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98047 capsule/by_hand_test.cc:806] u64a: 5126415900097513777
+i64a: 3576720985747632793
+u32a: 1331694297
+i32a: 635879603
+u16a: 27625
+i16a: 28620
+u8a: 65
+i8a: -89
+b1: 1
+vs1[] {
+  "0:D=YDMP<SH",
+  "2IKMXDJPO:GDHRX1X",
+  "H1406D<N<74UT:4?",
+}
+sub1 {
+  u64a: 13212684312071938901
+  sub1 {
+    b1: 0
+    i1: -1307097177
+    s1: "4@RWBJ:"
+  }
+  vsub1[] {
+    b1: 0
+    i1: 613569124
+    s1: "4V?ZP?H6W8?>F51L2J:D8?BD14ER>CQRP"
+  } {
+    b1: 0
+    i1: 1468049411
+    s1: "X9ADJ2<99NCXPI71BSGYQA7HB:;W@OD"
+  }
+}
+f32a: -72.1312
+f64a: 1699.02
+
+I29393 2026-10-25 12:36:07.98048 capsule/by_hand_test.cc:820] Seed is 21200
+I29393 2026-10-25 12:36:07.98048 capsule/by_hand_test.cc:770] Capsule reports own size as: 392
+I29393 2026-10-25 12:36:07.98048 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98048 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98050 capsule/by_hand_test.cc:806] u64a: 10146756794512293093
+i64a: 4772028978834033663
+u32a: 1768610835
+i32a: 355334259
+u16a: 34127
+i16a: 23626
+u8a: 52
+i8a: 86
+b1: 1
+vs1[] {
+  "UXY4:HO2P6Y5AQLN>QT7@5=<H?2C?JR91",
+  "2RA0TG1@6Q2V9>>8HIA1A",
+}
+sub1 {
+  u64a: 13844214848581558892
+  sub1 {
+    b1: 0
+    i1: -2109605516
+    s1: "W8JPX<TF408I24<OD=?;S"
+  }
+  vsub1[] {
+    b1: 0
+    i1: 193109989
+    s1: "KXU8W9HS?:KA?>H:K<Y1MZ;M"
+  }
+}
+f32a: 33.8632
+f64a: 761.301
+
+I29393 2026-10-25 12:36:07.98051 capsule/by_hand_test.cc:820] Seed is 46672
+I29393 2026-10-25 12:36:07.98051 capsule/by_hand_test.cc:770] Capsule reports own size as: 488
+I29393 2026-10-25 12:36:07.98051 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98051 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98053 capsule/by_hand_test.cc:806] u64a: 5162631542089836500
+i64a: 7437664960192927345
+u32a: 2959662945
+i32a: 876403830
+u16a: 16812
+i16a: -8069
+u8a: 19
+i8a: -126
+b1: 1
+sub1 {
+  u64a: 13245066859485090800
+  sub1 {
+    b1: 1
+    i1: 1442883269
+    s1: "TJI490Z1S8E<036W9XSA8?1"
+  }
+  vsub1[] {
+    b1: 1
+    i1: 726021363
+    s1: "F<;T5PU3T82N24J<E<IPD8NT6SS4Z00<"
+  } {
+    b1: 0
+    i1: 1386221128
+    s1: "=R1L35?NKMCHQ8T4B2M=IC648?6N?YH="
+  } {
+    b1: 0
+    i1: 2097953764
+    s1: ""
+  } {
+    b1: 1
+    i1: -1787199732
+    s1: "UOBYO"
+  }
+}
+f32a: 36.2778
+f64a: 1166.94
+
+I29393 2026-10-25 12:36:07.98054 capsule/by_hand_test.cc:820] Seed is 39366
+I29393 2026-10-25 12:36:07.98054 capsule/by_hand_test.cc:770] Capsule reports own size as: 464
+I29393 2026-10-25 12:36:07.98054 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98054 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98056 capsule/by_hand_test.cc:806] u64a: 12528125207593200671
+i64a: 634025299109975316
+u32a: 2280980047
+i32a: -1249780779
+u16a: 36099
+i16a: -694
+u8a: 16
+i8a: 19
+b1: 0
+vs1[] {
+  "0LIY7Y969XMS;J0?ZCG:8<SA92",
+  "A946XFR9ECJ9AB4>3GI",
+}
+sub1 {
+  u64a: 10089983294621450134
+  sub1 {
+    b1: 1
+    i1: -1326178152
+    s1: "7J962DG8T>?UZ"
+  }
+  vsub1[] {
+    b1: 0
+    i1: -1971245336
+    s1: ">P2I5DW93"
+  } {
+    b1: 0
+    i1: 605926868
+    s1: "?U015;Y7?@G84HR<B3SLYG2ZU07?476Z="
+  } {
+    b1: 0
+    i1: -1702592843
+    s1: ">S3F"
+  }
+}
+f32a: 84.4616
+f64a: 2134.76
+
+I29393 2026-10-25 12:36:07.98057 capsule/by_hand_test.cc:820] Seed is 26242
+I29393 2026-10-25 12:36:07.98057 capsule/by_hand_test.cc:770] Capsule reports own size as: 424
+I29393 2026-10-25 12:36:07.98057 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98057 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98059 capsule/by_hand_test.cc:806] u64a: 12426903884755070901
+i64a: -4985596437501596537
+u32a: 2932737192
+i32a: 6460175
+u16a: 33909
+i16a: 23545
+u8a: 234
+i8a: -66
+b1: 1
+vs1[] {
+  "D8=96Q;PDTHNS@KZ3U8R",
+  "=22KZXL",
+  "FTHZJLFZWF?KR1YH6L=30?<M@P;048O",
+}
+sub1 {
+  u64a: 15321045078330754816
+  sub1 {
+    b1: 1
+    i1: 739687779
+    s1: ";EH>>H1UJFPUD0QSD"
+  }
+  vsub1[] {
+    b1: 0
+    i1: -1987302638
+    s1: ":<RC67BSNA9W;2JK9D"
+  } {
+    b1: 1
+    i1: 424928874
+    s1: ""
+  }
+}
+f32a: 81.0337
+f64a: -2190.86
+
+I29393 2026-10-25 12:36:07.98060 capsule/by_hand_test.cc:820] Seed is 1434
+I29393 2026-10-25 12:36:07.98060 capsule/by_hand_test.cc:770] Capsule reports own size as: 344
+I29393 2026-10-25 12:36:07.98060 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98060 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98062 capsule/by_hand_test.cc:806] u64a: 14347998024779348391
+i64a: 4115039042092903585
+u32a: 3966626059
+i32a: -2095029387
+u16a: 38309
+i16a: -12633
+u8a: 98
+i8a: -77
+b1: 1
+vs1[] {
+  "UBDWGWMF",
+}
+sub1 {
+  u64a: 9701355235867008379
+  sub1 {
+    b1: 1
+    i1: -104397777
+    s1: "IOWQ608E80NEB:MZ>7X7TP3AKKL9"
+  }
+  vsub1[] {
+    b1: 0
+    i1: 601657390
+    s1: "C=:WNJGT50:7RA3N47099EYS7VEKS"
+  }
+}
+f32a: 40.197
+f64a: -5005.07
+
+I29393 2026-10-25 12:36:07.98063 capsule/by_hand_test.cc:820] Seed is 25888
+I29393 2026-10-25 12:36:07.98063 capsule/by_hand_test.cc:770] Capsule reports own size as: 336
+I29393 2026-10-25 12:36:07.98063 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98063 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98064 capsule/by_hand_test.cc:806] u64a: 11123163719492855915
+i64a: -4978288598283496006
+u32a: 2873744196
+i32a: -394770559
+u16a: 54754
+i16a: 16732
+u8a: 162
+i8a: 101
+b1: 0
+vs1[] {
+  "8J3E<ST3EVX5T:5A=VCV>F",
+  "D4",
+}
+sub1 {
+  u64a: 280910596718806219
+  sub1 {
+    b1: 0
+    i1: -471984125
+    s1: "4816I?B2L?4GQKA;>??P>VXQ"
+  }
+  vsub1[] {
+    b1: 1
+    i1: -703923382
+    s1: "9H?"
+  }
+}
+f32a: 16.0345
+f64a: -109.455
+
+I29393 2026-10-25 12:36:07.98065 capsule/by_hand_test.cc:820] Seed is 52168
+I29393 2026-10-25 12:36:07.98065 capsule/by_hand_test.cc:770] Capsule reports own size as: 248
+I29393 2026-10-25 12:36:07.98065 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98065 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98066 capsule/by_hand_test.cc:806] u64a: 17523070799247323484
+i64a: -6895948022159852137
+u32a: 490254705
+i32a: 2043605621
+u16a: 4812
+i16a: 16951
+u8a: 68
+i8a: -103
+b1: 1
+sub1 {
+  u64a: 235483275708143490
+  sub1 {
+    b1: 0
+    i1: 1385741084
+    s1: "SPV8J8MYTWEMV>9WBY6@"
+  }
+}
+f32a: -4.21595
+f64a: 5026.78
+
+I29393 2026-10-25 12:36:07.98067 capsule/by_hand_test.cc:820] Seed is 59540
+I29393 2026-10-25 12:36:07.98067 capsule/by_hand_test.cc:770] Capsule reports own size as: 424
+I29393 2026-10-25 12:36:07.98067 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98067 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98069 capsule/by_hand_test.cc:806] u64a: 3275977414962319090
+i64a: -1816808177922970563
+u32a: 3934212234
+i32a: -2001870951
+u16a: 17479
+i16a: -9947
+u8a: 70
+i8a: -54
+b1: 1
+sub1 {
+  u64a: 9917913306418297884
+  sub1 {
+    b1: 1
+    i1: 329319876
+    s1: "G8DL8<VV8J"
+  }
+  vsub1[] {
+    b1: 0
+    i1: 175028797
+    s1: "O<I>TC1ENU@9"
+  } {
+    b1: 1
+    i1: -1092501225
+    s1: "M;=PEG<2TW4W"
+  } {
+    b1: 1
+    i1: 1826895114
+    s1: "AQD5GN1"
+  } {
+    b1: 1
+    i1: 1135283534
+    s1: ""
+  }
+}
+f32a: 18.2309
+f64a: -6221.47
+
+I29393 2026-10-25 12:36:07.98070 capsule/by_hand_test.cc:820] Seed is 48196
+I29393 2026-10-25 12:36:07.98070 capsule/by_hand_test.cc:770] Capsule reports own size as: 432
+I29393 2026-10-25 12:36:07.98070 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98070 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98072 capsule/by_hand_test.cc:806] u64a: 5555180045606866269
+i64a: 1836632241128406249
+u32a: 2682793419
+i32a: 1855941007
+u16a: 48299
+i16a: 2894
+u8a: 239
+i8a: -128
+b1: 0
+sub1 {
+  u64a: 15259974840926039987
+  sub1 {
+    b1: 0
+    i1: 1461658136
+    s1: "DEEY52HLZ99"
+  }
+  vsub1[] {
+    b1: 1
+    i1: 648491872
+    s1: "C==3Y5TSOVYQBZL;B9DIFRI5YL7H"
+  } {
+    b1: 1
+    i1: 669597697
+    s1: "FIJMBRXL6CMSTM0W"
+  } {
+    b1: 1
+    i1: 2068323185
+    s1: "SQFUV22BOSWSP0S@CN8H?7Z7S4I:CEGR"
+  }
+}
+f32a: -60.789
+f64a: 2280.64
+
+I29393 2026-10-25 12:36:07.98073 capsule/by_hand_test.cc:820] Seed is 25564
+I29393 2026-10-25 12:36:07.98073 capsule/by_hand_test.cc:770] Capsule reports own size as: 304
+I29393 2026-10-25 12:36:07.98073 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98073 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98075 capsule/by_hand_test.cc:806] u64a: 13262672381758989426
+i64a: 6539257832859479458
+u32a: 4034771186
+i32a: -114038290
+u16a: 49963
+i16a: 8836
+u8a: 154
+i8a: 13
+b1: 0
+vs1[] {
+  "7RCWRY8>",
+  "J1=U7H=M1J7<V;",
+  "V7BY9G<QLLAP;X@TX=V",
+}
+sub1 {
+  u64a: 460350290379935732
+  sub1 {
+    b1: 1
+    i1: 95801399
+    s1: "EL26EFL"
+  }
+}
+f32a: 12.8049
+f64a: 9956.63
+
+I29393 2026-10-25 12:36:07.98076 capsule/by_hand_test.cc:820] Seed is 2236
+I29393 2026-10-25 12:36:07.98076 capsule/by_hand_test.cc:770] Capsule reports own size as: 480
+I29393 2026-10-25 12:36:07.98076 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98076 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98078 capsule/by_hand_test.cc:806] u64a: 8885149322655223705
+i64a: -1000057638664880124
+u32a: 3539526530
+i32a: -526294414
+u16a: 32800
+i16a: -22624
+u8a: 228
+i8a: 19
+b1: 1
+vs1[] {
+  "HD@NCH",
+  ";97ZO1HMOXU3G@",
+}
+sub1 {
+  u64a: 13679551104251457202
+  sub1 {
+    b1: 0
+    i1: -1257393055
+    s1: "H0A<HG2XI382O8Q8:G>"
+  }
+  vsub1[] {
+    b1: 1
+    i1: -1931611751
+    s1: "UA56E9KHLC<MP6CI750NNQ:WGKWN2I7T"
+  } {
+    b1: 1
+    i1: 1442221834
+    s1: "<WED?AARIG<ZT4>?L@>W2D0C9"
+  } {
+    b1: 1
+    i1: 1594299964
+    s1: "WW63S:>RI?6MI"
+  }
+}
+f32a: 67.7161
+f64a: -8627.92
+
+I29393 2026-10-25 12:36:07.98080 capsule/by_hand_test.cc:820] Seed is 59746
+I29393 2026-10-25 12:36:07.98080 capsule/by_hand_test.cc:770] Capsule reports own size as: 312
+I29393 2026-10-25 12:36:07.98080 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98080 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98081 capsule/by_hand_test.cc:806] u64a: 1357228790099641815
+i64a: 8363879558748357054
+u32a: 886239293
+i32a: -1876670461
+u16a: 6509
+i16a: -27860
+u8a: 174
+i8a: 21
+b1: 0
+vs1[] {
+  ">FLXS<YG>Z6OIH",
+  "7>X8T1;?62IJ?Q",
+  "3><C4",
+  "",
+}
+sub1 {
+  u64a: 7500965516619609064
+  sub1 {
+    b1: 1
+    i1: 1586810988
+    s1: "O9DMC0"
+  }
+}
+f32a: 4.2729
+f64a: 6655.7
+
+I29393 2026-10-25 12:36:07.98082 capsule/by_hand_test.cc:820] Seed is 10746
+I29393 2026-10-25 12:36:07.98082 capsule/by_hand_test.cc:770] Capsule reports own size as: 384
+I29393 2026-10-25 12:36:07.98082 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98082 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98084 capsule/by_hand_test.cc:806] u64a: 18156019752233220098
+i64a: 312931605226714476
+u32a: 407837634
+i32a: 844295438
+u16a: 13152
+i16a: 9596
+u8a: 125
+i8a: 12
+b1: 1
+vs1[] {
+  "GEX;?52S?2:2?1U:CJ8>69OGG7",
+}
+sub1 {
+  u64a: 9141973858386196788
+  sub1 {
+    b1: 0
+    i1: -1569063748
+    s1: "GOG53LFLIKN@TOPG<DF;"
+  }
+  vsub1[] {
+    b1: 0
+    i1: -411862808
+    s1: "RS8HUYBV3BH:"
+  } {
+    b1: 1
+    i1: 1437327698
+    s1: "D?:PMN3348480T:Z0PX"
+  }
+}
+f32a: 71.5479
+f64a: 2202.8
+
+I29393 2026-10-25 12:36:07.98084 capsule/by_hand_test.cc:820] Seed is 45420
+I29393 2026-10-25 12:36:07.98085 capsule/by_hand_test.cc:770] Capsule reports own size as: 424
+I29393 2026-10-25 12:36:07.98085 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98085 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98087 capsule/by_hand_test.cc:806] u64a: 9771135909873410201
+i64a: 2934803079926177043
+u32a: 709503444
+i32a: 419189259
+u16a: 38325
+i16a: 16394
+u8a: 84
+i8a: 6
+b1: 1
+vs1[] {
+  "@NG4EC;XQAFVCZR5WP96P=LI;JG3@T9BE",
+}
+sub1 {
+  u64a: 17608127205959074377
+  sub1 {
+    b1: 1
+    i1: -1234054067
+    s1: "Q26"
+  }
+  vsub1[] {
+    b1: 0
+    i1: -2011903917
+    s1: ":=3ZM4"
+  } {
+    b1: 0
+    i1: -546486281
+    s1: "MUDH5LMZ7IO476PV2HA@8<=:F0"
+  } {
+    b1: 0
+    i1: 2137693851
+    s1: ""
+  }
+}
+f32a: 92.5461
+f64a: 3863.53
+
+I29393 2026-10-25 12:36:07.98088 capsule/by_hand_test.cc:820] Seed is 32642
+I29393 2026-10-25 12:36:07.98088 capsule/by_hand_test.cc:770] Capsule reports own size as: 568
+I29393 2026-10-25 12:36:07.98088 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98088 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98090 capsule/by_hand_test.cc:806] u64a: 5337660626694268933
+i64a: -1800527033792722811
+u32a: 3206376704
+i32a: 1848896489
+u16a: 10176
+i16a: -8411
+u8a: 9
+i8a: -37
+b1: 0
+vs1[] {
+  ":MX=ZXBDPSE3I=GND",
+  "2;K;JKSO;XB6TTQSQFRH3XTV>",
+  ":8OSTEFWBGM4I3UZ@3HYD96S::@",
+}
+sub1 {
+  u64a: 8092597140265080932
+  sub1 {
+    b1: 0
+    i1: 912450762
+    s1: "SL3M70GG136>F1L:?6O;"
+  }
+  vsub1[] {
+    b1: 1
+    i1: 793617351
+    s1: "?D90IU;0:BBS2XJSL2C6@PRCGC8AKK<I"
+  } {
+    b1: 1
+    i1: 921657743
+    s1: "K:X>P"
+  } {
+    b1: 1
+    i1: 451285566
+    s1: "KLA0G0JHQ:5DJVB5CK<"
+  } {
+    b1: 0
+    i1: -426685995
+    s1: "LZ>KCRP8KD<XZQOPU<"
+  }
+}
+f32a: -63.5718
+f64a: 7398.45
+
+I29393 2026-10-25 12:36:07.98091 capsule/by_hand_test.cc:820] Seed is 36096
+I29393 2026-10-25 12:36:07.98091 capsule/by_hand_test.cc:770] Capsule reports own size as: 424
+I29393 2026-10-25 12:36:07.98091 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98092 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98093 capsule/by_hand_test.cc:806] u64a: 12497776853189137099
+i64a: -1072408606002396141
+u32a: 3308316889
+i32a: -1609222152
+u16a: 50874
+i16a: -27694
+u8a: 52
+i8a: -99
+b1: 0
+vs1[] {
+  "J859S:PR1S@04C;3",
+  "W3NWUTB7WDK=HTWDE?3C9LR?3",
+  "GD06<IG6KD0E7?VS9DVWB4>Q<7",
+  "L<K2HY;",
+}
+sub1 {
+  u64a: 18308358668242110068
+  sub1 {
+    b1: 0
+    i1: 1950536354
+    s1: "X>SW@UL7S:D67WRXIG2G6A<>HQ9MM=E"
+  }
+  vsub1[] {
+    b1: 1
+    i1: 1686000226
+    s1: "UAEX3S8HFGXBCZHHPC"
+  }
+}
+f32a: -86.3343
+f64a: -6942.95
+
+I29393 2026-10-25 12:36:07.98094 capsule/by_hand_test.cc:820] Seed is 742
+I29393 2026-10-25 12:36:07.98094 capsule/by_hand_test.cc:770] Capsule reports own size as: 304
+I29393 2026-10-25 12:36:07.98094 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98094 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98095 capsule/by_hand_test.cc:806] u64a: 10972033253703521745
+i64a: 1944865047194881107
+u32a: 227398646
+i32a: 5606797
+u16a: 58917
+i16a: 11558
+u8a: 196
+i8a: 47
+b1: 1
+vs1[] {
+  "P:7V=LGRSBRI<?J;H7WFEXG9ORX;KX",
+  "PN@M5<2U<22CAM>AK;Y",
+}
+sub1 {
+  u64a: 2309568757309268529
+  sub1 {
+    b1: 0
+    i1: 1827547678
+    s1: "F06>36TKKG@?"
+  }
+}
+f32a: 41.8178
+f64a: 9413.85
+
+I29393 2026-10-25 12:36:07.98096 capsule/by_hand_test.cc:820] Seed is 16298
+I29393 2026-10-25 12:36:07.98096 capsule/by_hand_test.cc:770] Capsule reports own size as: 360
+I29393 2026-10-25 12:36:07.98096 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98096 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98098 capsule/by_hand_test.cc:806] u64a: 12742707031698514275
+i64a: 4811325148969703245
+u32a: 993440186
+i32a: 362498117
+u16a: 34391
+i16a: 19259
+u8a: 101
+i8a: 24
+b1: 1
+vs1[] {
+  "?LH;0KE8J3@Y3KO29ID1KGAB@PJ8MG",
+  "4O0=F>LM",
+  "90J",
+}
+sub1 {
+  u64a: 10154578559917296225
+  sub1 {
+    b1: 0
+    i1: -890064636
+    s1: "N<5B@GO42OEZ:W>X:S;35Q2"
+  }
+  vsub1[] {
+    b1: 1
+    i1: 1471886140
+    s1: "PS"
+  }
+}
+f32a: -53.2092
+f64a: 6712.79
+
+I29393 2026-10-25 12:36:07.98099 capsule/by_hand_test.cc:820] Seed is 40608
+I29393 2026-10-25 12:36:07.98099 capsule/by_hand_test.cc:770] Capsule reports own size as: 368
+I29393 2026-10-25 12:36:07.98099 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98099 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98100 capsule/by_hand_test.cc:806] u64a: 6199801398026778271
+i64a: 1448907292685507488
+u32a: 2152580566
+i32a: 159475807
+u16a: 31652
+i16a: 17648
+u8a: 155
+i8a: 76
+b1: 1
+vs1[] {
+  "T3U:F2QR92TKAZS14V4MIAR<E86D05",
+  "TZWZ:7MS3;",
+  "79",
+}
+sub1 {
+  u64a: 16354346867457660991
+  sub1 {
+    b1: 1
+    i1: -1887574925
+    s1: "2=K<1?:Z:II02JGI6:N@Y"
+  }
+  vsub1[] {
+    b1: 1
+    i1: -461111307
+    s1: "U7OUNE"
+  }
+}
+f32a: -66.0601
+f64a: -5341.27
+
+I29393 2026-10-25 12:36:07.98101 capsule/by_hand_test.cc:820] Seed is 3668
+I29393 2026-10-25 12:36:07.98101 capsule/by_hand_test.cc:770] Capsule reports own size as: 352
+I29393 2026-10-25 12:36:07.98101 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98101 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98103 capsule/by_hand_test.cc:806] u64a: 7517585763173189214
+i64a: -8708431061411893599
+u32a: 2945071953
+i32a: -2012547932
+u16a: 49591
+i16a: 20820
+u8a: 101
+i8a: 31
+b1: 1
+vs1[] {
+  "8=UR",
+}
+sub1 {
+  u64a: 14794239202899443501
+  sub1 {
+    b1: 0
+    i1: -1995142029
+    s1: "S3FQPZNMN9>97DS3D;H"
+  }
+  vsub1[] {
+    b1: 0
+    i1: -1535230402
+    s1: "PG"
+  } {
+    b1: 1
+    i1: -957957127
+    s1: "EKZI<3YHMABFY3XYUX"
+  }
+}
+f32a: -51.8662
+f64a: -757.037
+
+I29393 2026-10-25 12:36:07.98104 capsule/by_hand_test.cc:820] Seed is 36748
+I29393 2026-10-25 12:36:07.98104 capsule/by_hand_test.cc:770] Capsule reports own size as: 456
+I29393 2026-10-25 12:36:07.98104 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98104 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98107 capsule/by_hand_test.cc:806] u64a: 3170672091484603213
+i64a: -7261802751016702158
+u32a: 3909962296
+i32a: 1477169877
+u16a: 46526
+i16a: -13776
+u8a: 237
+i8a: -73
+b1: 0
+vs1[] {
+  "TEN93YNU3J<>8EOW;6?KNVRPXOK;LI",
+  "A=",
+}
+sub1 {
+  u64a: 16914833947940639702
+  sub1 {
+    b1: 1
+    i1: -1831469682
+    s1: "VYNV1AEV7"
+  }
+  vsub1[] {
+    b1: 1
+    i1: 1605286995
+    s1: "T?;ZPCGP9"
+  } {
+    b1: 1
+    i1: -2142708350
+    s1: "U;IVO9<?49S3L4I0;"
+  } {
+    b1: 0
+    i1: 1535208883
+    s1: "AH>A<LYR=<UT0I7X9QP9V88?>YBZ"
+  }
+}
+f32a: -59.7883
+f64a: 4024.44
+
+I29393 2026-10-25 12:36:07.98109 capsule/by_hand_test.cc:820] Seed is 25196
+I29393 2026-10-25 12:36:07.98109 capsule/by_hand_test.cc:770] Capsule reports own size as: 440
+I29393 2026-10-25 12:36:07.98109 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98109 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98111 capsule/by_hand_test.cc:806] u64a: 11930995966868365745
+i64a: -7895562402695845697
+u32a: 4164404647
+i32a: -209323783
+u16a: 20941
+i16a: 24890
+u8a: 12
+i8a: -2
+b1: 1
+vs1[] {
+  "9<PQAJ",
+  "9SIPD>DGKKTG<YM?21G310SHYFF",
+  "9D9C1YHRZ23B<YT7R",
+  "Y",
+}
+sub1 {
+  u64a: 9422819926622956154
+  sub1 {
+    b1: 0
+    i1: -1954569946
+    s1: "OC2HMBQN10?<BBJ790VRCTZY:"
+  }
+  vsub1[] {
+    b1: 1
+    i1: 72412148
+    s1: "N>?1B3=2W7O9SHYF"
+  } {
+    b1: 1
+    i1: 876357690
+    s1: "O>9P7Q"
+  }
+}
+f32a: -55.5655
+f64a: 8573.5
+
+I29393 2026-10-25 12:36:07.98112 capsule/by_hand_test.cc:820] Seed is 21110
+I29393 2026-10-25 12:36:07.98112 capsule/by_hand_test.cc:770] Capsule reports own size as: 528
+I29393 2026-10-25 12:36:07.98112 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98112 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98115 capsule/by_hand_test.cc:806] u64a: 12693976709613884058
+i64a: 4418108970747027284
+u32a: 2111661428
+i32a: -1598825195
+u16a: 59346
+i16a: -9521
+u8a: 220
+i8a: -49
+b1: 1
+vs1[] {
+  ">B8;L;KQ>7B7YEZQRA6B0UAMSX",
+  "",
+  "IX3YWJXSX@510<=FE348",
+  "7QUMS:WP87;PB7DZ",
+}
+sub1 {
+  u64a: 6741902597893520038
+  sub1 {
+    b1: 1
+    i1: -1150565042
+    s1: "0>"
+  }
+  vsub1[] {
+    b1: 1
+    i1: -1600175826
+    s1: "04YK<7JFUPAS"
+  } {
+    b1: 1
+    i1: -196156251
+    s1: "@MYT7K61"
+  } {
+    b1: 0
+    i1: -563344220
+    s1: "N>H:EGN>RWN5M3ANAH1OY@BPRZ"
+  } {
+    b1: 1
+    i1: -1445846036
+    s1: "MXR0NW<0;M"
+  }
+}
+f32a: 83.2888
+f64a: -2020.33
+
+I29393 2026-10-25 12:36:07.98116 capsule/by_hand_test.cc:820] Seed is 36564
+I29393 2026-10-25 12:36:07.98116 capsule/by_hand_test.cc:770] Capsule reports own size as: 384
+I29393 2026-10-25 12:36:07.98116 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98116 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98119 capsule/by_hand_test.cc:806] u64a: 9270549098189579315
+i64a: 1937103230510012683
+u32a: 1348870543
+i32a: -1486783108
+u16a: 35550
+i16a: -1411
+u8a: 243
+i8a: -106
+b1: 1
+sub1 {
+  u64a: 2078864847089828808
+  sub1 {
+    b1: 1
+    i1: -1909105582
+    s1: "RGDR74L467ZR4;W"
+  }
+  vsub1[] {
+    b1: 0
+    i1: -1604933971
+    s1: "WU"
+  } {
+    b1: 0
+    i1: 1914132417
+    s1: "2NZL6NZC"
+  } {
+    b1: 1
+    i1: 1858880510
+    s1: "Z@6TU91C5I0J"
+  }
+}
+f32a: -32.0593
+f64a: -2529.95
+
+I29393 2026-10-25 12:36:07.98121 capsule/by_hand_test.cc:820] Seed is 4248
+I29393 2026-10-25 12:36:07.98121 capsule/by_hand_test.cc:770] Capsule reports own size as: 408
+I29393 2026-10-25 12:36:07.98121 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98121 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98123 capsule/by_hand_test.cc:806] u64a: 12385818958298828791
+i64a: 7986123778173085040
+u32a: 663065771
+i32a: 877758795
+u16a: 63096
+i16a: 19235
+u8a: 43
+i8a: 3
+b1: 1
+vs1[] {
+  "2N>>N4;CU2F",
+  "0Q9ZE5V9W<62RKM?9A",
+  "DQF@DVFXL@J7;EZDULFEGJYQL1:R3J1",
+  ">6T8O",
+}
+sub1 {
+  u64a: 13439711400340010317
+  sub1 {
+    b1: 0
+    i1: 1689899476
+    s1: "AC;EQCQVIV=7SS98I5VQ?<><SAX=AU"
+  }
+  vsub1[] {
+    b1: 0
+    i1: 1945046919
+    s1: "O;;4QYQ?;0"
+  }
+}
+f32a: -6.21645
+f64a: -2497.54
+
+I29393 2026-10-25 12:36:07.98124 capsule/by_hand_test.cc:820] Seed is 53018
+I29393 2026-10-25 12:36:07.98124 capsule/by_hand_test.cc:770] Capsule reports own size as: 488
+I29393 2026-10-25 12:36:07.98124 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98124 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98126 capsule/by_hand_test.cc:806] u64a: 6005218592001297649
+i64a: 3900376197447242637
+u32a: 1927643695
+i32a: -262860229
+u16a: 36263
+i16a: 32135
+u8a: 219
+i8a: -69
+b1: 1
+vs1[] {
+  "QZQ",
+}
+sub1 {
+  u64a: 8300205351298279358
+  sub1 {
+    b1: 1
+    i1: -291412560
+    s1: "E?FO;KDL4PK5QXJML"
+  }
+  vsub1[] {
+    b1: 0
+    i1: 1637433543
+    s1: "3B=YG:AFQ?O3DRZD3@;@?31VZQF@O"
+  } {
+    b1: 0
+    i1: -820804196
+    s1: "SPKLCNZMH@:U3MQ0I=ST"
+  } {
+    b1: 0
+    i1: 617502043
+    s1: "S3;EDO=GE2X4C5L"
+  } {
+    b1: 1
+    i1: 2117325304
+    s1: "K7<HI@GGL9D"
+  }
+}
+f32a: -94.7563
+f64a: 7870.86
+
+I29393 2026-10-25 12:36:07.98128 capsule/by_hand_test.cc:820] Seed is 60472
+I29393 2026-10-25 12:36:07.98128 capsule/by_hand_test.cc:770] Capsule reports own size as: 416
+I29393 2026-10-25 12:36:07.98128 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98128 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98129 capsule/by_hand_test.cc:806] u64a: 5850077695253124097
+i64a: 1174855687457066635
+u32a: 151886383
+i32a: -1532963946
+u16a: 11290
+i16a: -12602
+u8a: 39
+i8a: 58
+b1: 1
+vs1[] {
+  "@X0=1JPYLDV<VOC9SWU3OSX2I;P",
+  "9DYVUTR:QRQ1",
+  "2?H3X<@>9:6>B<TUB7Z:4",
+}
+sub1 {
+  u64a: 8881359943281934845
+  sub1 {
+    b1: 1
+    i1: -1436513493
+    s1: "S8R6BQ44D3M?<;DZM7<Y70ZV=>3W@8KAW"
+  }
+  vsub1[] {
+    b1: 1
+    i1: -740584898
+    s1: "H7CH6M:@3NVHF7MIEALKJ><ZMBBM0AOGB"
+  }
+}
+f32a: -46.8722
+f64a: 7408.82
+
+I29393 2026-10-25 12:36:07.98130 capsule/by_hand_test.cc:820] Seed is 29022
+I29393 2026-10-25 12:36:07.98130 capsule/by_hand_test.cc:770] Capsule reports own size as: 264
+I29393 2026-10-25 12:36:07.98130 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98130 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98132 capsule/by_hand_test.cc:806] u64a: 11487497215807455192
+i64a: 5250288789150752325
+u32a: 3131969042
+i32a: 1633697668
+u16a: 25344
+i16a: 11870
+u8a: 102
+i8a: -53
+b1: 0
+sub1 {
+  u64a: 10941863291080994850
+  sub1 {
+    b1: 1
+    i1: 341256676
+    s1: "@TQ@P3?:849RQL::XRMG;D:;D1OIP<4"
+  }
+}
+f32a: 33.8203
+f64a: 4543.69
+
+I29393 2026-10-25 12:36:07.98132 capsule/by_hand_test.cc:820] Seed is 42632
+I29393 2026-10-25 12:36:07.98132 capsule/by_hand_test.cc:770] Capsule reports own size as: 384
+I29393 2026-10-25 12:36:07.98133 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98133 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98134 capsule/by_hand_test.cc:806] u64a: 15142714064089678780
+i64a: 8591470356092234472
+u32a: 1593192622
+i32a: 1768551713
+u16a: 6291
+i16a: 22273
+u8a: 126
+i8a: -29
+b1: 1
+vs1[] {
+  "O:QUCV95H",
+  "AZUDFT7FC4B@OK<OY37V56S",
+}
+sub1 {
+  u64a: 16560694068232938396
+  sub1 {
+    b1: 1
+    i1: -2033699799
+    s1: "2:6"
+  }
+  vsub1[] {
+    b1: 1
+    i1: 1227065542
+    s1: "C@L2U92"
+  } {
+    b1: 0
+    i1: 1255215657
+    s1: "FRA8MIQLNZ7<CE2;"
+  }
+}
+f32a: -27.9902
+f64a: -7577.26
+
+I29393 2026-10-25 12:36:07.98135 capsule/by_hand_test.cc:820] Seed is 15790
+I29393 2026-10-25 12:36:07.98135 capsule/by_hand_test.cc:770] Capsule reports own size as: 544
+I29393 2026-10-25 12:36:07.98135 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98135 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98138 capsule/by_hand_test.cc:806] u64a: 16393882657580268677
+i64a: 6078224038773997523
+u32a: 3805492208
+i32a: -1909000881
+u16a: 22978
+i16a: 22854
+u8a: 220
+i8a: 82
+b1: 1
+vs1[] {
+  "T9O:X8S;EJ",
+  "",
+  "OORZ=9NCT=EMR:UIX2RM@G6K1F",
+}
+sub1 {
+  u64a: 14383045493232093114
+  sub1 {
+    b1: 1
+    i1: 445559611
+    s1: "JOETEZ=Y5XP97X;8<35B2JP"
+  }
+  vsub1[] {
+    b1: 1
+    i1: -247982436
+    s1: "54;"
+  } {
+    b1: 0
+    i1: -1116990973
+    s1: "DO3CIZ24G296V:YZEYJ0:A:=8KO<8"
+  } {
+    b1: 1
+    i1: -101279134
+    s1: "KDQ5ZX@PG2ZLCA8HI2Z><8"
+  } {
+    b1: 1
+    i1: -1779533762
+    s1: "OERYAT3BGOQ7WUMBV6F4"
+  }
+}
+f32a: 88.8357
+f64a: 5669.21
+
+I29393 2026-10-25 12:36:07.98139 capsule/by_hand_test.cc:820] Seed is 23118
+I29393 2026-10-25 12:36:07.98139 capsule/by_hand_test.cc:770] Capsule reports own size as: 552
+I29393 2026-10-25 12:36:07.98139 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98139 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98141 capsule/by_hand_test.cc:806] u64a: 2304804443840718849
+i64a: 2376373035903008517
+u32a: 4086707066
+i32a: -108052512
+u16a: 60638
+i16a: 6963
+u8a: 225
+i8a: -102
+b1: 0
+vs1[] {
+  "DV43JF2M;3IRP0O@CUH07W",
+  "A2VK<L=SZQ2IK4Z",
+  "55ZMJ0PDRI?Z9PH301=X01LJ?IH5",
+}
+sub1 {
+  u64a: 10088116303013133625
+  sub1 {
+    b1: 0
+    i1: -1848120439
+    s1: "WBSD1N3PR@"
+  }
+  vsub1[] {
+    b1: 0
+    i1: 2042360567
+    s1: "3EJ0SS2IAELW"
+  } {
+    b1: 0
+    i1: 1586686397
+    s1: "IGSU1A4L2UST3X8N"
+  } {
+    b1: 0
+    i1: -1123279385
+    s1: "7CMT>BR=T;8DPZO=T<A8JI"
+  } {
+    b1: 1
+    i1: 2041843576
+    s1: "68ZR6QOMP0HI?5TQ07"
+  }
+}
+f32a: 66.1614
+f64a: 1128.04
+
+I29393 2026-10-25 12:36:07.98143 capsule/by_hand_test.cc:820] Seed is 25806
+I29393 2026-10-25 12:36:07.98143 capsule/by_hand_test.cc:770] Capsule reports own size as: 368
+I29393 2026-10-25 12:36:07.98143 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98143 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98144 capsule/by_hand_test.cc:806] u64a: 556365814431532808
+i64a: -5131330560593497219
+u32a: 1755357447
+i32a: -1768654083
+u16a: 30266
+i16a: 23254
+u8a: 5
+i8a: -34
+b1: 1
+vs1[] {
+  "AWU5BGG4E17AMHD8IUWC<R6MRU5PFR",
+  "54@QZ53IXRA<D7BZTBTL5MSJH2",
+}
+sub1 {
+  u64a: 9291841150768525149
+  sub1 {
+    b1: 1
+    i1: 669968449
+    s1: ""
+  }
+  vsub1[] {
+    b1: 1
+    i1: 1254213732
+    s1: "D44F4Y;5MON1NF4@FRLGR"
+  }
+}
+f32a: -2.54932
+f64a: 5217.64
+
+I29393 2026-10-25 12:36:07.98145 capsule/by_hand_test.cc:820] Seed is 50974
+I29393 2026-10-25 12:36:07.98145 capsule/by_hand_test.cc:770] Capsule reports own size as: 416
+I29393 2026-10-25 12:36:07.98145 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98145 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98147 capsule/by_hand_test.cc:806] u64a: 15652647346661522452
+i64a: 6551697060101930598
+u32a: 1339496883
+i32a: 1576888354
+u16a: 10519
+i16a: 3032
+u8a: 134
+i8a: 75
+b1: 1
+vs1[] {
+  "BJ",
+  "H>YG@J4C:1;PNJNT:SE@<2I@0D<3",
+  "MNGR",
+  "SF@;B3YDZ:",
+}
+sub1 {
+  u64a: 12491350123323988341
+  sub1 {
+    b1: 0
+    i1: 982025927
+    s1: "TR2"
+  }
+  vsub1[] {
+    b1: 1
+    i1: 1199162983
+    s1: ":??8PY"
+  } {
+    b1: 1
+    i1: -8431554
+    s1: ":EES60>90=S>Y9;W20O8677WIO@D3"
+  }
+}
+f32a: -12.6958
+f64a: 1813.61
+
+I29393 2026-10-25 12:36:07.98148 capsule/by_hand_test.cc:820] Seed is 32914
+I29393 2026-10-25 12:36:07.98148 capsule/by_hand_test.cc:770] Capsule reports own size as: 512
+I29393 2026-10-25 12:36:07.98148 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98148 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98150 capsule/by_hand_test.cc:806] u64a: 10194870015401251342
+i64a: 306750216453726219
+u32a: 439803368
+i32a: -1280432744
+u16a: 23084
+i16a: 13633
+u8a: 47
+i8a: -118
+b1: 0
+vs1[] {
+  "16XJZ1Y=DLJQ@6I;D0JZ",
+  "Q;JQH8=;>DSASAWQ9M7NZKOF;CB:YTGR",
+  ":BE2=;?T=UMV:HTXVY0CEL@DDIRX5",
+}
+sub1 {
+  u64a: 6955871560526627715
+  sub1 {
+    b1: 1
+    i1: -1745436075
+    s1: "I>KE5TEOJ"
+  }
+  vsub1[] {
+    b1: 0
+    i1: 743446771
+    s1: ""
+  } {
+    b1: 0
+    i1: -1836016884
+    s1: "FLFZ7JEPDUI5MYG<EROOBG71XI;Z"
+  } {
+    b1: 0
+    i1: -1193469654
+    s1: "HW1Z:78P4I4DE?:7@@?PK:HB"
+  }
+}
+f32a: -59.3913
+f64a: 5018.69
+
+I29393 2026-10-25 12:36:07.98152 capsule/by_hand_test.cc:820] Seed is 28168
+I29393 2026-10-25 12:36:07.98152 capsule/by_hand_test.cc:770] Capsule reports own size as: 528
+I29393 2026-10-25 12:36:07.98152 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98152 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98154 capsule/by_hand_test.cc:806] u64a: 8422516458446745649
+i64a: -1301967443412069019
+u32a: 2225847975
+i32a: 700282049
+u16a: 42896
+i16a: -17572
+u8a: 172
+i8a: -39
+b1: 1
+vs1[] {
+  "<?F06PN",
+  "OY5LL=QZSN4LG=DYX5E0VK0:RP",
+  "CMW:@VPXUO",
+  "?GLOYQI?CW6<E;U?5=29A:D",
+}
+sub1 {
+  u64a: 4579154153879444183
+  sub1 {
+    b1: 0
+    i1: 2105251092
+    s1: "3P8<OKK;9G1W3V<BOI<V@V;I"
+  }
+  vsub1[] {
+    b1: 0
+    i1: -137642600
+    s1: "B6=2K5XN9NP00L11<76UV5F7NSGS;9DS"
+  } {
+    b1: 1
+    i1: -1338218944
+    s1: "0M>RVE"
+  } {
+    b1: 1
+    i1: -1050632319
+    s1: "YE6T;0IMZ9C>;"
+  }
+}
+f32a: -59.8478
+f64a: 4132.59
+
+I29393 2026-10-25 12:36:07.98155 capsule/by_hand_test.cc:820] Seed is 18798
+I29393 2026-10-25 12:36:07.98155 capsule/by_hand_test.cc:770] Capsule reports own size as: 296
+I29393 2026-10-25 12:36:07.98155 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98155 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98156 capsule/by_hand_test.cc:806] u64a: 17642238917843188445
+i64a: -1886291092013626486
+u32a: 1023647599
+i32a: -1552001345
+u16a: 36838
+i16a: -10626
+u8a: 120
+i8a: 123
+b1: 1
+vs1[] {
+  "WRHKA>",
+  "4IF",
+  "PS",
+  "MPRL27@BMU",
+}
+sub1 {
+  u64a: 12703183818142022615
+  sub1 {
+    b1: 1
+    i1: -1272156146
+    s1: "I4P30PW?>1C0C2GN3AT"
+  }
+}
+f32a: -9.06436
+f64a: -5696.97
+
+I29393 2026-10-25 12:36:07.98157 capsule/by_hand_test.cc:820] Seed is 34822
+I29393 2026-10-25 12:36:07.98157 capsule/by_hand_test.cc:770] Capsule reports own size as: 400
+I29393 2026-10-25 12:36:07.98157 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98157 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98159 capsule/by_hand_test.cc:806] u64a: 14271772416912781016
+i64a: -6408168699733408230
+u32a: 1546293782
+i32a: 1535510248
+u16a: 2978
+i16a: -23301
+u8a: 162
+i8a: -92
+b1: 0
+vs1[] {
+  "N2",
+}
+sub1 {
+  u64a: 11857001301482521907
+  sub1 {
+    b1: 0
+    i1: -1096551698
+    s1: "?"
+  }
+  vsub1[] {
+    b1: 0
+    i1: -1320453943
+    s1: "0:@G=0K?ZOCI<59TMD2<7="
+  } {
+    b1: 0
+    i1: -1203114540
+    s1: "S:KEBWSC5E1:"
+  } {
+    b1: 0
+    i1: 1884718855
+    s1: "0AOCW1O"
+  }
+}
+f32a: 66.7172
+f64a: -340.735
+
+I29393 2026-10-25 12:36:07.98160 capsule/by_hand_test.cc:820] Seed is 21072
+I29393 2026-10-25 12:36:07.98160 capsule/by_hand_test.cc:770] Capsule reports own size as: 416
+I29393 2026-10-25 12:36:07.98160 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98160 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98162 capsule/by_hand_test.cc:806] u64a: 8868660254990235409
+i64a: 8115872167527946400
+u32a: 825643975
+i32a: 507662696
+u16a: 20797
+i16a: 30152
+u8a: 227
+i8a: 15
+b1: 1
+vs1[] {
+  "8T@>5265@NGCUAXWB294<:TCDD",
+}
+sub1 {
+  u64a: 1639631199847445712
+  sub1 {
+    b1: 1
+    i1: 814574910
+    s1: "OB:RACU8744B>?R6G"
+  }
+  vsub1[] {
+    b1: 0
+    i1: -1465880505
+    s1: "Z9V1X7RC@0EIM@?9>K0@?4HCO"
+  } {
+    b1: 0
+    i1: -809740496
+    s1: "<=7AIIXG>GI8JL5V15B>XS1>IV4DC"
+  }
+}
+f32a: -66.3653
+f64a: -4707.56
+
+I29393 2026-10-25 12:36:07.98163 capsule/by_hand_test.cc:820] Seed is 56282
+I29393 2026-10-25 12:36:07.98163 capsule/by_hand_test.cc:770] Capsule reports own size as: 360
+I29393 2026-10-25 12:36:07.98163 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98163 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98165 capsule/by_hand_test.cc:806] u64a: 16836405714210366292
+i64a: -8253485504487522430
+u32a: 3178446136
+i32a: 3820350
+u16a: 7788
+i16a: -17851
+u8a: 231
+i8a: -40
+b1: 0
+vs1[] {
+  "KBN?;4NXEYC4:DTNMS",
+  "MDV>0",
+}
+sub1 {
+  u64a: 15280539591038508690
+  sub1 {
+    b1: 0
+    i1: 1323420416
+    s1: "J701<66?QB?6FWXWGL>EZ<M??DY506PI"
+  }
+  vsub1[] {
+    b1: 0
+    i1: 867675256
+    s1: "F@YY9?;LWWWIAUN>DP;"
+  }
+}
+f32a: 42.6492
+f64a: 125.806
+
+I29393 2026-10-25 12:36:07.98165 capsule/by_hand_test.cc:820] Seed is 15822
+I29393 2026-10-25 12:36:07.98166 capsule/by_hand_test.cc:770] Capsule reports own size as: 368
+I29393 2026-10-25 12:36:07.98166 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98166 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98167 capsule/by_hand_test.cc:806] u64a: 4014732625189447791
+i64a: 6811957507839558302
+u32a: 2984036973
+i32a: 330752610
+u16a: 40869
+i16a: 10955
+u8a: 246
+i8a: -54
+b1: 0
+vs1[] {
+  ":3LTP?X?K<>TH5X<9NZSXWE=<YC",
+  "ZE8L>OOFMVRDGO0;G2R5",
+}
+sub1 {
+  u64a: 17722216262620635705
+  sub1 {
+    b1: 0
+    i1: -2065684710
+    s1: "P9ZL7QA:T3922LSZFV7N>Z@6"
+  }
+  vsub1[] {
+    b1: 1
+    i1: 356139074
+    s1: "B;OO?FFKS7>2MU"
+  }
+}
+f32a: -36.8528
+f64a: -9467.59
+
+I29393 2026-10-25 12:36:07.98168 capsule/by_hand_test.cc:820] Seed is 44134
+I29393 2026-10-25 12:36:07.98168 capsule/by_hand_test.cc:770] Capsule reports own size as: 272
+I29393 2026-10-25 12:36:07.98168 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98168 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98169 capsule/by_hand_test.cc:806] u64a: 11550079378562678667
+i64a: -6329134273946492876
+u32a: 4083777403
+i32a: 347653368
+u16a: 49006
+i16a: 21245
+u8a: 216
+i8a: 43
+b1: 1
+vs1[] {
+  ":IF19",
+}
+sub1 {
+  u64a: 2422484985889175330
+  sub1 {
+    b1: 0
+    i1: -1587834701
+    s1: "56R>YWZB<NYU8QWWMO7UUH8;;58?"
+  }
+}
+f32a: 49.9847
+f64a: 7679.87
+
+I29393 2026-10-25 12:36:07.98170 capsule/by_hand_test.cc:820] Seed is 51312
+I29393 2026-10-25 12:36:07.98170 capsule/by_hand_test.cc:770] Capsule reports own size as: 520
+I29393 2026-10-25 12:36:07.98170 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98170 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98172 capsule/by_hand_test.cc:806] u64a: 15062777293669225067
+i64a: 8834923543905243248
+u32a: 3229550868
+i32a: 1273492331
+u16a: 59835
+i16a: 29534
+u8a: 65
+i8a: -113
+b1: 0
+vs1[] {
+  "DDI37GS1M6:DMZ?41?KZ;>",
+  "Q?1TEZ?7K0PMXRQMA?6",
+}
+sub1 {
+  u64a: 17837944492927603852
+  sub1 {
+    b1: 0
+    i1: -990257630
+    s1: "3>K=>X?@?Y0PB10"
+  }
+  vsub1[] {
+    b1: 1
+    i1: 1886914001
+    s1: "CL2IX9;9KZS;F"
+  } {
+    b1: 1
+    i1: -1277906881
+    s1: "MH=TLM5UWM4AWYUZEEP;46JD5?KG"
+  } {
+    b1: 0
+    i1: 1483514699
+    s1: "IBP7ZOY"
+  } {
+    b1: 1
+    i1: -1507128051
+    s1: "0DOG9IT"
+  }
+}
+f32a: -61.1582
+f64a: -7863.06
+
+I29393 2026-10-25 12:36:07.98174 capsule/by_hand_test.cc:820] Seed is 52552
+I29393 2026-10-25 12:36:07.98174 capsule/by_hand_test.cc:770] Capsule reports own size as: 352
+I29393 2026-10-25 12:36:07.98174 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98174 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98175 capsule/by_hand_test.cc:806] u64a: 1476960060096970470
+i64a: 7674508011700693221
+u32a: 2931248262
+i32a: -1622278700
+u16a: 59160
+i16a: -20263
+u8a: 227
+i8a: 22
+b1: 1
+vs1[] {
+  "8QXKA6UT=",
+  "2ZI2LFEQBF:V8A",
+  "T>E5LPWO4J4@C",
+}
+sub1 {
+  u64a: 10269986797942975862
+  sub1 {
+    b1: 1
+    i1: 492626827
+    s1: "1Y>;"
+  }
+  vsub1[] {
+    b1: 0
+    i1: -1912222301
+    s1: "3N0TKARK>80QRSU;I<L"
+  }
+}
+f32a: -15.9572
+f64a: 8900.15
+
+I29393 2026-10-25 12:36:07.98176 capsule/by_hand_test.cc:820] Seed is 13766
+I29393 2026-10-25 12:36:07.98176 capsule/by_hand_test.cc:770] Capsule reports own size as: 616
+I29393 2026-10-25 12:36:07.98176 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98176 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98179 capsule/by_hand_test.cc:806] u64a: 967853857972847771
+i64a: -8460297858124496423
+u32a: 3331877023
+i32a: -1391301347
+u16a: 57000
+i16a: -27759
+u8a: 212
+i8a: 108
+b1: 1
+vs1[] {
+  "VC@H@>56WK6XVHX9S2;DAG9V",
+  ">HCBKC0KQA3PJ70D2WMJTX9<=:;7L4",
+  "G;;N3R@8PUSSPY1=<9WS@WVVOT@O4",
+  "0T;0WK8AWUP79B1",
+}
+sub1 {
+  u64a: 12757242475163851369
+  sub1 {
+    b1: 0
+    i1: 544206807
+    s1: "XS@Q4NQA?6E;U7Y"
+  }
+  vsub1[] {
+    b1: 1
+    i1: 1012753889
+    s1: "RQU>3:"
+  } {
+    b1: 1
+    i1: -1909352323
+    s1: "WYA9BO0T;GHWGWNPA:M<4TBBR"
+  } {
+    b1: 1
+    i1: -1813939680
+    s1: "MKT8>NE8LUG:8WNB<J;FC1HT;"
+  } {
+    b1: 1
+    i1: 1764714027
+    s1: ":4@:;R22RJ:7:A<"
+  }
+}
+f32a: 11.1024
+f64a: -9292.52
+
+I29393 2026-10-25 12:36:07.98180 capsule/by_hand_test.cc:820] Seed is 21840
+I29393 2026-10-25 12:36:07.98180 capsule/by_hand_test.cc:770] Capsule reports own size as: 400
+I29393 2026-10-25 12:36:07.98180 capsule/by_hand_test.cc:786] Capsule encoded and sealed.
+I29393 2026-10-25 12:36:07.98180 capsule/by_hand_test.cc:790] Decoder built.
+I29393 2026-10-25 12:36:07.98182 capsule/by_hand_test.cc:806] u64a: 8244126569081507632
+i64a: 2199226060676171518
+u32a: 2037617002
+i32a: -485314237
+u16a: 10202
+i16a: -31929
+u8a: 11
+i8a: 126
+b1: 0
+vs1[] {
+  "G3;WW=18SLX??8>X:F4FW;M7",
+}
+sub1 {
+  u64a: 10690090291156112568
+  sub1 {
+    b1: 1
+    i1: -1011448453
+    s1: "S;L?T59WU>9H9>:?=="
+  }
+  vsub1[] {
+    b1: 1
+    i1: -1496497940
+    s1: "AN@;E>DMT1XIY463PZ9R@PEU5KJFLRFM"
+  } {
+    b1: 1
+    i1: 502163483
+    s1: "L7O0N"
+  }
+}
+f32a: -7.76841
+f64a: 6684.36
+

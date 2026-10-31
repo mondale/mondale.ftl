@@ -20,8 +20,8 @@ cc_binary(
         ":http_server",
         "//base:process",
         "//core",
-        "//http/handlers:procz",
         "//http/handlers:logz",
+        "//http/handlers:procz",
         "//http/handlers:statusz",
     ],
 )
